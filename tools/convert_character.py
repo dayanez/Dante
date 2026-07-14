@@ -81,5 +81,10 @@ bpy.ops.export_scene.gltf(
     export_force_sampling=True,
     export_skins=True,
     export_yup=True,
+    # The source textures are lossless PNGs (some at 4K), embedded directly into the glb -
+    # that's what made the file 123MB. JPEG at quality 80 is a large, visually-cheap win.
+    # (Images needing alpha are still saved as PNG automatically - Blender handles that.)
+    export_image_format='JPEG',
+    export_image_quality=80,
 )
 print(f"[convert] wrote {out_glb}")

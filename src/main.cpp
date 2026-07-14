@@ -24,7 +24,6 @@
 #include <gltfio/TextureProvider.h>
 
 #include <utils/EntityManager.h>
-#include <utils/NameComponentManager.h>
 #include <utils/Path.h>
 
 #include <imgui.h>
@@ -146,126 +145,20 @@ struct GroundPlane {
 GroundPlane g_ground;
 Skybox* g_skybox = nullptr;
 
-// A static glTF prop loaded via gltfio. Animation comes in M4 - this milestone is about
-// proving the model-loading path end to end (buffers, textures, materials, placement).
-struct RifleModel {
-    gltfio::AssetLoader* loader = nullptr;
-    gltfio::MaterialProvider* materials = nullptr;
-    gltfio::TextureProvider* textureDecoder = nullptr;
-    gltfio::ResourceLoader* resourceLoader = nullptr;
-    gltfio::FilamentAsset* asset = nullptr;
-
-    void create(Engine& engine, Scene& scene, utils::Path const& gltfPath) {
-        materials = gltfio::createJitShaderProvider(&engine);
-        loader = gltfio::AssetLoader::create({ &engine, materials });
-
-        std::vector<uint8_t> gltfContent = readFile(gltfPath);
-        asset = loader->createAsset(gltfContent.data(), (uint32_t)gltfContent.size());
-        if (!asset) {
-            fprintf(stderr, "[Dante] failed to parse glTF: %s\n", gltfPath.c_str());
-            return;
-        }
-
-        textureDecoder = gltfio::createStbProvider(&engine);
-        gltfio::ResourceConfiguration resourceConfig{};
-        resourceConfig.engine = &engine;
-        resourceConfig.normalizeSkinningWeights = true;
-        // Despite being marked deprecated, this is still what ResourceLoader actually uses
-        // to resolve the external .bin buffer on desktop (GLTFIO_USE_FILESYSTEM=1): buffer
-        // loading goes straight through cgltf's own file reader keyed off this path, and
-        // never consults the addResourceData cache below at all (that cache is genuinely
-        // only used for external textures, which do check it first). Omitting this produced
-        // gltfio's "Unable to load resources" error - the mesh geometry itself never loaded.
-        resourceConfig.gltfPath = gltfPath.c_str();
-        resourceLoader = new gltfio::ResourceLoader(resourceConfig);
-        resourceLoader->addTextureProvider("image/jpeg", textureDecoder);
-        resourceLoader->addTextureProvider("image/png", textureDecoder);
-
-        // External textures are still supplied manually via addResourceData rather than
-        // relying on gltfio's filesystem fallback for them (see comment above - that path
-        // is real but deprecated/noisy, and this is the same data we're reading anyway).
-        utils::Path baseDir = gltfPath.getParent();
-        size_t uriCount = asset->getResourceUriCount();
-        const char* const* uris = asset->getResourceUris();
-        for (size_t i = 0; i < uriCount; i++) {
-            std::vector<uint8_t> data = readFile(baseDir + uris[i]);
-            auto* buf = new uint8_t[data.size()];
-            memcpy(buf, data.data(), data.size());
-            resourceLoader->addResourceData(uris[i],
-                    backend::BufferDescriptor(buf, data.size(),
-                            [](void* b, size_t, void*) { delete[] static_cast<uint8_t*>(b); }));
-        }
-
-        resourceLoader->loadResources(asset);
-        asset->releaseSourceData();
-
-        // Same visibility-layer requirement as the hand-built ground plane (see its comment) -
-        // gltfio-created renderables default to layer 0x1 too.
-        auto& rm = engine.getRenderableManager();
-        for (size_t i = 0, n = asset->getEntityCount(); i < n; i++) {
-            auto instance = rm.getInstance(asset->getEntities()[i]);
-            if (instance) {
-                rm.setLayerMask(instance, 0x4, 0x4);
-                // gltfio's own per-primitive bounding boxes were degenerate for the Blender-
-                // exported character (see asset->getBoundingBox() in the log line below - a
-                // ~1.8cm box for a life-sized human), which made Filament's frustum culling
-                // silently discard the geometry as "outside the view" even though it wasn't.
-                // Disabling culling costs nothing meaningful at this scene's scale.
-                rm.setCulling(instance, false);
-            }
-        }
-
-        scene.addEntities(asset->getEntities(), asset->getEntityCount());
-
-        // The rifle's own origin sits near its geometric center and the default camera
-        // starts at world origin looking toward -Z (FilamentApp's manipulator targetPosition
-        // is (0,0,-4)) - move it a few meters down that sightline and rest it on the ground
-        // plane (top surface at y=-1.0) using the bounding box's min.y.
-        auto& tm = engine.getTransformManager();
-        auto root = tm.getInstance(asset->getRoot());
-        float restY = -1.0f - asset->getBoundingBox().min.y;
-        tm.setTransform(root, mat4f::translation(float3{0, restY, -2}));
-
-        fprintf(stderr, "[Dante] loaded %s: %zu entities, bbox min=(%.3f,%.3f,%.3f) max=(%.3f,%.3f,%.3f)\n",
-                gltfPath.c_str(), asset->getEntityCount(),
-                asset->getBoundingBox().min.x, asset->getBoundingBox().min.y, asset->getBoundingBox().min.z,
-                asset->getBoundingBox().max.x, asset->getBoundingBox().max.y, asset->getBoundingBox().max.z);
-    }
-
-    void destroy(Engine& engine, Scene& scene) {
-        if (!asset) return;
-        scene.removeEntities(asset->getEntities(), asset->getEntityCount());
-        loader->destroyAsset(asset);
-        materials->destroyMaterials();
-        delete materials;
-        delete textureDecoder;
-        delete resourceLoader;
-        gltfio::AssetLoader::destroy(&loader);
-    }
-};
-
-RifleModel g_rifle;
-
 // An animated glTF character loaded via gltfio, playing a looping baked-in animation
 // (see tools/convert_character.py - a Blender script that copies a Mixamo animation clip
 // onto this character's identically-named-bone skeleton and exports both as one glb).
-// Needs its own NameComponentManager, unlike RifleModel, so the "RightHand" bone can be
-// looked up by name each frame to attach the rifle - gltfio has nothing like Stride's
-// ModelNodeLinkComponent, so bone tracking is hand-rolled in the animate callback below.
 struct CharacterModel {
     gltfio::AssetLoader* loader = nullptr;
     gltfio::MaterialProvider* materials = nullptr;
     gltfio::TextureProvider* textureDecoder = nullptr;
     gltfio::ResourceLoader* resourceLoader = nullptr;
     gltfio::FilamentAsset* asset = nullptr;
-    utils::NameComponentManager* names = nullptr;
     gltfio::Animator* animator = nullptr;
-    utils::Entity rightHand;
 
     void create(Engine& engine, Scene& scene, utils::Path const& gltfPath) {
-        names = new utils::NameComponentManager(utils::EntityManager::get());
         materials = gltfio::createJitShaderProvider(&engine);
-        loader = gltfio::AssetLoader::create({ &engine, materials, names });
+        loader = gltfio::AssetLoader::create({ &engine, materials });
 
         std::vector<uint8_t> gltfContent = readFile(gltfPath);
         asset = loader->createAsset(gltfContent.data(), (uint32_t)gltfContent.size());
@@ -319,23 +212,13 @@ struct CharacterModel {
         tm.setTransform(root, mat4f::translation(float3{0, -1.0f, -2}));
 
         animator = asset->getInstance()->getAnimator();
-        // Blender's FBX importer preserves Mixamo's "mixamorig:" bone namespace prefix,
-        // which Stride's own importer had stripped (its .sdskel files show plain "RightHand").
-        rightHand = asset->getFirstEntityByName("mixamorig:RightHand");
 
         fprintf(stderr,
-                "[Dante] loaded %s: %zu entities, %zu animations, RightHand found=%d, "
+                "[Dante] loaded %s: %zu entities, %zu animations, "
                 "bbox min=(%.3f,%.3f,%.3f) max=(%.3f,%.3f,%.3f)\n",
                 gltfPath.c_str(), asset->getEntityCount(), animator->getAnimationCount(),
-                (bool)rightHand,
                 asset->getBoundingBox().min.x, asset->getBoundingBox().min.y, asset->getBoundingBox().min.z,
                 asset->getBoundingBox().max.x, asset->getBoundingBox().max.y, asset->getBoundingBox().max.z);
-        fprintf(stderr, "[Dante] entity names:");
-        for (size_t i = 0, n = asset->getEntityCount(); i < n; i++) {
-            const char* name = asset->getName(asset->getEntities()[i]);
-            fprintf(stderr, " %s", name ? name : "<null>");
-        }
-        fprintf(stderr, "\n");
     }
 
     void destroy(Engine& engine, Scene& scene) {
@@ -346,7 +229,6 @@ struct CharacterModel {
         delete materials;
         delete textureDecoder;
         delete resourceLoader;
-        delete names;
         gltfio::AssetLoader::destroy(&loader);
     }
 };
@@ -355,8 +237,8 @@ CharacterModel g_character;
 
 } // namespace
 
-// M4: an animated glTF character (see CharacterModel) with the M3 rifle re-parented onto
-// its RightHand bone each frame, on top of the M2 skybox/ground plane/camera/FPS overlay.
+// M4: an animated glTF character (see CharacterModel), on top of the M2 skybox/ground
+// plane/camera/FPS overlay.
 int main() {
     Config config;
     config.title = "Dante";
@@ -388,53 +270,22 @@ int main() {
             g_ground.create(*engine, FilamentApp::get().getDefaultMaterial());
             scene->addEntity(g_ground.entity);
 
-            g_rifle.create(*engine, *scene, DANTE_ASSETS_DIR "/models/rifle/bolt_action_rifle_7_62_4k.gltf");
             g_character.create(*engine, *scene, DANTE_ASSETS_DIR "/models/character/ch15_firing.glb");
 
-            // Per-frame: advance the character's animation, then re-parent the rifle onto
-            // its RightHand bone by copying that joint's world transform each frame (with a
-            // fixed grip offset) - gltfio has no automatic node-linking like Stride's
-            // ModelNodeLinkComponent, so this is the hand-rolled equivalent.
-            FilamentApp::get().animate([engine](Engine*, View*, double now) {
+            // Advance the character's animation each frame.
+            FilamentApp::get().animate([](Engine*, View*, double now) {
                 if (!g_character.animator || g_character.animator->getAnimationCount() == 0) {
                     return;
                 }
                 static double startTime = now;
                 float duration = g_character.animator->getAnimationDuration(0);
                 float elapsed = duration > 0.0f ? fmodf((float)(now - startTime), duration) : 0.0f;
-                static int frameCount = 0;
-                if (frameCount++ % 120 == 0) {
-                    fprintf(stderr, "[Dante] anim duration=%.3f elapsed=%.3f\n", duration, elapsed);
-                }
                 g_character.animator->applyAnimation(0, elapsed);
                 g_character.animator->updateBoneMatrices();
-
-                if (g_character.rightHand && g_rifle.asset) {
-                    auto& tm = engine->getTransformManager();
-                    auto handInstance = tm.getInstance(g_character.rightHand);
-                    auto rifleRoot = tm.getInstance(g_rifle.asset->getRoot());
-                    if (handInstance && rifleRoot) {
-                        mat4f const& handWorld = tm.getWorldTransform(handInstance);
-                        // Grip offset matches the original Stride prototype's rifle-in-hand
-                        // rotation (200 degrees roll); refine visually once the base
-                        // attachment is confirmed working.
-                        mat4f grip = mat4f::rotation(2.0f * F_PI * (200.0f / 360.0f), float3{0, 0, 1});
-                        tm.setTransform(rifleRoot, handWorld * grip);
-
-                        static bool loggedOnce = false;
-                        if (!loggedOnce) {
-                            loggedOnce = true;
-                            float4 handPos = handWorld * float4{0, 0, 0, 1};
-                            fprintf(stderr, "[Dante] RightHand world pos = (%.3f, %.3f, %.3f)\n",
-                                    handPos.x, handPos.y, handPos.z);
-                        }
-                    }
-                }
             });
         },
         [](Engine* engine, View*, Scene* scene) {
             g_character.destroy(*engine, *scene);
-            g_rifle.destroy(*engine, *scene);
             scene->remove(g_ground.entity);
             g_ground.destroy(*engine);
             engine->destroy(g_skybox);
