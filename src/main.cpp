@@ -265,11 +265,33 @@ int main() {
     FilamentApp::get().run(
         config,
         [assetsDir](Engine* engine, View* view, Scene* scene) {
-            // Filament's View defaults to FXAA, a screen-space technique that softens the
-            // whole frame (not just jagged edges) - noticeable here since the skybox is
-            // meant to read as a sharp photo. MSAA (edges only) can come back later once
-            // there's real geometry with edges worth smoothing; for now, off entirely.
+            // FXAA (View's default) softens the whole frame, not just jagged edges - that
+            // was noticeable when the skybox still showed the HDRI photo directly. Now that
+            // the skybox is a flat color (see below) there's no photo detail left to soften,
+            // and there IS real geometry (the character) with edges worth smoothing, so
+            // temporal AA replaces the flat NONE from before.
             view->setAntiAliasing(AntiAliasing::NONE);
+            TemporalAntiAliasingOptions taaOptions;
+            taaOptions.enabled = true;
+            view->setTemporalAntiAliasingOptions(taaOptions);
+
+            // Subtle bloom on overbright highlights (the sky/IBL reflections) - strength is
+            // deliberately low so it reads as a glow, not a haze over the whole frame.
+            BloomOptions bloomOptions;
+            bloomOptions.enabled = true;
+            bloomOptions.strength = 0.08f;
+            view->setBloomOptions(bloomOptions);
+
+            // Screen-space ambient occlusion: mainly grounds the character against the
+            // plane with contact shadowing that the single IBL alone doesn't provide.
+            AmbientOcclusionOptions aoOptions;
+            aoOptions.enabled = true;
+            view->setAmbientOcclusionOptions(aoOptions);
+
+            // Depth of field and explicit color-grading/tonemapper tuning are deliberately
+            // left out here - both need a scene-specific reference point (DoF wants a fixed
+            // focus subject/distance, which a free-fly camera doesn't have; color grading is
+            // an art-direction pass, not a flip-a-switch default) rather than a safe default.
 
             // Replace the HDRI's photographic background with a plain clear-sky color.
             // Config::iblDirectory still loads that HDRI for indirect lighting (ambient/

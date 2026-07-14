@@ -45,9 +45,20 @@ cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel
 ```
 
-This produces `build/Dante.exe` (Windows) or `build/Dante` (Linux/macOS). Run it
-directly — there's no install step. Swap `Release` for `Debug` for an unoptimized
-build with debug symbols; everything else about the command is identical.
+Swap `Release` for `Debug` for an unoptimized build with debug symbols; everything
+else about the command is identical.
+
+### Running
+
+With the Ninja generator above, the build produces a single binary directly in
+`build/`: run `build/Dante.exe` (Windows) or `build/Dante` (Linux/macOS) — no install
+step, just run it from wherever it landed. A window opens immediately; there's no
+launch config or command-line arguments to pass.
+
+If you instead opened the folder in Visual Studio/Xcode or configured with a
+multi-config generator (e.g. `-G "Visual Studio 17 2022"`), the binary lands one
+level deeper, in a config-named subfolder: `build/Release/Dante.exe` or
+`build/Debug/Dante.exe` — match whichever `--config` you built with.
 
 ## Daily workflow
 
@@ -56,10 +67,10 @@ is fast, because Ninja only recompiles what changed:
 
 1. Edit `src/main.cpp` (or whatever you're working on).
 2. `cmake --build build --parallel` — seconds, not minutes, once the first build is done.
-3. Run `build/Dante.exe` (or `build/Dante` on Linux/macOS) straight from the build
-   folder. Assets load from the source tree, not a copy in `build/` — `DANTE_ASSETS_DIR`
-   points straight at `assets/` in dev builds, so editing a model or HDRI and
-   relaunching picks it up immediately, no rebuild, no copying.
+3. Run the binary straight from the build folder (see [Running](#running) above for
+   exactly where it lands). Assets load from the source tree, not a copy in `build/` —
+   `DANTE_ASSETS_DIR` points straight at `assets/` in dev builds, so editing a model or
+   HDRI and relaunching picks it up immediately, no rebuild, no copying.
 4. Watch stderr. `[Dante] ...` lines (glTF entity/animation counts, bounding boxes on
    load) are Dante's own logging — check there first if a model loads invisibly or
    looks wrong. Filament/gltfio print their own diagnostics the same way.
