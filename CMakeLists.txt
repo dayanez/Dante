@@ -32,3 +32,4 @@ add_subdirectory(third_party/filament)
 
 add_executable(Dante src/main.cpp)
 target_link_libraries(Dante PRIVATE filamentapp)
+target_compile_definitions(Dante PRIVATE DANTE_ASSETS_DIR="${CMAKE_SOURCE_DIR}/assets")
