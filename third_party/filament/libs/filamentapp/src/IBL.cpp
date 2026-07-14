@@ -28,6 +28,8 @@
 #include <filament/Texture.h>
 
 #include <utils/Log.h>
+
+#include <algorithm>
 #include <utils/Path.h>
 
 #include <filament-iblprefilter/IBLPrefilterContext.h>
@@ -124,7 +126,23 @@ bool IBL::loadFromEquirect(Path const& path) {
     IBLPrefilterContext::SpecularFilter specularFilter(context);
     IBLPrefilterContext::IrradianceFilter irradianceFilter(context);
 
-    mSkyboxTexture = equirectangularToCubemap(equirect);
+    // Dante deviation from upstream Filament: EquirectangularToCubemap defaults to a
+    // hardcoded 256x256 cubemap when no output texture is passed in, which is fine for
+    // indirect lighting (irradiance/specular are blurred by roughness anyway) but reads as
+    // a visibly blurry skybox background on a directly-visible source like this. Build an
+    // explicit cubemap sized off the source equirect instead (capped at 2048, since faces
+    // larger than the source resolution buy nothing).
+    Texture* const skyboxCube = Texture::Builder()
+            .sampler(Texture::Sampler::SAMPLER_CUBEMAP)
+            .format(Texture::InternalFormat::R11F_G11F_B10F)
+            .usage(Texture::Usage::COLOR_ATTACHMENT | Texture::Usage::SAMPLEABLE |
+                    Texture::Usage::GEN_MIPMAPPABLE)
+            .width(std::min(2048u, (uint32_t)w / 2))
+            .height(std::min(2048u, (uint32_t)w / 2))
+            .levels(0xff)
+            .build(mEngine);
+
+    mSkyboxTexture = equirectangularToCubemap(equirect, skyboxCube);
 
     mEngine.destroy(equirect);
 

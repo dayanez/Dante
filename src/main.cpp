@@ -75,10 +75,13 @@ struct GroundPlane {
                 IndexBuffer::BufferDescriptor(indices, sizeof(indices), nullptr));
 
         materialInstance = material->createInstance();
-        materialInstance->setParameter("baseColor", RgbType::LINEAR, float3{0.6f, 0.6f, 0.6f});
+        // A light, fully-rough gray reads as near-white under this HDRI's daylight-level
+        // ambient (~30,000 lux) once tonemapped, which looked like a blown-out white slab
+        // rather than a platform. Darker and slightly less rough reads as concrete/stone.
+        materialInstance->setParameter("baseColor", RgbType::LINEAR, float3{0.2f, 0.19f, 0.18f});
         materialInstance->setParameter("metallic", 0.0f);
-        materialInstance->setParameter("roughness", 1.0f);
-        materialInstance->setParameter("reflectance", 0.3f);
+        materialInstance->setParameter("roughness", 0.8f);
+        materialInstance->setParameter("reflectance", 0.04f);
 
         entity = utils::EntityManager::get().create();
         RenderableManager::Builder(1)

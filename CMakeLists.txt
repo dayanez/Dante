@@ -33,3 +33,13 @@ add_subdirectory(third_party/filament)
 add_executable(Dante src/main.cpp)
 target_link_libraries(Dante PRIVATE filamentapp)
 target_compile_definitions(Dante PRIVATE DANTE_ASSETS_DIR="${CMAKE_SOURCE_DIR}/assets")
+
+if (WIN32)
+    # MSVC already auto-generates and embeds its own manifest resource for the exe;
+    # /MANIFESTINPUT merges our DPI-awareness declaration into that instead of adding a
+    # second MANIFEST resource (which fails to link with a duplicate-resource error).
+    # Without this, Dante.exe isn't marked DPI-aware, so Windows renders it at a
+    # virtualized resolution and stretches the whole window to fit the display's scaling -
+    # blurring both the 3D content and the UI uniformly.
+    target_link_options(Dante PRIVATE "/MANIFESTINPUT:${CMAKE_SOURCE_DIR}/src/app.manifest")
+endif()
