@@ -49,19 +49,50 @@ This produces `build/Dante.exe` (Windows) or `build/Dante` (Linux/macOS). Run it
 directly — there's no install step. Swap `Release` for `Debug` for an unoptimized
 build with debug symbols; everything else about the command is identical.
 
-### Day-to-day development
+## Daily workflow
 
-- Re-running `cmake --build build --parallel` after editing `src/main.cpp` only
-  recompiles what changed — no need to reconfigure unless you touch `CMakeLists.txt`
-  or add new source files.
-- Assets are loaded from the source tree at runtime, not copied into `build/`
-  (`DANTE_ASSETS_DIR` in `CMakeLists.txt` points straight at `assets/`) — editing a
-  model or HDRI and relaunching `Dante` picks it up with no rebuild required.
-- Add `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` to the configure step if your editor wants
-  a `compile_commands.json` for clangd/IntelliSense.
-- `[Dante] ...` lines on stderr (e.g. glTF entity/animation counts, bounding boxes on
-  load) are Dante's own logging — check there first if a model loads invisibly or
-  looks wrong.
+The first configure+build is slow (Filament is a lot of C++). Every build after that
+is fast, because Ninja only recompiles what changed:
+
+1. Edit `src/main.cpp` (or whatever you're working on).
+2. `cmake --build build --parallel` — seconds, not minutes, once the first build is done.
+3. Run `build/Dante.exe` (or `build/Dante` on Linux/macOS) straight from the build
+   folder. Assets load from the source tree, not a copy in `build/` — `DANTE_ASSETS_DIR`
+   points straight at `assets/` in dev builds, so editing a model or HDRI and
+   relaunching picks it up immediately, no rebuild, no copying.
+4. Watch stderr. `[Dante] ...` lines (glTF entity/animation counts, bounding boxes on
+   load) are Dante's own logging — check there first if a model loads invisibly or
+   looks wrong. Filament/gltfio print their own diagnostics the same way.
+5. Only reconfigure (step 0, re-run the `cmake -B build ...` command) when you touch
+   `CMakeLists.txt` or add/remove a source file — routine edits never need it.
+
+You never need to reconfigure just to test a change to `assets/` or `src/main.cpp`.
+Add `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` to the configure step once if your editor
+wants a `compile_commands.json` for clangd/IntelliSense.
+
+## Sharing a build
+
+To hand someone a working copy of Dante without them building it themselves:
+
+1. `cmake --build build --config Release --parallel` (or reconfigure with
+   `-DCMAKE_BUILD_TYPE=Release` first if your existing `build/` is a Debug config).
+2. Make a folder containing `build/Dante.exe` **and** a copy of the whole `assets/`
+   folder next to it (same directory, not nested):
+   ```
+   Dante/
+     Dante.exe
+     assets/
+       environments/...
+       models/...
+   ```
+   Dante checks for an `assets/` folder next to the executable first, and only falls
+   back to the compile-time dev path (your machine's source tree, which won't exist on
+   theirs) if that's missing — so this layout is what makes it portable.
+3. Zip that folder and send it. On Windows nothing else needs installing — the MSVC
+   runtime is statically linked in. The recipient does need a GPU with Vulkan support
+   (Windows/Linux) or a Mac (Metal) — practically any GPU from the last several years
+   with an up-to-date driver already has the Vulkan loader, so this is rarely an issue
+   in practice, but it's the one real requirement.
 
 ## Adding content
 

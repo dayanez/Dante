@@ -51,14 +51,23 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install ninja
 
+      - name: Set up MSVC dev environment
+        if: runner.os == 'Windows'
+        # cl.exe isn't reliably on PATH by default on windows-latest - without this,
+        # CMake's compiler auto-detection falls through to the MinGW g++ under
+        # C:\mingw64 that the runner image also ships, which engine/CMakeLists.txt
+        # explicitly rejects ("Detected CXX compiler GNU is unsupported"). This puts
+        # MSVC's cl.exe/link.exe first on PATH for the rest of the job, deterministically
+        # (not relying on whatever setup-vulkan-sdk happens to leave behind).
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Configure
-        # Ninja everywhere, not the VS generator: setup-vulkan-sdk's Windows path runs
-        # gha-setup-vsdevenv, which exports a vcvarsall-style dev environment (cl.exe on
-        # PATH, INCLUDE/LIB set) into GITHUB_ENV for the rest of the job. CMake's own
-        # "Visual Studio 17 2022" generator can't run inside that pre-initialized
-        # environment - it does its own MSBuild/instance detection and fails with
-        # "could not find any instance of Visual Studio". Ninja + cl.exe (already on
-        # PATH from the dev shell) sidesteps that entirely.
+        # Ninja everywhere, not the VS generator: CMake's "Visual Studio 17 2022"
+        # generator does its own MSBuild/instance discovery and doesn't play well
+        # once a dev-shell environment (see above) is already active - it fails with
+        # "could not find any instance of Visual Studio". Ninja + cl.exe sidesteps that.
         run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 
       - name: Build

@@ -235,11 +235,23 @@ struct CharacterModel {
 
 CharacterModel g_character;
 
+// DANTE_ASSETS_DIR is baked in at compile time as this machine's source tree path, which
+// only exists on the machine that built it - convenient in dev (edit assets, relaunch, no
+// rebuild) but useless for a binary handed to someone else. If an "assets" folder sits next
+// to the executable instead (i.e. Dante.exe was shipped alongside one, see README), prefer
+// that; otherwise fall back to the baked dev path.
+utils::Path resolveAssetsDir() {
+    utils::Path portable = utils::Path::getCurrentExecutable().getParent() + "assets";
+    return portable.exists() ? portable : utils::Path(DANTE_ASSETS_DIR);
+}
+
 } // namespace
 
 // M4: an animated glTF character (see CharacterModel), on top of the M2 skybox/ground
 // plane/camera/FPS overlay.
 int main() {
+    utils::Path const assetsDir = resolveAssetsDir();
+
     Config config;
     config.title = "Dante";
 #if defined(__APPLE__)
@@ -247,12 +259,12 @@ int main() {
 #else
     config.backend = Engine::Backend::VULKAN;
 #endif
-    config.iblDirectory = DANTE_ASSETS_DIR "/environments/flower_road_2k.hdr";
+    config.iblDirectory = (assetsDir + "environments/flower_road_2k.hdr").getAbsolutePath();
     config.cameraMode = camutils::Mode::FREE_FLIGHT;
 
     FilamentApp::get().run(
         config,
-        [](Engine* engine, View* view, Scene* scene) {
+        [assetsDir](Engine* engine, View* view, Scene* scene) {
             // Filament's View defaults to FXAA, a screen-space technique that softens the
             // whole frame (not just jagged edges) - noticeable here since the skybox is
             // meant to read as a sharp photo. MSAA (edges only) can come back later once
@@ -274,7 +286,7 @@ int main() {
             g_ground.create(*engine, FilamentApp::get().getDefaultMaterial());
             scene->addEntity(g_ground.entity);
 
-            g_character.create(*engine, *scene, DANTE_ASSETS_DIR "/models/character/ch15_firing.glb");
+            g_character.create(*engine, *scene, assetsDir + "models/character/ch15_firing.glb");
 
             // Advance the character's animation each frame.
             FilamentApp::get().animate([](Engine*, View*, double now) {
