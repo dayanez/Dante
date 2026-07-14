@@ -6,6 +6,7 @@
 #include <filament/MaterialInstance.h>
 #include <filament/RenderableManager.h>
 #include <filament/Scene.h>
+#include <filament/Skybox.h>
 #include <filament/TransformManager.h>
 #include <filament/VertexBuffer.h>
 #include <filament/View.h>
@@ -52,8 +53,10 @@ std::vector<uint8_t> readFile(utils::Path const& path) {
 
 namespace {
 
-// A flat 40x40 quad on the XZ plane. Lit shading needs a packed tangent-frame quaternion
-// (not just a raw normal) per vertex, which SurfaceOrientation computes for us.
+// A flat 16x16 "stage" quad on the XZ plane, small enough that its edges stay in view
+// against the sky instead of reading as an endless ground plane. Lit shading needs a
+// packed tangent-frame quaternion (not just a raw normal) per vertex, which
+// SurfaceOrientation computes for us.
 struct GroundPlane {
     VertexBuffer* vertexBuffer = nullptr;
     IndexBuffer* indexBuffer = nullptr;
@@ -64,10 +67,10 @@ struct GroundPlane {
         // Sits below the camera manipulator's default eye height (y=0) so it's visible
         // below the horizon rather than edge-on to it.
         static const float3 positions[] = {
-            {-20, -1.6f, -20},
-            { 20, -1.6f, -20},
-            {-20, -1.6f,  20},
-            { 20, -1.6f,  20},
+            {-8, -1.0f, -8},
+            { 8, -1.0f, -8},
+            {-8, -1.0f,  8},
+            { 8, -1.0f,  8},
         };
         static const float3 normals[] = { {0, 1, 0}, {0, 1, 0}, {0, 1, 0}, {0, 1, 0} };
         // Winding matters here: aiDefaultMat (lit) uses Filament's default backface culling,
@@ -117,7 +120,7 @@ struct GroundPlane {
 
         entity = utils::EntityManager::get().create();
         RenderableManager::Builder(1)
-                .boundingBox({{0, -1.6f, 0}, {20, 0.01f, 20}})
+                .boundingBox({{0, -1.0f, 0}, {8, 0.01f, 8}})
                 .material(0, materialInstance)
                 .geometry(0, RenderableManager::PrimitiveType::TRIANGLES, vertexBuffer, indexBuffer, 0, 6)
                 .culling(false)
@@ -137,6 +140,7 @@ struct GroundPlane {
 };
 
 GroundPlane g_ground;
+Skybox* g_skybox = nullptr;
 
 // A static glTF prop loaded via gltfio. Animation comes in M4 - this milestone is about
 // proving the model-loading path end to end (buffers, textures, materials, placement).
@@ -206,11 +210,11 @@ struct RifleModel {
         // The rifle's own origin sits near its geometric center and the default camera
         // starts at world origin looking toward -Z (FilamentApp's manipulator targetPosition
         // is (0,0,-4)) - move it a few meters down that sightline and rest it on the ground
-        // plane (top surface at y=-1.6) using the bounding box's min.y.
+        // plane (top surface at y=-1.0) using the bounding box's min.y.
         auto& tm = engine.getTransformManager();
         auto root = tm.getInstance(asset->getRoot());
-        float restY = -1.6f - asset->getBoundingBox().min.y;
-        tm.setTransform(root, mat4f::translation(float3{0, restY, -4}));
+        float restY = -1.0f - asset->getBoundingBox().min.y;
+        tm.setTransform(root, mat4f::translation(float3{0, restY, -2}));
 
         fprintf(stderr, "[Dante] loaded %s: %zu entities, bbox min=(%.3f,%.3f,%.3f) max=(%.3f,%.3f,%.3f)\n",
                 gltfPath.c_str(), asset->getEntityCount(),
@@ -252,6 +256,13 @@ int main() {
             // there's real geometry with edges worth smoothing; for now, off entirely.
             view->setAntiAliasing(AntiAliasing::NONE);
 
+            // Replace the HDRI's photographic background with a plain clear-sky color.
+            // Config::iblDirectory still loads that HDRI for indirect lighting (ambient/
+            // reflections), which we keep - only the visible skybox is swapped out here,
+            // since Scene's skybox and indirect light are independent of each other.
+            g_skybox = Skybox::Builder().color({0.15f, 0.4f, 0.85f, 1.0f}).build(*engine);
+            scene->setSkybox(g_skybox);
+
             // Note: FilamentApp::doFrame() re-derives Camera::lookAt() from the camera
             // manipulator every frame, so a one-time Camera::lookAt() call here would be
             // overwritten on the next frame - the manipulator's own state is what actually
@@ -266,6 +277,7 @@ int main() {
             g_rifle.destroy(*engine, *scene);
             scene->remove(g_ground.entity);
             g_ground.destroy(*engine);
+            engine->destroy(g_skybox);
         },
         [](Engine*, View*) {
             ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
