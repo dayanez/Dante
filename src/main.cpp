@@ -6,17 +6,49 @@
 #include <filament/MaterialInstance.h>
 #include <filament/RenderableManager.h>
 #include <filament/Scene.h>
+#include <filament/TransformManager.h>
 #include <filament/VertexBuffer.h>
 #include <filament/View.h>
 
+#include <backend/BufferDescriptor.h>
+
 #include <geometry/SurfaceOrientation.h>
 
+#include <gltfio/AssetLoader.h>
+#include <gltfio/FilamentAsset.h>
+#include <gltfio/MaterialProvider.h>
+#include <gltfio/ResourceLoader.h>
+#include <gltfio/TextureProvider.h>
+
 #include <utils/EntityManager.h>
+#include <utils/Path.h>
 
 #include <imgui.h>
 
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <vector>
+
 using namespace filament;
 using namespace filament::math;
+
+namespace {
+
+std::vector<uint8_t> readFile(utils::Path const& path) {
+    std::ifstream file(path.getAbsolutePath(), std::ios::binary | std::ios::ate);
+    if (!file) {
+        fprintf(stderr, "[Dante] failed to open %s\n", path.getAbsolutePath().c_str());
+        return {};
+    }
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    std::vector<uint8_t> data(size);
+    file.read(reinterpret_cast<char*>(data.data()), size);
+    return data;
+}
+
+} // namespace
 
 namespace {
 
@@ -106,11 +138,104 @@ struct GroundPlane {
 
 GroundPlane g_ground;
 
+// A static glTF prop loaded via gltfio. Animation comes in M4 - this milestone is about
+// proving the model-loading path end to end (buffers, textures, materials, placement).
+struct RifleModel {
+    gltfio::AssetLoader* loader = nullptr;
+    gltfio::MaterialProvider* materials = nullptr;
+    gltfio::TextureProvider* textureDecoder = nullptr;
+    gltfio::ResourceLoader* resourceLoader = nullptr;
+    gltfio::FilamentAsset* asset = nullptr;
+
+    void create(Engine& engine, Scene& scene, utils::Path const& gltfPath) {
+        materials = gltfio::createJitShaderProvider(&engine);
+        loader = gltfio::AssetLoader::create({ &engine, materials });
+
+        std::vector<uint8_t> gltfContent = readFile(gltfPath);
+        asset = loader->createAsset(gltfContent.data(), (uint32_t)gltfContent.size());
+        if (!asset) {
+            fprintf(stderr, "[Dante] failed to parse glTF: %s\n", gltfPath.c_str());
+            return;
+        }
+
+        textureDecoder = gltfio::createStbProvider(&engine);
+        gltfio::ResourceConfiguration resourceConfig{};
+        resourceConfig.engine = &engine;
+        resourceConfig.normalizeSkinningWeights = true;
+        // Despite being marked deprecated, this is still what ResourceLoader actually uses
+        // to resolve the external .bin buffer on desktop (GLTFIO_USE_FILESYSTEM=1): buffer
+        // loading goes straight through cgltf's own file reader keyed off this path, and
+        // never consults the addResourceData cache below at all (that cache is genuinely
+        // only used for external textures, which do check it first). Omitting this produced
+        // gltfio's "Unable to load resources" error - the mesh geometry itself never loaded.
+        resourceConfig.gltfPath = gltfPath.c_str();
+        resourceLoader = new gltfio::ResourceLoader(resourceConfig);
+        resourceLoader->addTextureProvider("image/jpeg", textureDecoder);
+        resourceLoader->addTextureProvider("image/png", textureDecoder);
+
+        // External textures are still supplied manually via addResourceData rather than
+        // relying on gltfio's filesystem fallback for them (see comment above - that path
+        // is real but deprecated/noisy, and this is the same data we're reading anyway).
+        utils::Path baseDir = gltfPath.getParent();
+        size_t uriCount = asset->getResourceUriCount();
+        const char* const* uris = asset->getResourceUris();
+        for (size_t i = 0; i < uriCount; i++) {
+            std::vector<uint8_t> data = readFile(baseDir + uris[i]);
+            auto* buf = new uint8_t[data.size()];
+            memcpy(buf, data.data(), data.size());
+            resourceLoader->addResourceData(uris[i],
+                    backend::BufferDescriptor(buf, data.size(),
+                            [](void* b, size_t, void*) { delete[] static_cast<uint8_t*>(b); }));
+        }
+
+        resourceLoader->loadResources(asset);
+        asset->releaseSourceData();
+
+        // Same visibility-layer requirement as the hand-built ground plane (see its comment) -
+        // gltfio-created renderables default to layer 0x1 too.
+        auto& rm = engine.getRenderableManager();
+        for (size_t i = 0, n = asset->getEntityCount(); i < n; i++) {
+            auto instance = rm.getInstance(asset->getEntities()[i]);
+            if (instance) {
+                rm.setLayerMask(instance, 0x4, 0x4);
+            }
+        }
+
+        scene.addEntities(asset->getEntities(), asset->getEntityCount());
+
+        // The rifle's own origin sits near its geometric center and the default camera
+        // starts at world origin looking toward -Z (FilamentApp's manipulator targetPosition
+        // is (0,0,-4)) - move it a few meters down that sightline and rest it on the ground
+        // plane (top surface at y=-1.6) using the bounding box's min.y.
+        auto& tm = engine.getTransformManager();
+        auto root = tm.getInstance(asset->getRoot());
+        float restY = -1.6f - asset->getBoundingBox().min.y;
+        tm.setTransform(root, mat4f::translation(float3{0, restY, -4}));
+
+        fprintf(stderr, "[Dante] loaded %s: %zu entities, bbox min=(%.3f,%.3f,%.3f) max=(%.3f,%.3f,%.3f)\n",
+                gltfPath.c_str(), asset->getEntityCount(),
+                asset->getBoundingBox().min.x, asset->getBoundingBox().min.y, asset->getBoundingBox().min.z,
+                asset->getBoundingBox().max.x, asset->getBoundingBox().max.y, asset->getBoundingBox().max.z);
+    }
+
+    void destroy(Engine& engine, Scene& scene) {
+        if (!asset) return;
+        scene.removeEntities(asset->getEntities(), asset->getEntityCount());
+        loader->destroyAsset(asset);
+        materials->destroyMaterials();
+        delete materials;
+        delete textureDecoder;
+        delete resourceLoader;
+        gltfio::AssetLoader::destroy(&loader);
+    }
+};
+
+RifleModel g_rifle;
+
 } // namespace
 
-// M2: skybox (IBL from a CC0 HDRI, loaded automatically by FilamentApp via
-// Config::iblDirectory), a lit ground plane, a free-flying camera, and an FPS counter
-// drawn through filagui. Animated models come in M4.
+// M3: a static glTF prop (the rifle) loaded via gltfio, on top of the M2 skybox/ground
+// plane/camera/FPS overlay. Animated models come in M4.
 int main() {
     Config config;
     config.title = "Dante";
@@ -120,7 +245,13 @@ int main() {
 
     FilamentApp::get().run(
         config,
-        [](Engine* engine, View*, Scene* scene) {
+        [](Engine* engine, View* view, Scene* scene) {
+            // Filament's View defaults to FXAA, a screen-space technique that softens the
+            // whole frame (not just jagged edges) - noticeable here since the skybox is
+            // meant to read as a sharp photo. MSAA (edges only) can come back later once
+            // there's real geometry with edges worth smoothing; for now, off entirely.
+            view->setAntiAliasing(AntiAliasing::NONE);
+
             // Note: FilamentApp::doFrame() re-derives Camera::lookAt() from the camera
             // manipulator every frame, so a one-time Camera::lookAt() call here would be
             // overwritten on the next frame - the manipulator's own state is what actually
@@ -128,8 +259,11 @@ int main() {
             // below the manipulator's default eye height instead (see GroundPlane::create).
             g_ground.create(*engine, FilamentApp::get().getDefaultMaterial());
             scene->addEntity(g_ground.entity);
+
+            g_rifle.create(*engine, *scene, DANTE_ASSETS_DIR "/models/rifle/bolt_action_rifle_7_62_4k.gltf");
         },
         [](Engine* engine, View*, Scene* scene) {
+            g_rifle.destroy(*engine, *scene);
             scene->remove(g_ground.entity);
             g_ground.destroy(*engine);
         },
