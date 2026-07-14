@@ -9,7 +9,7 @@ if (WIN32)
     # Filament links its own libraries against the static CRT (see its add_compile_options
     # use of /MT, /MTd) and, for Debug builds, disables STL iterator debug checks for
     # compile-time reasons (/D_ITERATOR_DEBUG_LEVEL=0, see FILAMENT_SHORTEN_MSVC_COMPILATION
-    # in third_party/filament/CMakeLists.txt). Both settings are scoped to Filament's own
+    # in engine/CMakeLists.txt). Both settings are scoped to Filament's own
     # subdirectory tree and don't reach targets created in this parent scope, so they must
     # be matched here or the two ABI-relevant settings disagree at link time (LNK2038/1319).
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
@@ -34,10 +34,10 @@ set(FILAMENT_SUPPORTS_WEBGPU OFF CACHE BOOL "" FORCE)
 
 # Skip Filament's own ~20 sample programs (materials/, gltf_viewer/, etc.) - Dante only
 # needs the filamentapp *library* they share, which is patched to still build (see
-# third_party/filament/libs/filamentapp/CMakeLists.txt).
+# engine/libs/filamentapp/CMakeLists.txt).
 set(FILAMENT_SKIP_SAMPLES ON CACHE BOOL "" FORCE)
 
-add_subdirectory(third_party/filament)
+add_subdirectory(engine)
 
 add_executable(Dante src/main.cpp)
 target_link_libraries(Dante PRIVATE filamentapp gltfio)

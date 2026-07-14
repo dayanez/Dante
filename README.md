@@ -10,12 +10,19 @@ tooling Dante doesn't use.
 ## Credit
 
 Dante vendors a trimmed copy of [google/filament](https://github.com/google/filament)
-(pinned to `v1.74.0`) under `third_party/filament/`, licensed under the
-[Apache License 2.0](third_party/filament/LICENSE). All credit for the rendering core,
+(pinned to `v1.74.0`) under `engine/`, licensed under the
+[Apache License 2.0](engine/LICENSE). All credit for the rendering core,
 `gltfio`, `camutils`, `filagui`, and `filamentapp` goes to Google and the Filament
-contributors. See `third_party/filament/AUTHORS` and the original project for details.
+contributors. See `engine/AUTHORS` and the original project for details.
 This is not a fork of Filament — Dante is a separate project with its own history that
 imports Filament's source as a vendored, trimmed dependency.
+
+## License
+
+Dante's own code and assets are proprietary — all rights reserved, see
+[LICENSE](LICENSE). The vendored copy of Filament under `engine/`
+remains under its own Apache License 2.0 regardless (see Credit above); that
+license can't be narrowed or superseded by Dante's.
 
 ## Status
 
