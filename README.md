@@ -1,19 +1,6 @@
 # Dante
 
-A lean, cross-platform (Windows / Linux / macOS), graphics-first rendering engine.
-Built on top of [Filament](https://github.com/google/filament), Google's real-time
-physically based rendering engine, trimmed down to just the pieces needed for a
-windowed PBR renderer: skybox/IBL, glTF loading with skeletal animation, a movable
-camera, and bloom/SSAO post-processing — without the platforms, samples, tests, and
-tooling Dante doesn't use.
-
-## Status
-
-Early scaffolding — see the project plan for the current milestone. There's no
-data-driven asset list, editor, or scene format yet: `src/main.cpp` is one hand-written
-file that sets up the camera, skybox, ground plane, and a single animated character.
-Adding content today means editing that file, not dropping files into a folder (see
-[Adding content](#adding-content) below).
+A lean, cross-platform graphics-first rendering engine.
 
 ## Building
 
@@ -28,7 +15,7 @@ Adding content today means editing that file, not dropping files into a folder (
 
 - **Windows**: install the [Vulkan SDK](https://vulkan.lunarg.com/) (its installer sets
   `VULKAN_SDK` for you), then build from an **x64 Native Tools Command Prompt for VS
-  2022** (or run `vcvarsall.bat x64` first) — the Ninja generator needs `cl.exe` on
+  2022** (or run `vcvarsall.bat x64` first) the Ninja generator needs `cl.exe` on
   `PATH`, it doesn't discover MSVC on its own the way the Visual Studio generator does.
   Opening the folder directly in Visual Studio or CLion via their built-in CMake
   integration also works and manages this for you automatically.
@@ -51,14 +38,14 @@ else about the command is identical.
 ### Running
 
 With the Ninja generator above, the build produces a single binary directly in
-`build/`: run `build/Dante.exe` (Windows) or `build/Dante` (Linux/macOS) — no install
+`build/`: run `build/Dante.exe` (Windows) or `build/Dante` (Linux/macOS) no install
 step, just run it from wherever it landed. A window opens immediately; there's no
 launch config or command-line arguments to pass.
 
 If you instead opened the folder in Visual Studio/Xcode or configured with a
 multi-config generator (e.g. `-G "Visual Studio 17 2022"`), the binary lands one
 level deeper, in a config-named subfolder: `build/Release/Dante.exe` or
-`build/Debug/Dante.exe` — match whichever `--config` you built with.
+`build/Debug/Dante.exe` match whichever `--config` you built with.
 
 ## Daily workflow
 
@@ -66,16 +53,16 @@ The first configure+build is slow (Filament is a lot of C++). Every build after 
 is fast, because Ninja only recompiles what changed:
 
 1. Edit `src/main.cpp` (or whatever you're working on).
-2. `cmake --build build --parallel` — seconds, not minutes, once the first build is done.
+2. `cmake --build build --parallel` seconds, not minutes, once the first build is done.
 3. Run the binary straight from the build folder (see [Running](#running) above for
    exactly where it lands). Assets load from the source tree, not a copy in `build/` —
    `DANTE_ASSETS_DIR` points straight at `assets/` in dev builds, so editing a model or
    HDRI and relaunching picks it up immediately, no rebuild, no copying.
 4. Watch stderr. `[Dante] ...` lines (glTF entity/animation counts, bounding boxes on
-   load) are Dante's own logging — check there first if a model loads invisibly or
+   load) are Dante's own logging check there first if a model loads invisibly or
    looks wrong. Filament/gltfio print their own diagnostics the same way.
 5. Only reconfigure (step 0, re-run the `cmake -B build ...` command) when you touch
-   `CMakeLists.txt` or add/remove a source file — routine edits never need it.
+   `CMakeLists.txt` or add/remove a source file routine edits never need it.
 
 You never need to reconfigure just to test a change to `assets/` or `src/main.cpp`.
 Add `-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` to the configure step once if your editor
@@ -98,22 +85,22 @@ To hand someone a working copy of Dante without them building it themselves:
    ```
    Dante checks for an `assets/` folder next to the executable first, and only falls
    back to the compile-time dev path (your machine's source tree, which won't exist on
-   theirs) if that's missing — so this layout is what makes it portable.
-3. Zip that folder and send it. On Windows nothing else needs installing — the MSVC
+   theirs) if that's missing so this layout is what makes it portable.
+3. Zip that folder and send it. On Windows nothing else needs installing the MSVC
    runtime is statically linked in. The recipient does need a GPU with Vulkan support
-   (Windows/Linux) or a Mac (Metal) — practically any GPU from the last several years
+   (Windows/Linux) or a Mac (Metal) practically any GPU from the last several years
    with an up-to-date driver already has the Vulkan loader, so this is rarely an issue
    in practice, but it's the one real requirement.
 
 ## Adding content
 
-There's no asset registry yet — everything below means editing `src/main.cpp`.
+There's no asset registry yet everything below means editing `src/main.cpp`.
 
 ### Environments (skybox / IBL)
 
 Drop an equirectangular `.hdr` or `.exr` into `assets/environments/` and point
 `Config::iblDirectory` (set in `main()`) at it. `FilamentApp` filters a single
-equirect image into a real-time IBL at load — no offline baking step required. (It
+equirect image into a real-time IBL at load no offline baking step required. (It
 also accepts a pre-baked `cmgen` output directory instead, if you want faster
 startup for a fixed environment, but that's not necessary to get going.)
 
@@ -130,7 +117,7 @@ Any static or animated glTF/GLB asset loads through the same pattern as
 asset has animations, `Animator`). To add another model, copy that struct's
 `create()`/`destroy()` shape, point it at a new file under `assets/models/<name>/`,
 and add/remove its entities from the `Scene` the same way. Only PNG/JPEG textures are
-wired up via `stb` right now — KTX2/Basis-compressed textures aren't hooked up.
+wired up via `stb` right now KTX2/Basis-compressed textures aren't hooked up.
 
 ### Animations
 
@@ -148,33 +135,22 @@ source's clip onto the character's armature frame-by-frame by matching bone name
 (plain Action reassignment doesn't reliably rebind across armatures in 4.4+'s Action
 Slots system), discards the animation source's own mesh/skeleton, and exports the
 character's mesh + skin + baked animation as one `.glb` with textures re-encoded as
-quality-80 JPEG (keeps file size sane — the source Mixamo PNGs are often 4K and
+quality-80 JPEG (keeps file size sane the source Mixamo PNGs are often 4K and
 lossless).
 
 ## Project layout
 
-- `src/` — Dante's own code.
-- `engine/` — vendored, trimmed [Filament](https://github.com/google/filament)
+- `src/` Dante's own code.
+- `engine/` vendored, trimmed [Filament](https://github.com/google/filament)
   (see [Credit](#credit)).
-- `assets/` — runtime content, referenced directly from the source tree.
-- `tools/` — offline content-pipeline scripts (currently: the Blender retargeting
+- `assets/` runtime content, referenced directly from the source tree.
+- `tools/` offline content-pipeline scripts (currently: the Blender retargeting
   script above).
-- `.github/workflows/` — CI matrix that verifies the CMake/compiler setup builds
+- `.github/workflows/` CI matrix that verifies the CMake/compiler setup builds
   cleanly on Windows, Linux, and macOS.
 
-## Credit
-
-Dante vendors a trimmed copy of [google/filament](https://github.com/google/filament)
-(pinned to `v1.74.0`) under `engine/`, licensed under the
-[Apache License 2.0](engine/LICENSE). All credit for the rendering core,
-`gltfio`, `camutils`, `filagui`, and `filamentapp` goes to Google and the Filament
-contributors. See `engine/AUTHORS` and the original project for details.
-This is not a fork of Filament — Dante is a separate project with its own history that
-imports Filament's source as a vendored, trimmed dependency.
 
 ## License
 
-Dante's own code and assets are proprietary — all rights reserved, see
-[LICENSE](LICENSE). The vendored copy of Filament under `engine/`
-remains under its own Apache License 2.0 regardless (see Credit above); that
-license can't be narrowed or superseded by Dante's.
+Dante's own code and assets are proprietary all rights reserved, see
+[LICENSE](LICENSE). 
