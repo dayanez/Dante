@@ -242,7 +242,11 @@ CharacterModel g_character;
 int main() {
     Config config;
     config.title = "Dante";
+#if defined(__APPLE__)
+    config.backend = Engine::Backend::METAL;
+#else
     config.backend = Engine::Backend::VULKAN;
+#endif
     config.iblDirectory = DANTE_ASSETS_DIR "/environments/flower_road_2k.hdr";
     config.cameraMode = camutils::Mode::FREE_FLIGHT;
 

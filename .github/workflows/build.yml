@@ -1,0 +1,63 @@
+name: build
+
+# M5: verify Dante actually compiles on Linux and macOS, not just Windows (the only
+# platform it's been built on directly so far). This does not run Dante - GitHub's
+# runners have no GPU - it only proves the CMake/compiler setup is sound per platform.
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: Windows (Vulkan)
+          - os: ubuntu-latest
+            name: Linux (Vulkan)
+          - os: macos-latest
+            name: macOS (Metal)
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Vulkan SDK
+        if: runner.os != 'macOS'
+        uses: humbletim/setup-vulkan-sdk@v1.2
+        with:
+          vulkan-query-version: latest
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 17
+          sudo apt-get install -y ninja-build libglu1-mesa-dev libc++-17-dev libc++abi-17-dev \
+              libxi-dev libxcomposite-dev libxxf86vm-dev
+          echo "CC=clang-17" >> "$GITHUB_ENV"
+          echo "CXX=clang++-17" >> "$GITHUB_ENV"
+
+      - name: Install macOS build dependencies
+        if: runner.os == 'macOS'
+        run: brew install ninja
+
+      - name: Configure (Windows)
+        if: runner.os == 'Windows'
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Configure (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release --parallel

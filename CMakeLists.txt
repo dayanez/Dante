@@ -18,8 +18,17 @@ endif()
 
 # --- Filament backend selection -------------------------------------------------------
 # Dante targets Windows/Linux via Vulkan and macOS via Metal. OpenGL and WebGPU are
-# dropped entirely (see README for rationale).
-set(FILAMENT_SUPPORTS_VULKAN ON CACHE BOOL "" FORCE)
+# dropped entirely (see README for rationale). This was previously forcing Vulkan ON
+# unconditionally, including on Apple - macOS has no native Vulkan (would need the
+# LunarG SDK's MoltenVK translation layer, which we don't want), so that would have
+# broken the very first macOS CI build this file exists to support.
+if (APPLE)
+    set(FILAMENT_SUPPORTS_VULKAN OFF CACHE BOOL "" FORCE)
+    set(FILAMENT_SUPPORTS_METAL ON CACHE BOOL "" FORCE)
+else()
+    set(FILAMENT_SUPPORTS_VULKAN ON CACHE BOOL "" FORCE)
+    set(FILAMENT_SUPPORTS_METAL OFF CACHE BOOL "" FORCE)
+endif()
 set(FILAMENT_SUPPORTS_OPENGL OFF CACHE BOOL "" FORCE)
 set(FILAMENT_SUPPORTS_WEBGPU OFF CACHE BOOL "" FORCE)
 
