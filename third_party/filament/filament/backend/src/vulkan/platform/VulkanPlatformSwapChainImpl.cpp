@@ -224,11 +224,20 @@ VkResult VulkanPlatformSurfaceSwapChain::create() {
     FILAMENT_CHECK_POSTCONDITION(surfaceFormat.format != VK_FORMAT_UNDEFINED)
             << "Cannot find suitable swapchain format";
 
-    // Verify that our chosen present mode is supported. In practice all devices support the FIFO
-    // mode, but we check for it anyway for completeness.  (and to avoid validation warnings)
-    VkPresentModeKHR const desiredPresentMode = VK_PRESENT_MODE_FIFO_KHR;
+    // Dante deviation from upstream Filament: prefer MAILBOX over FIFO. FIFO hard-caps
+    // submission to vsync (the app's frame loop blocks waiting for vblank, capping the FPS
+    // counter at the display refresh rate); MAILBOX lets the app render as fast as it can
+    // and only presents the newest complete frame at each vblank, so there's still no
+    // tearing, but the measured frame rate isn't artificially capped by present timing.
+    // Falls back to FIFO (guaranteed supported by the Vulkan spec) if a GPU lacks MAILBOX.
     FixedCapacityVector<VkPresentModeKHR> presentModes = fvkutils::enumerate(
             vkGetPhysicalDeviceSurfacePresentModesKHR, mPhysicalDevice, mSurface);
+
+    VkPresentModeKHR desiredPresentMode = VK_PRESENT_MODE_FIFO_KHR;
+    if (std::find(presentModes.begin(), presentModes.end(), VK_PRESENT_MODE_MAILBOX_KHR)
+            != presentModes.end()) {
+        desiredPresentMode = VK_PRESENT_MODE_MAILBOX_KHR;
+    }
 
     bool const foundSuitablePresentMode = std::find(presentModes.begin(), presentModes.end(),
                                             desiredPresentMode) != presentModes.end();
