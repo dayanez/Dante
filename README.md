@@ -58,6 +58,15 @@ binary lands one level deeper, in `build/Release/` or `build/Debug/`.)
    load) are Dante's own logging check there first if a model loads invisibly or
    looks wrong. Filament/gltfio print their own diagnostics the same way.
 
+**Quick reference — when do I need what:**
+
+| Change | Rebuild? | Command |
+|---|---|---|
+| Edit `src/main.cpp` | Yes | `cmake --build build --parallel` |
+| Add/edit a `.mat` shader | Yes (same command `matc` runs automatically) | `cmake --build build --parallel` |
+| Add/swap a model or asset (`assets/models`, `assets/environments`) | No just relaunch | `build\Dante.exe` |
+| Touch `CMakeLists.txt` / add or remove a source file | Yes reconfigure first | `cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release` then `cmake --build build --parallel` |
+
 **As this grows:** `main.cpp` is a single file today; once you're juggling more than a
 couple of objects/lights it's worth splitting into a few files (a scene wrapper, an
 input/camera controller) rather than letting one file keep growing a normal,
