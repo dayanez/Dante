@@ -67,6 +67,11 @@ No install step, no arguments. A window opens immediately.
 | Add or swap a model/asset | No, just relaunch | `build\Dante.exe` |
 | Touch `CMakeLists.txt` or add/remove a source file | Yes, reconfigure first | `cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release` then `cmake --build build --parallel` |
 
+When building it again use Dev cmd prompt 
+x64 Native Tools Command Prompt for VS 2022
+cd C:\Users\dommc\Dante
+cmake --build build
+
 ## Adding your own models
 
 Any static or animated glTF/GLB loads through the same pattern as `CharacterModel` in

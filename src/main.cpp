@@ -117,13 +117,11 @@ struct GroundPlane {
                 IndexBuffer::BufferDescriptor(indices, sizeof(indices), nullptr));
 
         materialInstance = material->createInstance();
-        // A light, fully-rough gray reads as near-white under this HDRI's daylight-level
-        // ambient (~30,000 lux) once tonemapped, which looked like a blown-out white slab
-        // rather than a platform. Darker and slightly less rough reads as concrete/stone.
-        materialInstance->setParameter("baseColor", RgbType::LINEAR, float3{0.2f, 0.19f, 0.18f});
+      
+        materialInstance->setParameter("baseColor", RgbType::LINEAR, float3{0.4f, 0.20f, 0.30f});
         materialInstance->setParameter("metallic", 0.0f);
-        materialInstance->setParameter("roughness", 0.8f);
-        materialInstance->setParameter("reflectance", 0.04f);
+        materialInstance->setParameter("roughness", .08f);
+        materialInstance->setParameter("reflectance", 0.08f);
 
         entity = utils::EntityManager::get().create();
         RenderableManager::Builder(1)
@@ -131,8 +129,6 @@ struct GroundPlane {
                 .material(0, materialInstance)
                 .geometry(0, RenderableManager::PrimitiveType::TRIANGLES, vertexBuffer, indexBuffer, 0, 6)
                 .culling(false)
-                // FilamentApp's main view calls setVisibleLayers(0x4, 0x4) - renderables
-                // default to a different layer and are silently invisible without this.
                 .layerMask(0x4, 0x4)
                 .build(engine, entity);
     }
@@ -239,6 +235,7 @@ struct CharacterModel {
     }
 };
 
+
 CharacterModel g_character;
 
 // DANTE_ASSETS_DIR is baked in at compile time as this machine's source tree path, which
@@ -294,29 +291,18 @@ int main() {
             aoOptions.enabled = true;
             view->setAmbientOcclusionOptions(aoOptions);
 
-            // f/8, 1/125s, ISO 100: two stops brighter than a literal sunny-16 exposure.
-            // Sunny-16 (f/16) is the textbook-correct exposure for direct real sunlight, but
-            // it read as near-silhouetted here - this character's materials (dark tactical
-            // gear, low base reflectance) don't have the wide dynamic range a real outdoor
-            // photo's mix of surfaces would, so the mathematically "correct" exposure just
-            // wasn't a good exposure for this particular scene. This aperture number is also
-            // what the depth-of-field cocScale below is keyed to - change one, change both.
-            view->getCamera().setExposure(8.0f, 1.0f / 125.0f, 100.0f);
+           //sunlight
+            view->getCamera().setExposure(20.0f, 10.0f / 200.0f, 125.0f);                                             //starts here 
 
-            // A shadow-casting sun. This is the only light in the scene besides the IBL -
-            // gltfio already sets castShadows/receiveShadows(true) on the character by
-            // default (see AssetLoader.cpp), and RenderableManager defaults receiveShadows
-            // to true, so the ground plane picks up the shadow with no extra code. Filament
-            // defaults to PCF shadow maps (View::setShadowType); soft/VSM shadows are a
-            // later tuning knob, not needed to get shadows working at all.
+                                               
             g_sun = utils::EntityManager::get().create();
             LightManager::Builder(LightManager::Type::SUN)
                     .color({0.98f, 0.95f, 0.92f})
                     .intensity(100000.0f) // lux - real midday sun, matches the sunny-16 exposure above
                     .direction(normalize(float3{-0.6f, -1.0f, -0.75f}))
                     .castShadows(true)
-                    .sunAngularRadius(0.545f) // real sun's angular size in degrees
-                    .build(*engine, g_sun);
+                    .sunAngularRadius(0.6f) // real sun's angular size in degrees                                  //ends here |need to adjust this so it isn't bright af|
+                    .build(*engine, g_sun); 
             scene->addEntity(g_sun);
 
             // ACES tone mapping instead of Filament's default (ACESLegacyToneMapper) - a
@@ -340,7 +326,7 @@ int main() {
             // tuning once you're driving the camera yourself.
             view->getCamera().setFocusDistance(3.0f);
             DepthOfFieldOptions dofOptions;
-            dofOptions.enabled = true;
+            dofOptions.enabled = false;
             dofOptions.cocScale = 2.0f / 1.6f;
             view->setDepthOfFieldOptions(dofOptions);
 
@@ -350,8 +336,8 @@ int main() {
             // (fogColorFromIbl) keeps it consistent with whatever environment is loaded.
             FogOptions fogOptions;
             fogOptions.enabled = false;
-            fogOptions.distance = 10.0f;
-            fogOptions.density = 0.03f;
+            fogOptions.distance = 5.0f;
+            fogOptions.density = 0.02f;
             fogOptions.fogColorFromIbl = true;
             view->setFogOptions(fogOptions);
 
