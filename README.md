@@ -1,19 +1,20 @@
 # Dante
 
 Graphics Engine
-Targets OpenGL on Windows/Linux and Metal on macOS
+Targets OpenGL on Windows/Linux only. Metal, Vulkan, and WebGPU are dropped entirely -
+their source trees don't exist in this repo, not just disabled by a build flag.
 
 ## Prerequisites
 
-| | Windows | Linux | macOS |
-|---|---|---|---|
-| Compiler | MSVC (Visual Studio 2022, Desktop C++ workload) | Clang 17+ | Xcode + command line tools |
-| CMake | 3.22+ | 3.22+ | 3.22+ |
-| Build tool | Ninja | Ninja | Ninja |
-| Graphics API | OpenGL (GPU driver only) | OpenGL (GPU driver only) | Metal (bundled with Xcode) |
+| | Windows | Linux |
+|---|---|---|
+| Compiler | MSVC (Visual Studio 2022, Desktop C++ workload) | Clang 17+ |
+| CMake | 3.22+ | 3.22+ |
+| Build tool | Ninja | Ninja |
+| Graphics API | OpenGL (GPU driver only) | OpenGL (GPU driver only) |
 
-No graphics SDK to install on any platform OpenGL builds against your existing GPU
-driver, Metal ships with Xcode.
+No graphics SDK to install on either platform OpenGL builds against your existing GPU
+driver.
 
 - **Windows**: build from an **x64 Native Tools Command Prompt for VS 2022** (or run
   `vcvarsall.bat x64` first) the Ninja generator needs `cl.exe`/`link.exe` on `PATH`
@@ -24,7 +25,6 @@ driver, Metal ships with Xcode.
   integration also works and handles this for you automatically.
 - **Linux**: install Clang 17 (e.g. via [apt.llvm.org](https://apt.llvm.org/)), Ninja,
   and X11 dev headers: `libglu1-mesa-dev libxi-dev libxcomposite-dev libxxf86vm-dev`.
-- **macOS**: `xcode-select --install` and `brew install ninja`.
 
 ## Building & running
 
@@ -41,7 +41,7 @@ The first build compiles all of Filament and is slow (minutes, not seconds). Eve
 build after that is fast Ninja only recompiles what changed.
 
 Run the binary straight out of `build/`: `build/Dante.exe` (Windows) or `build/Dante`
-(Linux/macOS). No install step, no arguments, a window opens immediately. (If you
+(Linux). No install step, no arguments, a window opens immediately. (If you
 instead configured a multi-config generator like `-G "Visual Studio 17 2022"`, the
 binary lands one level deeper, in `build/Release/` or `build/Debug/`.)
 
@@ -138,8 +138,8 @@ Dante looks for `assets/` next to the executable first, falling back to the
 compile-time dev path (which won't exist on someone else's machine) only if that's
 missing this layout is what makes a build portable. On Windows nothing else needs
 installing (the MSVC runtime is statically linked); the recipient just needs a GPU
-with OpenGL support (or a Mac, for Metal), which is practically any GPU from the last
-several years with an up-to-date driver.
+with OpenGL support, which is practically any GPU from the last several years with an
+up-to-date driver.
 
 
 ## Credit

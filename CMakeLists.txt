@@ -17,17 +17,12 @@ if (WIN32)
 endif()
 
 # --- Filament backend selection -------------------------------------------------------
-# Dante targets Windows/Linux via OpenGL and macOS via Metal. Vulkan and WebGPU are
-# dropped entirely: Vulkan's complexity isn't worth it for a solo-dev graphics
-# playground, and macOS has no native Vulkan anyway (would need the LunarG SDK's
-# MoltenVK translation layer, which we don't want).
-if (APPLE)
-    set(FILAMENT_SUPPORTS_OPENGL OFF CACHE BOOL "" FORCE)
-    set(FILAMENT_SUPPORTS_METAL ON CACHE BOOL "" FORCE)
-else()
-    set(FILAMENT_SUPPORTS_OPENGL ON CACHE BOOL "" FORCE)
-    set(FILAMENT_SUPPORTS_METAL OFF CACHE BOOL "" FORCE)
-endif()
+# Dante targets Windows/Linux via OpenGL only. Metal, Vulkan, and WebGPU are dropped
+# entirely - their source trees are gone from engine/Dante/backend, not just disabled
+# here, so this isn't just a build option: there is nothing left to fall back to on
+# another platform.
+set(FILAMENT_SUPPORTS_OPENGL ON CACHE BOOL "" FORCE)
+set(FILAMENT_SUPPORTS_METAL OFF CACHE BOOL "" FORCE)
 set(FILAMENT_SUPPORTS_VULKAN OFF CACHE BOOL "" FORCE)
 set(FILAMENT_SUPPORTS_WEBGPU OFF CACHE BOOL "" FORCE)
 
