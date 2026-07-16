@@ -592,15 +592,6 @@ if (FILAMENT_SUPPORTS_OPENGL)
     add_definitions(-DFILAMENT_SUPPORTS_OPENGL)
 endif()
 
-if (CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-    option(FILAMENT_ENABLE_PERFETTO "Enable perfetto SDK on Android" OFF)
-else()
-    option(FILAMENT_ENABLE_PERFETTO "Enable perfetto SDK on Android" ON)
-endif()
-if (FILAMENT_ENABLE_PERFETTO)
-    add_definitions(-DFILAMENT_ENABLE_PERFETTO)
-endif()
-
 # By default, build with Vulkan support on desktop platforms, although clients must request to use
 # it at run time.
 if (WIN32 OR WASM OR IOS)
@@ -945,7 +936,6 @@ add_subdirectory(${EXTERNAL}/cgltf/tnt)
 add_subdirectory(${EXTERNAL}/draco/tnt)
 add_subdirectory(${EXTERNAL}/jsmn/tnt)
 add_subdirectory(${EXTERNAL}/stb/tnt)
-add_subdirectory(${EXTERNAL}/perfetto/tnt)
 add_subdirectory(${EXTERNAL}/basisu/tnt)
 
 # imageio-lite is needed for viewer
@@ -977,18 +967,6 @@ if (FILAMENT_SUPPORTS_WEBP_TEXTURES)
     add_subdirectory(${EXTERNAL}/libwebp/tnt)
 endif()
 
-if (FILAMENT_SUPPORTS_VULKAN)
-    add_subdirectory(${LIBRARIES}/bluevk)
-    add_subdirectory(${EXTERNAL}/vkmemalloc/tnt)
-    set(SPIRV_HEADERS_SKIP_EXAMPLES ON)
-    add_subdirectory(${EXTERNAL}/spirv-headers)
-endif()
-
-if (FILAMENT_SUPPORTS_WEBGPU AND NOT WASM)
-    add_subdirectory(${EXTERNAL}/dawn/tnt/)
-endif()
-
-# Add filament after dawn, since filament/backend depends on dawn targets.
 add_subdirectory(${FILAMENT}/Dante)
 
 set(FILAMENT_SAMPLES_BINARY_DIR ${PROJECT_BINARY_DIR}/samples)
