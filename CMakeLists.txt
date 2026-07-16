@@ -40,13 +40,6 @@ set(FILAMENT_SKIP_SAMPLES ON CACHE BOOL "" FORCE)
 # and add real compile time on every build; skip them.
 set(FILAMENT_BUILD_TESTING OFF CACHE BOOL "" FORCE)
 
-# The material debugger (a live, in-browser material editor backed by an embedded
-# webserver) isn't something Dante wires up or needs at runtime. Its library still
-# gets compiled either way - engine/tools/matinfo and matedit link it unconditionally
-# on desktop - but this stops Filament's own engine from starting the debug webserver
-# inside Dante.exe itself.
-set(FILAMENT_ENABLE_MATDBG OFF CACHE BOOL "" FORCE)
-
 add_subdirectory(engine)
 
 add_executable(Dante src/main.cpp)

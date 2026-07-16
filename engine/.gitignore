@@ -2,6 +2,7 @@
 .idea
 imgui.ini
 cmake-*
+/build/
 ImportExecutables-*.cmake
 /out*
 dist

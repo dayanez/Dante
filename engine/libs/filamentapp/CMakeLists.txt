@@ -45,13 +45,10 @@ set(SRCS
         src/AppEvent.h
         src/display_managers/SDLDisplayManager.h
         src/display_managers/SDLDisplayManager.cpp
-        src/display_managers/HtmlDisplayManager.h
-        src/display_managers/HtmlDisplayManager.cpp
 )
 
 set(LIBS
         camutils
-        civetweb
         filagui
         filamat
         filament
@@ -139,35 +136,6 @@ add_custom_command(OUTPUT ${DUMMY_SRC} COMMAND echo "//" > ${DUMMY_SRC})
 add_library(filamentapp-resources ${DUMMY_SRC} ${RESGEN_SOURCE})
 set_target_properties(filamentapp-resources PROPERTIES FOLDER Samples/Resources)
 
-# Web Display Manager resources
-set(WEB_RESOURCE_DIR "${GENERATION_ROOT}/generated/web_resources")
-file(MAKE_DIRECTORY ${WEB_RESOURCE_DIR})
-
-set(WEB_RESOURCE_BINS
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/display_managers/web/index.html
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/display_managers/web/style.css
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/display_managers/web/app.js
-)
-
-get_resgen_vars(${WEB_RESOURCE_DIR} filamentapp_web_resources)
-
-add_custom_command(
-        OUTPUT ${RESGEN_OUTPUTS}
-        COMMAND resgen -t ${RESGEN_FLAGS} ${WEB_RESOURCE_BINS}
-        DEPENDS resgen ${WEB_RESOURCE_BINS}
-        COMMENT "Bundling display manager web resources"
-)
-
-if (DEFINED RESGEN_SOURCE_FLAGS)
-    set_source_files_properties(${RESGEN_SOURCE} PROPERTIES COMPILE_FLAGS ${RESGEN_SOURCE_FLAGS})
-endif()
-
-set(WEB_DUMMY_SRC "${WEB_RESOURCE_DIR}/dummy.c")
-add_custom_command(OUTPUT ${WEB_DUMMY_SRC} COMMAND echo "//" > ${WEB_DUMMY_SRC})
-
-add_library(filamentapp-web-resources ${WEB_DUMMY_SRC} ${RESGEN_SOURCE})
-set_target_properties(filamentapp-web-resources PROPERTIES FOLDER Samples/Resources)
-
 # ==================================================================================================
 # Include and target definitions
 # ==================================================================================================
@@ -176,7 +144,7 @@ include_directories(${PUBLIC_HDR_DIR})
 
 add_library(${TARGET} STATIC ${PUBLIC_HDRS} ${SRCS})
 
-target_link_libraries(${TARGET} PUBLIC ${LIBS} filamentapp-resources filamentapp-web-resources)
+target_link_libraries(${TARGET} PUBLIC ${LIBS} filamentapp-resources)
 
 target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
 set_target_properties(${TARGET} PROPERTIES FOLDER Libs)

@@ -83,8 +83,6 @@ option(FILAMENT_ENABLE_MULTIVIEW "Enable multiview for Filament" OFF)
 
 option(FILAMENT_SUPPORTS_OSMESA "Enable OSMesa (headless GL context) for Filament" OFF)
 
-option(FILAMENT_ENABLE_FGVIEWER "Enable the frame graph viewer" OFF)
-
 option(FILAMENT_USE_ABSEIL_LOGGING "Use Abseil to log, may increase binary size" OFF)
 
 option(FILAMENT_ENABLE_EXPERIMENTAL_GCC_SUPPORT "Enable GCC support (unsupported)" OFF)
@@ -628,13 +626,6 @@ else()
     option(FILAMENT_BUILD_FILAMAT "Build filamat and JNI buildings" OFF)
 endif()
 
-# By default, link in matdbg for Desktop + Debug only since it pulls in filamat and a web server.
-if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND IS_HOST_PLATFORM)
-    option(FILAMENT_ENABLE_MATDBG "Enable the material debugger" ON)
-else()
-    option(FILAMENT_ENABLE_MATDBG "Enable the material debugger" OFF)
-endif()
-
 # Only optimize materials in Release mode (so error message lines match the source code)
 if (CMAKE_BUILD_TYPE MATCHES Release)
     option(FILAMENT_DISABLE_MATOPT "Disable material optimizations" OFF)
@@ -693,11 +684,6 @@ if (FILAMENT_SUPPORTS_METAL)
 endif()
 if (FILAMENT_SUPPORTS_WEBGPU)
     set(MATC_API_FLAGS ${MATC_API_FLAGS} -a webgpu)
-endif()
-
-# Enable debug info (preserves names in SPIR-V)
-if (FILAMENT_ENABLE_MATDBG)
-    set(MATC_OPT_FLAGS ${MATC_OPT_FLAGS} -d)
 endif()
 
 # Disable optimizations
@@ -917,13 +903,11 @@ add_subdirectory(${LIBRARIES}/math)
 add_subdirectory(${LIBRARIES}/mathio)
 add_subdirectory(${LIBRARIES}/uberz)
 add_subdirectory(${LIBRARIES}/utils)
-add_subdirectory(${LIBRARIES}/viewer)
 add_subdirectory(${FILAMENT}/shaders)
 add_subdirectory(${EXTERNAL}/abseil/tnt)
 # Add zstd before basisu to force it to use the external zstd target,
 # preventing a duplicate symbol conflict with its bundled version.
 add_subdirectory(${EXTERNAL}/zstd/tnt)
-add_subdirectory(${EXTERNAL}/civetweb/tnt)
 add_subdirectory(${EXTERNAL}/imgui/tnt)
 add_subdirectory(${EXTERNAL}/robin-map/tnt)
 add_subdirectory(${EXTERNAL}/smol-v/tnt)
@@ -938,7 +922,7 @@ add_subdirectory(${EXTERNAL}/jsmn/tnt)
 add_subdirectory(${EXTERNAL}/stb/tnt)
 add_subdirectory(${EXTERNAL}/basisu/tnt)
 
-# imageio-lite is needed for viewer
+# imageio-lite is needed for diffimg
 add_subdirectory(${LIBRARIES}/imageio-lite)
 
 # Note that this has to be placed after mikktspace in order for combine_static_libs to work.
@@ -952,15 +936,6 @@ if (FILAMENT_BUILD_FILAMAT OR IS_HOST_PLATFORM)
     add_subdirectory(${EXTERNAL}/glslang/tnt)
     add_subdirectory(${EXTERNAL}/spirv-cross/tnt)
     add_subdirectory(${LIBRARIES}/filamat)
-
-    # the material debugger requires filamat
-    if (FILAMENT_ENABLE_MATDBG OR IS_HOST_PLATFORM)
-        add_subdirectory(${LIBRARIES}/matdbg)
-    endif()
-endif()
-
-if (FILAMENT_ENABLE_FGVIEWER)
-    add_subdirectory(${LIBRARIES}/fgviewer)
 endif()
 
 if (FILAMENT_SUPPORTS_WEBP_TEXTURES)
@@ -1000,10 +975,6 @@ if (IS_HOST_PLATFORM)
     add_subdirectory(${TOOLS}/diffimg)
     add_subdirectory(${TOOLS}/glslminifier)
     add_subdirectory(${TOOLS}/matc)
-    add_subdirectory(${TOOLS}/matinfo)
-    if (NOT WIN32)  # matedit not yet supported on Windows
-        add_subdirectory(${TOOLS}/matedit)
-    endif()
     add_subdirectory(${TOOLS}/mipgen)
     add_subdirectory(${TOOLS}/normal-blending)
     add_subdirectory(${TOOLS}/resgen)

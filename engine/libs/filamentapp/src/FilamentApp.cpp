@@ -19,7 +19,6 @@
 #include "PlatformHelper.h"
 
 #include "KeyInputConversion.h"
-#include "display_managers/HtmlDisplayManager.h"
 #include "display_managers/SDLDisplayManager.h"
 
 #if defined(WIN32)
@@ -151,11 +150,7 @@ void FilamentApp::run(Config const& config, SetupCallback setupCallback,
     // By now we have resolved to a specific backend (instead of default).
     config.backend = backend;
 
-    if (config.displayManager == Config::DisplayManager::WEB) {
-        mDisplayManager = new HtmlDisplayManager();
-    } else {
-        mDisplayManager = new SDLDisplayManager();
-    }
+    mDisplayManager = new SDLDisplayManager();
 
     if (!mDisplayManager->init(config)) {
         LOG(ERROR) << "Failed to initialize display manager" << utils::io::endl;

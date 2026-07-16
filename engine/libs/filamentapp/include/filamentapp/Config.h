@@ -47,9 +47,6 @@ struct Config {
     // Force a backend for webgpu.
     WebGPUBackend forcedWebGPUBackend = WebGPUBackend::DEFAULT;
 
-    enum class DisplayManager { SDL, WEB };
-    DisplayManager displayManager = DisplayManager::SDL;
-
     // Asynchronous mode for Engine
     filament::backend::AsynchronousMode asynchronousMode = filament::backend::AsynchronousMode::NONE;
 };
