@@ -17,25 +17,35 @@ if (WIN32)
 endif()
 
 # --- Filament backend selection -------------------------------------------------------
-# Dante targets Windows/Linux via Vulkan and macOS via Metal. OpenGL and WebGPU are
-# dropped entirely (see README for rationale). This was previously forcing Vulkan ON
-# unconditionally, including on Apple - macOS has no native Vulkan (would need the
-# LunarG SDK's MoltenVK translation layer, which we don't want), so that would have
-# broken the very first macOS CI build this file exists to support.
+# Dante targets Windows/Linux via OpenGL and macOS via Metal. Vulkan and WebGPU are
+# dropped entirely: Vulkan's complexity isn't worth it for a solo-dev graphics
+# playground, and macOS has no native Vulkan anyway (would need the LunarG SDK's
+# MoltenVK translation layer, which we don't want).
 if (APPLE)
-    set(FILAMENT_SUPPORTS_VULKAN OFF CACHE BOOL "" FORCE)
+    set(FILAMENT_SUPPORTS_OPENGL OFF CACHE BOOL "" FORCE)
     set(FILAMENT_SUPPORTS_METAL ON CACHE BOOL "" FORCE)
 else()
-    set(FILAMENT_SUPPORTS_VULKAN ON CACHE BOOL "" FORCE)
+    set(FILAMENT_SUPPORTS_OPENGL ON CACHE BOOL "" FORCE)
     set(FILAMENT_SUPPORTS_METAL OFF CACHE BOOL "" FORCE)
 endif()
-set(FILAMENT_SUPPORTS_OPENGL OFF CACHE BOOL "" FORCE)
+set(FILAMENT_SUPPORTS_VULKAN OFF CACHE BOOL "" FORCE)
 set(FILAMENT_SUPPORTS_WEBGPU OFF CACHE BOOL "" FORCE)
 
 # Skip Filament's own ~20 sample programs (materials/, gltf_viewer/, etc.) - Dante only
 # needs the filamentapp *library* they share, which is patched to still build (see
 # engine/libs/filamentapp/CMakeLists.txt).
 set(FILAMENT_SKIP_SAMPLES ON CACHE BOOL "" FORCE)
+
+# Filament's own gtest unit tests and micro-benchmarks aren't relevant to this project
+# and add real compile time on every build; skip them.
+set(FILAMENT_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+
+# The material debugger (a live, in-browser material editor backed by an embedded
+# webserver) isn't something Dante wires up or needs at runtime. Its library still
+# gets compiled either way - engine/tools/matinfo and matedit link it unconditionally
+# on desktop - but this stops Filament's own engine from starting the debug webserver
+# inside Dante.exe itself.
+set(FILAMENT_ENABLE_MATDBG OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(engine)
 

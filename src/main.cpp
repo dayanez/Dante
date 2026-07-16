@@ -1,12 +1,16 @@
 #include <filamentapp/FilamentApp.h>
 
+#include <filament/Camera.h>
+#include <filament/ColorGrading.h>
 #include <filament/Engine.h>
 #include <filament/IndexBuffer.h>
+#include <filament/LightManager.h>
 #include <filament/Material.h>
 #include <filament/MaterialInstance.h>
 #include <filament/RenderableManager.h>
 #include <filament/Scene.h>
 #include <filament/Skybox.h>
+#include <filament/ToneMapper.h>
 #include <filament/TransformManager.h>
 #include <filament/VertexBuffer.h>
 #include <filament/View.h>
@@ -144,6 +148,8 @@ struct GroundPlane {
 
 GroundPlane g_ground;
 Skybox* g_skybox = nullptr;
+utils::Entity g_sun;
+ColorGrading* g_colorGrading = nullptr;
 
 // An animated glTF character loaded via gltfio, playing a looping baked-in animation
 // (see tools/convert_character.py - a Blender script that copies a Mixamo animation clip
@@ -257,7 +263,7 @@ int main() {
 #if defined(__APPLE__)
     config.backend = Engine::Backend::METAL;
 #else
-    config.backend = Engine::Backend::VULKAN;
+    config.backend = Engine::Backend::OPENGL;
 #endif
     config.iblDirectory = (assetsDir + "environments/flower_road_2k.hdr").getAbsolutePath();
     config.cameraMode = camutils::Mode::FREE_FLIGHT;
@@ -288,10 +294,71 @@ int main() {
             aoOptions.enabled = true;
             view->setAmbientOcclusionOptions(aoOptions);
 
-            // Depth of field and explicit color-grading/tonemapper tuning are deliberately
-            // left out here - both need a scene-specific reference point (DoF wants a fixed
-            // focus subject/distance, which a free-fly camera doesn't have; color grading is
-            // an art-direction pass, not a flip-a-switch default) rather than a safe default.
+            // f/8, 1/125s, ISO 100: two stops brighter than a literal sunny-16 exposure.
+            // Sunny-16 (f/16) is the textbook-correct exposure for direct real sunlight, but
+            // it read as near-silhouetted here - this character's materials (dark tactical
+            // gear, low base reflectance) don't have the wide dynamic range a real outdoor
+            // photo's mix of surfaces would, so the mathematically "correct" exposure just
+            // wasn't a good exposure for this particular scene. This aperture number is also
+            // what the depth-of-field cocScale below is keyed to - change one, change both.
+            view->getCamera().setExposure(8.0f, 1.0f / 125.0f, 100.0f);
+
+            // A shadow-casting sun. This is the only light in the scene besides the IBL -
+            // gltfio already sets castShadows/receiveShadows(true) on the character by
+            // default (see AssetLoader.cpp), and RenderableManager defaults receiveShadows
+            // to true, so the ground plane picks up the shadow with no extra code. Filament
+            // defaults to PCF shadow maps (View::setShadowType); soft/VSM shadows are a
+            // later tuning knob, not needed to get shadows working at all.
+            g_sun = utils::EntityManager::get().create();
+            LightManager::Builder(LightManager::Type::SUN)
+                    .color({0.98f, 0.95f, 0.92f})
+                    .intensity(100000.0f) // lux - real midday sun, matches the sunny-16 exposure above
+                    .direction(normalize(float3{-0.6f, -1.0f, -0.75f}))
+                    .castShadows(true)
+                    .sunAngularRadius(0.545f) // real sun's angular size in degrees
+                    .build(*engine, g_sun);
+            scene->addEntity(g_sun);
+
+            // ACES tone mapping instead of Filament's default (ACESLegacyToneMapper) - a
+            // deliberate choice rather than the default, not a correctness fix. ColorGrading
+            // only needs the ToneMapper object during this synchronous build() call, so a
+            // stack-local instance is enough; the resulting ColorGrading object itself is
+            // what has to outlive the frame and gets torn down in the cleanup callback below.
+            ACESToneMapper toneMapper;
+            g_colorGrading = ColorGrading::Builder()
+                    .toneMapper(&toneMapper)
+                    .build(*engine);
+            view->setColorGrading(g_colorGrading);
+
+            // Depth of field, focused roughly on the character. cocScale lets DoF blur be
+            // tuned independently of the camera's actual aperture (cocScale = cameraAperture
+            // / desiredDoFAperture, per Options.h). Kept deliberately subtle (~f/5.6-equivalent
+            // instead of ~f/2.8) - the free-fly camera means there's no fixed, known
+            // camera-to-character distance to focus on precisely, so a strong blur risks
+            // softening the subject itself whenever that guess is off, not just the
+            // background. This is the one setting here that genuinely wants interactive
+            // tuning once you're driving the camera yourself.
+            view->getCamera().setFocusDistance(3.0f);
+            DepthOfFieldOptions dofOptions;
+            dofOptions.enabled = true;
+            dofOptions.cocScale = 8.0f / 5.6f;
+            view->setDepthOfFieldOptions(dofOptions);
+
+            // Faint atmospheric fog for depth cueing. Starts past the character/ground
+            // (distance) so it doesn't wash out the nearby ground - and with it, any shadow
+            // landing there - which a closer start distance did. Sampling color from the IBL
+            // (fogColorFromIbl) keeps it consistent with whatever environment is loaded.
+            FogOptions fogOptions;
+            fogOptions.enabled = true;
+            fogOptions.distance = 10.0f;
+            fogOptions.density = 0.03f;
+            fogOptions.fogColorFromIbl = true;
+            view->setFogOptions(fogOptions);
+
+            // Subtle vignette - defaults are a mild, standard photographic falloff.
+            VignetteOptions vignetteOptions;
+            vignetteOptions.enabled = true;
+            view->setVignetteOptions(vignetteOptions);
 
             // Replace the HDRI's photographic background with a plain clear-sky color.
             // Config::iblDirectory still loads that HDRI for indirect lighting (ambient/
@@ -327,6 +394,10 @@ int main() {
             scene->remove(g_ground.entity);
             g_ground.destroy(*engine);
             engine->destroy(g_skybox);
+            scene->remove(g_sun);
+            engine->destroy(g_sun);
+            utils::EntityManager::get().destroy(g_sun);
+            engine->destroy(g_colorGrading);
         },
         [](Engine*, View*) {
             ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);

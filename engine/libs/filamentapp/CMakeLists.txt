@@ -26,7 +26,6 @@ set(PUBLIC_HDRS
         include/filamentapp/FilamentApp.h
         include/filamentapp/IBL.h
         include/filamentapp/IcoSphere.h
-        include/filamentapp/MeshAssimp.h
         include/filamentapp/NativeWindowHelper.h
         include/filamentapp/Sphere.h
 )
@@ -38,7 +37,6 @@ set(SRCS
         src/FilamentApp.cpp
         src/IBL.cpp
         src/IcoSphere.cpp
-        src/MeshAssimp.cpp
         src/Sphere.cpp
         src/PlatformHelper.cpp
         src/PlatformHelper.h
@@ -59,7 +57,6 @@ if (FILAMENT_SUPPORTS_VULKAN)
 endif()
 
 set(LIBS
-        assimp
         camutils
         civetweb
         filagui

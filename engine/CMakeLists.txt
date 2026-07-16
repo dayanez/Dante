@@ -1004,7 +1004,9 @@ if (IS_HOST_PLATFORM)
     add_subdirectory(${LIBRARIES}/imageio)
     add_subdirectory(${LIBRARIES}/filament-matp)
 
-    add_subdirectory(${FILAMENT}/samples)
+    if (NOT FILAMENT_SKIP_SAMPLES)
+        add_subdirectory(${FILAMENT}/samples)
+    endif()
 
     add_subdirectory(${EXTERNAL}/libassimp/tnt)
     add_subdirectory(${EXTERNAL}/libpng/tnt)
