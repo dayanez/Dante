@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.19)
 project(utils)
 
 set(TARGET utils)
-set(TARGET_LINUX ${TARGET}/linux)
 set(TARGET_GENERIC ${TARGET}/generic)
 set(TARGET_DEBUG ${TARGET}/debug)
 set(PUBLIC_HDR_DIR include)
@@ -57,11 +56,6 @@ set(DIST_HDRS
         ${PUBLIC_HDR_DIR}/${TARGET}/unwindows.h
 )
 
-# Use our custom mutex/condition only on ANDROID
-set(DIST_ANDROID_HDRS
-        ${PUBLIC_HDR_DIR}/${TARGET_LINUX}/Mutex.h
-)
-
 set(DIST_GENERIC_HDRS
         ${PUBLIC_HDR_DIR}/${TARGET_GENERIC}/Mutex.h
 )
@@ -107,26 +101,10 @@ set(SRCS
 if (WIN32)
     list(APPEND SRCS src/win32/Path.cpp)
 endif()
-if (ANDROID)
-    list(APPEND SRCS src/android/ThermalManager.cpp)
-    list(APPEND SRCS src/android/PerformanceHintManager.cpp)
-    list(APPEND SRCS src/android/Systrace.cpp)
-    if (FILAMENT_ENABLE_PERFETTO)
-        list(APPEND SRCS src/android/Tracing.cpp)
-    endif()
-endif()
-if (LINUX OR ANDROID)
+if (LINUX)
     list(APPEND SRCS src/linux/Condition.cpp)
     list(APPEND SRCS src/linux/Mutex.cpp)
     list(APPEND SRCS src/linux/Path.cpp)
-endif()
-if (APPLE)
-    list(APPEND SRCS src/darwin/Path.mm)
-    list(APPEND SRCS src/darwin/Systrace.cpp)
-    list(APPEND SRCS src/darwin/Tracing.cpp)
-endif()
-if (WASM)
-    list(APPEND SRCS src/web/Path.cpp)
 endif()
 
 # ==================================================================================================
@@ -144,23 +122,9 @@ target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
 set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
 target_link_libraries(${TARGET} PUBLIC tsl)
 
-if (ANDROID)
-    target_link_libraries(${TARGET} PUBLIC log)
-    target_link_libraries(${TARGET} PRIVATE dl)
-    target_link_libraries(${TARGET} PUBLIC android)
-    if (FILAMENT_ENABLE_PERFETTO)
-        target_link_libraries(${TARGET} PUBLIC perfetto)
-    endif()
-endif()
-
 if (WIN32)
     # Needed for shlwapi.h (GetModuleFileName)
     target_link_libraries(${TARGET} PUBLIC Shlwapi)
-endif()
-
-if (APPLE)
-    # Needed for NSTemporaryDirectory()
-    target_link_libraries(${TARGET} PRIVATE "-framework Foundation")
 endif()
 
 if (LINUX)
@@ -180,11 +144,7 @@ endif()
 set(INSTALL_TYPE ARCHIVE)
 install(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib/${DIST_DIR})
 install(FILES ${DIST_HDRS} DESTINATION include/${TARGET})
-if (ANDROID)
-    install(FILES ${DIST_ANDROID_HDRS} DESTINATION include/${TARGET_LINUX})
-else()
-    install(FILES ${DIST_GENERIC_HDRS} DESTINATION include/${TARGET_GENERIC})
-endif()
+install(FILES ${DIST_GENERIC_HDRS} DESTINATION include/${TARGET_GENERIC})
 install(FILES ${DIST_DEBUG_HDRS} DESTINATION include/${TARGET_DEBUG})
 
 # ==================================================================================================
@@ -226,17 +186,11 @@ if (FILAMENT_BUILD_TESTING)
             test/test_Mutex.cpp
     )
 
-    if (WASM_PTHREADS)
-        target_compile_definitions(${TARGET} PUBLIC -DFILAMENT_WASM_THREADS)
-    endif()
-
     # The Path tests are platform-specific
-    if (NOT WASM)
-        if (WIN32)
-            list(APPEND TEST_SRCS test/test_WinPath.cpp)
-        else()
-            list(APPEND TEST_SRCS test/test_Path.cpp)
-        endif()
+    if (WIN32)
+        list(APPEND TEST_SRCS test/test_WinPath.cpp)
+    else()
+        list(APPEND TEST_SRCS test/test_Path.cpp)
     endif()
 
     add_executable(test_${TARGET} ${TEST_SRCS})
@@ -249,7 +203,7 @@ endif()
 # Benchmarks
 # ==================================================================================================
 
-if (FILAMENT_BUILD_TESTING AND NOT WASM)
+if (FILAMENT_BUILD_TESTING)
 
     add_library(benchmark_${TARGET}_callee SHARED benchmark/benchmark_callee.cpp)
     set_target_properties(benchmark_${TARGET}_callee PROPERTIES FOLDER Benchmarks)

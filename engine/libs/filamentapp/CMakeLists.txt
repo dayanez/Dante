@@ -49,13 +49,6 @@ set(SRCS
         src/display_managers/HtmlDisplayManager.cpp
 )
 
-if (FILAMENT_SUPPORTS_VULKAN)
-    list(APPEND SRCS
-            src/backend_platforms/VulkanPlatformHelperCommon.h
-            src/backend_platforms/VulkanPlatformHelperCommon.cpp
-    )
-endif()
-
 set(LIBS
         camutils
         civetweb
@@ -81,47 +74,13 @@ set(MATERIAL_SRCS
         materials/transparentColor.mat
 )
 
-if (APPLE)
-    list(APPEND SRCS src/display_managers/NativeWindowHelperCocoa.mm)
-    if (FILAMENT_SUPPORTS_VULKAN)
-        list(APPEND SRCS src/backend_platforms/VulkanPlatformHelperApple.mm)
-    endif()
-    if (FILAMENT_SUPPORTS_WEBGPU)
-        list(APPEND SRCS src/backend_platforms/WebGPUPlatformHelperApple.mm)
-    endif()
-    list(APPEND LIBS "-framework Cocoa -framework QuartzCore")
-endif()
-
 if (LINUX)
     list(APPEND SRCS src/display_managers/NativeWindowHelperLinux.cpp)
-    if (FILAMENT_SUPPORTS_VULKAN)
-        list(APPEND SRCS src/backend_platforms/VulkanPlatformHelperLinux.cpp)
-    endif()
-    if (FILAMENT_SUPPORTS_WEBGPU)
-        list(APPEND SRCS src/backend_platforms/WebGPUPlatformHelperLinux.cpp)
-    endif()
 endif()
 
 if (WIN32)
     list(APPEND SRCS src/display_managers/NativeWindowHelperWindows.cpp)
-
-    if (FILAMENT_SUPPORTS_VULKAN)
-        list(APPEND SRCS src/backend_platforms/VulkanPlatformHelperWindows.cpp)
-    endif()
-    if (FILAMENT_SUPPORTS_WEBGPU)
-        list(APPEND SRCS src/backend_platforms/WebGPUPlatformHelperWindows.cpp)
-    endif()
-
     list(APPEND LIBS sdl2main)
-endif()
-
-if (ANDROID)
-    if (FILAMENT_SUPPORTS_VULKAN)
-        list(APPEND SRCS src/backend_platforms/VulkanPlatformHelperAndroid.cpp)
-    endif()
-    if (FILAMENT_SUPPORTS_WEBGPU)
-        list(APPEND SRCS src/backend_platforms/WebGPUPlatformHelperAndroid.cpp)
-    endif()
 endif()
 
 # ==================================================================================================
@@ -216,10 +175,6 @@ set_target_properties(filamentapp-web-resources PROPERTIES FOLDER Samples/Resour
 include_directories(${PUBLIC_HDR_DIR})
 
 add_library(${TARGET} STATIC ${PUBLIC_HDRS} ${SRCS})
-
-if (FILAMENT_SUPPORTS_WEBGPU)
-target_link_libraries(${TARGET} PRIVATE dawncpp_headers)
-endif()
 
 target_link_libraries(${TARGET} PUBLIC ${LIBS} filamentapp-resources filamentapp-web-resources)
 

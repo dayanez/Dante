@@ -99,7 +99,7 @@ target_include_directories(${TARGET} PRIVATE ${spirv-tools_SOURCE_DIR}/include)
 # glslang libraries have circular dependencies. To make sure the proper object are part of the link
 # we need to force archive re-scan on new symbol dependencies via start/end-group.
 # Read more about this here https://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking
-if (APPLE OR MSVC)
+if (MSVC)
     target_link_libraries(${TARGET} glslang SPIRV SPIRV-Tools-opt spirv-cross-glsl)
 else()
     target_link_libraries(${TARGET}
@@ -147,12 +147,6 @@ combine_static_libs(filamat "${FILAMAT_COMBINED_OUTPUT}" "${FILAMAT_DEPS}")
 set(FILAMAT_LIB_NAME ${CMAKE_STATIC_LIBRARY_PREFIX}filamat${CMAKE_STATIC_LIBRARY_SUFFIX})
 install(FILES "${FILAMAT_COMBINED_OUTPUT}" DESTINATION lib/${DIST_DIR} RENAME ${FILAMAT_LIB_NAME})
 install(DIRECTORY ${PUBLIC_HDR_DIR}/filamat DESTINATION include)
-
-# Need to install libtint for filamat on Android.
-# See libs/filamat/CMakeLists.txt and android/filamat-android/CMakeLists.txt.
-if (ANDROID AND FILAMENT_SUPPORTS_WEBGPU)
-   target_link_libraries(${TARGET} libtint_combined)
-endif()
 
 # ==================================================================================================
 # Tests

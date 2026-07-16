@@ -198,28 +198,20 @@ set_target_properties(gltfio_core PROPERTIES FOLDER Libs)
 target_compile_definitions(gltfio_core PUBLIC -DGLTFIO_DRACO_SUPPORTED=1)
 target_link_libraries(gltfio_core PUBLIC dracodec meshoptimizer ${WEBP_DECODER_LIB_TARGET})
 
-if (WASM_PTHREADS)
-    target_compile_definitions(gltfio_core PUBLIC -DFILAMENT_WASM_THREADS)
-endif()
-
 target_compile_options(gltfio_core PRIVATE ${FILAMENT_WARNINGS})
 
-if (NOT WASM AND NOT ANDROID AND NOT IOS)
-
-    # ==================================================================================================
-    # Link the core library with additional dependencies to create the "full" library
-    # ==================================================================================================
-    add_library(${TARGET} STATIC ${PUBLIC_HDRS} src/JitShaderProvider.cpp)
-    target_link_libraries(${TARGET} PUBLIC filamat gltfio_core)
-    target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
-    set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
-    if (NOT MSVC)
-        target_compile_options(${TARGET} PRIVATE -Wno-deprecated-register)
-    endif()
-
-    install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})
-
+# ==================================================================================================
+# Link the core library with additional dependencies to create the "full" library
+# ==================================================================================================
+add_library(${TARGET} STATIC ${PUBLIC_HDRS} src/JitShaderProvider.cpp)
+target_link_libraries(${TARGET} PUBLIC filamat gltfio_core)
+target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
+set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
+if (NOT MSVC)
+    target_compile_options(${TARGET} PRIVATE -Wno-deprecated-register)
 endif()
+
+install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})
 
 # ==================================================================================================
 # Tests
