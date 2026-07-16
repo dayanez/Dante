@@ -1,9 +1,6 @@
 # Dante
 
-Graphics engine. Targets OpenGL on Windows/Linux only. Metal, Vulkan, and WebGPU are
-dropped entirely, their source trees don't exist in this repo, not just disabled by a
-build flag.
-
+Graphics engine. Targets OpenGL on Windows/Linux only. 
 ## Prerequisites
 
 | | Windows | Linux |
