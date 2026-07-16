@@ -341,7 +341,7 @@ int main() {
             view->getCamera().setFocusDistance(3.0f);
             DepthOfFieldOptions dofOptions;
             dofOptions.enabled = true;
-            dofOptions.cocScale = 8.0f / 5.6f;
+            dofOptions.cocScale = 2.0f / 1.6f;
             view->setDepthOfFieldOptions(dofOptions);
 
             // Faint atmospheric fog for depth cueing. Starts past the character/ground
@@ -349,7 +349,7 @@ int main() {
             // landing there - which a closer start distance did. Sampling color from the IBL
             // (fogColorFromIbl) keeps it consistent with whatever environment is loaded.
             FogOptions fogOptions;
-            fogOptions.enabled = true;
+            fogOptions.enabled = false;
             fogOptions.distance = 10.0f;
             fogOptions.density = 0.03f;
             fogOptions.fogColorFromIbl = true;
@@ -357,7 +357,7 @@ int main() {
 
             // Subtle vignette - defaults are a mild, standard photographic falloff.
             VignetteOptions vignetteOptions;
-            vignetteOptions.enabled = true;
+            vignetteOptions.enabled = false; //Disabling because right now, it looks ugly no point in having it. 
             view->setVignetteOptions(vignetteOptions);
 
             // Replace the HDRI's photographic background with a plain clear-sky color.
