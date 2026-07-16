@@ -985,7 +985,7 @@ if (FILAMENT_SUPPORTS_WEBGPU AND NOT WASM)
 endif()
 
 # Add filament after dawn, since filament/backend depends on dawn targets.
-add_subdirectory(${FILAMENT}/filament)
+add_subdirectory(${FILAMENT}/Dante)
 
 set(FILAMENT_SAMPLES_BINARY_DIR ${PROJECT_BINARY_DIR}/samples)
 
