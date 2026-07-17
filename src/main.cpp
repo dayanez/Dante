@@ -3,21 +3,14 @@
 #include <filament/Camera.h>
 #include <filament/ColorGrading.h>
 #include <filament/Engine.h>
-#include <filament/IndexBuffer.h>
 #include <filament/LightManager.h>
-#include <filament/Material.h>
-#include <filament/MaterialInstance.h>
 #include <filament/RenderableManager.h>
 #include <filament/Scene.h>
-#include <filament/Skybox.h>
 #include <filament/ToneMapper.h>
 #include <filament/TransformManager.h>
-#include <filament/VertexBuffer.h>
 #include <filament/View.h>
 
 #include <backend/BufferDescriptor.h>
-
-#include <geometry/SurfaceOrientation.h>
 
 #include <gltfio/Animator.h>
 #include <gltfio/AssetLoader.h>
@@ -60,97 +53,13 @@ std::vector<uint8_t> readFile(utils::Path const& path) {
 
 namespace {
 
-// A flat 16x16 "stage" quad on the XZ plane, small enough that its edges stay in view
-// against the sky instead of reading as an endless ground plane. Lit shading needs a
-// packed tangent-frame quaternion (not just a raw normal) per vertex, which
-// SurfaceOrientation computes for us.
-struct GroundPlane {
-    VertexBuffer* vertexBuffer = nullptr;
-    IndexBuffer* indexBuffer = nullptr;
-    MaterialInstance* materialInstance = nullptr;
-    utils::Entity entity;
-
-    void create(Engine& engine, Material const* material) {
-        // Sits below the camera manipulator's default eye height (y=0) so it's visible
-        // below the horizon rather than edge-on to it.
-        static const float3 positions[] = {
-            {-8, -1.0f, -8},
-            { 8, -1.0f, -8},
-            {-8, -1.0f,  8},
-            { 8, -1.0f,  8},
-        };
-        static const float3 normals[] = { {0, 1, 0}, {0, 1, 0}, {0, 1, 0}, {0, 1, 0} };
-        // Winding matters here: aiDefaultMat (lit) uses Filament's default backface culling,
-        // unlike the debug materials which disable it - the other winding order rendered
-        // nothing at all with no error, which is what made this one hard to isolate.
-        static const uint16_t indices[] = { 0, 2, 1, 2, 3, 1 };
-
-        // Must be static: VertexBuffer::BufferDescriptor without a callback can be consumed
-        // asynchronously on the render thread, so a plain stack array here would go out of
-        // scope before the upload actually happens (this was the bug that made the lit
-        // version of this plane invisible while the unlit debug version rendered fine).
-        static short4 tangents[4];
-        auto* orientation = geometry::SurfaceOrientation::Builder()
-                .vertexCount(4)
-                .normals(normals)
-                .build();
-        orientation->getQuats(tangents, 4);
-        delete orientation;
-
-        vertexBuffer = VertexBuffer::Builder()
-                .vertexCount(4)
-                .bufferCount(2)
-                .attribute(VertexAttribute::POSITION, 0, VertexBuffer::AttributeType::FLOAT3)
-                .attribute(VertexAttribute::TANGENTS, 1, VertexBuffer::AttributeType::SHORT4)
-                .normalized(VertexAttribute::TANGENTS)
-                .build(engine);
-        vertexBuffer->setBufferAt(engine, 0,
-                VertexBuffer::BufferDescriptor(positions, sizeof(positions), nullptr));
-        vertexBuffer->setBufferAt(engine, 1,
-                VertexBuffer::BufferDescriptor(tangents, sizeof(tangents), nullptr));
-
-        indexBuffer = IndexBuffer::Builder()
-                .indexCount(6)
-                .bufferType(IndexBuffer::IndexType::USHORT)
-                .build(engine);
-        indexBuffer->setBuffer(engine,
-                IndexBuffer::BufferDescriptor(indices, sizeof(indices), nullptr));
-
-        materialInstance = material->createInstance();
-      
-        materialInstance->setParameter("baseColor", RgbType::LINEAR, float3{0.4f, 0.20f, 0.30f});
-        materialInstance->setParameter("metallic", 0.0f);
-        materialInstance->setParameter("roughness", .08f);
-        materialInstance->setParameter("reflectance", 0.08f);
-
-        entity = utils::EntityManager::get().create();
-        RenderableManager::Builder(1)
-                .boundingBox({{0, -1.0f, 0}, {8, 0.01f, 8}})
-                .material(0, materialInstance)
-                .geometry(0, RenderableManager::PrimitiveType::TRIANGLES, vertexBuffer, indexBuffer, 0, 6)
-                .culling(false)
-                .layerMask(0x4, 0x4)
-                .build(engine, entity);
-    }
-
-    void destroy(Engine& engine) {
-        engine.destroy(entity);
-        engine.destroy(materialInstance);
-        engine.destroy(vertexBuffer);
-        engine.destroy(indexBuffer);
-        utils::EntityManager::get().destroy(entity);
-    }
-};
-
-GroundPlane g_ground;
-Skybox* g_skybox = nullptr;
 utils::Entity g_sun;
 ColorGrading* g_colorGrading = nullptr;
 
-// An animated glTF character loaded via gltfio, playing a looping baked-in animation
-// (see tools/convert_character.py - a Blender script that copies a Mixamo animation clip
-// onto this character's identically-named-bone skeleton and exports both as one glb).
-struct CharacterModel {
+// A glTF model loaded via gltfio - drives a looping animation if the source has one
+// (getAnimationCount() == 0 is a no-op everywhere below), otherwise just sits static.
+// Models are expected to already be glTF/GLB (e.g. straight off Sketchfab).
+struct GltfModel {
     gltfio::AssetLoader* loader = nullptr;
     gltfio::MaterialProvider* materials = nullptr;
     gltfio::TextureProvider* textureDecoder = nullptr;
@@ -158,7 +67,7 @@ struct CharacterModel {
     gltfio::FilamentAsset* asset = nullptr;
     gltfio::Animator* animator = nullptr;
 
-    void create(Engine& engine, Scene& scene, utils::Path const& gltfPath) {
+    void create(Engine& engine, Scene& scene, utils::Path const& gltfPath, float3 position) {
         materials = gltfio::createJitShaderProvider(&engine);
         loader = gltfio::AssetLoader::create({ &engine, materials });
 
@@ -198,11 +107,6 @@ struct CharacterModel {
             auto instance = rm.getInstance(asset->getEntities()[i]);
             if (instance) {
                 rm.setLayerMask(instance, 0x4, 0x4);
-                // gltfio's own per-primitive bounding boxes were degenerate for the Blender-
-                // exported character (see asset->getBoundingBox() in the log line below - a
-                // ~1.8cm box for a life-sized human), which made Filament's frustum culling
-                // silently discard the geometry as "outside the view" even though it wasn't.
-                // Disabling culling costs nothing meaningful at this scene's scale.
                 rm.setCulling(instance, false);
             }
         }
@@ -211,7 +115,7 @@ struct CharacterModel {
 
         auto& tm = engine.getTransformManager();
         auto root = tm.getInstance(asset->getRoot());
-        tm.setTransform(root, mat4f::translation(float3{0, -1.0f, -2}));
+        tm.setTransform(root, mat4f::translation(position));
 
         animator = asset->getInstance()->getAnimator();
 
@@ -236,7 +140,9 @@ struct CharacterModel {
 };
 
 
-CharacterModel g_character;
+GltfModel g_character;
+GltfModel g_creature;
+GltfModel g_k2so;
 
 // DANTE_ASSETS_DIR is baked in at compile time as this machine's source tree path, which
 // only exists on the machine that built it - convenient in dev (edit assets, relaunch, no
@@ -250,8 +156,8 @@ utils::Path resolveAssetsDir() {
 
 } // namespace
 
-// M4: an animated glTF character (see CharacterModel), on top of the M2 skybox/ground
-// plane/camera/FPS overlay.
+// M4: three glTF models (see GltfModel) under a night-sky IBL skybox, with no ground
+// geometry - camera/FPS overlay.
 int main() {
     utils::Path const assetsDir = resolveAssetsDir();
 
@@ -262,17 +168,15 @@ int main() {
 #else
     config.backend = Engine::Backend::OPENGL;
 #endif
-    config.iblDirectory = (assetsDir + "environments/flower_road_2k.hdr").getAbsolutePath();
+    config.iblDirectory = (assetsDir + "environments/qwantani_night_puresky_4k.exr").getAbsolutePath();
     config.cameraMode = camutils::Mode::FREE_FLIGHT;
 
     FilamentApp::get().run(
         config,
         [assetsDir](Engine* engine, View* view, Scene* scene) {
-            // FXAA (View's default) softens the whole frame, not just jagged edges - that
-            // was noticeable when the skybox still showed the HDRI photo directly. Now that
-            // the skybox is a flat color (see below) there's no photo detail left to soften,
-            // and there IS real geometry (the character) with edges worth smoothing, so
-            // temporal AA replaces the flat NONE from before.
+            // FXAA (View's default) softens the whole frame, not just jagged edges - noticeable
+            // on the HDRI skybox. Temporal AA smooths the character's geometry edges without
+            // that softening cost.
             view->setAntiAliasing(AntiAliasing::NONE);
             TemporalAntiAliasingOptions taaOptions;
             taaOptions.enabled = true;
@@ -282,58 +186,43 @@ int main() {
             // deliberately low so it reads as a glow, not a haze over the whole frame.
             BloomOptions bloomOptions;
             bloomOptions.enabled = true;
-            bloomOptions.strength = 0.08f;
+            bloomOptions.strength = 0.02f;
             view->setBloomOptions(bloomOptions);
 
-            // Screen-space ambient occlusion: mainly grounds the character against the
-            // plane with contact shadowing that the single IBL alone doesn't provide.
+            // Screen-space ambient occlusion: self-shadows the character's own geometry
+            // (limb/cloth crevices) that the single IBL alone doesn't provide.
             AmbientOcclusionOptions aoOptions;
             aoOptions.enabled = true;
             view->setAmbientOcclusionOptions(aoOptions);
 
-           //sunlight
-            view->getCamera().setExposure(20.0f, 10.0f / 200.0f, 125.0f);                                             //starts here 
+            //sunlight
+            view->getCamera().setExposure(16.0f, 1.0f / 125.0f, 100.0f);                                             //starts here 
 
                                                
             g_sun = utils::EntityManager::get().create();
             LightManager::Builder(LightManager::Type::SUN)
-                    .color({0.98f, 0.95f, 0.92f})
+                    .color({1.0f, 0.985f, 0.95f})
                     .intensity(100000.0f) // lux - real midday sun, matches the sunny-16 exposure above
-                    .direction(normalize(float3{-0.6f, -1.0f, -0.75f}))
+                    .direction(normalize(float3{-0.5f, -0.8f, -0.65f}))
                     .castShadows(true)
-                    .sunAngularRadius(0.6f) // real sun's angular size in degrees                                  //ends here |need to adjust this so it isn't bright af|
-                    .build(*engine, g_sun); 
+                    .sunAngularRadius(0.53f) // real sun's angular size in degrees                                  //ends here |need to adjust this so it isn't bright af|
+                     .build(*engine, g_sun); 
             scene->addEntity(g_sun);
 
-            // ACES tone mapping instead of Filament's default (ACESLegacyToneMapper) - a
-            // deliberate choice rather than the default, not a correctness fix. ColorGrading
-            // only needs the ToneMapper object during this synchronous build() call, so a
-            // stack-local instance is enough; the resulting ColorGrading object itself is
-            // what has to outlive the frame and gets torn down in the cleanup callback below.
             ACESToneMapper toneMapper;
             g_colorGrading = ColorGrading::Builder()
                     .toneMapper(&toneMapper)
                     .build(*engine);
             view->setColorGrading(g_colorGrading);
 
-            // Depth of field, focused roughly on the character. cocScale lets DoF blur be
-            // tuned independently of the camera's actual aperture (cocScale = cameraAperture
-            // / desiredDoFAperture, per Options.h). Kept deliberately subtle (~f/5.6-equivalent
-            // instead of ~f/2.8) - the free-fly camera means there's no fixed, known
-            // camera-to-character distance to focus on precisely, so a strong blur risks
-            // softening the subject itself whenever that guess is off, not just the
-            // background. This is the one setting here that genuinely wants interactive
-            // tuning once you're driving the camera yourself.
+            
             view->getCamera().setFocusDistance(3.0f);
             DepthOfFieldOptions dofOptions;
             dofOptions.enabled = false;
             dofOptions.cocScale = 2.0f / 1.6f;
             view->setDepthOfFieldOptions(dofOptions);
 
-            // Faint atmospheric fog for depth cueing. Starts past the character/ground
-            // (distance) so it doesn't wash out the nearby ground - and with it, any shadow
-            // landing there - which a closer start distance did. Sampling color from the IBL
-            // (fogColorFromIbl) keeps it consistent with whatever environment is loaded.
+            //Fog
             FogOptions fogOptions;
             fogOptions.enabled = false;
             fogOptions.distance = 5.0f;
@@ -341,45 +230,48 @@ int main() {
             fogOptions.fogColorFromIbl = true;
             view->setFogOptions(fogOptions);
 
-            // Subtle vignette - defaults are a mild, standard photographic falloff.
+            //Vigshit
             VignetteOptions vignetteOptions;
             vignetteOptions.enabled = false; //Disabling because right now, it looks ugly no point in having it. 
             view->setVignetteOptions(vignetteOptions);
 
-            // Replace the HDRI's photographic background with a plain clear-sky color.
-            // Config::iblDirectory still loads that HDRI for indirect lighting (ambient/
-            // reflections), which we keep - only the visible skybox is swapped out here,
-            // since Scene's skybox and indirect light are independent of each other.
-            g_skybox = Skybox::Builder().color({0.15f, 0.4f, 0.85f, 1.0f}).build(*engine);
-            scene->setSkybox(g_skybox);
+            // Skybox and indirect light both come from config.iblDirectory - FilamentApp
+            // loads and sets them on the scene before this callback runs (see
+            // FilamentApp::loadIBL), so the night-sky EXR is already visible here.
 
             // Note: FilamentApp::doFrame() re-derives Camera::lookAt() from the camera
             // manipulator every frame, so a one-time Camera::lookAt() call here would be
             // overwritten on the next frame - the manipulator's own state is what actually
-            // needs to change, which Config doesn't expose. The ground plane is positioned
-            // below the manipulator's default eye height instead (see GroundPlane::create).
-            g_ground.create(*engine, FilamentApp::get().getDefaultMaterial());
-            scene->addEntity(g_ground.entity);
+            // needs to change, which Config doesn't expose.
+            g_character.create(*engine, *scene, assetsDir + "models/character/ch15_firing.glb",
+                    float3{0, -1.0f, -2});
+            // Lined up along x at the character's y/z. Spacing is 5 units - wide enough to
+            // clear the widest loaded bbox so far (k2so, ~3.8 units) with room to spare; see
+            // the per-model bbox log lines below if a future addition needs more room.
+            g_creature.create(*engine, *scene, assetsDir + "models/creature/scene.gltf",
+                    float3{-10.0f, -1.0f, -2});
+            g_k2so.create(*engine, *scene, assetsDir + "models/k2so/scene.gltf",
+                    float3{-15.0f, -1.0f, -2});
 
-            g_character.create(*engine, *scene, assetsDir + "models/character/ch15_firing.glb");
-
-            // Advance the character's animation each frame.
+            // Advance every model's animation each frame (a model with no animations is a
+            // no-op via the animationCount() == 0 check).
             FilamentApp::get().animate([](Engine*, View*, double now) {
-                if (!g_character.animator || g_character.animator->getAnimationCount() == 0) {
-                    return;
-                }
                 static double startTime = now;
-                float duration = g_character.animator->getAnimationDuration(0);
-                float elapsed = duration > 0.0f ? fmodf((float)(now - startTime), duration) : 0.0f;
-                g_character.animator->applyAnimation(0, elapsed);
-                g_character.animator->updateBoneMatrices();
+                for (GltfModel* model : { &g_character, &g_creature, &g_k2so }) {
+                    if (!model->animator || model->animator->getAnimationCount() == 0) {
+                        continue;
+                    }
+                    float duration = model->animator->getAnimationDuration(0);
+                    float elapsed = duration > 0.0f ? fmodf((float)(now - startTime), duration) : 0.0f;
+                    model->animator->applyAnimation(0, elapsed);
+                    model->animator->updateBoneMatrices();
+                }
             });
         },
         [](Engine* engine, View*, Scene* scene) {
             g_character.destroy(*engine, *scene);
-            scene->remove(g_ground.entity);
-            g_ground.destroy(*engine);
-            engine->destroy(g_skybox);
+            g_creature.destroy(*engine, *scene);
+            g_k2so.destroy(*engine, *scene);
             scene->remove(g_sun);
             engine->destroy(g_sun);
             utils::EntityManager::get().destroy(g_sun);

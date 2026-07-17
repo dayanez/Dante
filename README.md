@@ -82,17 +82,8 @@ textures aren't hooked up yet.
 `gltfio::Animator` plays back whatever clips are embedded in the glTF/GLB. `main.cpp`
 currently just loops clip 0.
 
-For Mixamo-style animations retargeted onto your own character rig,
-`tools/convert_character.py` automates the retarget in Blender:
-
-```
-blender --background --python tools/convert_character.py -- character.fbx animation.fbx output.glb
-```
-
-Requires Blender 4.4+ headless. Bakes the animation source's clip onto the character's
-armature frame-by-frame by matching bone names, discards the animation source's own
-mesh/skeleton, and exports mesh + skin + baked animation as one `.glb` with textures
-re-encoded as quality-80 JPEG.
+Models are expected to already be glTF/GLB (e.g. straight off Sketchfab) - no Blender
+conversion step in this pipeline.
 
 ## Building an exe to share
 
