@@ -67,7 +67,12 @@ struct GltfModel {
     gltfio::FilamentAsset* asset = nullptr;
     gltfio::Animator* animator = nullptr;
 
-    void create(Engine& engine, Scene& scene, utils::Path const& gltfPath, float3 position) {
+    // scale is uniform and applied around the model's own origin, before translation -
+    // source glTF/GLB files vary wildly in real-world unit scale (e.g. cm vs m export
+    // settings), so there's no universally-correct default; check the bbox this prints
+    // on load against your other scene models and adjust.
+    void create(Engine& engine, Scene& scene, utils::Path const& gltfPath, float3 position,
+            float scale = 1.0f) {
         materials = gltfio::createJitShaderProvider(&engine);
         loader = gltfio::AssetLoader::create({ &engine, materials });
 
@@ -115,7 +120,7 @@ struct GltfModel {
 
         auto& tm = engine.getTransformManager();
         auto root = tm.getInstance(asset->getRoot());
-        tm.setTransform(root, mat4f::translation(position));
+        tm.setTransform(root, mat4f::translation(position) * mat4f::scaling(float3{scale}));
 
         animator = asset->getInstance()->getAnimator();
 
@@ -142,6 +147,7 @@ struct GltfModel {
 
 GltfModel g_character;
 GltfModel g_bathroom;
+GltfModel g_smileyMonster;
 
 // DANTE_ASSETS_DIR is baked in at compile time as this machine's source tree path, which
 // only exists on the machine that built it - convenient in dev (edit assets, relaunch, no
@@ -244,17 +250,23 @@ int main() {
             // needs to change, which Config doesn't expose.
             g_character.create(*engine, *scene, assetsDir + "models/character/ch15_firing.glb",
                     float3{0, -1.0f, -2});
-            // Untested placement - dropped at origin; reposition once you've seen the
-            // bathroom's actual bbox in the load log (character may need to move to end up
-            // inside it, since its scale/origin convention is unknown).
+            // Bathroom's local bbox (from its own load log) is roughly x:[-4.25,7.27]
+            // y:[-0.08,4.18] z:[-3.78,18.67], floor near y=-0.08 - same y/z translation as
+            // the character lines its floor up with the character's feet.
             g_bathroom.create(*engine, *scene, assetsDir + "models/bathroom/the_bathroom_free.glb",
                     float3{0, -1.0f, -2});
+            // Placed elsewhere in the room, away from the character. Source bbox was
+            // ~99x117x127 units (see load log) - some other unit scale entirely, not meters
+            // like the rest of the scene - so it's scaled down to roughly a 3.5-unit-tall
+            // "big monster" to match the room. Untested exact spot; adjust once you've seen it.
+            g_smileyMonster.create(*engine, *scene, assetsDir + "models/smiley_monster/smily_horror_monster.glb",
+                    float3{3.0f, -1.0f, 4.0f}, 0.03f);
 
             // Advance every model's animation each frame (a model with no animations is a
             // no-op via the animationCount() == 0 check).
             FilamentApp::get().animate([](Engine*, View*, double now) {
                 static double startTime = now;
-                for (GltfModel* model : { &g_character, &g_bathroom }) {
+                for (GltfModel* model : { &g_character, &g_bathroom, &g_smileyMonster }) {
                     if (!model->animator || model->animator->getAnimationCount() == 0) {
                         continue;
                     }
@@ -268,6 +280,7 @@ int main() {
         [](Engine* engine, View*, Scene* scene) {
             g_character.destroy(*engine, *scene);
             g_bathroom.destroy(*engine, *scene);
+            g_smileyMonster.destroy(*engine, *scene);
             scene->remove(g_sun);
             engine->destroy(g_sun);
             utils::EntityManager::get().destroy(g_sun);
