@@ -141,8 +141,7 @@ struct GltfModel {
 
 
 GltfModel g_character;
-GltfModel g_creature;
-GltfModel g_k2so;
+GltfModel g_bathroom;
 
 // DANTE_ASSETS_DIR is baked in at compile time as this machine's source tree path, which
 // only exists on the machine that built it - convenient in dev (edit assets, relaunch, no
@@ -245,19 +244,17 @@ int main() {
             // needs to change, which Config doesn't expose.
             g_character.create(*engine, *scene, assetsDir + "models/character/ch15_firing.glb",
                     float3{0, -1.0f, -2});
-            // Lined up along x at the character's y/z. Spacing is 5 units - wide enough to
-            // clear the widest loaded bbox so far (k2so, ~3.8 units) with room to spare; see
-            // the per-model bbox log lines below if a future addition needs more room.
-            g_creature.create(*engine, *scene, assetsDir + "models/creature/scene.gltf",
-                    float3{-10.0f, -1.0f, -2});
-            g_k2so.create(*engine, *scene, assetsDir + "models/k2so/scene.gltf",
-                    float3{-15.0f, -1.0f, -2});
+            // Untested placement - dropped at origin; reposition once you've seen the
+            // bathroom's actual bbox in the load log (character may need to move to end up
+            // inside it, since its scale/origin convention is unknown).
+            g_bathroom.create(*engine, *scene, assetsDir + "models/bathroom/the_bathroom_free.glb",
+                    float3{0, -1.0f, -2});
 
             // Advance every model's animation each frame (a model with no animations is a
             // no-op via the animationCount() == 0 check).
             FilamentApp::get().animate([](Engine*, View*, double now) {
                 static double startTime = now;
-                for (GltfModel* model : { &g_character, &g_creature, &g_k2so }) {
+                for (GltfModel* model : { &g_character, &g_bathroom }) {
                     if (!model->animator || model->animator->getAnimationCount() == 0) {
                         continue;
                     }
@@ -270,8 +267,7 @@ int main() {
         },
         [](Engine* engine, View*, Scene* scene) {
             g_character.destroy(*engine, *scene);
-            g_creature.destroy(*engine, *scene);
-            g_k2so.destroy(*engine, *scene);
+            g_bathroom.destroy(*engine, *scene);
             scene->remove(g_sun);
             engine->destroy(g_sun);
             utils::EntityManager::get().destroy(g_sun);

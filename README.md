@@ -71,10 +71,11 @@ cmake --build build
 
 ## Adding your own models
 
-Any static or animated glTF/GLB loads through the same pattern as `CharacterModel` in
-`main.cpp`: `gltfio::AssetLoader` + `ResourceLoader`, plus `Animator` if it has
-animations. Copy that struct's `create()`/`destroy()` shape for a new model, point it
-at `assets/models/<name>/`, and add/remove its entities from the `Scene`.
+Any static or animated glTF/GLB loads through `GltfModel` in `main.cpp`:
+`gltfio::AssetLoader` + `ResourceLoader`, plus `Animator` if the source has animations
+(a no-op if it doesn't). Declare a `GltfModel` instance, call `create(engine, scene,
+path, position)` pointed at `assets/models/<name>/`, and `destroy(engine, scene)` in
+the cleanup callback.
 
 Only PNG/JPEG textures are wired up (via `stb`) right now; KTX2/Basis compressed
 textures aren't hooked up yet.
