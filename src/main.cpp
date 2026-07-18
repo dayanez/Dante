@@ -1,5 +1,4 @@
 #include <filamentapp/FilamentApp.h>
-
 #include <filament/Camera.h>
 #include <filament/ColorGrading.h>
 #include <filament/Engine.h>
@@ -9,9 +8,7 @@
 #include <filament/ToneMapper.h>
 #include <filament/TransformManager.h>
 #include <filament/View.h>
-
 #include <backend/BufferDescriptor.h>
-
 #include <gltfio/Animator.h>
 #include <gltfio/AssetLoader.h>
 #include <gltfio/FilamentAsset.h>
@@ -19,17 +16,18 @@
 #include <gltfio/MaterialProvider.h>
 #include <gltfio/ResourceLoader.h>
 #include <gltfio/TextureProvider.h>
-
 #include <utils/EntityManager.h>
 #include <utils/Path.h>
-
 #include <imgui.h>
-
 #include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <vector>
+
+
+//TODO DONT FORGET TO FIX Y AXIS FOR NIBBA 
+//ALSO CHANGE LIGHTING || MAKE NEG LIGHTING -100
 
 using namespace filament;
 using namespace filament::math;
@@ -145,6 +143,7 @@ struct GltfModel {
 };
 
 
+//Loading models 
 GltfModel g_character;
 GltfModel g_bathroom;
 GltfModel g_smileyMonster;
