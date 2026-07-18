@@ -1,5 +1,3 @@
-
-
 #include "details/Camera.h"
 
 #include "components/TransformManager.h"
@@ -30,8 +28,8 @@ namespace filament {
 
 static constexpr float MIN_APERTURE = 0.5f;
 static constexpr float MAX_APERTURE = 64.0f;
-static constexpr float MIN_SHUTTER_SPEED = 1.0f / 25000.0f;
-static constexpr float MAX_SHUTTER_SPEED = 60.0f;
+static constexpr float MIN_SHUTTER_SPEED = 10.0f / 25000.0f;
+static constexpr float MAX_SHUTTER_SPEED = 90.0f;
 static constexpr float MIN_SENSITIVITY = 10.0f;
 static constexpr float MAX_SENSITIVITY = 204800.0f;
 
