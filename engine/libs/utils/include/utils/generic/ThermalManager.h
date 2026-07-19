@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_GENERIC_THERMALMANAGER_H
 #define TNT_UTILS_GENERIC_THERMALMANAGER_H

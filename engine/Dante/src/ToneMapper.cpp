@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <cstddef>
-#include <filament/ToneMapper.h>
+#include <dante/ToneMapper.h>
 
 #include "ColorSpaceUtils.h"
 
@@ -22,7 +18,7 @@
 #include "details/ColorGradingNeon.h"
 #endif
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -159,7 +155,7 @@ static float3 ACES(float3 color, float brightness) noexcept {
     // Global desaturation
     ap1 = mix(float3(dot(ap1, LUMINANCE_AP1)), ap1, RRT_SAT_FACTOR);
 
-    // NOTE: This is specific to Filament and added only to match ACES to our legacy tone mapper
+    // NOTE: This is specific to Dante and added only to match ACES to our legacy tone mapper
     //       which was a fit of ACES in Rec.709 but with a brightness boost.
     ap1 *= brightness;
 
@@ -1038,4 +1034,4 @@ void GenericToneMapper::setHdrMax(float const hdrMax) noexcept {
 
 #undef DEFAULT_CONSTRUCTORS
 
-} // namespace filament
+} // namespace dante

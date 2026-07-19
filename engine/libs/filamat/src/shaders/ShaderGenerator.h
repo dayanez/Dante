@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_SHADERGENERATOR_H
-#define TNT_FILAMENT_DETAILS_SHADERGENERATOR_H
+#ifndef TNT_DANTE_DETAILS_SHADERGENERATOR_H
+#define TNT_DANTE_DETAILS_SHADERGENERATOR_H
 
 
 #include "MaterialInfo.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <filamat/MaterialBuilder.h>
 
@@ -42,21 +38,21 @@ public:
             size_t vertexLineOffset,
             MaterialBuilder::MaterialDomain materialDomain) noexcept;
 
-    std::string createSurfaceVertexProgram(filament::backend::ShaderModel shaderModel,
+    std::string createSurfaceVertexProgram(dante::backend::ShaderModel shaderModel,
             MaterialBuilder::TargetApi targetApi, MaterialBuilder::TargetLanguage targetLanguage,
             MaterialBuilder::FeatureLevel featureLevel,
-            MaterialInfo const& material, filament::Variant variant,
-            filament::Interpolation interpolation,
-            filament::VertexDomain vertexDomain, uint32_t apiLevel) const noexcept;
+            MaterialInfo const& material, dante::Variant variant,
+            dante::Interpolation interpolation,
+            dante::VertexDomain vertexDomain, uint32_t apiLevel) const noexcept;
 
-    std::string createSurfaceFragmentProgram(filament::backend::ShaderModel shaderModel,
+    std::string createSurfaceFragmentProgram(dante::backend::ShaderModel shaderModel,
             MaterialBuilder::TargetApi targetApi, MaterialBuilder::TargetLanguage targetLanguage,
             MaterialBuilder::FeatureLevel featureLevel,
-            MaterialInfo const& material, filament::Variant variant,
-            filament::Interpolation interpolation,
-            filament::UserVariantFilterMask variantFilter, uint32_t apiLevel) const noexcept;
+            MaterialInfo const& material, dante::Variant variant,
+            dante::Interpolation interpolation,
+            dante::UserVariantFilterMask variantFilter, uint32_t apiLevel) const noexcept;
 
-    std::string createSurfaceComputeProgram(filament::backend::ShaderModel shaderModel,
+    std::string createSurfaceComputeProgram(dante::backend::ShaderModel shaderModel,
             MaterialBuilder::TargetApi targetApi, MaterialBuilder::TargetLanguage targetLanguage,
             MaterialBuilder::FeatureLevel featureLevel,
             MaterialInfo const& material, uint32_t apiLevel) const noexcept;
@@ -68,56 +64,56 @@ public:
      * fixup step can be used to turn the samplers back into external samplers after
      * the optimizations have been applied.
      */
-    static void fixupExternalSamplers(filament::backend::ShaderModel sm, std::string& shader,
+    static void fixupExternalSamplers(dante::backend::ShaderModel sm, std::string& shader,
             MaterialBuilder::FeatureLevel featureLevel,
             MaterialInfo const& material) noexcept;
 
 private:
     static void generateVertexDomainDefines(utils::io::sstream& out,
-            filament::VertexDomain domain) noexcept;
+            dante::VertexDomain domain) noexcept;
 
     static void generateSurfaceMaterialVariantProperties(utils::io::sstream& out,
             MaterialBuilder::PropertyList const properties,
             const MaterialBuilder::PreprocessorDefineList& defines) noexcept;
 
     static void generateSurfaceMaterialVariantDefines(utils::io::sstream& out,
-            filament::backend::ShaderStage stage,
+            dante::backend::ShaderStage stage,
             MaterialBuilder::FeatureLevel featureLevel,
-            MaterialInfo const& material, filament::Variant variant) noexcept;
+            MaterialInfo const& material, dante::Variant variant) noexcept;
 
     static void generatePostProcessMaterialVariantDefines(utils::io::sstream& out,
-            filament::backend::ShaderStage stage,
+            dante::backend::ShaderStage stage,
             MaterialBuilder::FeatureLevel featureLevel,
-            MaterialInfo const& material, filament::PostProcessVariant variant) noexcept;
+            MaterialInfo const& material, dante::PostProcessVariant variant) noexcept;
 
     static void generateUserSpecConstants(
             const CodeGenerator& cg, utils::io::sstream& fs,
             MaterialBuilder::ConstantList const& constants);
 
-    std::string createPostProcessVertexProgram(filament::backend::ShaderModel sm,
+    std::string createPostProcessVertexProgram(dante::backend::ShaderModel sm,
             MaterialBuilder::TargetApi targetApi, MaterialBuilder::TargetLanguage targetLanguage,
             MaterialBuilder::FeatureLevel featureLevel,
-            MaterialInfo const& material, filament::Variant::type_t variantKey,
+            MaterialInfo const& material, dante::Variant::type_t variantKey,
             uint32_t apiLevel) const noexcept;
 
-    std::string createPostProcessFragmentProgram(filament::backend::ShaderModel sm,
+    std::string createPostProcessFragmentProgram(dante::backend::ShaderModel sm,
             MaterialBuilder::TargetApi targetApi, MaterialBuilder::TargetLanguage targetLanguage,
             MaterialBuilder::FeatureLevel featureLevel,
-            MaterialInfo const& material, filament::Variant::type_t variantKey,
+            MaterialInfo const& material, dante::Variant::type_t variantKey,
             uint32_t apiLevel) const noexcept;
 
     static void appendShader(utils::io::sstream& ss,
             const utils::CString& shader, size_t lineOffset) noexcept;
 
     static bool hasSkinningOrMorphing(
-            filament::Variant variant,
+            dante::Variant variant,
             MaterialBuilder::FeatureLevel featureLevel) noexcept;
 
     static bool hasStereo(
-            filament::Variant variant,
+            dante::Variant variant,
             MaterialBuilder::FeatureLevel featureLevel) noexcept;
 
-    static bool hasLighting(MaterialInfo const& material, filament::Variant variant) noexcept;
+    static bool hasLighting(MaterialInfo const& material, dante::Variant variant) noexcept;
 
     MaterialBuilder::PropertyList mProperties;
     MaterialBuilder::VariableList mVariables;
@@ -133,6 +129,6 @@ private:
     bool mIsMaterialVertexShaderEmpty;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_SHADERGENERATOR_H
+#endif // TNT_DANTE_DETAILS_SHADERGENERATOR_H

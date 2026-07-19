@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 //! \file
 
-#ifndef TNT_FILAMENT_BACKEND_PLATFORM_H
-#define TNT_FILAMENT_BACKEND_PLATFORM_H
+#ifndef TNT_DANTE_BACKEND_PLATFORM_H
+#define TNT_DANTE_BACKEND_PLATFORM_H
 
 #include <utils/compiler.h>
 #include <utils/CString.h>
@@ -25,7 +21,7 @@ namespace utils {
 class FeatureFlagManager;
 }
 
-namespace filament::backend {
+namespace dante::backend {
 
 class CallbackHandler;
 class Driver;
@@ -34,7 +30,7 @@ class Driver;
  * Platform is an interface that abstracts how the backend (also referred to as Driver) is
  * created. The backend provides several common Platform concrete implementations, which are
  * selected automatically. It is possible however to provide a custom Platform when creating
- * the filament Engine.
+ * the dante Engine.
  */
 class UTILS_PUBLIC Platform {
 public:
@@ -445,7 +441,7 @@ public:
     /**
      * Processes the platform's event queue when called from its primary event-handling thread.
      *
-     * Internally, Filament might need to call this when waiting on a fence. It is only implemented
+     * Internally, Dante might need to call this when waiting on a fence. It is only implemented
      * on platforms that need it, such as macOS + OpenGL. Returns false if this is not the main
      * thread, or if the platform does not need to perform any special processing.
      */
@@ -632,8 +628,8 @@ public:
 
     /**
      * Sets the callback function that the backend can use to update backend-specific statistics
-     * to aid with debugging. This callback can be called on either the Filament main thread or
-     * the Filament driver thread.
+     * to aid with debugging. This callback can be called on either the Dante main thread or
+     * the Dante driver thread.
      *
      * The callback signature is (key, intValue, stringValue). Note that for any given call,
      * only one of the value parameters (intValue or stringValue) will be meaningful, depending on
@@ -641,7 +637,7 @@ public:
      *
      * IMPORTANT_NOTE: because the callback can be called on the driver thread, only quick,
      * non-blocking work should be done inside it. Furthermore, no graphics API calls (such as GL
-     * calls) should be made, which could interfere with Filament's driver state. Lastly, the
+     * calls) should be made, which could interfere with Dante's driver state. Lastly, the
      * callback implementation must be synchronized (thread-safe) since it can be called from
      * either thread.
      *
@@ -660,7 +656,7 @@ public:
      * with a given key. It is possible for this function to be called multiple times with the
      * same key, in which case newer values should overwrite older values.
      *
-     * This function can be called on either the Filament main thread or the Filament driver thread.
+     * This function can be called on either the Dante main thread or the Dante driver thread.
      *
      * @param key           a null-terminated C-string with the key of the debug statistic
      * @param intValue      the updated integer value of key (the string value passed to the
@@ -674,7 +670,7 @@ public:
      * with a given key. It is possible for this function to be called multiple times with the
      * same key, in which case newer values should overwrite older values.
      *
-     * This function can be called on either the Filament main thread or the Filament driver thread.
+     * This function can be called on either the Dante main thread or the Dante driver thread.
      *
      * @param key           a null-terminated C-string with the key of the debug statistic
      * @param stringValue   the updated string value of key (the integer value passed to the
@@ -689,6 +685,6 @@ private:
     std::shared_ptr<DebugUpdateStatFunc> mDebugUpdateStat UTILS_GUARDED_BY(mMutex);
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_BACKEND_PLATFORM_H
+#endif // TNT_DANTE_BACKEND_PLATFORM_H

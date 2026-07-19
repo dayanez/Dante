@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_BINDINGMAP_H
-#define TNT_FILAMENT_BACKEND_OPENGL_BINDINGMAP_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_BINDINGMAP_H
+#define TNT_DANTE_BACKEND_OPENGL_BINDINGMAP_H
 
 #include "gl_headers.h"
 
@@ -19,7 +15,7 @@
 #include <stdint.h>
 #include <string.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class BindingMap {
     struct CompressedBinding {
@@ -74,6 +70,6 @@ public:
     }
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif //TNT_FILAMENT_BACKEND_OPENGL_BINDINGMAP_H
+#endif //TNT_DANTE_BACKEND_OPENGL_BINDINGMAP_H

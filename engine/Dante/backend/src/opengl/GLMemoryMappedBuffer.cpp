@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "GLMemoryMappedBuffer.h"
 
@@ -27,7 +23,7 @@
 #include <stdint.h>
 #include <string.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 GLMemoryMappedBuffer::GLMemoryMappedBuffer() = default;
 
@@ -59,7 +55,7 @@ GLMemoryMappedBuffer::GLMemoryMappedBuffer(OpenGLState& gls, HandleAllocatorGL& 
         return;
     }
 
-#if !defined(FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2)
+#if !defined(DANTE_SILENCE_NOT_SUPPORTED_BY_ES2)
         void* addr = nullptr;
 
 #   if !defined(__EMSCRIPTEN__)
@@ -103,7 +99,7 @@ void GLMemoryMappedBuffer::unmap(OpenGLState& gls, HandleAllocatorGL& handleAllo
         return;
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     gls.bindBuffer(gl.binding, gl.id);
 #   if !defined(__EMSCRIPTEN__)
         // don't unmap if we don't have a mapping or it didn't work
@@ -139,4 +135,4 @@ void GLMemoryMappedBuffer::copy(OpenGLState& gls, OpenGLDriver& gld,
     gld.scheduleDestroy(std::move(data));
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

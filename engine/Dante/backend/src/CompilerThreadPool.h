@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_COMPILERTHREADPOOL_H
-#define TNT_FILAMENT_BACKEND_COMPILERTHREADPOOL_H
+#ifndef TNT_DANTE_BACKEND_COMPILERTHREADPOOL_H
+#define TNT_DANTE_BACKEND_COMPILERTHREADPOOL_H
 
 #include <backend/DriverEnums.h>
 
@@ -20,7 +16,7 @@
 #include <utility>
 #include <vector>
 
-namespace filament::backend {
+namespace dante::backend {
 
 struct ProgramToken {
     virtual ~ProgramToken();
@@ -53,6 +49,6 @@ private:
     std::pair<Queue&, Queue::iterator> find(program_token_t const& token) UTILS_REQUIRES(mQueueLock);
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif  // TNT_FILAMENT_BACKEND_COMPILERTHREADPOOL_H
+#endif  // TNT_DANTE_BACKEND_COMPILERTHREADPOOL_H

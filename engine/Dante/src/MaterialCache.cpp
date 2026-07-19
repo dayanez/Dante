@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "MaterialCache.h"
 
@@ -14,10 +10,10 @@
 
 #include <utils/Logger.h>
 
-namespace filament {
+namespace dante {
 
 size_t MaterialCache::MaterialKey::Hash::operator()(
-        filament::MaterialCache::MaterialKey const& key) const noexcept {
+        dante::MaterialCache::MaterialKey const& key) const noexcept {
     uint32_t crc;
     if (key.parser->getMaterialCrc32(&crc)) {
         return size_t(crc);
@@ -74,4 +70,4 @@ void MaterialCache::releaseMaterial(FEngine& engine,
             });
 }
 
-} // namespace filament
+} // namespace dante

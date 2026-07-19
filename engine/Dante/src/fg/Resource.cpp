@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fg/details/Resource.h"
 
@@ -11,9 +7,9 @@
 #include <utils/CString.h>
 #include <utils/Panic.h>
 
-using namespace filament::backend;
+using namespace dante::backend;
 
-namespace filament {
+namespace dante {
 
 VirtualResource::~VirtualResource() noexcept = default;
 
@@ -89,7 +85,7 @@ void ImportedRenderTarget::assertConnect(FrameGraphTexture::Usage const u) const
                                     FrameGraphTexture::Usage::DEPTH_ATTACHMENT |
                                     FrameGraphTexture::Usage::STENCIL_ATTACHMENT;
 
-    FILAMENT_CHECK_PRECONDITION(none(u & ~ANY_ATTACHMENT))
+    DANTE_CHECK_PRECONDITION(none(u & ~ANY_ATTACHMENT))
             << "Imported render target resource \"" << name.c_str()
             << "\" can only be used as an attachment (usage=" << utils::to_string(u).c_str() << ')';
 }
@@ -132,4 +128,4 @@ FrameGraphTexture::Usage ImportedRenderTarget::usageFromAttachmentsFlags(
 template class Resource<FrameGraphTexture>;
 template class ImportedResource<FrameGraphTexture>;
 
-} // namespace filament
+} // namespace dante

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_FILAMAT_LINEDICTIONARY_H
 #define TNT_FILAMAT_LINEDICTIONARY_H
@@ -22,7 +18,7 @@ class ostream;
 
 namespace filamat {
 
-using ShaderStage = filament::backend::ShaderStage;
+using ShaderStage = dante::backend::ShaderStage;
 
 /**
  * LineDictionary parses and deduplicates a text shader into a minimal set of optimal string tokens.
@@ -80,7 +76,7 @@ public:
     LineDictionary(LineDictionary&&) = default;
 
     // Adds text to the dictionary, parsing it into lines.
-    void addText(filament::backend::ShaderStage stage, std::string_view text) noexcept;
+    void addText(dante::backend::ShaderStage stage, std::string_view text) noexcept;
 
     // Sorts the dictionary entries by frequency and reassigns their indices
     void resolve() noexcept;

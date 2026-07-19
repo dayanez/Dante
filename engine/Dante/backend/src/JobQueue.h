@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_JOBQUEUE_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_JOBQUEUE_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_JOBQUEUE_H
+#define TNT_DANTE_BACKEND_PRIVATE_JOBQUEUE_H
 
 #include <utils/compiler.h>
 #include <utils/Condition.h>
@@ -19,7 +15,7 @@
 #include <thread>
 #include <unordered_map>
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * A thread-safe producer-consumer queue with batching capabilities.
@@ -33,7 +29,7 @@ namespace filament::backend {
  *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * #include "private/backend/JobQueue.h"
- * using namespace filament::backend;
+ * using namespace dante::backend;
  *
  * JobQueue::Ptr queue = JobQueue::create();
  * JobWorker::Ptr worker = AmortizationWorker::create(queue);
@@ -260,6 +256,6 @@ private:
     std::thread mThread;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_JOBQUEUE_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_JOBQUEUE_H

@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <geometry/Transcoder.h>
 
 #include <math/half.h>
 
-using filament::math::half;
+using dante::math::half;
 
-namespace filament {
+namespace dante {
 namespace geometry {
 
 // The internal workhorse function of the Transcoder, which takes arbitrary input but always
@@ -196,4 +192,4 @@ size_t Transcoder::operator()(float* UTILS_RESTRICT target, void const* UTILS_RE
 }
 
 } // namespace geometry
-} // namespace filament
+} // namespace dante

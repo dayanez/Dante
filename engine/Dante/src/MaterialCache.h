@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
-#ifndef TNT_FILAMENT_MATERIALCACHE_H
-#define TNT_FILAMENT_MATERIALCACHE_H
+#ifndef TNT_DANTE_MATERIALCACHE_H
+#define TNT_DANTE_MATERIALCACHE_H
 
 #include "MaterialDefinition.h"
 #include "ProgramSpecialization.h"
 
-#include <private/filament/Variant.h>
+#include <private/dante/Variant.h>
 
 #include <backend/CallbackHandler.h>
 #include <backend/DriverEnums.h>
@@ -20,7 +16,7 @@
 #include <utils/Invocable.h>
 #include <utils/RefCountedMap.h>
 
-namespace filament {
+namespace dante {
 
 class Material;
 
@@ -82,6 +78,6 @@ private:
     utils::InternPool<backend::Program::SpecializationConstant> mSpecializationConstantsInternPool;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif  // TNT_FILAMENT_MATERIALCACHE_H
+#endif  // TNT_DANTE_MATERIALCACHE_H

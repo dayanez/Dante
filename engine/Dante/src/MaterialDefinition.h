@@ -1,19 +1,15 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
-#ifndef TNT_FILAMENT_MATERIALDEFINITION_H
-#define TNT_FILAMENT_MATERIALDEFINITION_H
+#ifndef TNT_DANTE_MATERIALDEFINITION_H
+#define TNT_DANTE_MATERIALDEFINITION_H
 
 #include "ProgramSpecialization.h"
 
 #include "ds/DescriptorSetLayout.h"
 
-#include <private/filament/BufferInterfaceBlock.h>
-#include <private/filament/ConstantInfo.h>
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/SubpassInfo.h>
-#include <private/filament/Variant.h>
+#include <private/dante/BufferInterfaceBlock.h>
+#include <private/dante/ConstantInfo.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/SubpassInfo.h>
+#include <private/dante/Variant.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -21,7 +17,7 @@
 
 #include <tsl/robin_set.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class MaterialParser;
@@ -31,11 +27,11 @@ class MaterialParser;
  * Given that this is a pure read-only class, nearly all members are public without getters.
  */
 struct MaterialDefinition {
-    using BlendingMode = filament::BlendingMode;
-    using Shading = filament::Shading;
-    using Interpolation = filament::Interpolation;
-    using VertexDomain = filament::VertexDomain;
-    using TransparencyMode = filament::TransparencyMode;
+    using BlendingMode = dante::BlendingMode;
+    using Shading = dante::Shading;
+    using Interpolation = dante::Interpolation;
+    using VertexDomain = dante::VertexDomain;
+    using TransparencyMode = dante::TransparencyMode;
     using CullingMode = backend::CullingMode;
 
     using AttributeInfoContainer = utils::FixedCapacityVector<std::pair<utils::CString, uint8_t>>;
@@ -97,9 +93,9 @@ struct MaterialDefinition {
     backend::DescriptorSetLayout descriptorSetLayoutDescription;
 
     // try to order by frequency of use
-    filament::DescriptorSetLayout perViewDescriptorSetLayoutPcf;
-    filament::DescriptorSetLayout perViewDescriptorSetLayoutS2d;
-    filament::DescriptorSetLayout descriptorSetLayout;
+    dante::DescriptorSetLayout perViewDescriptorSetLayoutPcf;
+    dante::DescriptorSetLayout perViewDescriptorSetLayoutS2d;
+    dante::DescriptorSetLayout descriptorSetLayout;
     backend::Program::DescriptorSetInfo programDescriptorBindings;
 
     backend::RasterState rasterState;
@@ -184,6 +180,6 @@ private:
     std::unique_ptr<MaterialParser> mMaterialParser;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif  // TNT_FILAMENT_MATERIALDEFINITION_H
+#endif  // TNT_DANTE_MATERIALDEFINITION_H

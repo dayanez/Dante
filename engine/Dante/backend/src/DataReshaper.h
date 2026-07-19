@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DRIVER_DATARESHAPER_H
-#define TNT_FILAMENT_DRIVER_DATARESHAPER_H
+#ifndef TNT_DANTE_DRIVER_DATARESHAPER_H
+#define TNT_DANTE_DRIVER_DATARESHAPER_H
 
 #include <backend/PixelBufferDescriptor.h>
 
@@ -20,7 +16,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 namespace backend {
 
 namespace {
@@ -351,6 +347,6 @@ public:
 };
 
 } // namespace backend
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DRIVER_DATARESHAPER_H
+#endif // TNT_DANTE_DRIVER_DATARESHAPER_H

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_GEOMETRY_SURFACEORIENTATION_H
 #define TNT_GEOMETRY_SURFACEORIENTATION_H
@@ -12,7 +8,7 @@
 
 #include <utils/compiler.h>
 
-namespace filament {
+namespace dante {
 
 /**
  * Mesh-related utilities.
@@ -23,7 +19,7 @@ struct OrientationBuilderImpl;
 struct OrientationImpl;
 
 /**
- * The surface orientation helper can be used to populate Filament-style TANGENTS buffers.
+ * The surface orientation helper can be used to populate Dante-style TANGENTS buffers.
  */
 class UTILS_PUBLIC SurfaceOrientation {
 public:
@@ -64,14 +60,14 @@ public:
          */
         Builder& vertexCount(size_t vertexCount) noexcept;
 
-        Builder& normals(const filament::math::float3*, size_t stride = 0) noexcept;
-        Builder& tangents(const filament::math::float4*, size_t stride = 0) noexcept;
-        Builder& uvs(const filament::math::float2*, size_t stride = 0) noexcept;
-        Builder& positions(const filament::math::float3*, size_t stride = 0) noexcept;
+        Builder& normals(const dante::math::float3*, size_t stride = 0) noexcept;
+        Builder& tangents(const dante::math::float4*, size_t stride = 0) noexcept;
+        Builder& uvs(const dante::math::float2*, size_t stride = 0) noexcept;
+        Builder& positions(const dante::math::float3*, size_t stride = 0) noexcept;
 
         Builder& triangleCount(size_t triangleCount) noexcept;
-        Builder& triangles(const filament::math::uint3*) noexcept;
-        Builder& triangles(const filament::math::ushort3*) noexcept;
+        Builder& triangles(const dante::math::uint3*) noexcept;
+        Builder& triangles(const dante::math::ushort3*) noexcept;
 
         /**
          * Generates quats or returns null if the submitted data is an incomplete combination.
@@ -99,9 +95,9 @@ public:
      * The optional stride is the desired quat-to-quat stride in bytes.
      * @{
      */
-    void getQuats(filament::math::quatf* out, size_t quatCount, size_t stride = 0) const noexcept;
-    void getQuats(filament::math::short4* out, size_t quatCount, size_t stride = 0) const noexcept;
-    void getQuats(filament::math::quath* out, size_t quatCount, size_t stride = 0) const noexcept;
+    void getQuats(dante::math::quatf* out, size_t quatCount, size_t stride = 0) const noexcept;
+    void getQuats(dante::math::short4* out, size_t quatCount, size_t stride = 0) const noexcept;
+    void getQuats(dante::math::quath* out, size_t quatCount, size_t stride = 0) const noexcept;
     /**
      * @}
      */
@@ -115,6 +111,6 @@ private:
 };
 
 } // namespace geometry
-} // namespace filament
+} // namespace dante
 
 #endif // TNT_GEOMETRY_SURFACEORIENTATION_H

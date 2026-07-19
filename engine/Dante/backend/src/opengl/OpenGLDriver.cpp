@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "OpenGLDriver.h"
 
@@ -104,7 +100,7 @@
 #define DEBUG_MARKER_LEVEL            DEBUG_MARKER_NONE
 
 // Override the debug markers if we are forcing profiling mode
-#if defined(FILAMENT_FORCE_PROFILING_MODE)
+#if defined(DANTE_FORCE_PROFILING_MODE)
 #   undef DEBUG_GROUP_MARKER_LEVEL
 #   undef DEBUG_MARKER_LEVEL
 
@@ -135,10 +131,10 @@
 #   define PROFILE_MARKER(marker)
 #endif
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament::backend {
+namespace dante::backend {
 
 namespace {
 
@@ -230,7 +226,7 @@ OpenGLDriver* OpenGLDriver::create(OpenGLPlatform* platform,
     }
 #endif
 
-    constexpr size_t defaultSize = FILAMENT_OPENGL_HANDLE_ARENA_SIZE_IN_MB * 1024U * 1024U;
+    constexpr size_t defaultSize = DANTE_OPENGL_HANDLE_ARENA_SIZE_IN_MB * 1024U * 1024U;
     Platform::DriverConfig validConfig{ driverConfig };
     validConfig.handleArenaSize = std::max(driverConfig.handleArenaSize, defaultSize);
     OpenGLDriver* driver = new(std::nothrow) OpenGLDriver(ec, validConfig);
@@ -251,8 +247,8 @@ OpenGLDriver::DebugMarker::DebugMarker(OpenGLDriver& driver, const char* string)
 #endif
 
 #if DEBUG_MARKER_LEVEL & DEBUG_MARKER_BACKEND
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_NAME_BEGIN(FILAMENT_TRACING_CATEGORY_FILAMENT, string);
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_NAME_BEGIN(DANTE_TRACING_CATEGORY_DANTE, string);
 #endif
 #endif
 }
@@ -268,8 +264,8 @@ OpenGLDriver::DebugMarker::~DebugMarker() noexcept {
 #endif
 
 #if DEBUG_MARKER_LEVEL & DEBUG_MARKER_BACKEND
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_NAME_END(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_NAME_END(DANTE_TRACING_CATEGORY_DANTE);
 #endif
 #endif
 }
@@ -366,7 +362,7 @@ void OpenGLDriver::terminate() {
 
     mShaderCompilerService.terminate();
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     // and make sure to execute all the GpuCommandCompleteOps callbacks
     executeGpuCommandsCompleteOps();
 
@@ -430,7 +426,7 @@ void OpenGLDriver::setPushConstant(ShaderStage const stage, uint8_t const index,
         PushConstantVariant const value) {
     assert_invariant(stage == ShaderStage::VERTEX || stage == ShaderStage::FRAGMENT);
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     if (UTILS_UNLIKELY(!mValidProgram)) {
         return;
     }
@@ -967,7 +963,7 @@ void OpenGLDriver::textureStorage(OpenGLState& gl, GLTexture* t,
     gl.activeTexture(OpenGLContext::DUMMY_TEXTURE_BINDING);
 
 #ifdef GL_EXT_protected_textures
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (UTILS_UNLIKELY(useProtectedMemory)) {
         assert_invariant(gl.ext.EXT_protected_textures);
         glTexParameteri(t->gl.target, GL_TEXTURE_PROTECTED_EXT, 1);
@@ -979,7 +975,7 @@ void OpenGLDriver::textureStorage(OpenGLState& gl, GLTexture* t,
         case GL_TEXTURE_2D:
         case GL_TEXTURE_CUBE_MAP:
             if (UTILS_LIKELY(!gl.isES2())) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
                 glTexStorage2D(t->gl.target, GLsizei(t->levels), t->gl.internalFormat,
                         GLsizei(width), GLsizei(height));
 #endif
@@ -1011,7 +1007,7 @@ void OpenGLDriver::textureStorage(OpenGLState& gl, GLTexture* t,
         case GL_TEXTURE_3D:
         case GL_TEXTURE_2D_ARRAY: {
             assert_invariant(!gl.isES2());
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             glTexStorage3D(t->gl.target, GLsizei(t->levels), t->gl.internalFormat,
                     GLsizei(width), GLsizei(height), GLsizei(depth));
 #endif
@@ -1019,7 +1015,7 @@ void OpenGLDriver::textureStorage(OpenGLState& gl, GLTexture* t,
         }
         case GL_TEXTURE_CUBE_MAP_ARRAY: {
             assert_invariant(!gl.isES2());
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             glTexStorage3D(t->gl.target, GLsizei(t->levels), t->gl.internalFormat,
                     GLsizei(width), GLsizei(height), GLsizei(depth) * 6);
 #endif
@@ -1123,7 +1119,7 @@ void OpenGLDriver::createTextureCommon(OpenGLState& gl, Handle<HwTexture> th, Sa
             t->gl.target = getTextureTargetNotExternal(target);
 
             if (t->samples > 1) {
-                // Note: we can't be here in practice because filament's user API doesn't
+                // Note: we can't be here in practice because dante's user API doesn't
                 // allow the creation of multi-sampled textures.
 #if defined(BACKEND_OPENGL_LEVEL_GLES31)
                 if (gl.features.multisample_texture) {
@@ -1196,10 +1192,10 @@ void OpenGLDriver::createTextureViewR(Handle<HwTexture> th,
     DEBUG_MARKER()
     GLTexture const* const src = handle_cast<GLTexture const*>(srch);
 
-    FILAMENT_CHECK_PRECONDITION(any(src->usage & TextureUsage::SAMPLEABLE))
+    DANTE_CHECK_PRECONDITION(any(src->usage & TextureUsage::SAMPLEABLE))
             << "TextureView can only be created on a SAMPLEABLE texture";
 
-    FILAMENT_CHECK_PRECONDITION(!src->gl.imported)
+    DANTE_CHECK_PRECONDITION(!src->gl.imported)
             << "TextureView can't be created on imported textures";
 
     if (!src->ref) {
@@ -1242,10 +1238,10 @@ void OpenGLDriver::createTextureViewSwizzleCommon(Handle<HwTexture> th, Handle<H
         TextureSwizzle const a, ImmutableCString&& tag) {
     GLTexture const* const src = handle_cast<GLTexture const*>(srch);
 
-    FILAMENT_CHECK_PRECONDITION(any(src->usage & TextureUsage::SAMPLEABLE))
+    DANTE_CHECK_PRECONDITION(any(src->usage & TextureUsage::SAMPLEABLE))
                     << "TextureView can only be created on a SAMPLEABLE texture";
 
-    FILAMENT_CHECK_PRECONDITION(!src->gl.imported)
+    DANTE_CHECK_PRECONDITION(!src->gl.imported)
                     << "TextureView can't be created on imported textures";
 
     if (!src->ref) {
@@ -1477,7 +1473,7 @@ void OpenGLDriver::importTextureCommon(OpenGLState& gl, Handle<HwTexture> th, in
     }
 
     if (t->samples > 1) {
-        // Note: we can't be here in practice because filament's user API doesn't
+        // Note: we can't be here in practice because dante's user API doesn't
         // allow the creation of multi-sampled textures.
 #if defined(BACKEND_OPENGL_LEVEL_GLES31)
         if (gl.features.multisample_texture) {
@@ -1566,7 +1562,7 @@ void OpenGLDriver::updateVertexArrayObject(GLRenderPrimitive* rp, GLVertexBuffer
             if (UTILS_VERY_UNLIKELY(!vb->gl.buffers[bi])) {
                 // if a buffer is defined it must not be invalid, we try to gracefully handle it though
                 // since it is a situation the user can easily create, and can't be easily caught on
-                // the filament frontend.
+                // the dante frontend.
                 continue;
             }
 
@@ -1581,7 +1577,7 @@ void OpenGLDriver::updateVertexArrayObject(GLRenderPrimitive* rp, GLVertexBuffer
             GLsizei const stride = attribute.stride;
             void const* pointer = reinterpret_cast<void const *>(attribute.offset);
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             if (UTILS_UNLIKELY(attribute.flags & Attribute::FLAG_INTEGER_TARGET)) {
                 // integer attributes can't be floats
                 assert_invariant(type == GL_BYTE || type == GL_UNSIGNED_BYTE || type == GL_SHORT ||
@@ -1604,7 +1600,7 @@ void OpenGLDriver::updateVertexArrayObject(GLRenderPrimitive* rp, GLVertexBuffer
             // But at this point, we don't know what the shader requirements are, and so we must
             // rely on the attribute.
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             if (UTILS_UNLIKELY(attribute.flags & Attribute::FLAG_INTEGER_TARGET)) {
                 if (!gl.isES2()) {
                     // on ES2, we know the shader doesn't have integer attributes
@@ -1650,7 +1646,7 @@ void OpenGLDriver::framebufferTexture(TargetBufferInfo const& binfo,
 
     switch (attachment) {
         case GL_COLOR_ATTACHMENT0:
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         case GL_COLOR_ATTACHMENT1:
         case GL_COLOR_ATTACHMENT2:
         case GL_COLOR_ATTACHMENT3:
@@ -1672,7 +1668,7 @@ void OpenGLDriver::framebufferTexture(TargetBufferInfo const& binfo,
         case GL_STENCIL_ATTACHMENT:
             resolveFlags = TargetBufferFlags::STENCIL;
             break;
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         case GL_DEPTH_STENCIL_ATTACHMENT:
             assert_invariant(!mContext.isES2());
             resolveFlags = TargetBufferFlags::DEPTH;
@@ -1693,7 +1689,7 @@ void OpenGLDriver::framebufferTexture(TargetBufferInfo const& binfo,
     //       equivalent to the application calling InvalidateFramebuffer for this attachment"
     UTILS_UNUSED bool attachmentTypeNotSupportedByMSRTT = false;
     switch (attachment) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         case GL_DEPTH_STENCIL_ATTACHMENT:
             assert_invariant(!mContext.isES2());
             UTILS_FALLTHROUGH;
@@ -1761,7 +1757,7 @@ void OpenGLDriver::framebufferTexture(TargetBufferInfo const& binfo,
                             target, t->gl.id, binfo.level);
                 } else {
                     // in principle, it's possible to have a renderbuffer that's external
-                    // (it filament this never happens, currently)
+                    // (it dante this never happens, currently)
                     assert_invariant(target == GL_TEXTURE_2D || target == GL_TEXTURE_EXTERNAL_OES);
                     glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment,
                             GL_RENDERBUFFER, t->gl.id);
@@ -1774,10 +1770,10 @@ void OpenGLDriver::framebufferTexture(TargetBufferInfo const& binfo,
             case GL_TEXTURE_3D:
             case GL_TEXTURE_2D_ARRAY:
             case GL_TEXTURE_CUBE_MAP_ARRAY:
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
 
                 // TODO: support multiview for iOS and WebGL
-#if !defined(__EMSCRIPTEN__) && !defined(FILAMENT_IOS)
+#if !defined(__EMSCRIPTEN__) && !defined(DANTE_IOS)
                 if (layerCount > 1) {
                     // if layerCount > 1, it means we use the multiview extension.
                     if (rt->gl.samples > 1) {
@@ -1790,7 +1786,7 @@ void OpenGLDriver::framebufferTexture(TargetBufferInfo const& binfo,
                                 binfo.layer, layerCount);
                     }
                 } else
-#endif // !defined(__EMSCRIPTEN__) && !defined(FILAMENT_IOS)
+#endif // !defined(__EMSCRIPTEN__) && !defined(DANTE_IOS)
                 {
                     // GL_TEXTURE_2D_MULTISAMPLE_ARRAY is not supported in GLES
                     glFramebufferTextureLayer(GL_FRAMEBUFFER, attachment,
@@ -1895,7 +1891,7 @@ void OpenGLDriver::framebufferTexture(TargetBufferInfo const& binfo,
             case GL_TEXTURE_3D:
             case GL_TEXTURE_2D_ARRAY:
             case GL_TEXTURE_CUBE_MAP_ARRAY:
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
                 glFramebufferTextureLayer(GL_FRAMEBUFFER, attachment,
                         t->gl.id, binfo.level, binfo.layer);
 #endif
@@ -1934,7 +1930,7 @@ void OpenGLDriver::renderBufferStorage(GLuint const rbo, GLenum internalformat, 
 #endif // GL_EXT_multisampled_render_to_texture
 #endif // __EMSCRIPTEN__
         {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             glRenderbufferStorageMultisample(GL_RENDERBUFFER,
                     samples, internalformat, GLsizei(width), GLsizei(height));
 #endif
@@ -2030,7 +2026,7 @@ void OpenGLDriver::createRenderTargetR(Handle<HwRenderTarget> rth,
     };
 
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (any(targets & TargetBufferFlags::COLOR_ALL)) {
         GLenum bufs[MRT::MAX_SUPPORTED_RENDER_TARGET_COUNT] = { GL_NONE };
         const size_t maxDrawBuffers = getMaxDrawBuffers();
@@ -2057,7 +2053,7 @@ void OpenGLDriver::createRenderTargetR(Handle<HwRenderTarget> rth,
     // handle special cases first (where depth/stencil are packed)
     bool specialCased = false;
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (!getContext().isES2() &&
             (targets & TargetBufferFlags::DEPTH_AND_STENCIL) == TargetBufferFlags::DEPTH_AND_STENCIL) {
         assert_invariant(depth.handle);
@@ -2115,7 +2111,7 @@ void OpenGLDriver::createFenceR(Handle<HwFence> fh, ImmutableCString&& tag) {
         return;
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     // This is the case where we need to use OpenGL fences, as soon as we return, the user
     // is allowed to destroy the fence, so we need to keep a reference to the internal state.
     std::weak_ptr<GLFence::State> const weak = f->state;
@@ -2165,7 +2161,7 @@ void OpenGLDriver::createSwapChainR(Handle<HwSwapChain> sch, void* nativeWindow,
 
 #if !defined(__EMSCRIPTEN__)
     // note: in practice this should never happen on Android
-    FILAMENT_CHECK_POSTCONDITION(sc->swapChain) << "createSwapChain(" << nativeWindow << ", "
+    DANTE_CHECK_POSTCONDITION(sc->swapChain) << "createSwapChain(" << nativeWindow << ", "
                                                 << flags << ") failed. See logs for details.";
 #endif
 
@@ -2194,7 +2190,7 @@ void OpenGLDriver::createSwapChainHeadlessR(Handle<HwSwapChain> sch,
 
 #if !defined(__EMSCRIPTEN__)
     // note: in practice this should never happen on Android
-    FILAMENT_CHECK_POSTCONDITION(sc->swapChain)
+    DANTE_CHECK_POSTCONDITION(sc->swapChain)
             << "createSwapChainHeadless(" << width << ", " << height << ", " << flags
             << ") failed. See logs for details.";
 #endif
@@ -2423,7 +2419,7 @@ void OpenGLDriver::destroyRenderTarget(Handle<HwRenderTarget> rth) {
             gl.unbindFramebuffer(GL_FRAMEBUFFER);
         }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         if (UTILS_UNLIKELY(gl.bugs.delay_fbo_destruction)) {
             if (rt->gl.fbo) {
                 whenFrameComplete([fbo = rt->gl.fbo]() {
@@ -2745,7 +2741,7 @@ FenceStatus OpenGLDriver::fenceWait(FenceHandle fh, uint64_t const timeout) {
     }
 
     // This is the case where we need to use OpenGL fences
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     FenceStatus result = FenceStatus::TIMEOUT_EXPIRED;
     FenceStatus status = waitForFence([&] {
         if (f->state->status != FenceStatus::TIMEOUT_EXPIRED) {
@@ -3132,7 +3128,7 @@ void OpenGLDriver::commit(Handle<HwSwapChain> sch) {
         });
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (UTILS_UNLIKELY(!mFrameCompleteOps.empty())) {
         whenGpuCommandsComplete([ops = std::move(mFrameCompleteOps)]() {
             for (auto&& op: ops) {
@@ -3368,7 +3364,7 @@ void OpenGLDriver::updateBufferObjectUnsynchronized(
         return;
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if constexpr (!HAS_MAPBUFFERS) {
         updateBufferObject(boh, std::move(bd), byteOffset);
     } else {
@@ -3507,7 +3503,7 @@ void OpenGLDriver::setTextureData(OpenGLState& gl, GLTexture const* t, uint32_t 
         glType = getType(p.type);
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (!gl.isES2()) {
         gl.pixelStore(GL_UNPACK_ROW_LENGTH, GLint(p.stride));
     }
@@ -3539,7 +3535,7 @@ void OpenGLDriver::setTextureData(OpenGLState& gl, GLTexture const* t, uint32_t 
             break;
         case SamplerType::SAMPLER_3D:
             assert_invariant(!gl.isES2());
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             assert_invariant(zoffset + depth <= std::max(1u, t->depth >> level));
             gl.bindTexture(OpenGLContext::DUMMY_TEXTURE_BINDING, t->gl.target, t->gl.id, t->gl.external);
             gl.activeTexture(OpenGLContext::DUMMY_TEXTURE_BINDING);
@@ -3552,7 +3548,7 @@ void OpenGLDriver::setTextureData(OpenGLState& gl, GLTexture const* t, uint32_t 
         case SamplerType::SAMPLER_2D_ARRAY:
         case SamplerType::SAMPLER_CUBEMAP_ARRAY:
             assert_invariant(!gl.isES2());
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             assert_invariant(zoffset + depth <= t->depth);
             // NOTE: GL_TEXTURE_2D_MULTISAMPLE is not allowed
             gl.bindTexture(OpenGLContext::DUMMY_TEXTURE_BINDING, t->gl.target, t->gl.id, t->gl.external);
@@ -3627,7 +3623,7 @@ void OpenGLDriver::setCompressedTextureData(OpenGLState& gl, GLTexture const* t,
             break;
         case SamplerType::SAMPLER_3D:
             assert_invariant(!gl.isES2());
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             gl.bindTexture(OpenGLContext::DUMMY_TEXTURE_BINDING, t->gl.target, t->gl.id, t->gl.external);
             gl.activeTexture(OpenGLContext::DUMMY_TEXTURE_BINDING);
             assert_invariant(t->gl.target == GL_TEXTURE_3D);
@@ -3640,7 +3636,7 @@ void OpenGLDriver::setCompressedTextureData(OpenGLState& gl, GLTexture const* t,
         case SamplerType::SAMPLER_2D_ARRAY:
         case SamplerType::SAMPLER_CUBEMAP_ARRAY:
             assert_invariant(!gl.isES2());
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             assert_invariant(t->gl.target == GL_TEXTURE_2D_ARRAY ||
                     t->gl.target == GL_TEXTURE_CUBE_MAP_ARRAY);
             glCompressedTexSubImage3D(t->gl.target, GLint(level),
@@ -3848,7 +3844,7 @@ void OpenGLDriver::beginRenderPass(Handle<HwRenderTarget> rth,
         // EXT_multisampled_render_to_texture emulation).
         // We would need to perform a "backward" resolve, i.e. load the resolved texture into the
         // tile, everything must appear as though the multi-sample buffer was lost.
-        // However, Filament specifies that a non multi-sample attachment to a
+        // However, Dante specifies that a non multi-sample attachment to a
         // multi-sample RenderTarget is always discarded. We do this because implementing
         // the load on Metal is not trivial, and it's not a feature we rely on at this time.
         discardFlags |= rt->gl.resolve;
@@ -3965,7 +3961,7 @@ void OpenGLDriver::resolvePass(ResolveAction const action, GLRenderTarget const*
         return;
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     assert_invariant(rt->gl.fbo_read);
     auto& gl = getBackendState();
     const TargetBufferFlags resolve = rt->gl.resolve & ~discardFlags;
@@ -4003,7 +3999,7 @@ GLsizei OpenGLDriver::getAttachments(AttachmentArray& attachments,
     if (any(buffers & TargetBufferFlags::COLOR0)) {
         attachments[attachmentCount++] = isDefaultFramebuffer ? GL_COLOR : GL_COLOR_ATTACHMENT0;
     }
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (any(buffers & TargetBufferFlags::COLOR1)) {
         assert_invariant(!isDefaultFramebuffer);
         attachments[attachmentCount++] = GL_COLOR_ATTACHMENT1;
@@ -4087,8 +4083,8 @@ void OpenGLDriver::pushGroupMarker(char const* string) {
 #endif
 
 #if DEBUG_GROUP_MARKER_LEVEL & DEBUG_GROUP_MARKER_BACKEND
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_NAME_BEGIN(FILAMENT_TRACING_CATEGORY_FILAMENT, string);
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_NAME_BEGIN(DANTE_TRACING_CATEGORY_DANTE, string);
 #endif
 #endif
 }
@@ -4104,8 +4100,8 @@ void OpenGLDriver::popGroupMarker(int) {
 #endif
 
 #if DEBUG_GROUP_MARKER_LEVEL & DEBUG_GROUP_MARKER_BACKEND
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_NAME_END(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_NAME_END(DANTE_TRACING_CATEGORY_DANTE);
 #endif
 #endif
 }
@@ -4185,7 +4181,7 @@ void OpenGLDriver::readPixelsFromBoundFramebuffer(uint32_t const x, uint32_t con
         return;
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     GLuint pbo;
     glGenBuffers(1, &pbo);
     gl.bindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
@@ -4250,7 +4246,7 @@ void OpenGLDriver::readPixels(Handle<HwRenderTarget> src, uint32_t const x, uint
         return;
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     // glReadPixel doesn't resolve automatically, but it does with the auto-resolve extension,
     // which we're always emulating. So if we have a resolved fbo (fbo_read), use that instead.
     gl.bindFramebuffer(GL_READ_FRAMEBUFFER, s->gl.fbo_read ? s->gl.fbo_read : s->gl.fbo);
@@ -4264,8 +4260,8 @@ void OpenGLDriver::readTexture(Handle<HwTexture> src, uint8_t level, uint16_t la
     auto& gl = getBackendState();
 
     // readTexture() requires GLES 3.0+ features such as GL_READ_FRAMEBUFFER and
-    // glFramebufferTextureLayer, so we wrap it in FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2.
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+    // glFramebufferTextureLayer, so we wrap it in DANTE_SILENCE_NOT_SUPPORTED_BY_ES2.
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (UTILS_UNLIKELY(gl.isES2())) {
         // This is not supported on ES2 (at least not in this driver)
         scheduleDestroy(std::move(p));
@@ -4321,7 +4317,7 @@ void OpenGLDriver::readBufferSubData(BufferObjectHandle boh,
     UTILS_UNUSED_IN_RELEASE auto& gl = getBackendState();
     assert_invariant(!gl.isES2());
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     GLBufferObject const* bo = handle_cast<GLBufferObject const*>(boh);
 
     // TODO: measure the two solutions
@@ -4386,7 +4382,7 @@ void OpenGLDriver::executeEveryNowAndThenOps() noexcept { // NOLINT(*-exception-
     }
 }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
 void OpenGLDriver::whenFrameComplete(const std::function<void()>& fn) {
     mFrameCompleteOps.push_back(fn);
 }
@@ -4432,7 +4428,7 @@ void OpenGLDriver::executeGpuCommandsCompleteOps() noexcept { // NOLINT(*-except
 
 void OpenGLDriver::tick(int) {
     DEBUG_MARKER()
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     executeGpuCommandsCompleteOps();
 #endif
     executeEveryNowAndThenOps();
@@ -4493,7 +4489,7 @@ void OpenGLDriver::endFrame(UTILS_UNUSED uint32_t const frameId) {
     PROFILE_MARKER(PROFILE_NAME_ENDFRAME)
 #if defined(__EMSCRIPTEN__)
     // WebGL builds are single-threaded so users might manipulate various GL state after we're
-    // done with the frame. We do NOT officially support using Filament in this way, but we can
+    // done with the frame. We do NOT officially support using Dante in this way, but we can
     // at least do some minimal safety things here, such as resetting the VAO to 0.
     auto& gl = getBackendState();
     gl.bindVertexArray(nullptr);
@@ -4504,7 +4500,7 @@ void OpenGLDriver::endFrame(UTILS_UNUSED uint32_t const frameId) {
     gl.depthFunc(GL_LESS);
     gl.disable(GL_SCISSOR_TEST);
 #endif
-    //FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "glFinish");
+    //DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "glFinish");
     //glFinish();
     mPlatform.endFrame(frameId);
     insertEventMarker("endFrame");
@@ -4546,7 +4542,7 @@ void OpenGLDriver::flush(int) {
 void OpenGLDriver::finish(int) {
     DEBUG_MARKER()
     glFinish();
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     executeGpuCommandsCompleteOps();
     assert_invariant(mGpuCommandCompleteOps.empty());
 #endif
@@ -4573,7 +4569,7 @@ void OpenGLDriver::clearWithRasterPipe(TargetBufferFlags const clearFlags,
         getBackendState().stencilMaskSeparate(0xFF, getBackendState().state.stencil.back.stencilMask);
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (UTILS_LIKELY(!mContext.isES2())) {
         GLRenderTarget const* rt = handle_cast<GLRenderTarget*>(mRenderPassTarget);
         auto clearColorBuffer = [&](int i, TargetBufferFlags flag) {
@@ -4669,10 +4665,10 @@ void OpenGLDriver::resolve(
     assert_invariant(s);
     assert_invariant(d);
 
-    FILAMENT_CHECK_PRECONDITION(d->width == s->width && d->height == s->height)
+    DANTE_CHECK_PRECONDITION(d->width == s->width && d->height == s->height)
             << "invalid resolve: src and dst sizes don't match";
 
-    FILAMENT_CHECK_PRECONDITION(s->samples > 1 && d->samples == 1)
+    DANTE_CHECK_PRECONDITION(s->samples > 1 && d->samples == 1)
             << "invalid resolve: src.samples=" << +s->samples << ", dst.samples=" << +d->samples;
 
     blit(   dst, dstLevel, dstLayer, {},
@@ -4688,7 +4684,7 @@ void OpenGLDriver::blit(
     UTILS_UNUSED_IN_RELEASE auto& gl = getBackendState();
     assert_invariant(!gl.isES2());
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
 
     GLTexture const* d = handle_cast<GLTexture*>(dst);
     GLTexture const* s = handle_cast<GLTexture*>(src);
@@ -4820,14 +4816,14 @@ void OpenGLDriver::blitDEPRECATED(TargetBufferFlags const buffers,
     UTILS_UNUSED_IN_RELEASE auto& gl = getBackendState();
     assert_invariant(!gl.isES2());
 
-    FILAMENT_CHECK_PRECONDITION(buffers == TargetBufferFlags::COLOR0)
+    DANTE_CHECK_PRECONDITION(buffers == TargetBufferFlags::COLOR0)
             << "blitDEPRECATED only supports COLOR0";
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             srcRect.left >= 0 && srcRect.bottom >= 0 && dstRect.left >= 0 && dstRect.bottom >= 0)
             << "Source and destination rects must be positive.";
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
 
     GLenum const glFilterMode = (filter == SamplerMagFilter::NEAREST) ? GL_NEAREST : GL_LINEAR;
 
@@ -4980,7 +4976,7 @@ void OpenGLDriver::draw2(uint32_t const indexOffset, uint32_t const indexCount, 
     DEBUG_MARKER()
     assert_invariant(!mContext.isES2());
     assert_invariant(mBoundRenderPrimitive);
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     if (UTILS_UNLIKELY(!mValidProgram)) {
         return;
     }
@@ -4995,7 +4991,7 @@ void OpenGLDriver::draw2(uint32_t const indexOffset, uint32_t const indexCount, 
         updateDescriptors(invalidDescriptorSets);
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     GLRenderPrimitive const* const rp = mBoundRenderPrimitive;
     if (UTILS_UNLIKELY(!rp)) {
         return;
@@ -5006,7 +5002,7 @@ void OpenGLDriver::draw2(uint32_t const indexOffset, uint32_t const indexCount, 
             GLsizei(instanceCount));
 #endif
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     CHECK_GL_ERROR_NON_FATAL()
 #else
     CHECK_GL_ERROR()
@@ -5021,7 +5017,7 @@ void OpenGLDriver::drawArrays(uint32_t const vertexOffset, uint32_t const vertex
     // VertexBuffers at FEATURE_LEVEL_0, so this path should never execute on ES2.
     assert_invariant(!mContext.isES2());
     assert_invariant(mBoundRenderPrimitive);
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     if (UTILS_UNLIKELY(!mValidProgram)) {
         return;
     }
@@ -5035,13 +5031,13 @@ void OpenGLDriver::drawArrays(uint32_t const vertexOffset, uint32_t const vertex
         updateDescriptors(invalidDescriptorSets);
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     GLRenderPrimitive const* const rp = mBoundRenderPrimitive;
     glDrawArraysInstanced(GLenum(rp->type), GLint(vertexOffset), GLsizei(vertexCount),
             GLsizei(instanceCount));
 #endif
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     CHECK_GL_ERROR_NON_FATAL()
 #else
     CHECK_GL_ERROR()
@@ -5053,7 +5049,7 @@ void OpenGLDriver::draw2GLES2(uint32_t const indexOffset, uint32_t const indexCo
     DEBUG_MARKER()
     assert_invariant(mContext.isES2());
     assert_invariant(mBoundRenderPrimitive);
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     if (UTILS_UNLIKELY(!mValidProgram)) {
         return;
     }
@@ -5073,7 +5069,7 @@ void OpenGLDriver::draw2GLES2(uint32_t const indexOffset, uint32_t const indexCo
     glDrawElements(GLenum(rp->type), GLsizei(indexCount), rp->gl.getIndicesType(),
             reinterpret_cast<const void*>(indexOffset << rp->gl.indicesShift));
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     CHECK_GL_ERROR_NON_FATAL()
 #else
     CHECK_GL_ERROR()
@@ -5125,7 +5121,7 @@ void OpenGLDriver::dispatchCompute(Handle<HwProgram> program, uint3 const workGr
     glDispatchCompute(workGroupCount.x, workGroupCount.y, workGroupCount.z);
 #endif // BACKEND_OPENGL_LEVEL_GLES31
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     CHECK_GL_ERROR_NON_FATAL()
 #else
     CHECK_GL_ERROR()
@@ -5152,7 +5148,7 @@ bool OpenGLDriver::cancelAsyncJob(AsyncCallId jobId) {
 // explicit instantiation of the Dispatcher
 template class ConcreteDispatcher<OpenGLDriver>;
 
-} // namespace filament::backend
+} // namespace dante::backend
 
 #if defined(__clang__)
 #pragma clang diagnostic pop

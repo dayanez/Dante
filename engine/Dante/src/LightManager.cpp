@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "components/LightManager.h"
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -148,4 +144,4 @@ void LightManager::setShadowCaster(Instance const i, bool const castShadows) noe
     downcast(this)->setShadowCaster(i, castShadows);
 }
 
-} // namespace filament
+} // namespace dante

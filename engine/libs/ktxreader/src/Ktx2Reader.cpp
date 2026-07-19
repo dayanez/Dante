@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <ktxreader/Ktx2Reader.h>
 
-#include <filament/Engine.h>
-#include <filament/Texture.h>
+#include <dante/Engine.h>
+#include <dante/Texture.h>
 
 #include <utils/Log.h>
 
@@ -19,7 +15,7 @@
 #pragma clang diagnostic pop
 
 using namespace basist;
-using namespace filament;
+using namespace dante;
 
 using TransferFunction = ktxreader::Ktx2Reader::TransferFunction;
 using Result = ktxreader::Ktx2Reader::Result;
@@ -39,16 +35,16 @@ struct FinalFormatInfo {
 };
 }
 
-// This function returns various information about a Filament internal format, most notably its
+// This function returns various information about a Dante internal format, most notably its
 // equivalent BasisU enumerant.
 //
 // Return by value isn't expensive here due to copy elision.
 //
-// Note that Filament's internal format list mimics the Vulkan format list, which
+// Note that Dante's internal format list mimics the Vulkan format list, which
 // embeds transfer function information (i.e. sRGB or not) into the format, whereas
 // the basis format list does not.
 //
-// The following formats supported by BasisU but are not supported by Filament.
+// The following formats supported by BasisU but are not supported by Dante.
 //
 //     transcoder_texture_format::cTFETC1_RGB
 //     transcoder_texture_format::cTFATC_RGB

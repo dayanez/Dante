@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_DARWIN_SYSTRACE_H
 #define TNT_UTILS_DARWIN_SYSTRACE_H
@@ -113,7 +109,7 @@ class Systrace {
     enum tags {
         NEVER       = SYSTRACE_TAG_NEVER,
         ALWAYS      = SYSTRACE_TAG_ALWAYS,
-        FILAMENT    = SYSTRACE_TAG_FILAMENT,
+        DANTE    = SYSTRACE_TAG_DANTE,
         JOBSYSTEM   = SYSTRACE_TAG_JOBSYSTEM
         // we could define more TAGS here, as we need them.
     };

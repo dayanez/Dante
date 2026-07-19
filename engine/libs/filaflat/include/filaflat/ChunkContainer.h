@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_FILAFLAT_CHUNK_CONTAINER_H
 #define TNT_FILAFLAT_CHUNK_CONTAINER_H
 
 
-#include <filament/MaterialChunkType.h>
+#include <dante/MaterialChunkType.h>
 
 #include <utils/compiler.h>
 #include <utils/FixedCapacityVector.h>

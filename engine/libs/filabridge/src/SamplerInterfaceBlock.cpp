@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#include "private/filament/SamplerInterfaceBlock.h"
+#include "private/dante/SamplerInterfaceBlock.h"
 
-#include <private/filament/DescriptorSets.h>
+#include <private/dante/DescriptorSets.h>
 
 #include <backend/DriverEnums.h>
 
@@ -21,7 +17,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 SamplerInterfaceBlock::Builder::Builder() = default;
 SamplerInterfaceBlock::Builder::~Builder() noexcept = default;
@@ -93,7 +89,7 @@ SamplerInterfaceBlock::SamplerInterfaceBlock(Builder const& builder) noexcept
         //   - float sampler can be filterable or not, default to filterable
         //   - int sampler is not filterable
         //   - shadow sampler uses comparison operator and should be filterable.
-        FILAMENT_CHECK_PRECONDITION(
+        DANTE_CHECK_PRECONDITION(
                 ((info.format == Format::INT || info.format == Format::UINT) && !info.filterable) ||
                 (info.format == Format::SHADOW && info.filterable) ||
                 (info.format == Format::FLOAT))
@@ -110,7 +106,7 @@ SamplerInterfaceBlock::SamplerInterfaceBlock(Builder const& builder) noexcept
 const SamplerInterfaceBlock::SamplerInfo* SamplerInterfaceBlock::getSamplerInfo(
         std::string_view name) const {
     auto pos = mInfoMap.find(name);
-    FILAMENT_CHECK_PRECONDITION(pos != mInfoMap.end()) << "sampler named \"" << name << "\" not found";
+    DANTE_CHECK_PRECONDITION(pos != mInfoMap.end()) << "sampler named \"" << name << "\" not found";
     return &mSamplersInfoList[pos->second];
 }
 
@@ -152,4 +148,4 @@ SamplerInterfaceBlock::SamplerInfoList SamplerInterfaceBlock::filterSamplerList(
     return list;
 }
 
-} // namespace filament
+} // namespace dante

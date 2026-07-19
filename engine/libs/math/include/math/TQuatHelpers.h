@@ -1,7 +1,3 @@
-/*
- * Copyright 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_TQUATHELPERS_H
 #define TNT_MATH_TQUATHELPERS_H
@@ -15,7 +11,7 @@
 #include <math.h>
 #include <stdint.h>
 
-namespace filament::math::details {
+namespace dante::math::details {
 
 /*
  * No user serviceable parts here.
@@ -280,6 +276,6 @@ public:
     }
 };
 
-}  // namespace filament::math::details
+}  // namespace dante::math::details
 
 #endif  // TNT_MATH_TQUATHELPERS_H

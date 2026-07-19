@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/FramePacer.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 #include "details/Renderer.h"
 
-#include <filament/FramePacer.h>
+#include <dante/FramePacer.h>
 
 #include <utils/Panic.h>
 
-namespace filament {
+namespace dante {
 
 // ------------------------------------------------------------------------------------------------
 // FramePacer::Builder
@@ -45,9 +41,9 @@ FramePacer::Builder& FramePacer::Builder::latencyFrames(uint32_t const frames) n
 }
 
 FramePacer* FramePacer::Builder::build(Engine& engine) const {
-    FILAMENT_CHECK_PRECONDITION(mImpl->mConfig.targetFrameRate >= 0.0f)
+    DANTE_CHECK_PRECONDITION(mImpl->mConfig.targetFrameRate >= 0.0f)
             << "targetFrameRate must be non-negative";
-    FILAMENT_CHECK_PRECONDITION(mImpl->mConfig.latency > std::chrono::nanoseconds::zero())
+    DANTE_CHECK_PRECONDITION(mImpl->mConfig.latency > std::chrono::nanoseconds::zero())
             << "latency must be greater than 0";
 
     return downcast(engine).createFramePacer(*this);
@@ -109,4 +105,4 @@ void FramePacer::resetPacing() noexcept {
     downcast(this)->resetPacing();
 }
 
-} // namespace filament
+} // namespace dante

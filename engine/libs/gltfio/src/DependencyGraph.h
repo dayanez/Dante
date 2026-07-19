@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_DEPENDENCY_GRAPH_H
 #define GLTFIO_DEPENDENCY_GRAPH_H
@@ -14,23 +10,23 @@
 #include <queue>
 #include <string>
 
-namespace filament {
+namespace dante {
     class MaterialInstance;
     class Texture;
 }
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 /**
- * Internal graph that enables FilamentAsset to discover "ready-to-render" entities by tracking
+ * Internal graph that enables DanteAsset to discover "ready-to-render" entities by tracking
  * the loading status of Texture objects that each entity depends on.
  *
  * Renderables connect to a set of material instances, which in turn connect to a set of parameter
  * names, which in turn connect to a set of texture objects. These relationships are not easily
- * inspectable using the Filament API or ECS.
+ * inspectable using the Dante API or ECS.
  *
  * One graph corresponds to a single glTF asset. The graph only contains weak references, it does
- * not have ownership over any Filament objects. Here's an example:
+ * not have ownership over any Dante objects. Here's an example:
  *
  *    Entity           Entity     Entity   Entity
  *      |            /        \     |     /
@@ -106,6 +102,6 @@ private:
     bool mDisabled = false;
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_DEPENDENCY_GRAPH_H

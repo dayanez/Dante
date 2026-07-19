@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_DEBUG_H
 #define TNT_UTILS_DEBUG_H
@@ -12,7 +8,7 @@ namespace utils {
 UTILS_PUBLIC
 UTILS_NORETURN
 void panic(const char *func, const char * file, int line, const char *assertion) noexcept;
-} // namespace filament
+} // namespace dante
 
 #ifdef NDEBUG
 #   define	assert_invariant(e)	((void)0)

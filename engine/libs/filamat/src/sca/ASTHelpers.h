@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_SCAHELPERS_H_H
 #define TNT_SCAHELPERS_H_H

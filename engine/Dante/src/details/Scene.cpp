@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Scene.h"
 
@@ -16,12 +12,12 @@
 #include "details/Skybox.h"
 #include "details/View.h"
 
-#include <private/filament/UibStructs.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/Box.h>
-#include <filament/LightManager.h>
-#include <filament/RenderableManager.h>
-#include <filament/TransformManager.h>
+#include <dante/Box.h>
+#include <dante/LightManager.h>
+#include <dante/RenderableManager.h>
+#include <dante/TransformManager.h>
 
 #include <backend/Handle.h>
 
@@ -51,11 +47,11 @@
 #include <new>
 #include <utility>
 
-using namespace filament::backend;
-using namespace filament::math;
+using namespace dante::backend;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 // ------------------------------------------------------------------------------------------------
 
@@ -74,9 +70,9 @@ void FScene::prepare(JobSystem& js,
     // TODO: can we skip this in most cases? Since we rely on indices staying the same,
     //       we could only skip, if nothing changed in the RCM.
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
 
     // This will reset the allocator upon exiting
     ArenaScope localArenaScope(rootArenaScope.getArena());
@@ -105,7 +101,7 @@ void FScene::prepare(JobSystem& js,
     LightInstanceContainer lightInstances{
             LightInstanceContainer::with_capacity(entities.size(), localArenaScope.getArena()) };
 
-    FILAMENT_TRACING_NAME_BEGIN(FILAMENT_TRACING_CATEGORY_FILAMENT, "InstanceLoop");
+    DANTE_TRACING_NAME_BEGIN(DANTE_TRACING_CATEGORY_DANTE, "InstanceLoop");
 
     // find the max intensity directional light index in our local array
     float maxIntensity = 0.0f;
@@ -139,7 +135,7 @@ void FScene::prepare(JobSystem& js,
         }
     });
 
-    FILAMENT_TRACING_NAME_END(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_NAME_END(DANTE_TRACING_CATEGORY_DANTE);
 
     /*
      * Evaluate the capacity needed for the renderable and light SoAs
@@ -187,7 +183,7 @@ void FScene::prepare(JobSystem& js,
 
     auto renderableWork = [first = renderableInstances.data(), &rcm, &tcm, &worldTransform,
                  &sceneData, shadowReceiversAreCasters](auto* p, auto c) {
-        FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "renderableWork");
+        DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "renderableWork");
 
         for (size_t i = 0; i < c; i++) {
             auto [ri, ti] = p[i];
@@ -237,7 +233,7 @@ void FScene::prepare(JobSystem& js,
     };
 
     auto lightWork = [first = lightInstances.data(), &lcm, &tcm, &worldTransform, &lightData](auto* p, auto c) {
-        FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "lightWork");
+        DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "lightWork");
         for (size_t i = 0; i < c; i++) {
             auto [li, ti] = p[i];
             // this is where we go from double to float for our transforms
@@ -260,7 +256,7 @@ void FScene::prepare(JobSystem& js,
     };
 
 
-    FILAMENT_TRACING_NAME_BEGIN(FILAMENT_TRACING_CATEGORY_FILAMENT, "Renderable and Light jobs");
+    DANTE_TRACING_NAME_BEGIN(DANTE_TRACING_CATEGORY_DANTE, "Renderable and Light jobs");
 
     JobSystem::Job* rootJob = js.createJob();
 
@@ -342,11 +338,11 @@ void FScene::prepare(JobSystem& js,
 
     js.runAndWait(rootJob);
 
-    FILAMENT_TRACING_NAME_END(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_NAME_END(DANTE_TRACING_CATEGORY_DANTE);
 }
 
 void FScene::prepareVisibleRenderables(Range<uint32_t> visibleRenderables, FScene::SceneCacheData& cache) const noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     RenderableSoa& sceneData = cache.renderableData;
     
     cache.hasContactShadows = false;
@@ -592,4 +588,4 @@ void FScene::forEach(Invocable<void(Entity)>&& functor) const noexcept {
     });
 }
 
-} // namespace filament
+} // namespace dante

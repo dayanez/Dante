@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DracoCache.h"
 
@@ -25,7 +21,7 @@ using std::vector;
 
 using namespace utils;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 DracoMesh* DracoCache::findOrCreateMesh(const cgltf_buffer_view* key) {
     auto iter = mCache.find(key);
@@ -63,7 +59,7 @@ UTILS_UNUSED_IN_RELEASE static int getNumComponents(cgltf_type ctype) {
 // Allocates and populates the given buffer view with indices from the given Draco mesh.
 template<typename T>
 static void convertFaces(cgltf_accessor* target, const draco::Mesh* mesh) {
-    FILAMENT_CHECK_PRECONDITION(target->stride == sizeof(T));
+    DANTE_CHECK_PRECONDITION(target->stride == sizeof(T));
 
     const cgltf_size size = mesh->num_faces() * 3 * sizeof(T);
     cgltf_buffer_view* view = target->buffer_view;
@@ -83,8 +79,8 @@ static void convertFaces(cgltf_accessor* target, const draco::Mesh* mesh) {
 template<typename T>
 static void convertAttribs(cgltf_accessor* target, const draco::PointAttribute* attr, uint32_t n) {
     const int8_t ncomps = attr->num_components();
-    FILAMENT_CHECK_PRECONDITION(ncomps <= 4 && ncomps == getNumComponents(target->type));
-    FILAMENT_CHECK_PRECONDITION(target->stride == attr->num_components() * sizeof(T));
+    DANTE_CHECK_PRECONDITION(ncomps <= 4 && ncomps == getNumComponents(target->type));
+    DANTE_CHECK_PRECONDITION(target->stride == attr->num_components() * sizeof(T));
 
     const uint32_t size = target->stride * n;
     cgltf_buffer_view* view = target->buffer_view;
@@ -217,4 +213,4 @@ bool DracoMesh::getVertexAttributes(uint32_t attributeId, cgltf_accessor* target
 
 #endif
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

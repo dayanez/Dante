@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/MaterialInstance.h"
 
 #include "details/Material.h"
 
-#include <filament/Color.h>
-#include <filament/MaterialEnums.h>
-#include <filament/MaterialInstance.h>
+#include <dante/Color.h>
+#include <dante/MaterialEnums.h>
+#include <dante/MaterialInstance.h>
 
 #include <backend/DriverEnums.h>
 
@@ -27,7 +23,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 using namespace backend;
@@ -418,4 +414,4 @@ void MaterialInstance::compile(CompilerPriorityQueue const priority,
     downcast(this)->compile(priority, variants, handler, std::move(callback));
 }
 
-} // namespace filament
+} // namespace dante

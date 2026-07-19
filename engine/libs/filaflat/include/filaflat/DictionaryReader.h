@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_FILAFLAT_DICTIONARY_READER_H
 #define TNT_FILAFLAT_DICTIONARY_READER_H

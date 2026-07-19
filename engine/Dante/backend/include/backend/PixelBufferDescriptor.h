@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 //! \file
 
-#ifndef TNT_FILAMENT_BACKEND_PIXELBUFFERDESCRIPTOR_H
-#define TNT_FILAMENT_BACKEND_PIXELBUFFERDESCRIPTOR_H
+#ifndef TNT_DANTE_BACKEND_PIXELBUFFERDESCRIPTOR_H
+#define TNT_DANTE_BACKEND_PIXELBUFFERDESCRIPTOR_H
 
 #include <backend/BufferDescriptor.h>
 #include <backend/DriverEnums.h>
@@ -21,7 +17,7 @@ namespace utils::io {
 class ostream;
 } // namespace utils::io
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * A descriptor to an image in main memory, typically used to transfer image data from the CPU
@@ -312,10 +308,10 @@ public:
     uint8_t alignment  : 4;
 };
 
-} // namespace backend::filament
+} // namespace backend::dante
 
 #if !defined(NDEBUG)
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::PixelBufferDescriptor& b);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::PixelBufferDescriptor& b);
 #endif
 
-#endif // TNT_FILAMENT_BACKEND_PIXELBUFFERDESCRIPTOR_H
+#endif // TNT_DANTE_BACKEND_PIXELBUFFERDESCRIPTOR_H

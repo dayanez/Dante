@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_GLTFENUMS_H
 #define GLTFIO_GLTFENUMS_H
 
-#include <filament/IndexBuffer.h>
-#include <filament/RenderableManager.h>
-#include <filament/TextureSampler.h>
-#include <filament/VertexBuffer.h>
+#include <dante/IndexBuffer.h>
+#include <dante/RenderableManager.h>
+#include <dante/TextureSampler.h>
+#include <dante/VertexBuffer.h>
 
 #include <cgltf.h>
 
@@ -23,62 +19,62 @@
 #define GL_MIRRORED_REPEAT                0x8370
 #define GL_CLAMP_TO_EDGE                  0x812F
 
-inline filament::TextureSampler::WrapMode getWrapMode(cgltf_int wrap) {
+inline dante::TextureSampler::WrapMode getWrapMode(cgltf_int wrap) {
     switch (wrap) {
         case GL_REPEAT:
-            return filament::TextureSampler::WrapMode::REPEAT;
+            return dante::TextureSampler::WrapMode::REPEAT;
         case GL_MIRRORED_REPEAT:
-            return filament::TextureSampler::WrapMode::MIRRORED_REPEAT;
+            return dante::TextureSampler::WrapMode::MIRRORED_REPEAT;
         case GL_CLAMP_TO_EDGE:
-            return filament::TextureSampler::WrapMode::CLAMP_TO_EDGE;
+            return dante::TextureSampler::WrapMode::CLAMP_TO_EDGE;
     }
-    return filament::TextureSampler::WrapMode::REPEAT;
+    return dante::TextureSampler::WrapMode::REPEAT;
 }
 
-inline filament::TextureSampler::MinFilter getMinFilter(cgltf_int minFilter) {
+inline dante::TextureSampler::MinFilter getMinFilter(cgltf_int minFilter) {
     switch (minFilter) {
         case GL_NEAREST:
-            return filament::TextureSampler::MinFilter::NEAREST;
+            return dante::TextureSampler::MinFilter::NEAREST;
         case GL_LINEAR:
-            return filament::TextureSampler::MinFilter::LINEAR;
+            return dante::TextureSampler::MinFilter::LINEAR;
         case GL_NEAREST_MIPMAP_NEAREST:
-            return filament::TextureSampler::MinFilter::NEAREST_MIPMAP_NEAREST;
+            return dante::TextureSampler::MinFilter::NEAREST_MIPMAP_NEAREST;
         case GL_LINEAR_MIPMAP_NEAREST:
-            return filament::TextureSampler::MinFilter::LINEAR_MIPMAP_NEAREST;
+            return dante::TextureSampler::MinFilter::LINEAR_MIPMAP_NEAREST;
         case GL_NEAREST_MIPMAP_LINEAR:
-            return filament::TextureSampler::MinFilter::NEAREST_MIPMAP_LINEAR;
+            return dante::TextureSampler::MinFilter::NEAREST_MIPMAP_LINEAR;
         case GL_LINEAR_MIPMAP_LINEAR:
-            return filament::TextureSampler::MinFilter::LINEAR_MIPMAP_LINEAR;
+            return dante::TextureSampler::MinFilter::LINEAR_MIPMAP_LINEAR;
     }
-    return filament::TextureSampler::MinFilter::LINEAR_MIPMAP_LINEAR;
+    return dante::TextureSampler::MinFilter::LINEAR_MIPMAP_LINEAR;
 }
 
-inline filament::TextureSampler::MagFilter getMagFilter(cgltf_int magFilter) {
+inline dante::TextureSampler::MagFilter getMagFilter(cgltf_int magFilter) {
     switch (magFilter) {
         case GL_NEAREST:
-            return filament::TextureSampler::MagFilter::NEAREST;
+            return dante::TextureSampler::MagFilter::NEAREST;
         case GL_LINEAR:
-            return filament::TextureSampler::MagFilter::LINEAR;
+            return dante::TextureSampler::MagFilter::LINEAR;
     }
-    return filament::TextureSampler::MagFilter::LINEAR;
+    return dante::TextureSampler::MagFilter::LINEAR;
 }
 
-inline bool getVertexAttrType(cgltf_attribute_type atype, filament::VertexAttribute* attrType) {
+inline bool getVertexAttrType(cgltf_attribute_type atype, dante::VertexAttribute* attrType) {
     switch (atype) {
         case cgltf_attribute_type_position:
-            *attrType = filament::VertexAttribute::POSITION;
+            *attrType = dante::VertexAttribute::POSITION;
             return true;
         case cgltf_attribute_type_texcoord:
-            *attrType = filament::VertexAttribute::UV0;
+            *attrType = dante::VertexAttribute::UV0;
             return true;
         case cgltf_attribute_type_color:
-            *attrType = filament::VertexAttribute::COLOR;
+            *attrType = dante::VertexAttribute::COLOR;
             return true;
         case cgltf_attribute_type_joints:
-            *attrType = filament::VertexAttribute::BONE_INDICES;
+            *attrType = dante::VertexAttribute::BONE_INDICES;
             return true;
         case cgltf_attribute_type_weights:
-            *attrType = filament::VertexAttribute::BONE_WEIGHTS;
+            *attrType = dante::VertexAttribute::BONE_WEIGHTS;
             return true;
         case cgltf_attribute_type_normal:
         case cgltf_attribute_type_tangent:
@@ -87,23 +83,23 @@ inline bool getVertexAttrType(cgltf_attribute_type atype, filament::VertexAttrib
     }
 }
 
-inline bool getCustomVertexAttrType(int8_t customIndex, filament::VertexAttribute* attrType) {
+inline bool getCustomVertexAttrType(int8_t customIndex, dante::VertexAttribute* attrType) {
     if (customIndex < 0) {
         return false;
     }
-    *attrType = static_cast<filament::VertexAttribute>(
-            customIndex + (uint8_t) filament::VertexAttribute::CUSTOM0);
+    *attrType = static_cast<dante::VertexAttribute>(
+            customIndex + (uint8_t) dante::VertexAttribute::CUSTOM0);
     return true;
 }
 
-inline bool getIndexType(cgltf_component_type ctype, filament::IndexBuffer::IndexType* itype) {
+inline bool getIndexType(cgltf_component_type ctype, dante::IndexBuffer::IndexType* itype) {
     switch (ctype) {
         case cgltf_component_type_r_8u:
         case cgltf_component_type_r_16u:
-            *itype = filament::IndexBuffer::IndexType::USHORT;
+            *itype = dante::IndexBuffer::IndexType::USHORT;
             return true;
         case cgltf_component_type_r_32u:
-            *itype = filament::IndexBuffer::IndexType::UINT;
+            *itype = dante::IndexBuffer::IndexType::UINT;
             return true;
         default:
             break;
@@ -112,22 +108,22 @@ inline bool getIndexType(cgltf_component_type ctype, filament::IndexBuffer::Inde
 }
 
 inline bool getPrimitiveType(cgltf_primitive_type in,
-        filament::RenderableManager::PrimitiveType* out) {
+        dante::RenderableManager::PrimitiveType* out) {
     switch (in) {
         case cgltf_primitive_type_points:
-            *out = filament::RenderableManager::PrimitiveType::POINTS;
+            *out = dante::RenderableManager::PrimitiveType::POINTS;
             return true;
         case cgltf_primitive_type_lines:
-            *out = filament::RenderableManager::PrimitiveType::LINES;
+            *out = dante::RenderableManager::PrimitiveType::LINES;
             return true;
         case cgltf_primitive_type_line_strip:
-            *out = filament::RenderableManager::PrimitiveType::LINE_STRIP;
+            *out = dante::RenderableManager::PrimitiveType::LINE_STRIP;
             return true;
         case cgltf_primitive_type_triangles:
-            *out = filament::RenderableManager::PrimitiveType::TRIANGLES;
+            *out = dante::RenderableManager::PrimitiveType::TRIANGLES;
             return true;
         case cgltf_primitive_type_triangle_strip:
-            *out = filament::RenderableManager::PrimitiveType::TRIANGLE_STRIP;
+            *out = dante::RenderableManager::PrimitiveType::TRIANGLE_STRIP;
             return true;
         case cgltf_primitive_type_invalid:
         case cgltf_primitive_type_line_loop:
@@ -138,7 +134,7 @@ inline bool getPrimitiveType(cgltf_primitive_type in,
     return false;
 }
 
-// This converts a cgltf component type into a Filament Attribute type.
+// This converts a cgltf component type into a Dante Attribute type.
 //
 // This function has two out parameters. One result is a safe "permitted type" which we know is
 // universally accepted across GPU's and backends, but may require conversion (see Transcoder). The
@@ -146,34 +142,34 @@ inline bool getPrimitiveType(cgltf_primitive_type in,
 //
 // Returns false if the given component type is invalid.
 inline bool getElementType(cgltf_type type, cgltf_component_type ctype,
-        filament::VertexBuffer::AttributeType* permitType,
-        filament::VertexBuffer::AttributeType* actualType) {
+        dante::VertexBuffer::AttributeType* permitType,
+        dante::VertexBuffer::AttributeType* actualType) {
     switch (type) {
 	    case cgltf_type_scalar:
             switch (ctype) {
                 case cgltf_component_type_r_8:
-                    *permitType = filament::VertexBuffer::AttributeType::BYTE;
-                    *actualType = filament::VertexBuffer::AttributeType::BYTE;
+                    *permitType = dante::VertexBuffer::AttributeType::BYTE;
+                    *actualType = dante::VertexBuffer::AttributeType::BYTE;
                     return true;
                 case cgltf_component_type_r_8u:
-                    *permitType = filament::VertexBuffer::AttributeType::UBYTE;
-                    *actualType = filament::VertexBuffer::AttributeType::UBYTE;
+                    *permitType = dante::VertexBuffer::AttributeType::UBYTE;
+                    *actualType = dante::VertexBuffer::AttributeType::UBYTE;
                     return true;
                 case cgltf_component_type_r_16:
-                    *permitType = filament::VertexBuffer::AttributeType::SHORT;
-                    *actualType = filament::VertexBuffer::AttributeType::SHORT;
+                    *permitType = dante::VertexBuffer::AttributeType::SHORT;
+                    *actualType = dante::VertexBuffer::AttributeType::SHORT;
                     return true;
                 case cgltf_component_type_r_16u:
-                    *permitType = filament::VertexBuffer::AttributeType::USHORT;
-                    *actualType = filament::VertexBuffer::AttributeType::USHORT;
+                    *permitType = dante::VertexBuffer::AttributeType::USHORT;
+                    *actualType = dante::VertexBuffer::AttributeType::USHORT;
                     return true;
                 case cgltf_component_type_r_32u:
-                    *permitType = filament::VertexBuffer::AttributeType::UINT;
-                    *actualType = filament::VertexBuffer::AttributeType::UINT;
+                    *permitType = dante::VertexBuffer::AttributeType::UINT;
+                    *actualType = dante::VertexBuffer::AttributeType::UINT;
                     return true;
                 case cgltf_component_type_r_32f:
-                    *permitType = filament::VertexBuffer::AttributeType::FLOAT;
-                    *actualType = filament::VertexBuffer::AttributeType::FLOAT;
+                    *permitType = dante::VertexBuffer::AttributeType::FLOAT;
+                    *actualType = dante::VertexBuffer::AttributeType::FLOAT;
                     return true;
                 default:
                     return false;
@@ -182,24 +178,24 @@ inline bool getElementType(cgltf_type type, cgltf_component_type ctype,
 	    case cgltf_type_vec2:
             switch (ctype) {
                 case cgltf_component_type_r_8:
-                    *permitType = filament::VertexBuffer::AttributeType::BYTE2;
-                    *actualType = filament::VertexBuffer::AttributeType::BYTE2;
+                    *permitType = dante::VertexBuffer::AttributeType::BYTE2;
+                    *actualType = dante::VertexBuffer::AttributeType::BYTE2;
                     return true;
                 case cgltf_component_type_r_8u:
-                    *permitType = filament::VertexBuffer::AttributeType::UBYTE2;
-                    *actualType = filament::VertexBuffer::AttributeType::UBYTE2;
+                    *permitType = dante::VertexBuffer::AttributeType::UBYTE2;
+                    *actualType = dante::VertexBuffer::AttributeType::UBYTE2;
                     return true;
                 case cgltf_component_type_r_16:
-                    *permitType = filament::VertexBuffer::AttributeType::SHORT2;
-                    *actualType = filament::VertexBuffer::AttributeType::SHORT2;
+                    *permitType = dante::VertexBuffer::AttributeType::SHORT2;
+                    *actualType = dante::VertexBuffer::AttributeType::SHORT2;
                     return true;
                 case cgltf_component_type_r_16u:
-                    *permitType = filament::VertexBuffer::AttributeType::USHORT2;
-                    *actualType = filament::VertexBuffer::AttributeType::USHORT2;
+                    *permitType = dante::VertexBuffer::AttributeType::USHORT2;
+                    *actualType = dante::VertexBuffer::AttributeType::USHORT2;
                     return true;
                 case cgltf_component_type_r_32f:
-                    *permitType = filament::VertexBuffer::AttributeType::FLOAT2;
-                    *actualType = filament::VertexBuffer::AttributeType::FLOAT2;
+                    *permitType = dante::VertexBuffer::AttributeType::FLOAT2;
+                    *actualType = dante::VertexBuffer::AttributeType::FLOAT2;
                     return true;
                 default:
                     return false;
@@ -208,24 +204,24 @@ inline bool getElementType(cgltf_type type, cgltf_component_type ctype,
 	    case cgltf_type_vec3:
             switch (ctype) {
                 case cgltf_component_type_r_8:
-                    *permitType = filament::VertexBuffer::AttributeType::FLOAT3;
-                    *actualType = filament::VertexBuffer::AttributeType::BYTE3;
+                    *permitType = dante::VertexBuffer::AttributeType::FLOAT3;
+                    *actualType = dante::VertexBuffer::AttributeType::BYTE3;
                     return true;
                 case cgltf_component_type_r_8u:
-                    *permitType = filament::VertexBuffer::AttributeType::FLOAT3;
-                    *actualType = filament::VertexBuffer::AttributeType::UBYTE3;
+                    *permitType = dante::VertexBuffer::AttributeType::FLOAT3;
+                    *actualType = dante::VertexBuffer::AttributeType::UBYTE3;
                     return true;
                 case cgltf_component_type_r_16:
-                    *permitType = filament::VertexBuffer::AttributeType::SHORT3;
-                    *actualType = filament::VertexBuffer::AttributeType::SHORT3;
+                    *permitType = dante::VertexBuffer::AttributeType::SHORT3;
+                    *actualType = dante::VertexBuffer::AttributeType::SHORT3;
                     return true;
                 case cgltf_component_type_r_16u:
-                    *permitType = filament::VertexBuffer::AttributeType::FLOAT3;
-                    *actualType = filament::VertexBuffer::AttributeType::USHORT3;
+                    *permitType = dante::VertexBuffer::AttributeType::FLOAT3;
+                    *actualType = dante::VertexBuffer::AttributeType::USHORT3;
                     return true;
                 case cgltf_component_type_r_32f:
-                    *permitType = filament::VertexBuffer::AttributeType::FLOAT3;
-                    *actualType = filament::VertexBuffer::AttributeType::FLOAT3;
+                    *permitType = dante::VertexBuffer::AttributeType::FLOAT3;
+                    *actualType = dante::VertexBuffer::AttributeType::FLOAT3;
                     return true;
                 default:
                     return false;
@@ -234,24 +230,24 @@ inline bool getElementType(cgltf_type type, cgltf_component_type ctype,
 	    case cgltf_type_vec4:
             switch (ctype) {
                 case cgltf_component_type_r_8:
-                    *permitType = filament::VertexBuffer::AttributeType::BYTE4;
-                    *actualType = filament::VertexBuffer::AttributeType::BYTE4;
+                    *permitType = dante::VertexBuffer::AttributeType::BYTE4;
+                    *actualType = dante::VertexBuffer::AttributeType::BYTE4;
                     return true;
                 case cgltf_component_type_r_8u:
-                    *permitType = filament::VertexBuffer::AttributeType::UBYTE4;
-                    *actualType = filament::VertexBuffer::AttributeType::UBYTE4;
+                    *permitType = dante::VertexBuffer::AttributeType::UBYTE4;
+                    *actualType = dante::VertexBuffer::AttributeType::UBYTE4;
                     return true;
                 case cgltf_component_type_r_16:
-                    *permitType = filament::VertexBuffer::AttributeType::SHORT4;
-                    *actualType = filament::VertexBuffer::AttributeType::SHORT4;
+                    *permitType = dante::VertexBuffer::AttributeType::SHORT4;
+                    *actualType = dante::VertexBuffer::AttributeType::SHORT4;
                     return true;
                 case cgltf_component_type_r_16u:
-                    *permitType = filament::VertexBuffer::AttributeType::USHORT4;
-                    *actualType = filament::VertexBuffer::AttributeType::USHORT4;
+                    *permitType = dante::VertexBuffer::AttributeType::USHORT4;
+                    *actualType = dante::VertexBuffer::AttributeType::USHORT4;
                     return true;
                 case cgltf_component_type_r_32f:
-                    *permitType = filament::VertexBuffer::AttributeType::FLOAT4;
-                    *actualType = filament::VertexBuffer::AttributeType::FLOAT4;
+                    *permitType = dante::VertexBuffer::AttributeType::FLOAT4;
+                    *actualType = dante::VertexBuffer::AttributeType::FLOAT4;
                     return true;
                 default:
                     return false;

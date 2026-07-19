@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef FILAMENT_MATERIALS_SSAO_UTILS
-#define FILAMENT_MATERIALS_SSAO_UTILS
+#ifndef DANTE_MATERIALS_SSAO_UTILS
+#define DANTE_MATERIALS_SSAO_UTILS
 
 #include "../utils/depthUtils.fs"
 
@@ -32,5 +28,5 @@ vec3 unpackBentNormal(vec3 bn) {
 }
 
 
-#endif // FILAMENT_MATERIALS_SSAO_UTILS
+#endif // DANTE_MATERIALS_SSAO_UTILS
 

@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #pragma once
 
 #include <backend/DriverApiForward.h>
 
-namespace filament {
+namespace dante {
 
 class FrameGraph;
 class TextureCacheInterface;
@@ -19,4 +15,4 @@ struct ResourceCreationContext {
     TextureCacheInterface& getTextureCache() const noexcept;
 };
 
-} // namespace filament
+} // namespace dante

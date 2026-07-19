@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "OpenGLContext.h"
 
@@ -30,7 +26,7 @@
 
 using namespace utils;
 
-namespace filament::backend {
+namespace dante::backend {
 
 bool OpenGLContext::queryOpenGLVersion(GLint* major, GLint* minor) noexcept {
 #ifdef BACKEND_OPENGL_VERSION_GLES
@@ -117,7 +113,7 @@ OpenGLContext::OpenGLContext(OpenGLPlatform& platform,
 #endif
 
     if (mFeatureLevel >= FeatureLevel::FEATURE_LEVEL_1) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
 #ifdef GL_EXT_texture_filter_anisotropic
         if (ext.EXT_texture_filter_anisotropic) {
             glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gets.max_anisotropy);
@@ -182,12 +178,12 @@ OpenGLContext::OpenGLContext(OpenGLPlatform& platform,
     LOG(INFO) << "GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT = " << gets.uniform_buffer_offset_alignment;
 #endif
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     assert_invariant(mFeatureLevel == FeatureLevel::FEATURE_LEVEL_0 || gets.max_draw_buffers >= 4); // minspec
 #endif
 
 #ifdef GL_EXT_texture_filter_anisotropic
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (mFeatureLevel >= FeatureLevel::FEATURE_LEVEL_1 && ext.EXT_texture_filter_anisotropic) {
         // make sure we don't have any error flag
         while (glGetError() != GL_NO_ERROR) { }
@@ -297,7 +293,7 @@ void OpenGLContext::initProcs(Procs* procs,
     procs->maxShaderCompilerThreadsKHR = +[](GLuint) {};
 
 #ifdef BACKEND_OPENGL_VERSION_GLES
-#   ifndef FILAMENT_IOS // FILAMENT_IOS is guaranteed to have ES3.x
+#   ifndef DANTE_IOS // DANTE_IOS is guaranteed to have ES3.x
 #       ifndef __EMSCRIPTEN__
     if (UTILS_UNLIKELY(major == 2)) {
         // Runtime OpenGL version is ES 2.x
@@ -327,7 +323,7 @@ void OpenGLContext::initProcs(Procs* procs,
         procs->maxShaderCompilerThreadsKHR = glMaxShaderCompilerThreadsKHR;
     }
 #       endif // __EMSCRIPTEN__
-#   endif // FILAMENT_IOS
+#   endif // DANTE_IOS
 #else
     procs->maxShaderCompilerThreadsKHR = glMaxShaderCompilerThreadsARB;
 #endif
@@ -532,14 +528,14 @@ void OpenGLContext::initBugs(Bugs* bugs, Extensions const& exts,
     }
 
 #ifdef BACKEND_OPENGL_VERSION_GLES
-#   ifndef FILAMENT_IOS // FILAMENT_IOS is guaranteed to have ES3.x
+#   ifndef DANTE_IOS // DANTE_IOS is guaranteed to have ES3.x
     if (UTILS_UNLIKELY(major == 2)) {
         if (UTILS_UNLIKELY(!exts.OES_vertex_array_object)) {
             // we activate this workaround path, which does the reset of array buffer
             bugs->vao_doesnt_store_element_array_buffer_binding = true;
         }
     }
-#   endif // FILAMENT_IOS
+#   endif // DANTE_IOS
 #else
     // feedback loops are allowed on GL desktop as long as writes are disabled
     bugs->allow_read_only_ancillary_feedback_loop = true;
@@ -584,7 +580,7 @@ FeatureLevel OpenGLContext::resolveFeatureLevel(GLint major, GLint minor,
             }
         }
     }
-#   ifndef FILAMENT_IOS // FILAMENT_IOS is guaranteed to have ES3.x
+#   ifndef DANTE_IOS // DANTE_IOS is guaranteed to have ES3.x
     else if (UTILS_UNLIKELY(major == 2)) {
         // Runtime OpenGL version is ES 2.x
         // note: mandatory extensions (all supported by Mali-400 and Adreno 304)
@@ -596,7 +592,7 @@ FeatureLevel OpenGLContext::resolveFeatureLevel(GLint major, GLint minor,
         //      OES_texture_npot
         featureLevel = FeatureLevel::FEATURE_LEVEL_0;
     }
-#   endif // FILAMENT_IOS
+#   endif // DANTE_IOS
 #else
     assert_invariant(gets.max_texture_image_units >= 16);
     assert_invariant(gets.max_combined_texture_image_units >= 32);
@@ -768,4 +764,4 @@ void OpenGLContext::initExtensionsGL(Extensions* ext, GLint major, GLint minor) 
 
 #endif // BACKEND_OPENGL_VERSION_GL
 
-} // namespace filament::backend
+} // namespace dante::backend

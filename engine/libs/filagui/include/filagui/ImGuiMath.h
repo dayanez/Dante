@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef FILAGUI_IMGUIMATH_H_
 #define FILAGUI_IMGUIMATH_H_

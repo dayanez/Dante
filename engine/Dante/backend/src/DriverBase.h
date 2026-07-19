@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DRIVER_DRIVERBASE_H
-#define TNT_FILAMENT_DRIVER_DRIVERBASE_H
+#ifndef TNT_DANTE_DRIVER_DRIVERBASE_H
+#define TNT_DANTE_DRIVER_DRIVERBASE_H
 
 #include <private/backend/Dispatcher.h>
 #include <private/backend/Driver.h>
@@ -29,7 +25,7 @@
 
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 struct AcquiredImage;
 
@@ -326,6 +322,6 @@ private:
 };
 
 
-} // namespace backend::filament
+} // namespace backend::dante
 
-#endif // TNT_FILAMENT_DRIVER_DRIVERBASE_H
+#endif // TNT_DANTE_DRIVER_DRIVERBASE_H

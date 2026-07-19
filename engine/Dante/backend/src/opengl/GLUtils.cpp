@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "GLUtils.h"
 
@@ -17,7 +13,7 @@
 
 #include <stddef.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace backend;
 using namespace utils;
@@ -77,7 +73,7 @@ std::string_view getFramebufferStatusString(GLenum status) noexcept {
             return "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
         case GL_FRAMEBUFFER_UNSUPPORTED:
             return "GL_FRAMEBUFFER_UNSUPPORTED";
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         case GL_FRAMEBUFFER_UNDEFINED:
             return "GL_FRAMEBUFFER_UNDEFINED";
         case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
@@ -127,4 +123,4 @@ unordered_string_set split(const char* extensions) noexcept {
 }
 
 } // namespace GLUtils
-} // namespace filament::backend
+} // namespace dante::backend

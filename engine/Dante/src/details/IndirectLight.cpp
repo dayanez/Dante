@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/IndirectLight.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 #include "details/Texture.h"
 
-#include <filament/IndirectLight.h>
+#include <dante/IndirectLight.h>
 
 #include <backend/DriverEnums.h>
 
@@ -22,9 +18,9 @@
 #define IBL_INTEGRATION_IMPORTANCE_SAMPLING         1
 #define IBL_INTEGRATION                             IBL_INTEGRATION_PREFILTERED_CUBEMAP
 
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 
 // TODO: This should be a quality setting on View or LightManager
 static constexpr bool CONFIG_IBL_USE_IRRADIANCE_MAP = false;
@@ -140,7 +136,7 @@ IndirectLight::Builder& IndirectLight::Builder::rotation(mat3f const& rotation) 
 
 IndirectLight* IndirectLight::Builder::build(Engine& engine) {
     if (mImpl->mReflectionsMap) {
-        FILAMENT_CHECK_PRECONDITION(
+        DANTE_CHECK_PRECONDITION(
                 mImpl->mReflectionsMap->getTarget() == Texture::Sampler::SAMPLER_CUBEMAP)
                 << "reflection map must a cubemap";
 
@@ -150,7 +146,7 @@ IndirectLight* IndirectLight::Builder::build(Engine& engine) {
     }
 
     if (mImpl->mIrradianceMap) {
-        FILAMENT_CHECK_PRECONDITION(
+        DANTE_CHECK_PRECONDITION(
                 mImpl->mIrradianceMap->getTarget() == Texture::Sampler::SAMPLER_CUBEMAP)
                 << "irradiance map must a cubemap";
     }
@@ -259,4 +255,4 @@ float4 FIndirectLight::getColorEstimate(float3 const direction) const noexcept {
    return getColorEstimate(mIrradianceCoefs.data(), direction);
 }
 
-} // namespace filament
+} // namespace dante

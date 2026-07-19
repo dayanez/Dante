@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "Wireframe.h"
 
-#include "FFilamentAsset.h"
+#include "FDanteAsset.h"
 
-#include <filament/Box.h>
-#include <filament/Engine.h>
-#include <filament/RenderableManager.h>
-#include <filament/TransformManager.h>
-#include <filament/VertexBuffer.h>
+#include <dante/Box.h>
+#include <dante/Engine.h>
+#include <dante/RenderableManager.h>
+#include <dante/TransformManager.h>
+#include <dante/VertexBuffer.h>
 
 #include <utils/EntityManager.h>
 
@@ -20,18 +16,18 @@
 
 #include <functional>
 
-using namespace filament;
-using namespace filament::math;
+using namespace dante;
+using namespace dante::math;
 using namespace std;
 using namespace utils;
 
 static const auto FREE_CALLBACK = [](void* mem, size_t, void*) { free(mem); };
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
-struct FFilamentAsset;
+struct FDanteAsset;
 
-Wireframe::Wireframe(FFilamentAsset* asset) : mAsset(asset) {
+Wireframe::Wireframe(FDanteAsset* asset) : mAsset(asset) {
     Engine* engine = mAsset->mEngine;
     TransformManager& tm = engine->getTransformManager();
     RenderableManager& rm = engine->getRenderableManager();

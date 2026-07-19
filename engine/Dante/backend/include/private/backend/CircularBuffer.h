@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_CIRCULARBUFFER_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_CIRCULARBUFFER_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_CIRCULARBUFFER_H
+#define TNT_DANTE_BACKEND_PRIVATE_CIRCULARBUFFER_H
 
 #include <utils/debug.h>
 
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class CircularBuffer {
 public:
@@ -81,6 +77,6 @@ private:
     static size_t sPageSize;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_CIRCULARBUFFER_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_CIRCULARBUFFER_H

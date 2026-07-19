@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_FILAMAT_UIBGENERATOR_H
 #define TNT_FILAMAT_UIBGENERATOR_H
@@ -15,7 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class BufferInterfaceBlock;
 
@@ -60,13 +56,13 @@ public:
     static BufferInterfaceBlock const& getFroxelsUib() noexcept;
 };
 
-} // namespace filament
+} // namespace dante
 
 template<>
-struct utils::EnableIntegerOperators<filament::UibGenerator::Ubo> : public std::true_type {};
+struct utils::EnableIntegerOperators<dante::UibGenerator::Ubo> : public std::true_type {};
 
 template<>
-inline constexpr size_t utils::Enum::count<filament::UibGenerator::Ubo>() { return 9; }
+inline constexpr size_t utils::Enum::count<dante::UibGenerator::Ubo>() { return 9; }
 
 
 #endif // TNT_FILAMAT_UIBGENERATOR_H

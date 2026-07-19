@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <gtest/gtest.h>
 
@@ -246,28 +242,28 @@ TEST(JobSystem, JobSystemParallelFor) {
     JobSystem js;
     js.adopt();
 
-    std::array<filament::math::float3, 4096*16> vertices;
+    std::array<dante::math::float3, 4096*16> vertices;
     for (size_t j = 0; j<vertices.size(); ++j) {
-        vertices[j] = filament::math::float3(j);
+        vertices[j] = dante::math::float3(j);
     }
 
     struct Executor {
-        void operator()(filament::math::float3* v, size_t c) {
+        void operator()(dante::math::float3* v, size_t c) {
             for (size_t i=0 ; i<c; ++i) {
                 v[i] = matrix * v[i];
             }
         }
-        filament::math::mat3f matrix;
+        dante::math::mat3f matrix;
     } state;
-    state.matrix = filament::math::mat3f(2);
+    state.matrix = dante::math::mat3f(2);
 
     JobSystem::Job* job = parallel_for(js, nullptr, vertices.data(), vertices.size(),
             std::ref(state), CountSplitter<4>());
     js.runAndWait(job);
 
-    const filament::math::mat3f matrix(2);
+    const dante::math::mat3f matrix(2);
     for (size_t j = 0; j<vertices.size(); ++j) {
-        EXPECT_TRUE(vertices[j] == matrix*filament::math::float3(j));
+        EXPECT_TRUE(vertices[j] == matrix*dante::math::float3(j));
     }
 
     js.emancipate();

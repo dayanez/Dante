@@ -88,7 +88,7 @@ target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
 set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
 target_link_libraries(${TARGET} backend_headers shaders filabridge utils smol-v zstd)
 
-if (FILAMENT_SUPPORTS_WEBGPU)
+if (DANTE_SUPPORTS_WEBGPU)
     target_link_libraries(${TARGET} libtint)
 endif ()
 
@@ -116,8 +116,8 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W0 /Zc:__cplusplus")
 endif()
 
-if (FILAMENT_ENABLE_MATDBG)
-    add_definitions(-DFILAMENT_ENABLE_MATDBG)
+if (DANTE_ENABLE_MATDBG)
+    add_definitions(-DDANTE_ENABLE_MATDBG)
 endif()
 
 # ==================================================================================================
@@ -151,7 +151,7 @@ install(DIRECTORY ${PUBLIC_HDR_DIR}/filamat DESTINATION include)
 # ==================================================================================================
 # Tests
 # ==================================================================================================
-if (FILAMENT_BUILD_TESTING AND IS_HOST_PLATFORM)
+if (DANTE_BUILD_TESTING AND IS_HOST_PLATFORM)
     project(test_filamat)
     set(TARGET test_filamat)
     set(SRCS

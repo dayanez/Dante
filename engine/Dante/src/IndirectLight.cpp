@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/IndirectLight.h"
 
 #include "details/Texture.h"
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -51,4 +47,4 @@ float4 IndirectLight::getColorEstimate(const float3* sh, float3 const direction)
     return FIndirectLight::getColorEstimate(sh, direction);
 }
 
-} // namespace filament
+} // namespace dante

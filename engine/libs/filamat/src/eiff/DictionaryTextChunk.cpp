@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DictionaryTextChunk.h"
 
@@ -9,7 +5,7 @@
 #include "Flattener.h"
 #include "LineDictionary.h"
 
-#include <filament/MaterialChunkType.h>
+#include <dante/MaterialChunkType.h>
 
 #include <cstddef>
 #include <utility>

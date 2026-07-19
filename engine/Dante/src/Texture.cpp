@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Texture.h"
 
 #include "details/Engine.h"
 #include "details/Stream.h"
 
-namespace filament {
+namespace dante {
 
 size_t Texture::getWidth(size_t const level) const noexcept {
     return downcast(this)->getWidth(level);
@@ -113,4 +109,4 @@ size_t Texture::getMaxArrayTextureLayers(Engine& engine) noexcept {
     return FTexture::getMaxArrayTextureLayers(downcast(engine));
 }
 
-} // namespace filament
+} // namespace dante

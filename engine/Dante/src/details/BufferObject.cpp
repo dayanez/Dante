@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/BufferObject.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 
-#include <filament/BufferObject.h>
+#include <dante/BufferObject.h>
 
 #include <backend/DriverEnums.h>
 
@@ -22,7 +18,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 struct BufferObject::BuilderDetails {
     BindingType mBindingType = BindingType::VERTEX;
@@ -75,10 +71,10 @@ void FBufferObject::terminate(FEngine& engine) {
 
 void FBufferObject::setBuffer(FEngine& engine, BufferDescriptor&& buffer, uint32_t const byteOffset) {
 
-    FILAMENT_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
+    DANTE_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
             << "byteOffset must be a multiple of 4";
 
     engine.getDriverApi().updateBufferObject(mHandle, std::move(buffer), byteOffset);
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_DEBUGREGISTRY_H
-#define TNT_FILAMENT_DETAILS_DEBUGREGISTRY_H
+#ifndef TNT_DANTE_DETAILS_DEBUGREGISTRY_H
+#define TNT_DANTE_DETAILS_DEBUGREGISTRY_H
 
 #include "downcast.h"
 
-#include <filament/DebugRegistry.h>
+#include <dante/DebugRegistry.h>
 
 #include <utils/compiler.h>
 #include <utils/Invocable.h>
@@ -22,7 +18,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -118,8 +114,8 @@ private:
     mutable std::unordered_map<std::string_view, utils::Invocable<DataSource()>> mDataSourceCreatorMap;
 };
 
-FILAMENT_DOWNCAST(DebugRegistry)
+DANTE_DOWNCAST(DebugRegistry)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_DEBUGREGISTRY_H
+#endif // TNT_DANTE_DETAILS_DEBUGREGISTRY_H

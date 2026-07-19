@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DFG.h"
 
@@ -12,7 +8,7 @@
 
 #include "generated/resources/dfg.h"
 
-#include <filament/Texture.h>
+#include <dante/Texture.h>
 
 #include <backend/DriverEnums.h>
 
@@ -25,7 +21,7 @@
 #include <cstdlib>
 #include <utility>
 
-namespace filament {
+namespace dante {
 
 void DFG::init(FEngine& engine) {
     constexpr size_t fp16Count = DFG_LUT_SIZE * DFG_LUT_SIZE * 3;
@@ -43,14 +39,14 @@ void DFG::init(FEngine& engine) {
         // If the LUT is Zstd compressed, decompress it.
         void* decodedData = malloc(decodedSize);
 
-        FILAMENT_CHECK_POSTCONDITION(decodedData)
+        DANTE_CHECK_POSTCONDITION(decodedData)
                 << "Couldn't allocate " << decodedSize << " bytes for DFG LUT decompression.";
 
         if (UTILS_LIKELY(decodedData)) {
             bool const success = ZstdHelper::decompress(
                     decodedData, decodedSize, DFG_PACKAGE, byteCount);
 
-            FILAMENT_CHECK_POSTCONDITION(success) << "Couldn't decompress DFG LUT.";
+            DANTE_CHECK_POSTCONDITION(success) << "Couldn't decompress DFG LUT.";
 
             // Use decodedData for the texture
             Texture* lut = builder.build(engine);
@@ -74,4 +70,4 @@ void DFG::terminate(FEngine& engine) noexcept {
     }
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_TANGENTS_JOB_EXTENDED_H
 #define GLTFIO_TANGENTS_JOB_EXTENDED_H
@@ -12,7 +8,7 @@
 
 #include <cgltf.h>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 // Encapsulates a tangent-space transformation, which computes tangents (and maybe transform the
 // mesh vertices/indices depending on the algorithm used). Input to this job can be the base mesh
@@ -61,6 +57,6 @@ struct TangentsJobExtended {
     static void run(Params* params);
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_TANGENTS_JOB_EXTENDED_H

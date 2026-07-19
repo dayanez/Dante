@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_COMMANDSTREAM_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_COMMANDSTREAM_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_COMMANDSTREAM_H
+#define TNT_DANTE_BACKEND_PRIVATE_COMMANDSTREAM_H
 
 #include "private/backend/CircularBuffer.h"
 #include "private/backend/Dispatcher.h"
@@ -41,7 +37,7 @@
 // Set to true to print every command out on log.d. This requires RTTI and DEBUG
 #define DEBUG_COMMAND_STREAM false
 
-namespace filament::backend {
+namespace dante::backend {
 
 class CommandBase {
 protected:
@@ -50,10 +46,10 @@ protected:
     constexpr explicit CommandBase(Execute const execute) noexcept : mExecute(execute) {}
 
 public:
-    static constexpr size_t FILAMENT_OBJECT_ALIGNMENT = alignof(std::max_align_t);
+    static constexpr size_t DANTE_OBJECT_ALIGNMENT = alignof(std::max_align_t);
     // alignment of all Commands in the CommandStream
     static constexpr size_t align(size_t const v) {
-        return (v + (FILAMENT_OBJECT_ALIGNMENT - 1)) & -FILAMENT_OBJECT_ALIGNMENT;
+        return (v + (DANTE_OBJECT_ALIGNMENT - 1)) & -DANTE_OBJECT_ALIGNMENT;
     }
 
     // executes this command and returns the next one
@@ -101,7 +97,7 @@ struct CommandType<void (Driver::*)(ARGS...)> {
      * template parameter below). The actual call is made through Command::execute().
      */
     template<void(Driver::*)(ARGS...)>
-    class alignas(CommandBase::FILAMENT_OBJECT_ALIGNMENT) Command : public CommandBase {
+    class alignas(CommandBase::DANTE_OBJECT_ALIGNMENT) Command : public CommandBase {
         // We use a std::tuple<> to record the arguments passed to the constructor
         using SavedParameters = std::tuple<std::remove_reference_t<ARGS>...>;
         SavedParameters mArgs;
@@ -112,8 +108,8 @@ struct CommandType<void (Driver::*)(ARGS...)> {
     public:
         template<typename M, typename D>
         static void execute(M&& method, D&& driver, CommandBase* base, intptr_t* next) {
-            static_assert(alignof(Command) <= FILAMENT_OBJECT_ALIGNMENT);
-            static_assert((sizeof(Command) % FILAMENT_OBJECT_ALIGNMENT) == 0);
+            static_assert(alignof(Command) <= DANTE_OBJECT_ALIGNMENT);
+            static_assert((sizeof(Command) % DANTE_OBJECT_ALIGNMENT) == 0);
             Command* self = static_cast<Command*>(base);
             *next = sizeof(Command); // align() not needed here, since we can ensure at compile time
 #if DEBUG_COMMAND_STREAM
@@ -145,7 +141,7 @@ struct CommandType<void (Driver::*)(ARGS...)> {
 
 // ------------------------------------------------------------------------------------------------
 
-class alignas(CommandBase::FILAMENT_OBJECT_ALIGNMENT) CustomCommand : public CommandBase {
+class alignas(CommandBase::DANTE_OBJECT_ALIGNMENT) CustomCommand : public CommandBase {
     std::function<void()> mCommand;
     static void execute(Driver&, CommandBase* base, intptr_t* next);
 public:
@@ -157,7 +153,7 @@ public:
 
 // ------------------------------------------------------------------------------------------------
 
-class alignas(CommandBase::FILAMENT_OBJECT_ALIGNMENT)NoopCommand : public CommandBase {
+class alignas(CommandBase::DANTE_OBJECT_ALIGNMENT)NoopCommand : public CommandBase {
     intptr_t mNext;
     static void execute(Driver&, CommandBase* self, intptr_t* next) noexcept {
         *next = static_cast<NoopCommand*>(self)->mNext;
@@ -169,7 +165,7 @@ public:
 
 // ------------------------------------------------------------------------------------------------
 
-#if !defined(NDEBUG) || (FILAMENT_DEBUG_COMMANDS >= FILAMENT_DEBUG_COMMANDS_ENABLE)
+#if !defined(NDEBUG) || (DANTE_DEBUG_COMMANDS >= DANTE_DEBUG_COMMANDS_ENABLE)
     // For now, simply pass the method name down as a string and throw away the parameters.
     // This is good enough for certain debugging needs, and we can improve this later.
     #define DEBUG_COMMAND_BEGIN(methodName, sync, ...) mDriver.debugCommandBegin(this, sync, #methodName)
@@ -303,6 +299,6 @@ PodType* CommandStream::allocatePod(size_t const count, size_t const alignment) 
     return static_cast<PodType*>(allocate(count * sizeof(PodType), alignment));
 }
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_COMMANDSTREAM_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_COMMANDSTREAM_H

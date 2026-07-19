@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "EntityManagerImpl.h"
 
@@ -63,7 +59,7 @@ size_t EntityManager::getEntityCount() const noexcept {
     return static_cast<EntityManagerImpl const *>(this)->getEntityCount();
 }
 
-#if FILAMENT_UTILS_TRACK_ENTITIES
+#if DANTE_UTILS_TRACK_ENTITIES
 std::vector<Entity> EntityManager::getActiveEntities() const {
     return static_cast<EntityManagerImpl const *>(this)->getActiveEntities();
 }

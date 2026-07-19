@@ -4,8 +4,8 @@
 
 #include "details/Engine.h"
 
-#include <filament/Camera.h>
-#include <filament/Exposure.h>
+#include <dante/Camera.h>
+#include <dante/Exposure.h>
 
 #include <utils/compiler.h>
 #include <utils/debug.h>
@@ -21,10 +21,10 @@
 #include <cstdint>
 #include <limits>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 static constexpr float MIN_APERTURE = 0.5f;
 static constexpr float MAX_APERTURE = 64.0f;
@@ -79,7 +79,7 @@ mat4 FCamera::projection(double const focalLengthInMillimeters,
 void UTILS_NOINLINE FCamera::setCustomProjection(mat4 const& projection,
         mat4 const& projectionForCulling, double const near, double const far) {
 
-    FILAMENT_CHECK_PRECONDITION(near != far)
+    DANTE_CHECK_PRECONDITION(near != far)
             << "Camera preconditions not met in setCustomProjection(): near = far = " << near;
 
     for (auto& eyeProjection: mEyeProjection) {
@@ -94,10 +94,10 @@ void UTILS_NOINLINE FCamera::setCustomEyeProjection(mat4 const* projection, size
         mat4 const& projectionForCulling, double const near, double const far) {
     const Engine::Config& config = mEngine.getConfig();
 
-    FILAMENT_CHECK_PRECONDITION(near != far)
+    DANTE_CHECK_PRECONDITION(near != far)
             << "Camera preconditions not met in setCustomEyeProjection(): near = far = " << near;
 
-    FILAMENT_CHECK_PRECONDITION(count >= config.stereoscopicEyeCount)
+    DANTE_CHECK_PRECONDITION(count >= config.stereoscopicEyeCount)
             << "All eye projections must be supplied together, count must be >= "
                "config.stereoscopicEyeCount ("
             << config.stereoscopicEyeCount << ")";
@@ -115,7 +115,7 @@ void UTILS_NOINLINE FCamera::setProjection(Projection const projection,
         double const bottom, double const top,
         double const near, double const far) {
 
-    FILAMENT_CHECK_PRECONDITION(!(left == right || bottom == top ||
+    DANTE_CHECK_PRECONDITION(!(left == right || bottom == top ||
             (projection == Projection::PERSPECTIVE && (near <= 0 || far <= near)) ||
             (projection == Projection::ORTHO && (near == far))))
             << "Camera preconditions not met in setProjection("
@@ -194,7 +194,7 @@ mat4 FCamera::getCullingProjectionMatrix() const noexcept {
 
 const mat4& FCamera::getUserProjectionMatrix(uint8_t const eyeId) const {
     const Engine::Config& config = mEngine.getConfig();
-    FILAMENT_CHECK_PRECONDITION(eyeId < config.stereoscopicEyeCount)
+    DANTE_CHECK_PRECONDITION(eyeId < config.stereoscopicEyeCount)
             << "eyeId must be < config.stereoscopicEyeCount (" << config.stereoscopicEyeCount
             << ")";
     return mEyeProjection[eyeId];
@@ -212,7 +212,7 @@ void UTILS_NOINLINE FCamera::setModelMatrix(const mat4& modelMatrix) noexcept {
 
 void UTILS_NOINLINE FCamera::setEyeModelMatrix(uint8_t const eyeId, mat4 const& model) {
     const Engine::Config& config = mEngine.getConfig();
-    FILAMENT_CHECK_PRECONDITION(eyeId < config.stereoscopicEyeCount)
+    DANTE_CHECK_PRECONDITION(eyeId < config.stereoscopicEyeCount)
             << "eyeId must be < config.stereoscopicEyeCount (" << config.stereoscopicEyeCount
             << ")";
     mEyeFromView[eyeId] = inverse(model);
@@ -299,4 +299,4 @@ CameraInfo::CameraInfo(FCamera const& camera,
     d                  = std::max(zn, camera.getFocusDistance());
 }
 
-} // namespace filament
+} // namespace dante

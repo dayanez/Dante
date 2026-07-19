@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_LOGGER_H
 #define TNT_UTILS_LOGGER_H
@@ -23,7 +19,7 @@
 // The `expression` must return a `utils::LogSeverity` value, which is equivalent to
 // `absl::LogSeverity`.
 
-#if defined(FILAMENT_USE_ABSEIL_LOGGING)
+#if defined(DANTE_USE_ABSEIL_LOGGING)
 
 #include <absl/base/log_severity.h>
 #include <absl/log/log.h>

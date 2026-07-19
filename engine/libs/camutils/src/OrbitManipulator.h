@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef CAMUTILS_ORBIT_MANIPULATOR_H
 #define CAMUTILS_ORBIT_MANIPULATOR_H
@@ -12,18 +8,18 @@
 
 #define MAX_PHI (F_PI / 2.0 - 0.001)
 
-namespace filament {
+namespace dante {
 namespace camutils {
 
-using namespace filament::math;
+using namespace dante::math;
 
 template<typename FLOAT>
 class OrbitManipulator : public Manipulator<FLOAT> {
 public:
-    using vec2 = filament::math::vec2<FLOAT>;
-    using vec3 = filament::math::vec3<FLOAT>;
-    using vec4 = filament::math::vec4<FLOAT>;
-    using Bookmark = filament::camutils::Bookmark<FLOAT>;
+    using vec2 = dante::math::vec2<FLOAT>;
+    using vec3 = dante::math::vec3<FLOAT>;
+    using vec4 = dante::math::vec4<FLOAT>;
+    using Bookmark = dante::camutils::Bookmark<FLOAT>;
     using Base = Manipulator<FLOAT>;
     using Config = typename Base::Config;
 
@@ -185,6 +181,6 @@ private:
 };
 
 } // namespace camutils
-} // namespace filament
+} // namespace dante
 
 #endif /* CAMUTILS_ORBIT_MANIPULATOR_H */

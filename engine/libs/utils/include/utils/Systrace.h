@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 /***********************************************************************
  * DEPRECATED                                                          *
@@ -15,7 +11,7 @@
 
 #define SYSTRACE_TAG_NEVER          (0)
 #define SYSTRACE_TAG_ALWAYS         (1<<0)
-#define SYSTRACE_TAG_FILAMENT       (1<<1)  // don't change, used in makefiles
+#define SYSTRACE_TAG_DANTE       (1<<1)  // don't change, used in makefiles
 #define SYSTRACE_TAG_JOBSYSTEM      (1<<2)
 
 /*
@@ -28,13 +24,13 @@
 #endif
 
 // Systrace on Apple platforms is fragile and adds overhead, should only be enabled in dev builds.
-#ifndef FILAMENT_APPLE_SYSTRACE
-#define FILAMENT_APPLE_SYSTRACE 0
+#ifndef DANTE_APPLE_SYSTRACE
+#define DANTE_APPLE_SYSTRACE 0
 #endif
 
 #if defined(__ANDROID__)
 #include <utils/android/Systrace.h>
-#elif defined(__APPLE__) && FILAMENT_APPLE_SYSTRACE
+#elif defined(__APPLE__) && DANTE_APPLE_SYSTRACE
 #include <utils/darwin/Systrace.h>
 #else
 

@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_COMPONENTS_TRANSFORMMANAGER_H
-#define TNT_FILAMENT_COMPONENTS_TRANSFORMMANAGER_H
+#ifndef TNT_DANTE_COMPONENTS_TRANSFORMMANAGER_H
+#define TNT_DANTE_COMPONENTS_TRANSFORMMANAGER_H
 
 #include "downcast.h"
 
-#include <filament/TransformManager.h>
+#include <dante/TransformManager.h>
 
 #include <utils/compiler.h>
 #include <utils/Entity.h>
@@ -17,7 +13,7 @@
 
 #include <math/mat4.h>
 
-namespace filament {
+namespace dante {
 
 class UTILS_PRIVATE FTransformManager : public TransformManager {
 public:
@@ -218,8 +214,8 @@ private:
     bool mAccurateTranslations = false;
 };
 
-FILAMENT_DOWNCAST(TransformManager)
+DANTE_DOWNCAST(TransformManager)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_COMPONENTS_TRANSFORMMANAGER_H
+#endif // TNT_DANTE_COMPONENTS_TRANSFORMMANAGER_H

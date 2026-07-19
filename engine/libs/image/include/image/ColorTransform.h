@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IMAGE_COLORTRANSFORM_H_
 #define IMAGE_COLORTRANSFORM_H_
@@ -22,8 +18,8 @@ namespace image {
 
 template <typename T>
 uint32_t linearToRGB_10_11_11_REV(const T& linear) {
-    using fp11 = filament::math::fp<0, 5, 6>;
-    using fp10 = filament::math::fp<0, 5, 5>;
+    using fp11 = dante::math::fp<0, 5, 6>;
+    using fp10 = dante::math::fp<0, 5, 5>;
     // the max value for a RGB_11_11_10 is {65024, 65024, 64512} :  (2 - 2^-M) * 2^(E-1)
     // we clamp to the min of that
     fp11 r = fp11::fromf(std::min(64512.0f, linear[0]));
@@ -36,8 +32,8 @@ uint32_t linearToRGB_10_11_11_REV(const T& linear) {
 }
 
 template <typename T>
-inline filament::math::float4 linearToRGBM(const T& linear) {
-    using filament::math::float4;
+inline dante::math::float4 linearToRGBM(const T& linear) {
+    using dante::math::float4;
 
     float4 RGBM(linear[0], linear[1], linear[2], 1.0f);
 
@@ -48,7 +44,7 @@ inline filament::math::float4 linearToRGBM(const T& linear) {
 
     float maxComponent = std::max(std::max(RGBM.r, RGBM.g), std::max(RGBM.b, 1e-6f));
     // Don't let M go below 1 in the [0..16] range
-    RGBM.a =  filament::math::clamp(maxComponent, 1.0f / 16.0f, 1.0f);
+    RGBM.a =  dante::math::clamp(maxComponent, 1.0f / 16.0f, 1.0f);
     RGBM.a = std::ceil(RGBM.a * 255.0f) / 255.0f;
 
     RGBM.rgb = saturate(RGBM.rgb / RGBM.a);
@@ -57,8 +53,8 @@ inline filament::math::float4 linearToRGBM(const T& linear) {
 }
 
 template <typename T>
-inline filament::math::float3 RGBMtoLinear(const T& rgbm) {
-    using filament::math::float3;
+inline dante::math::float3 RGBMtoLinear(const T& rgbm) {
+    using dante::math::float3;
 
     float3 linear(rgbm[0], rgbm[1], rgbm[2]);
     linear *= rgbm.a * 16.0f;
@@ -67,8 +63,8 @@ inline filament::math::float3 RGBMtoLinear(const T& rgbm) {
 }
 
 template <typename T>
-inline filament::math::float3 linearTosRGB(const T& linear) {
-    using filament::math::float3;
+inline dante::math::float3 linearTosRGB(const T& linear) {
+    using dante::math::float3;
     constexpr float a = 0.055f;
     constexpr float a1 = 1.055f;
     constexpr float p = 1 / 2.4f;
@@ -98,8 +94,8 @@ template<typename T>
 T sRGBToLinear(const T& sRGB);
 
 template<>
-inline filament::math::float3 sRGBToLinear(const filament::math::float3& sRGB) {
-    using filament::math::float3;
+inline dante::math::float3 sRGBToLinear(const dante::math::float3& sRGB) {
+    using dante::math::float3;
     constexpr float a = 0.055f;
     constexpr float a1 = 1.055f;
     constexpr float p = 2.4f;
@@ -115,8 +111,8 @@ inline filament::math::float3 sRGBToLinear(const filament::math::float3& sRGB) {
 }
 
 template<>
-inline filament::math::float4 sRGBToLinear(const filament::math::float4& sRGB) {
-    using filament::math::float4;
+inline dante::math::float4 sRGBToLinear(const dante::math::float4& sRGB) {
+    using dante::math::float4;
     constexpr float a = 0.055f;
     constexpr float a1 = 1.055f;
     constexpr float p = 2.4f;
@@ -136,8 +132,8 @@ template<typename T>
 T linearToSRGB(const T& color);
 
 template<>
-inline filament::math::float3 linearToSRGB(const filament::math::float3& color) {
-    using filament::math::float3;
+inline dante::math::float3 linearToSRGB(const dante::math::float3& color) {
+    using dante::math::float3;
     float3 sRGBColor{color};
     UTILS_NOUNROLL
     for (size_t i = 0; i < sRGBColor.size(); i++) {
@@ -162,7 +158,7 @@ std::unique_ptr<uint8_t[]> fromLinearTosRGB(const LinearImage& image) {
         for (size_t x = 0; x < w; ++x, p += nchan, d += N) {
             for (int n = 0; n < N; n++) {
                 float source = n < 3 ? linearTosRGB(p[n]) : p[n];
-                float target =  filament::math::saturate(source) * std::numeric_limits<T>::max() + 0.5f;
+                float target =  dante::math::saturate(source) * std::numeric_limits<T>::max() + 0.5f;
                 d[n] = T(target);
             }
         }
@@ -183,7 +179,7 @@ std::unique_ptr<uint8_t[]> fromLinearToRGB(const LinearImage& image) {
         float const* p = image.getPixelRef(0, y);
         for (size_t x = 0; x < w; ++x, p += channels, d += N) {
             for (int n = 0; n < N; n++) {
-                float target =  filament::math::saturate(p[n]) * std::numeric_limits<T>::max() + 0.5f;
+                float target =  dante::math::saturate(p[n]) * std::numeric_limits<T>::max() + 0.5f;
                 d[n] = T(target);
             }
         }
@@ -195,7 +191,7 @@ std::unique_ptr<uint8_t[]> fromLinearToRGB(const LinearImage& image) {
 // The source image can have three or more channels, but only the first three are honored.
 template <typename T>
 std::unique_ptr<uint8_t[]> fromLinearToRGBM(const LinearImage& image) {
-    using namespace filament::math;
+    using namespace dante::math;
     size_t w = image.getWidth();
     size_t h = image.getHeight();
     UTILS_UNUSED_IN_RELEASE size_t channels = image.getChannels();
@@ -217,7 +213,7 @@ std::unique_ptr<uint8_t[]> fromLinearToRGBM(const LinearImage& image) {
 // Creates a 3-channel RGB_10_11_11_REV image from a f32 image.
 // The source image can have three or more channels, but only the first three are honored.
 inline std::unique_ptr<uint8_t[]> fromLinearToRGB_10_11_11_REV(const LinearImage& image) {
-    using namespace filament::math;
+    using namespace dante::math;
     size_t w = image.getWidth();
     size_t h = image.getHeight();
     UTILS_UNUSED_IN_RELEASE size_t channels = image.getChannels();
@@ -246,7 +242,7 @@ std::unique_ptr<uint8_t[]> fromLinearToGrayscale(const LinearImage& image) {
     for (size_t y = 0; y < h; ++y) {
         float const* p = image.getPixelRef(0, y);
         for (size_t x = 0; x < w; ++x, ++p, ++d) {
-            const float gray =  filament::math::saturate(*p) * std::numeric_limits<T>::max() + 0.5f;
+            const float gray =  dante::math::saturate(*p) * std::numeric_limits<T>::max() + 0.5f;
             d[0] = T(gray);
         }
     }
@@ -260,11 +256,11 @@ template<typename T, typename PROCESS, typename TRANSFORM>
 static LinearImage toLinear(size_t w, size_t h, size_t bpr,
             const uint8_t* src, PROCESS proc, TRANSFORM transform) {
     LinearImage result((uint32_t) w, (uint32_t) h, 3);
-    auto d = result.get< filament::math::float3>();
+    auto d = result.get< dante::math::float3>();
     for (size_t y = 0; y < h; ++y) {
         T const* p = reinterpret_cast<T const*>(src + y * bpr);
         for (size_t x = 0; x < w; ++x, p += 3) {
-             filament::math::float3 sRGB(proc(p[0]), proc(p[1]), proc(p[2]));
+             dante::math::float3 sRGB(proc(p[0]), proc(p[1]), proc(p[2]));
             sRGB /= std::numeric_limits<T>::max();
             *d++ = transform(sRGB);
         }
@@ -288,11 +284,11 @@ template<typename T, typename PROCESS, typename TRANSFORM>
 static LinearImage toLinearWithAlpha(size_t w, size_t h, size_t bpr,
         const uint8_t* src, PROCESS proc, TRANSFORM transform) {
     LinearImage result((uint32_t) w, (uint32_t) h, 4);
-    auto d = result.get< filament::math::float4>();
+    auto d = result.get< dante::math::float4>();
     for (size_t y = 0; y < h; ++y) {
         T const* p = reinterpret_cast<T const*>(src + y * bpr);
         for (size_t x = 0; x < w; ++x, p += 4) {
-             filament::math::float4 sRGB(proc(p[0]), proc(p[1]), proc(p[2]), proc(p[3]));
+             dante::math::float4 sRGB(proc(p[0]), proc(p[1]), proc(p[2]), proc(p[3]));
             sRGB /= std::numeric_limits<T>::max();
             *d++ = transform(sRGB);
         }
@@ -310,9 +306,9 @@ static LinearImage toLinearWithAlpha(size_t w, size_t h, size_t bpr,
 }
 
 // Constructs a 3-channel LinearImage from RGBM data.
-inline LinearImage toLinearFromRGBM( filament::math::float4 const* src, uint32_t w, uint32_t h) {
+inline LinearImage toLinearFromRGBM( dante::math::float4 const* src, uint32_t w, uint32_t h) {
     LinearImage result(w, h, 3);
-    auto dst = result.get< filament::math::float3>();
+    auto dst = result.get< dante::math::float3>();
     for (uint32_t row = 0; row < h; ++row) {
         for (uint32_t col = 0; col < w; ++col, ++src, ++dst) {
             *dst = RGBMtoLinear(*src);
@@ -325,8 +321,8 @@ inline LinearImage fromLinearToRGBM(const LinearImage& image) {
     assert(image.getChannels() == 3);
     const uint32_t w = image.getWidth(), h = image.getHeight();
     LinearImage result(w, h, 4);
-    auto src = image.get< filament::math::float3>();
-    auto dst = result.get< filament::math::float4>();
+    auto src = image.get< dante::math::float3>();
+    auto dst = result.get< dante::math::float4>();
     for (uint32_t row = 0; row < h; ++row) {
         for (uint32_t col = 0; col < w; ++col, ++src, ++dst) {
             *dst = linearToRGBM(*src);
@@ -338,13 +334,13 @@ inline LinearImage fromLinearToRGBM(const LinearImage& image) {
 template<typename T>
 static LinearImage toLinearWithAlpha(size_t w, size_t h, size_t bpr, const uint8_t* src) {
     LinearImage result(w, h, 4);
-    filament::math::float4* d = reinterpret_cast<filament::math::float4*>(result.getPixelRef(0, 0));
+    dante::math::float4* d = reinterpret_cast<dante::math::float4*>(result.getPixelRef(0, 0));
     for (size_t y = 0; y < h; ++y) {
         T const* p = reinterpret_cast<T const*>(src + y * bpr);
         for (size_t x = 0; x < w; ++x, p += 4) {
-            filament::math::float3 sRGB(p[0], p[1], p[2]);
+            dante::math::float3 sRGB(p[0], p[1], p[2]);
             sRGB /= std::numeric_limits<T>::max();
-            *d++ = filament::math::float4(sRGBToLinear(sRGB), 1.0f);
+            *d++ = dante::math::float4(sRGBToLinear(sRGB), 1.0f);
         }
     }
     return result;
@@ -353,11 +349,11 @@ static LinearImage toLinearWithAlpha(size_t w, size_t h, size_t bpr, const uint8
 template<typename T>
 static LinearImage toLinear(size_t w, size_t h, size_t bpr, const uint8_t* src) {
     LinearImage result(w, h, 3);
-    filament::math::float3* d = reinterpret_cast<filament::math::float3*>(result.getPixelRef(0, 0));
+    dante::math::float3* d = reinterpret_cast<dante::math::float3*>(result.getPixelRef(0, 0));
     for (size_t y = 0; y < h; ++y) {
         T const* p = reinterpret_cast<T const*>(src + y * bpr);
         for (size_t x = 0; x < w; ++x, p += 3) {
-            filament::math::float3 sRGB(p[0], p[1], p[2]);
+            dante::math::float3 sRGB(p[0], p[1], p[2]);
             sRGB /= std::numeric_limits<T>::max();
             *d++ = sRGBToLinear(sRGB);
         }

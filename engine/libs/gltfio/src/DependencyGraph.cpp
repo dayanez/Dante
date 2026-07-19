@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DependencyGraph.h"
 
 #include <utils/debug.h>
 #include <utils/Panic.h>
 
-using namespace filament;
+using namespace dante;
 using namespace utils;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 size_t DependencyGraph::popRenderables(Entity* result, size_t count) noexcept {
     if (result == nullptr) {
@@ -137,4 +133,4 @@ void DependencyGraph::disableProgressiveReveal() {
     }
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

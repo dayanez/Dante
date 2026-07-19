@@ -1,7 +1,3 @@
-/*
- * Copyright 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_MAT4_H
 #define TNT_MATH_MAT4_H
@@ -20,7 +16,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 namespace math {
 // -------------------------------------------------------------------------------------
 namespace details {
@@ -586,16 +582,16 @@ constexpr mat4 highPrecisionMultiplyd(mat4f const& lhs, mat4f const& rhs) noexce
 
 // ----------------------------------------------------------------------------------------
 }  // namespace math
-}  // namespace filament
+}  // namespace dante
 
 namespace std {
 template<typename T>
-constexpr void swap(filament::math::details::TMat44<T>& lhs,
-        filament::math::details::TMat44<T>& rhs) noexcept {
+constexpr void swap(dante::math::details::TMat44<T>& lhs,
+        dante::math::details::TMat44<T>& rhs) noexcept {
     // This generates much better code than the default implementation
     // It's unclear why, I believe this is due to an optimization bug in the clang.
     //
-    //     filament::math::details::TMat44<T> t(lhs);
+    //     dante::math::details::TMat44<T> t(lhs);
     //    lhs = rhs;
     //    rhs = t;
     //

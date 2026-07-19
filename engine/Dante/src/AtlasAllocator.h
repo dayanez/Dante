@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_ATLASALLOCATOR_H
-#define TNT_FILAMENT_ATLASALLOCATOR_H
+#ifndef TNT_DANTE_ATLASALLOCATOR_H
+#define TNT_DANTE_ATLASALLOCATOR_H
 
-#include <private/filament/EngineEnums.h>
+#include <private/dante/EngineEnums.h>
 
-#include <filament/Viewport.h>
+#include <dante/Viewport.h>
 
 #include <utils/QuadTree.h>
 
@@ -21,7 +17,7 @@ class AtlasAllocator_AllocateMixed0_Test;
 class AtlasAllocator_AllocateMixed1_Test;
 class AtlasAllocator_AllocateMixed2_Test;
 
-namespace filament {
+namespace dante {
 
 /**
  * A 2D allocator based on a QuadTree (Buddy Allocator).
@@ -139,6 +135,6 @@ private:
     uint8_t mMaxTextureSizePot = 0;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_ATLASALLOCATOR_H
+#endif // TNT_DANTE_ATLASALLOCATOR_H

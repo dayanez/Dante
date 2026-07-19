@@ -1,9 +1,5 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#include "private/filament/BufferInterfaceBlock.h"
+#include "private/dante/BufferInterfaceBlock.h"
 
 #include <utils/compiler.h>
 #include <utils/Panic.h>
@@ -12,7 +8,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 BufferInterfaceBlock::Builder::Builder() noexcept = default;
 BufferInterfaceBlock::Builder::~Builder() noexcept = default;
@@ -75,15 +71,15 @@ BufferInterfaceBlock BufferInterfaceBlock::Builder::build() {
     });
 
     // if there is one, check it's the last entry
-    FILAMENT_CHECK_PRECONDITION(pos == mEntries.end() || pos == mEntries.end() - 1)
+    DANTE_CHECK_PRECONDITION(pos == mEntries.end() || pos == mEntries.end() - 1)
             << "the variable-size array must be the last entry";
 
     // if we have a variable size array, we can't be a UBO
-    FILAMENT_CHECK_PRECONDITION(pos == mEntries.end() || mTarget == Target::SSBO)
+    DANTE_CHECK_PRECONDITION(pos == mEntries.end() || mTarget == Target::SSBO)
             << "variable size arrays not supported for UBOs";
 
     // std430 not available for UBOs
-    FILAMENT_CHECK_PRECONDITION(mAlignment == Alignment::std140 || mTarget == Target::SSBO)
+    DANTE_CHECK_PRECONDITION(mAlignment == Alignment::std140 || mTarget == Target::SSBO)
             << "UBOs must use std140";
 
     return BufferInterfaceBlock(*this);
@@ -155,7 +151,7 @@ ssize_t BufferInterfaceBlock::getFieldOffset(std::string_view name, size_t index
 BufferInterfaceBlock::FieldInfo const* BufferInterfaceBlock::getFieldInfo(
         std::string_view name) const {
     auto pos = mInfoMap.find(name);
-    FILAMENT_CHECK_PRECONDITION(pos != mInfoMap.end()) << "uniform named \""
+    DANTE_CHECK_PRECONDITION(pos != mInfoMap.end()) << "uniform named \""
             << name << "\" not found";
     return &mFieldInfoList[pos->second];
 }
@@ -226,4 +222,4 @@ uint8_t UTILS_NOINLINE BufferInterfaceBlock::strideForType(BufferInterfaceBlock:
     }
 }
 
-} // namespace filament
+} // namespace dante

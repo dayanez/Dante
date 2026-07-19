@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_METALARGUMENTBUFFER_H
 #define TNT_METALARGUMENTBUFFER_H
@@ -36,8 +32,8 @@ public:
          * @param format controls the data format of the texture, e.g., int, float, etc
          */
         Builder& texture(size_t index, const std::string& name,
-                filament::backend::SamplerType type,
-                filament::backend::SamplerFormat format,
+                dante::backend::SamplerType type,
+                dante::backend::SamplerFormat format,
                 bool multisample) noexcept;
 
         /**
@@ -65,8 +61,8 @@ public:
         struct TextureArgument {
             std::string name;
             size_t index;
-            filament::backend::SamplerType type;
-            filament::backend::SamplerFormat format;
+            dante::backend::SamplerType type;
+            dante::backend::SamplerFormat format;
             bool multisample;
 
             std::ostream& write(std::ostream& os) const;

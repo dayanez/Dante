@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "components/RenderableManager.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 #include "RenderPrimitive.h"
 
 #include "details/Engine.h"
@@ -16,13 +12,13 @@
 
 #include "ds/DescriptorSet.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/Box.h>
-#include <filament/FilamentAPI.h>
-#include <filament/MaterialEnums.h>
-#include <filament/RenderableManager.h>
+#include <dante/Box.h>
+#include <dante/DanteAPI.h>
+#include <dante/MaterialEnums.h>
+#include <dante/RenderableManager.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -53,10 +49,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 namespace {
 
 RenderableManager::Builder::MorphType morphTargetBufferToBuildType(
@@ -352,18 +348,18 @@ void RenderableManager::BuilderDetails::processBoneIndicesAndWights(Engine& engi
     for (auto const& bonePair: mBonePairs) {
         auto const primitiveIndex = bonePair.first;
         auto entries = mEntries;
-        FILAMENT_CHECK_PRECONDITION(primitiveIndex < entries.size() && primitiveIndex >= 0)
+        DANTE_CHECK_PRECONDITION(primitiveIndex < entries.size() && primitiveIndex >= 0)
                 << "[primitive @ " << primitiveIndex << "] primitiveindex is out of size ("
                 << entries.size() << ")";
         auto const entry = mEntries[primitiveIndex];
         auto bonePairsForPrimitive = bonePair.second;
         auto const vertexCount = entry.vertices->getVertexCount();
-        FILAMENT_CHECK_PRECONDITION(bonePairsForPrimitive.size() == vertexCount)
+        DANTE_CHECK_PRECONDITION(bonePairsForPrimitive.size() == vertexCount)
                 << "[primitive @ " << primitiveIndex << "] bone indices and weights pairs count ("
                 << bonePairsForPrimitive.size() << ") must be equal to vertex count ("
                 << vertexCount << ")";
         auto const& declaredAttributes = downcast(entry.vertices)->getDeclaredAttributes();
-        FILAMENT_CHECK_PRECONDITION(declaredAttributes[VertexAttribute::BONE_INDICES] ||
+        DANTE_CHECK_PRECONDITION(declaredAttributes[VertexAttribute::BONE_INDICES] ||
                 declaredAttributes[VertexAttribute::BONE_WEIGHTS])
                 << "[entity=" << entity.getId() << ", primitive @ " << primitiveIndex
                 << "] for advanced skinning set VertexBuffer::Builder::advancedSkinning()";
@@ -397,16 +393,16 @@ void RenderableManager::BuilderDetails::processBoneIndicesAndWights(Engine& engi
                 for (size_t k = 0; k < bonePairsForPrimitive[iVertex].size(); k++) {
                     auto const boneWeight = bonePairsForPrimitive[iVertex][k][1];
                     auto const boneIndex = bonePairsForPrimitive[iVertex][k][0];
-                    FILAMENT_CHECK_PRECONDITION(boneWeight >= 0)
+                    DANTE_CHECK_PRECONDITION(boneWeight >= 0)
                             << "[entity=" << entity.getId() << ", primitive @ " << primitiveIndex
                             << "] bone weight (" << boneWeight << ") of vertex=" << iVertex
                             << " is negative";
                     if (boneWeight > 0.0f) {
-                        FILAMENT_CHECK_PRECONDITION(boneIndex >= 0)
+                        DANTE_CHECK_PRECONDITION(boneIndex >= 0)
                                 << "[entity=" << entity.getId() << ", primitive @ "
                                 << primitiveIndex << "] bone index (" << (int)boneIndex
                                 << ") of vertex=" << iVertex << " is negative";
-                        FILAMENT_CHECK_PRECONDITION(boneIndex < mSkinningBoneCount)
+                        DANTE_CHECK_PRECONDITION(boneIndex < mSkinningBoneCount)
                                 << "[entity=" << entity.getId() << ", primitive @ "
                                 << primitiveIndex << "] bone index (" << (int)boneIndex
                                 << ") of vertex=" << iVertex << " is bigger then bone count ("
@@ -418,7 +414,7 @@ void RenderableManager::BuilderDetails::processBoneIndicesAndWights(Engine& engi
                     }
                 }
 
-                FILAMENT_CHECK_PRECONDITION(boneWeightsSum > 0)
+                DANTE_CHECK_PRECONDITION(boneWeightsSum > 0)
                         << "[entity=" << entity.getId() << ", primitive @ " << primitiveIndex
                         << "] sum of bone weights of vertex=" << iVertex << " is " << boneWeightsSum
                         << ", it should be positive.";
@@ -482,29 +478,29 @@ RenderableManager::Builder& RenderableManager::Builder::instances(
 RenderableManager::Builder::Result RenderableManager::Builder::build(Engine& engine, Entity const entity) {
     bool isEmpty = true;
 
-    FILAMENT_CHECK_PRECONDITION(mImpl->mSkinningBoneCount <= CONFIG_MAX_BONE_COUNT)
+    DANTE_CHECK_PRECONDITION(mImpl->mSkinningBoneCount <= CONFIG_MAX_BONE_COUNT)
             << "bone count > " << CONFIG_MAX_BONE_COUNT;
 
-    FILAMENT_CHECK_PRECONDITION(mImpl->mSkinningBufferOffset <= std::numeric_limits<uint16_t>::max())
+    DANTE_CHECK_PRECONDITION(mImpl->mSkinningBufferOffset <= std::numeric_limits<uint16_t>::max())
             << "skinning buffer offset > " << std::numeric_limits<uint16_t>::max();
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             mImpl->mInstanceCount <= CONFIG_MAX_INSTANCES || !mImpl->mInstanceBuffer)
             << "instance count is " << mImpl->mInstanceCount
             << ", but instance count is limited to CONFIG_MAX_INSTANCES (" << CONFIG_MAX_INSTANCES
             << ") instances when supplying transforms via an InstanceBuffer.";
 
     if (mImpl->mGeometryType == GeometryType::STATIC) {
-        FILAMENT_CHECK_PRECONDITION(mImpl->mSkinningBoneCount == 0)
+        DANTE_CHECK_PRECONDITION(mImpl->mSkinningBoneCount == 0)
                 << "Skinning can't be used with STATIC geometry";
 
-        FILAMENT_CHECK_PRECONDITION(mImpl->mMorphTargetCount == 0)
+        DANTE_CHECK_PRECONDITION(mImpl->mMorphTargetCount == 0)
                 << "Morphing can't be used with STATIC geometry";
     }
 
     if (mImpl->mInstanceBuffer) {
         size_t const bufferInstanceCount = mImpl->mInstanceBuffer->mInstanceCount;
-        FILAMENT_CHECK_PRECONDITION(mImpl->mInstanceCount <= bufferInstanceCount)
+        DANTE_CHECK_PRECONDITION(mImpl->mInstanceCount <= bufferInstanceCount)
                 << "instance count (" << mImpl->mInstanceCount
                 << ") must be less than or equal to the InstanceBuffer's instance "
                    "count (" << bufferInstanceCount << ").";
@@ -535,14 +531,14 @@ RenderableManager::Builder::Result RenderableManager::Builder::build(Engine& eng
 
         // we want a feature level violation to be a hard error (exception if enabled, or crash)
         int const activeFeatureLevel = static_cast<int>(engine.getActiveFeatureLevel());
-        FILAMENT_CHECK_PRECONDITION(downcast(engine).hasFeatureLevel(material->getFeatureLevel()))
+        DANTE_CHECK_PRECONDITION(downcast(engine).hasFeatureLevel(material->getFeatureLevel()))
                 << "Material \"" << material->getName().c_str_safe() << "\" has feature level "
                 << static_cast<int>(material->getFeatureLevel())
                 << " which is not supported by this Engine: " << activeFeatureLevel;
 
         // reject invalid geometry parameters
         if (entry.indices) {
-            FILAMENT_CHECK_PRECONDITION(
+            DANTE_CHECK_PRECONDITION(
                     entry.offset + entry.count <= entry.indices->getIndexCount())
                     << "[entity=" << entity.getId() << ", primitive @ " << i << "] offset ("
                     << entry.offset << ") + count (" << entry.count << ") > indexCount ("
@@ -550,15 +546,15 @@ RenderableManager::Builder::Result RenderableManager::Builder::build(Engine& eng
         } else {
             // Non-indexed (attribute-less) primitive: enforce no skinning/morphing because the
             // GPU shader expects vertex attributes that simply aren't there.
-            FILAMENT_CHECK_PRECONDITION(mImpl->mSkinningBoneCount == 0)
+            DANTE_CHECK_PRECONDITION(mImpl->mSkinningBoneCount == 0)
                     << "[entity=" << entity.getId() << ", primitive @ " << i
                     << "] non-indexed (null IndexBuffer) primitives are incompatible with "
                        "skinning";
-            FILAMENT_CHECK_PRECONDITION(mImpl->mMorphTargetCount == 0)
+            DANTE_CHECK_PRECONDITION(mImpl->mMorphTargetCount == 0)
                     << "[entity=" << entity.getId() << ", primitive @ " << i
                     << "] non-indexed (null IndexBuffer) primitives are incompatible with "
                        "morphing";
-            FILAMENT_CHECK_PRECONDITION(
+            DANTE_CHECK_PRECONDITION(
                     entry.offset + entry.count <= entry.vertices->getVertexCount())
                     << "[entity=" << entity.getId() << ", primitive @ " << i << "] offset ("
                     << entry.offset << ") + count (" << entry.count << ") > vertexCount ("
@@ -580,7 +576,7 @@ RenderableManager::Builder::Result RenderableManager::Builder::build(Engine& eng
         isEmpty = false;
     }
 
-    FILAMENT_CHECK_PRECONDITION(!mImpl->mAABB.isEmpty() ||
+    DANTE_CHECK_PRECONDITION(!mImpl->mAABB.isEmpty() ||
             (!mImpl->mCulling && (!(mImpl->mReceiveShadows || mImpl->mCastShadows)) || isEmpty))
             << "[entity=" << entity.getId()
             << "] AABB can't be empty, unless culling is disabled and "
@@ -844,7 +840,7 @@ void FRenderableManager::setMaterialInstanceAt(Instance const instance, uint8_t 
             FMaterial const* material = mi->getMaterial();
 
             // we want a feature level violation to be a hard error (exception if enabled, or crash)
-            FILAMENT_CHECK_PRECONDITION(mEngine.hasFeatureLevel(material->getFeatureLevel()))
+            DANTE_CHECK_PRECONDITION(mEngine.hasFeatureLevel(material->getFeatureLevel()))
                     << "Material \"" << material->getName().c_str_safe() << "\" has feature level "
                     << (uint8_t)material->getFeatureLevel()
                     << " which is not supported by this Engine";
@@ -976,10 +972,10 @@ void FRenderableManager::setBones(Instance const ci,
     if (ci) {
         Bones const& bones = mManager[ci].bones;
 
-        FILAMENT_CHECK_PRECONDITION(!bones.skinningBufferMode)
+        DANTE_CHECK_PRECONDITION(!bones.skinningBufferMode)
                 << "Disable skinning buffer mode to use this API";
 
-        FILAMENT_CHECK_PRECONDITION(offset <= bones.count)
+        DANTE_CHECK_PRECONDITION(offset <= bones.count)
                 << "bone offset is out of bounds (" << offset << " > " << bones.count << ")";
 
         assert_invariant(bones.handle && offset + boneCount <= bones.count);
@@ -995,10 +991,10 @@ void FRenderableManager::setBones(Instance const ci,
     if (ci) {
         Bones const& bones = mManager[ci].bones;
 
-        FILAMENT_CHECK_PRECONDITION(!bones.skinningBufferMode)
+        DANTE_CHECK_PRECONDITION(!bones.skinningBufferMode)
                 << "Disable skinning buffer mode to use this API";
 
-        FILAMENT_CHECK_PRECONDITION(offset <= bones.count)
+        DANTE_CHECK_PRECONDITION(offset <= bones.count)
                 << "bone offset is out of bounds (" << offset << " > " << bones.count << ")";
 
         assert_invariant(bones.handle && offset + boneCount <= bones.count);
@@ -1014,10 +1010,10 @@ void FRenderableManager::setSkinningBuffer(Instance const ci,
 
     Bones& bones = mManager[ci].bones;
 
-    FILAMENT_CHECK_PRECONDITION(bones.skinningBufferMode)
+    DANTE_CHECK_PRECONDITION(bones.skinningBufferMode)
             << "Enable skinning buffer mode to use this API";
 
-    FILAMENT_CHECK_PRECONDITION(count <= CONFIG_MAX_BONE_COUNT)
+    DANTE_CHECK_PRECONDITION(count <= CONFIG_MAX_BONE_COUNT)
             << "SkinningBuffer larger than 256 (count=" << count << ")";
 
     // According to the OpenGL ES 3.2 specification in 7.6.3 Uniform
@@ -1030,7 +1026,7 @@ void FRenderableManager::setSkinningBuffer(Instance const ci,
 
     count = CONFIG_MAX_BONE_COUNT;
 
-    FILAMENT_CHECK_PRECONDITION(count + offset <= skinningBuffer->getBoneCount())
+    DANTE_CHECK_PRECONDITION(count + offset <= skinningBuffer->getBoneCount())
             << "SkinningBuffer overflow (size=" << skinningBuffer->getBoneCount()
             << ", count=" << count << ", offset=" << offset << ")";
 
@@ -1052,7 +1048,7 @@ static void updateMorphWeights(FEngine& engine, Handle<HwBufferObject> handle,
 void FRenderableManager::setMorphWeights(Instance const instance, float const* weights,
         size_t const count, size_t const offset) {
     if (instance) {
-        FILAMENT_CHECK_PRECONDITION(count + offset <= CONFIG_MAX_MORPH_TARGET_COUNT)
+        DANTE_CHECK_PRECONDITION(count + offset <= CONFIG_MAX_MORPH_TARGET_COUNT)
                 << "Only " << CONFIG_MAX_MORPH_TARGET_COUNT
                 << " morph targets are supported (count=" << count << ", offset=" << offset << ")";
 
@@ -1127,4 +1123,4 @@ size_t FRenderableManager::getInstanceCount(Instance const instance) const noexc
     return 0;
 }
 
-} // namespace filament
+} // namespace dante

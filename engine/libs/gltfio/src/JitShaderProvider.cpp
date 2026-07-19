@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <gltfio/MaterialProvider.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <filamat/MaterialBuilder.h>
 
@@ -17,8 +13,8 @@
 #include <unordered_map>
 
 using namespace filamat;
-using namespace filament;
-using namespace filament::gltfio;
+using namespace dante;
+using namespace dante::gltfio;
 using namespace utils;
 
 namespace {
@@ -48,7 +44,7 @@ private:
     std::vector<Material*> mMaterials;
     Engine* const mEngine;
     const bool mOptimizeShaders;
-    filament::UserVariantFilterMask mVariantFilter{};
+    dante::UserVariantFilterMask mVariantFilter{};
 };
 
 JitShaderProvider::JitShaderProvider(Engine* engine, bool optimizeShaders,
@@ -57,16 +53,16 @@ JitShaderProvider::JitShaderProvider(Engine* engine, bool optimizeShaders,
       mOptimizeShaders(optimizeShaders) {
 
     // Note that this is the same as the list in tools/matc/src/ParametersProcessor.cpp
-    static const std::unordered_map<std::string, filament::UserVariantFilterBit> strToEnum  = [] {
-        std::unordered_map<std::string, filament::UserVariantFilterBit> strToEnum;
-        strToEnum["directionalLighting"]    = filament::UserVariantFilterBit::DIRECTIONAL_LIGHTING;
-        strToEnum["dynamicLighting"]        = filament::UserVariantFilterBit::DYNAMIC_LIGHTING;
-        strToEnum["shadowReceiver"]         = filament::UserVariantFilterBit::SHADOW_RECEIVER;
-        strToEnum["skinning"]               = filament::UserVariantFilterBit::SKINNING;
-        strToEnum["vsm"]                    = filament::UserVariantFilterBit::VSM;
-        strToEnum["fog"]                    = filament::UserVariantFilterBit::FOG;
-        strToEnum["ssr"]                    = filament::UserVariantFilterBit::SSR;
-        strToEnum["stereo"]                 = filament::UserVariantFilterBit::STE;
+    static const std::unordered_map<std::string, dante::UserVariantFilterBit> strToEnum  = [] {
+        std::unordered_map<std::string, dante::UserVariantFilterBit> strToEnum;
+        strToEnum["directionalLighting"]    = dante::UserVariantFilterBit::DIRECTIONAL_LIGHTING;
+        strToEnum["dynamicLighting"]        = dante::UserVariantFilterBit::DYNAMIC_LIGHTING;
+        strToEnum["shadowReceiver"]         = dante::UserVariantFilterBit::SHADOW_RECEIVER;
+        strToEnum["skinning"]               = dante::UserVariantFilterBit::SKINNING;
+        strToEnum["vsm"]                    = dante::UserVariantFilterBit::VSM;
+        strToEnum["fog"]                    = dante::UserVariantFilterBit::FOG;
+        strToEnum["ssr"]                    = dante::UserVariantFilterBit::SSR;
+        strToEnum["stereo"]                 = dante::UserVariantFilterBit::STE;
         return strToEnum;
     }();
 
@@ -300,7 +296,7 @@ std::string shaderFromKey(const MaterialKey& config) {
             shader += R"SHADER(
                 material.absorption = materialParams.volumeAbsorption;
 
-                // TODO: Provided by Filament, but this should really be provided/computed by gltfio
+                // TODO: Provided by Dante, but this should really be provided/computed by gltfio
                 // TODO: This scale is per renderable and should include the scale of the mesh node
                 float scale = getObjectUserData();
                 material.thickness = materialParams.volumeThicknessFactor * scale;
@@ -365,7 +361,7 @@ std::string shaderFromKey(const MaterialKey& config) {
 }
 
 Material* createMaterial(Engine* engine, const MaterialKey& config, const UvMap& uvmap,
-        const char* name, bool optimizeShaders, filament::UserVariantFilterMask variantFilter) {
+        const char* name, bool optimizeShaders, dante::UserVariantFilterMask variantFilter) {
     std::string shader = shaderFromKey(config);
     processShaderString(&shader, uvmap, config);
     MaterialBuilder builder;
@@ -636,11 +632,11 @@ MaterialInstance* JitShaderProvider::createMaterialInstance(MaterialKey* config,
 
 } // anonymous namespace
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 MaterialProvider* createJitShaderProvider(Engine* engine, bool optimizeShaders,
         utils::FixedCapacityVector<char const*> const& variantFilters) {
     return new JitShaderProvider(engine, optimizeShaders, variantFilters);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

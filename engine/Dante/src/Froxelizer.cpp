@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "Froxelizer.h"
 
@@ -13,11 +9,11 @@
 #include "details/Engine.h"
 #include "details/Scene.h"
 
-#include <private/filament/EngineEnums.h>
+#include <private/dante/EngineEnums.h>
 
-#include <filament/Box.h>
-#include <filament/View.h>
-#include <filament/Viewport.h>
+#include <dante/Box.h>
+#include <dante/View.h>
+#include <dante/Viewport.h>
 
 #include <private/backend/DriverApi.h>
 
@@ -54,10 +50,10 @@
 #include <stdint.h>
 #include <string.h>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -195,7 +191,7 @@ void Froxelizer::setOptions(float const zLightNear, float const zLightFar) noexc
     }
 }
 
-void Froxelizer::setViewport(filament::Viewport const& viewport) noexcept {
+void Froxelizer::setViewport(dante::Viewport const& viewport) noexcept {
     if (UTILS_UNLIKELY(mViewport != viewport)) {
         mViewport = viewport;
         mDirtyFlags |= VIEWPORT_CHANGED;
@@ -214,7 +210,7 @@ void Froxelizer::setProjection(const mat4f& projection,
 
 bool Froxelizer::prepare(
         FEngine::DriverApi& driverApi, RootArenaScope& rootArenaScope,
-        filament::Viewport const& viewport,
+        dante::Viewport const& viewport,
         const mat4f& projection, float const projectionNear, float const projectionFar,
         float4 const& clipTransform) noexcept {
     assert_invariant(projectionFar > projectionNear);
@@ -271,7 +267,7 @@ bool Froxelizer::prepare(
 
 void Froxelizer::computeFroxelLayout(
         uint2* dim, uint16_t* countX, uint16_t* countY, uint16_t* countZ,
-        size_t const froxelBufferEntryCount, filament::Viewport const& viewport) noexcept {
+        size_t const froxelBufferEntryCount, dante::Viewport const& viewport) noexcept {
 
     auto roundTo8 = [](uint32_t const v) { return (v + 7u) & ~7u; };
 
@@ -318,7 +314,7 @@ void Froxelizer::updateBoundingSpheres(
         float4 const* UTILS_RESTRICT planesY,
         float const* UTILS_RESTRICT planesZ) noexcept {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     // TODO: this could potentially be parallel_for'ized
 
@@ -406,7 +402,7 @@ bool Froxelizer::update() noexcept {
     }
 
     if (UTILS_UNLIKELY(mDirtyFlags & VIEWPORT_CHANGED)) {
-        filament::Viewport const& viewport = mViewport;
+        dante::Viewport const& viewport = mViewport;
 
         uint2 froxelDimension;
         uint16_t froxelCountX, froxelCountY, froxelCountZ;
@@ -645,7 +641,7 @@ void Froxelizer::froxelizeLights(FEngine& engine,
 void Froxelizer::froxelizeLoop(FEngine& engine,
         const mat4f& UTILS_RESTRICT viewMatrix,
         const FScene::LightSoa& UTILS_RESTRICT lightData) const noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     Slice<FroxelThreadData> froxelThreadData = mFroxelShardedData;
     memset(froxelThreadData.data(), 0, froxelThreadData.sizeInBytes());
@@ -658,7 +654,7 @@ void Froxelizer::froxelizeLoop(FEngine& engine,
                      spheres, directions, spotParams, &viewMatrix ]
             (size_t const count, size_t const offset, size_t const stride) {
 
-        FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "FroxelizeLoop Job");
+        DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "FroxelizeLoop Job");
 
         const mat4f& projection = mProjection;
         const mat3f& vn = viewMatrix.upperLeft();
@@ -711,7 +707,7 @@ void Froxelizer::froxelizeLoop(FEngine& engine,
 }
 
 void Froxelizer::froxelizeAssignRecordsCompress() noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     Slice<const FroxelThreadData> froxelThreadData = mFroxelShardedData;
 
@@ -1039,4 +1035,4 @@ void Froxelizer::computeLightTree(
             });
 }
 
-} // namespace filament
+} // namespace dante

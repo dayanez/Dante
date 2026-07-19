@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "GLSLTools.h"
 
 #include "ASTHelpers.h"
 #include "builtinResource.h"
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <filamat/Enums.h>
 #include <filamat/MaterialBuilder.h>
@@ -20,7 +16,7 @@
 
 using namespace utils;
 using namespace glslang;
-using namespace filament::backend;
+using namespace dante::backend;
 
 namespace filamat {
 
@@ -149,7 +145,7 @@ static const TIntermTyped* findLValueBase(const TIntermTyped* node, Symbol& symb
 // ------------------------------------------------------------------------------------------------
 
 bool GLSLTools::analyzeComputeShader(const std::string& shaderCode,
-        filament::backend::ShaderModel model, MaterialBuilder::TargetApi targetApi,
+        dante::backend::ShaderModel model, MaterialBuilder::TargetApi targetApi,
         MaterialBuilder::TargetLanguage targetLanguage) noexcept {
 
     // Parse to check syntax and semantic.
@@ -168,7 +164,7 @@ bool GLSLTools::analyzeComputeShader(const std::string& shaderCode,
         return false;
     }
 
-    auto materialFunctionName = getMaterialFunctionName(filament::MaterialDomain::COMPUTE);
+    auto materialFunctionName = getMaterialFunctionName(dante::MaterialDomain::COMPUTE);
 
     TIntermNode* root = tShader.getIntermediate()->getTreeRoot();
     // Check there is a material function definition in this shader.
@@ -184,7 +180,7 @@ bool GLSLTools::analyzeComputeShader(const std::string& shaderCode,
 
 std::optional<GLSLTools::FragmentShaderInfo> GLSLTools::analyzeFragmentShader(
         const std::string& shaderCode,
-        filament::backend::ShaderModel model, MaterialBuilder::MaterialDomain materialDomain,
+        dante::backend::ShaderModel model, MaterialBuilder::MaterialDomain materialDomain,
         MaterialBuilder::TargetApi targetApi, MaterialBuilder::TargetLanguage targetLanguage,
         bool hasCustomSurfaceShading) noexcept {
 
@@ -259,7 +255,7 @@ std::optional<GLSLTools::FragmentShaderInfo> GLSLTools::analyzeFragmentShader(
 }
 
 bool GLSLTools::analyzeVertexShader(const std::string& shaderCode,
-        filament::backend::ShaderModel model,
+        dante::backend::ShaderModel model,
         MaterialBuilder::MaterialDomain materialDomain, MaterialBuilder::TargetApi targetApi,
         MaterialBuilder::TargetLanguage targetLanguage) noexcept {
 
@@ -308,7 +304,7 @@ void GLSLTools::shutdown() {
 }
 
 bool GLSLTools::findProperties(
-        filament::backend::ShaderStage type,
+        dante::backend::ShaderStage type,
         const std::string& shaderCode,
         MaterialBuilder::PropertyList& properties,
         MaterialBuilder::TargetApi targetApi,
@@ -474,8 +470,8 @@ int GLSLTools::getGlslDefaultVersion(ShaderModel model) {
 
 // The shading language version. Corresponds to #version $VALUE.
 std::pair<int, bool> GLSLTools::getShadingLanguageVersion(ShaderModel model,
-        filament::backend::FeatureLevel featureLevel) {
-    using FeatureLevel = filament::backend::FeatureLevel;
+        dante::backend::FeatureLevel featureLevel) {
+    using FeatureLevel = dante::backend::FeatureLevel;
     switch (model) {
         case ShaderModel::MOBILE:
             switch (featureLevel) {
@@ -553,7 +549,7 @@ void GLSLTools::textureLodBias(TShader& shader) {
     TIntermNode* root = intermediate->getTreeRoot();
     textureLodBias(intermediate, root,
             "material(struct-MaterialInputs",
-            "filament_lodBias");
+            "dante_lodBias");
 }
 
 template<typename F>

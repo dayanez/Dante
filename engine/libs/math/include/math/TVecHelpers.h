@@ -1,7 +1,3 @@
-/*
- * Copyright 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_TVECHELPERS_H
 #define TNT_MATH_TVECHELPERS_H
@@ -14,7 +10,7 @@
 
 #include <stdint.h>
 
-namespace filament::math::details {
+namespace dante::math::details {
 
 template<typename U>
 inline constexpr U min(U a, U b) noexcept {
@@ -639,6 +635,6 @@ private:
     }
 };
 
-}  // namespace filament::math::details
+}  // namespace dante::math::details
 
 #endif  // TNT_MATH_TVECHELPERS_H

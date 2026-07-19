@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #pragma once
 
@@ -11,7 +7,7 @@
 #include <cstddef>
 #include <iterator>
 
-namespace filament {
+namespace dante {
 
 /**
  * Finds and processes consecutive runs of equivalent elements in a range, compacting them in-place.
@@ -119,4 +115,4 @@ static Iterator compact(Iterator first, Iterator last,
     return dst;
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
-#ifndef TNT_FILAMENT_DYNAMICSPECCONSTKEY_H
-#define TNT_FILAMENT_DYNAMICSPECCONSTKEY_H
+#ifndef TNT_DANTE_DYNAMICSPECCONSTKEY_H
+#define TNT_DANTE_DYNAMICSPECCONSTKEY_H
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <utils/Slice.h>
 
 #include <array>
 
-namespace filament {
+namespace dante {
 static constexpr size_t DYNAMIC_SPEC_CONST_KEY_BITS =
         CONFIG_NEXT_DYNAMIC_SPEC_CONSTANT - CONFIG_MAX_RESERVED_SPEC_CONSTANTS;
 static constexpr size_t DYNAMIC_SPEC_CONST_KEY_COUNT = 1 << DYNAMIC_SPEC_CONST_KEY_BITS;
@@ -89,6 +85,6 @@ struct DynamicSpecConstKey {
     }
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DYNAMICSPECCONSTKEY_H
+#endif // TNT_DANTE_DYNAMICSPECCONSTKEY_H

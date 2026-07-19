@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_GENERIC_CONDITION_H
 #define TNT_UTILS_GENERIC_CONDITION_H
@@ -12,7 +8,7 @@
 
 namespace utils {
 
-#if defined(UTILS_DEBUG_MUTEX) || defined(FILAMENT_DEBUG_MUTEX)
+#if defined(UTILS_DEBUG_MUTEX) || defined(DANTE_DEBUG_MUTEX)
 class Condition : public std::condition_variable_any {
 public:
     using std::condition_variable_any::condition_variable_any;

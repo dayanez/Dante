@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "SsrPassDescriptorSet.h"
 
@@ -9,8 +5,8 @@
 
 #include "details/Engine.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -21,7 +17,7 @@
 
 #include <memory>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -81,5 +77,5 @@ void SsrPassDescriptorSet::bind(DriverApi& driver) noexcept {
     mDescriptorSet.bind(driver, DescriptorSetBindingPoints::PER_VIEW);
 }
 
-} // namespace filament
+} // namespace dante
 

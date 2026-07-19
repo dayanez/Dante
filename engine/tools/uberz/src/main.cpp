@@ -35,7 +35,7 @@
 
 using namespace std;
 using namespace utils;
-using namespace filament::uberz;
+using namespace dante::uberz;
 
 using StringMap = tsl::robin_map<std::string, std::string>;
 

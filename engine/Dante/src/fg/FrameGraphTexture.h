@@ -1,21 +1,17 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_FRAMEGRAPHTEXTURE_H
-#define TNT_FILAMENT_FG_FRAMEGRAPHTEXTURE_H
+#ifndef TNT_DANTE_FG_FRAMEGRAPHTEXTURE_H
+#define TNT_DANTE_FG_FRAMEGRAPHTEXTURE_H
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
 
 #include <utils/StaticString.h>
 
-namespace filament {
+namespace dante {
 class TextureCacheInterface;
-} // namespace::filament
+} // namespace::dante
 
-namespace filament {
+namespace dante {
 
 /**
  * A FrameGraph resource is a structure that declares at least:
@@ -88,6 +84,6 @@ struct FrameGraphTexture {
             SubResourceDescriptor const& srd) noexcept;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FG_FRAMEGRAPHTEXTURE_H
+#endif // TNT_DANTE_FG_FRAMEGRAPHTEXTURE_H

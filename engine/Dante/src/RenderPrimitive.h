@@ -1,23 +1,19 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_RENDERPRIMITIVE_H
-#define TNT_FILAMENT_DETAILS_RENDERPRIMITIVE_H
+#ifndef TNT_DANTE_DETAILS_RENDERPRIMITIVE_H
+#define TNT_DANTE_DETAILS_RENDERPRIMITIVE_H
 
 #include "components/RenderableManager.h"
 
 #include "details/MaterialInstance.h"
 
-#include <filament/RenderableManager.h>
+#include <dante/RenderableManager.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FVertexBuffer;
@@ -90,6 +86,6 @@ private:
     backend::PrimitiveType mPrimitiveType = backend::PrimitiveType::TRIANGLES;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_RENDERPRIMITIVE_H
+#endif // TNT_DANTE_DETAILS_RENDERPRIMITIVE_H

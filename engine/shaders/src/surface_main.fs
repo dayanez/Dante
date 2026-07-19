@@ -38,8 +38,8 @@ void applyAlphaMask(inout vec4 baseColor) {}
 #endif
 
 void main() {
-    filament_lodBias = frameUniforms.lodBias;
-#if defined(FILAMENT_HAS_FEATURE_INSTANCING)
+    dante_lodBias = frameUniforms.lodBias;
+#if defined(DANTE_HAS_FEATURE_INSTANCING)
     logical_instance_index = instance_index;
 #endif
 
@@ -69,7 +69,7 @@ void main() {
     view = frameUniforms.fogFromWorldMatrix * view;
 
 #if MATERIAL_FEATURE_LEVEL > 0
-#   if defined (FILAMENT_LINEAR_FOG)
+#   if defined (DANTE_LINEAR_FOG)
     vec4 fogColor = fogLinear(view, sampler0_fog);
 #   else
     vec4 fogColor = fog(view, sampler0_fog);

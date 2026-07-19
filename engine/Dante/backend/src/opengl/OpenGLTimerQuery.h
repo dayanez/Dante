@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_TIMERQUERY_H
-#define TNT_FILAMENT_BACKEND_OPENGL_TIMERQUERY_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_TIMERQUERY_H
+#define TNT_DANTE_BACKEND_OPENGL_TIMERQUERY_H
 
 #include "DriverBase.h"
 #include "gl_headers.h"
@@ -22,7 +18,7 @@
 
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class OpenGLPlatform;
 class OpenGLContext;
@@ -56,7 +52,7 @@ public:
 
 class TimerQueryFactoryInterface {
 protected:
-    using GLTimerQuery = filament::backend::GLTimerQuery;
+    using GLTimerQuery = dante::backend::GLTimerQuery;
     using clock = std::chrono::steady_clock;
 
 public:
@@ -110,6 +106,6 @@ private:
     void endTimeElapsedQuery(OpenGLDriver& driver, GLTimerQuery* query) override;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif //TNT_FILAMENT_BACKEND_OPENGL_TIMERQUERY_H
+#endif //TNT_DANTE_BACKEND_OPENGL_TIMERQUERY_H

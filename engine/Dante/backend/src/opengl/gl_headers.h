@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_GL_HEADERS_H
-#define TNT_FILAMENT_BACKEND_OPENGL_GL_HEADERS_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_GL_HEADERS_H
+#define TNT_DANTE_BACKEND_OPENGL_GL_HEADERS_H
 
 /*
  * Configuration we aim to support:
@@ -26,7 +22,7 @@
  */
 
 
-#if defined(__ANDROID__) || defined(FILAMENT_USE_EXTERNAL_GLES3) || defined(__EMSCRIPTEN__) || defined(FILAMENT_SUPPORTS_EGL_ON_LINUX)
+#if defined(__ANDROID__) || defined(DANTE_USE_EXTERNAL_GLES3) || defined(__EMSCRIPTEN__) || defined(DANTE_SUPPORTS_EGL_ON_LINUX)
 
     #if defined(__EMSCRIPTEN__)
     #   include <GLES3/gl3.h>
@@ -38,14 +34,14 @@
 
     // For development and debugging purpose only, we want to support compiling this backend
     // with ES2 only headers, in this case (i.e. we have VERSION_2 but not VERSION_3+),
-    // we define FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2 with the purpose of compiling out
+    // we define DANTE_SILENCE_NOT_SUPPORTED_BY_ES2 with the purpose of compiling out
     // code that cannot be compiled with ES2 headers. In production, this code is compiled in but
     // is never executed thanks to runtime checks or asserts.
     #if defined(GL_ES_VERSION_2_0) && !defined(GL_ES_VERSION_3_0)
-    #   define FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+    #   define DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     #endif
 
-#elif defined(FILAMENT_IOS)
+#elif defined(DANTE_IOS)
 
     #define GLES_SILENCE_DEPRECATION
 
@@ -70,7 +66,7 @@
 #if defined(GL_VERSION_4_5)
 #elif defined(GL_ES_VERSION_3_1)
 #elif defined(GL_ES_VERSION_3_0)
-#   if !defined(FILAMENT_IOS) && !defined(__EMSCRIPTEN__)
+#   if !defined(DANTE_IOS) && !defined(__EMSCRIPTEN__)
 #       error "GLES 3.0 headers only supported on iOS and WebGL2"
 #   endif
 #elif defined(GL_ES_VERSION_2_0)
@@ -87,13 +83,13 @@
 
 #if defined(GL_ES_VERSION_2_0)  // this basically means all versions of GLES
 
-#if defined(FILAMENT_IOS)
+#if defined(DANTE_IOS)
 
 // iOS headers only provide prototypes, nothing to do.
 
 #else
 
-#define FILAMENT_IMPORT_ENTRY_POINTS
+#define DANTE_IMPORT_ENTRY_POINTS
 
 /* The Android NDK doesn't expose extensions, fake it with eglGetProcAddress */
 namespace glext {
@@ -146,7 +142,7 @@ extern PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC glFramebufferTextureMultiviewOVR;
 #ifdef GL_OVR_multiview_multisampled_render_to_texture
 extern PFNGLFRAMEBUFFERTEXTUREMULTISAMPLEMULTIVIEWOVRPROC glFramebufferTextureMultisampleMultiviewOVR;
 #endif
-#if defined(__ANDROID__) && !defined(FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2)
+#if defined(__ANDROID__) && !defined(DANTE_SILENCE_NOT_SUPPORTED_BY_ES2)
 extern PFNGLDISPATCHCOMPUTEPROC glDispatchCompute;
 #endif
 #endif // __EMSCRIPTEN__
@@ -263,7 +259,7 @@ void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, void *d
 #endif
 
 #ifdef GL_ES_VERSION_2_0
-#   ifndef FILAMENT_IOS
+#   ifndef DANTE_IOS
 #      ifndef GL_OES_vertex_array_object
 #          error "Headers with GL_OES_vertex_array_object are mandatory unless on iOS"
 #      endif
@@ -299,4 +295,4 @@ void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, void *d
 
 #include "NullGLES.h"
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_GL_HEADERS_H
+#endif // TNT_DANTE_BACKEND_OPENGL_GL_HEADERS_H

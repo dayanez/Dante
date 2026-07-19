@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_BLACKBOARD_H
-#define TNT_FILAMENT_FG_BLACKBOARD_H
+#ifndef TNT_DANTE_FG_BLACKBOARD_H
+#define TNT_DANTE_FG_BLACKBOARD_H
 
 #include "fg/FrameGraphId.h"
 
 #include <string_view>
 #include <unordered_map>
 
-namespace filament {
+namespace dante {
 
 class Blackboard {
     using Container = std::unordered_map<
@@ -38,7 +34,7 @@ private:
     Container mMap;
 };
 
-} // namespace filament
+} // namespace dante
 
 
-#endif //TNT_FILAMENT_FG_BLACKBOARD_H
+#endif //TNT_DANTE_FG_BLACKBOARD_H

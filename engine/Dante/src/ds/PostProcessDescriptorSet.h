@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_POSTPROCESSINGDESCRIPTORSET_H
-#define TNT_FILAMENT_POSTPROCESSINGDESCRIPTORSET_H
+#ifndef TNT_DANTE_POSTPROCESSINGDESCRIPTORSET_H
+#define TNT_DANTE_POSTPROCESSINGDESCRIPTORSET_H
 
 #include "DescriptorSet.h"
 #include "DescriptorSetLayout.h"
 #include "TypedUniformBuffer.h"
 
-#include <private/filament/UibStructs.h>
+#include <private/dante/UibStructs.h>
 
 #include <backend/DriverApiForward.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class HwDescriptorSetLayoutFactory;
@@ -41,6 +37,6 @@ private:
     DescriptorSet mDescriptorSet;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_POSTPROCESSINGDESCRIPTORSET_H
+#endif //TNT_DANTE_POSTPROCESSINGDESCRIPTORSET_H

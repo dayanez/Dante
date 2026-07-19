@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_TANGENT_SPACE_MESH_WRAPPER_H
 #define GLTFIO_TANGENT_SPACE_MESH_WRAPPER_H
@@ -10,7 +6,7 @@
 
 #include <math/vec4.h>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 using namespace math;
 
@@ -69,6 +65,6 @@ private:
     friend struct Builder::Impl;
 };
 
-} // namespace filament
+} // namespace dante
 
 #endif // GLTFIO_TANGENTS_JOB_EXTENDED_H

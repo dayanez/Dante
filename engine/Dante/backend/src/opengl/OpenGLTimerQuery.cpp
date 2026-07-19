@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "OpenGLTimerQuery.h"
 
@@ -28,7 +24,7 @@
 
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace backend;
 using namespace GLUtils;
@@ -190,8 +186,8 @@ void TimerQueryFenceFactory::beginTimeElapsedQuery(GLTimerQuery* tq) {
         if (state) {
             platform.waitFence(fence, FENCE_WAIT_FOR_EVER);
             state->then = clock::now().time_since_epoch().count();
-            FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-            FILAMENT_TRACING_ASYNC_BEGIN(FILAMENT_TRACING_CATEGORY_FILAMENT, "OpenGLTimerQueryFence", intptr_t(state.get()));
+            DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+            DANTE_TRACING_ASYNC_BEGIN(DANTE_TRACING_CATEGORY_DANTE, "OpenGLTimerQueryFence", intptr_t(state.get()));
         }
         platform.destroyFence(fence);
     });
@@ -207,8 +203,8 @@ void TimerQueryFenceFactory::endTimeElapsedQuery(OpenGLDriver&, GLTimerQuery* tq
             platform.waitFence(fence, FENCE_WAIT_FOR_EVER);
             int64_t const now = clock::now().time_since_epoch().count();
             state->elapsed.store(now - state->then, std::memory_order_relaxed);
-            FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-            FILAMENT_TRACING_ASYNC_END(FILAMENT_TRACING_CATEGORY_FILAMENT, "OpenGLTimerQueryFence", intptr_t(state.get()));
+            DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+            DANTE_TRACING_ASYNC_END(DANTE_TRACING_CATEGORY_DANTE, "OpenGLTimerQueryFence", intptr_t(state.get()));
         }
         platform.destroyFence(fence);
     });
@@ -243,4 +239,4 @@ void TimerQueryFallbackFactory::endTimeElapsedQuery(OpenGLDriver&, GLTimerQuery*
     tq->state->elapsed.store(now - tq->state->then, std::memory_order_relaxed);
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

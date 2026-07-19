@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 
 #include <ibl/CubemapIBL.h>
@@ -20,10 +16,10 @@
 #include <random>
 #include <vector>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 static float pow5(float x) {
@@ -1026,4 +1022,4 @@ void CubemapIBL::DFG(JobSystem& js, Image& dst, bool multiscatter, bool cloth) {
 }
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante

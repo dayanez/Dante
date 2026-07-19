@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_GEOMETRY_MIKKTSPACEIMPL_H
 #define TNT_GEOMETRY_MIKKTSPACEIMPL_H
@@ -16,9 +12,9 @@
 
 struct SMikkTSpaceContext;
 
-namespace filament::geometry {
+namespace dante::geometry {
 
-using namespace filament::math;
+using namespace dante::math;
 
 class MikktspaceImpl {
 public:
@@ -85,6 +81,6 @@ private:
     std::vector<uint8_t> EMPTY_ELEMENT;
 };
 
-}// namespace filament::geometry
+}// namespace dante::geometry
 
 #endif//TNT_GEOMETRY_MIKKTSPACEIMPL_H

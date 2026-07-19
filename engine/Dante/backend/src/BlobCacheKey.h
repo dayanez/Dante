@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_BLOBCACHEKEY_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_BLOBCACHEKEY_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_BLOBCACHEKEY_H
+#define TNT_DANTE_BACKEND_PRIVATE_BLOBCACHEKEY_H
 
 #include <backend/Program.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class BlobCacheKey {
 public:
@@ -51,6 +47,6 @@ private:
     size_t mSize{};
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_BLOBCACHEKEY_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_BLOBCACHEKEY_H

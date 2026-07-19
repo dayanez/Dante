@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BIMAP_H
-#define TNT_FILAMENT_BIMAP_H
+#ifndef TNT_DANTE_BIMAP_H
+#define TNT_DANTE_BIMAP_H
 
 #include <utils/debug.h>
 
@@ -16,7 +12,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 /*
  * A semi-generic custom bimap. This bimap stores a key/value pair and can retrieve
@@ -178,7 +174,7 @@ public:
     }
 };
 
-} // namespace filament
+} // namespace dante
 
 
-#endif // TNT_FILAMENT_BIMAP_H
+#endif // TNT_DANTE_BIMAP_H

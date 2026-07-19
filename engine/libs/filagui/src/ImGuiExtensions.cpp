@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <filagui/ImGuiExtensions.h>
 
@@ -15,7 +11,7 @@
 #include <algorithm>
 #include <limits>
 
-using namespace filament::math;
+using namespace dante::math;
 
 // Private helper class for ImGuiExt::DirectionWidget, heavily inspired by AntTweakBar and Chris
 // Maughan's port to ImGui. Thanks Chris!

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <utils/StructureOfArrays.h>
 
@@ -15,7 +11,7 @@
 #include <random>
 #include <utility>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
 struct TestFloat4 : public float4 {

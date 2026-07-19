@@ -20,11 +20,11 @@ void initObjectUniforms() {
     // - We can't use a struct to hold the result because Adreno driver ignore precision qualifiers
     //   on fields of structs, unless they're in a UBO (which we just copied out of).
 
-#if defined(FILAMENT_HAS_FEATURE_INSTANCING)
+#if defined(DANTE_HAS_FEATURE_INSTANCING)
     highp int i;
 #   if defined(MATERIAL_HAS_INSTANCES)
     // instancing handled by the material
-    if ((objectUniforms.data[0].flagsChannels & FILAMENT_OBJECT_INSTANCE_BUFFER_BIT) != 0) {
+    if ((objectUniforms.data[0].flagsChannels & DANTE_OBJECT_INSTANCE_BUFFER_BIT) != 0) {
         // hybrid instancing, we have a instance buffer per object
         i = logical_instance_index;
     } else {
@@ -47,7 +47,7 @@ void initObjectUniforms() {
     object_uniforms_userData                    = objectUniforms.data[i].userData;
 }
 
-#if defined(FILAMENT_HAS_FEATURE_INSTANCING) && defined(MATERIAL_HAS_INSTANCES)
+#if defined(DANTE_HAS_FEATURE_INSTANCING) && defined(MATERIAL_HAS_INSTANCES)
 /** @public-api */
 highp int getInstanceIndex() {
     return logical_instance_index;

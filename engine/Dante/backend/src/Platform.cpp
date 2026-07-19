@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <backend/Platform.h>
 
@@ -16,7 +12,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 void Platform::ExternalImageHandle::incref(ExternalImage* p) noexcept {
     if (p) {
@@ -209,4 +205,4 @@ void Platform::debugUpdateStat(const char* key, utils::CString stringValue) {
     }
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "CodeGenerator.h"
 
@@ -11,7 +7,7 @@
 
 #include "generated/shaders.h"
 
-#include <private/filament/Variant.h>
+#include <private/dante/Variant.h>
 
 #include <backend/DriverEnums.h>
 
@@ -25,7 +21,7 @@
 namespace filamat {
 
 // From driverEnum namespace
-using namespace filament;
+using namespace dante;
 using namespace backend;
 using namespace utils;
 
@@ -35,7 +31,7 @@ io::sstream& CodeGenerator::generateSeparator(io::sstream& out) {
 }
 
 utils::io::sstream& CodeGenerator::generateCommonProlog(utils::io::sstream& out, ShaderStage stage,
-        MaterialInfo const& material, filament::Variant v, uint32_t apiLevel) const {
+        MaterialInfo const& material, dante::Variant v, uint32_t apiLevel) const {
     switch (mShaderModel) {
         case ShaderModel::MOBILE:
             // Vulkan requires version 310 or higher
@@ -65,7 +61,7 @@ utils::io::sstream& CodeGenerator::generateCommonProlog(utils::io::sstream& out,
                     // OpenGL shaders), then we need to add the #extension string ourselves.
                     // If we ARE running the shader through glslang, then we must not include it,
                     // otherwise glslang will complain.
-                    out << "#ifndef FILAMENT_GLSLANG\n";
+                    out << "#ifndef DANTE_GLSLANG\n";
                     out << "#extension GL_EXT_clip_cull_distance : require\n";
                     out << "#endif\n\n";
                     break;
@@ -175,10 +171,10 @@ utils::io::sstream& CodeGenerator::generateCommonProlog(utils::io::sstream& out,
 
     switch (mTargetLanguage) {
         case TargetLanguage::GLSL:
-            out << "#define FILAMENT_OPENGL_SEMANTICS\n";
+            out << "#define DANTE_OPENGL_SEMANTICS\n";
             break;
         case TargetLanguage::SPIRV:
-            out << "#define FILAMENT_VULKAN_SEMANTICS\n";
+            out << "#define DANTE_VULKAN_SEMANTICS\n";
             break;
     }
 
@@ -187,19 +183,19 @@ utils::io::sstream& CodeGenerator::generateCommonProlog(utils::io::sstream& out,
         mTargetApi == TargetApi::METAL ||
         (mTargetApi == TargetApi::OPENGL && mShaderModel == ShaderModel::DESKTOP) ||
         mFeatureLevel >= FeatureLevel::FEATURE_LEVEL_2) {
-        out << "#define FILAMENT_HAS_FEATURE_TEXTURE_GATHER\n";
+        out << "#define DANTE_HAS_FEATURE_TEXTURE_GATHER\n";
     }
 
     if (mFeatureLevel >= FeatureLevel::FEATURE_LEVEL_1) {
-        out << "#define FILAMENT_HAS_FEATURE_INSTANCING\n";
+        out << "#define DANTE_HAS_FEATURE_INSTANCING\n";
     }
 
     switch (material.stereoscopicType) {
     case StereoscopicType::INSTANCED:
-        generateDefine(out, "FILAMENT_STEREO_INSTANCED");
+        generateDefine(out, "DANTE_STEREO_INSTANCED");
         break;
     case StereoscopicType::MULTIVIEW:
-        generateDefine(out, "FILAMENT_STEREO_MULTIVIEW");
+        generateDefine(out, "DANTE_STEREO_MULTIVIEW");
         break;
     case StereoscopicType::NONE:
         break;
@@ -215,10 +211,10 @@ utils::io::sstream& CodeGenerator::generateCommonProlog(utils::io::sstream& out,
     }
     if (stage == ShaderStage::FRAGMENT) {
         if (material.linearFog) {
-            generateDefine(out, "FILAMENT_LINEAR_FOG");
+            generateDefine(out, "DANTE_LINEAR_FOG");
         }
         if (material.shadowFarAttenuation) {
-            generateDefine(out, "FILAMENT_SHADOW_FAR_ATTENUATION");
+            generateDefine(out, "DANTE_SHADOW_FAR_ATTENUATION");
         }
         if (material.userMaterialHasCustomDepth) {
             generateDefine(out, "MATERIAL_HAS_CUSTOM_DEPTH");
@@ -261,7 +257,7 @@ utils::io::sstream& CodeGenerator::generateCommonProlog(utils::io::sstream& out,
         }
     }
 
-    // Filament-reserved specification constants (limited by CONFIG_MAX_RESERVED_SPEC_CONSTANTS)
+    // Dante-reserved specification constants (limited by CONFIG_MAX_RESERVED_SPEC_CONSTANTS)
     out << '\n';
     generateSpecializationConstant(out, "BACKEND_FEATURE_LEVEL",
             +ReservedSpecializationConstants::BACKEND_FEATURE_LEVEL, 1);
@@ -329,7 +325,7 @@ utils::io::sstream& CodeGenerator::generateCommonProlog(utils::io::sstream& out,
                 +ReservedSpecializationConstants::CONFIG_SRGB_SWAPCHAIN_EMULATION, false);
     }
 
-    bool const isDepthVariant = filament::Variant::isValidDepthVariant(v);
+    bool const isDepthVariant = dante::Variant::isValidDepthVariant(v);
     if (isDepthVariant) {
         out << "const bool RUNTIME_CONFIG_HAS_DYNAMIC_LIGHTING = false;\n";
     } else {
@@ -345,7 +341,7 @@ utils::io::sstream& CodeGenerator::generateCommonProlog(utils::io::sstream& out,
 
     // Api level enforcement.
     generateValueDefine(out, "CLIENT_MATERIAL_API_LEVEL", apiLevel);
-    generateValueDefine(out, "UNSTABLE_MATERIAL_API_LEVEL", filament::UNSTABLE_MATERIAL_API_LEVEL);
+    generateValueDefine(out, "UNSTABLE_MATERIAL_API_LEVEL", dante::UNSTABLE_MATERIAL_API_LEVEL);
 
     out << "\n";
     return out;
@@ -592,8 +588,8 @@ utils::io::sstream& CodeGenerator::generateBuffers(utils::io::sstream& out,
 }
 
 io::sstream& CodeGenerator::generateUniforms(io::sstream& out, ShaderStage stage,
-        filament::DescriptorSetBindingPoints set,
-        filament::backend::descriptor_binding_t binding,
+        dante::DescriptorSetBindingPoints set,
+        dante::backend::descriptor_binding_t binding,
         const BufferInterfaceBlock& uib) const {
 
     if (mTargetApi == TargetApi::OPENGL) {
@@ -656,8 +652,8 @@ io::sstream& CodeGenerator::generateUboAsPlainUniforms(io::sstream& out, ShaderS
 }
 
 io::sstream& CodeGenerator::generateBufferInterfaceBlock(io::sstream& out, ShaderStage stage,
-        filament::DescriptorSetBindingPoints set,
-        filament::backend::descriptor_binding_t binding,
+        dante::DescriptorSetBindingPoints set,
+        dante::backend::descriptor_binding_t binding,
         const BufferInterfaceBlock& uib) const {
     if (uib.isEmptyForFeatureLevel(mFeatureLevel)) {
         return out;
@@ -747,8 +743,8 @@ io::sstream& CodeGenerator::generateBufferInterfaceBlock(io::sstream& out, Shade
 }
 
 io::sstream& CodeGenerator::generateCommonSamplers(utils::io::sstream& out,
-        filament::DescriptorSetBindingPoints set,
-        filament::SamplerInterfaceBlock::SamplerInfoList const& list) const {
+        dante::DescriptorSetBindingPoints set,
+        dante::SamplerInterfaceBlock::SamplerInfoList const& list) const {
     if (list.empty()) {
         return out;
     }
@@ -965,9 +961,9 @@ io::sstream& CodeGenerator::generateMaterialProperty(io::sstream& out,
 }
 
 io::sstream& CodeGenerator::generateQualityDefine(io::sstream& out, ShaderQuality quality) const {
-    out << "#define FILAMENT_QUALITY_LOW    0\n";
-    out << "#define FILAMENT_QUALITY_NORMAL 1\n";
-    out << "#define FILAMENT_QUALITY_HIGH   2\n";
+    out << "#define DANTE_QUALITY_LOW    0\n";
+    out << "#define DANTE_QUALITY_NORMAL 1\n";
+    out << "#define DANTE_QUALITY_HIGH   2\n";
 
     switch (quality) {
         case ShaderQuality::DEFAULT:
@@ -978,16 +974,16 @@ io::sstream& CodeGenerator::generateQualityDefine(io::sstream& out, ShaderQualit
             }
         case ShaderQuality::LOW:
         quality_low:
-            out << "#define FILAMENT_QUALITY FILAMENT_QUALITY_LOW\n";
+            out << "#define DANTE_QUALITY DANTE_QUALITY_LOW\n";
             break;
         case ShaderQuality::NORMAL:
         default:
         quality_normal:
-            out << "#define FILAMENT_QUALITY FILAMENT_QUALITY_NORMAL\n";
+            out << "#define DANTE_QUALITY DANTE_QUALITY_NORMAL\n";
             break;
         case ShaderQuality::HIGH:
         quality_high:
-            out << "#define FILAMENT_QUALITY FILAMENT_QUALITY_HIGH\n";
+            out << "#define DANTE_QUALITY DANTE_QUALITY_HIGH\n";
             break;
     }
 
@@ -1085,10 +1081,10 @@ io::sstream& CodeGenerator::generateSurfaceParameters(io::sstream& out, ShaderSt
 }
 
 io::sstream& CodeGenerator::generateSurfaceLit(io::sstream& out, ShaderStage stage,
-        filament::Variant variant, Shading shading, bool customSurfaceShading) {
+        dante::Variant variant, Shading shading, bool customSurfaceShading) {
     if (stage == ShaderStage::FRAGMENT) {
         out << SHADERS_SURFACE_LIGHTING_FS_DATA;
-        if (filament::Variant::isShadowReceiverVariant(variant)) {
+        if (dante::Variant::isShadowReceiverVariant(variant)) {
             out << SHADERS_SURFACE_SHADOWING_FS_DATA;
         }
 
@@ -1131,10 +1127,10 @@ io::sstream& CodeGenerator::generateSurfaceLit(io::sstream& out, ShaderStage sta
 }
 
 io::sstream& CodeGenerator::generateSurfaceUnlit(io::sstream& out, ShaderStage stage,
-        filament::Variant variant, bool hasShadowMultiplier) {
+        dante::Variant variant, bool hasShadowMultiplier) {
     if (stage == ShaderStage::FRAGMENT) {
         if (hasShadowMultiplier) {
-            if (filament::Variant::isShadowReceiverVariant(variant)) {
+            if (dante::Variant::isShadowReceiverVariant(variant)) {
                 out << SHADERS_SURFACE_SHADOWING_FS_DATA;
             }
         }

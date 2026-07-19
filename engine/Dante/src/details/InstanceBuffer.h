@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_INSTANCEBUFFER_H
-#define TNT_FILAMENT_DETAILS_INSTANCEBUFFER_H
+#ifndef TNT_DANTE_DETAILS_INSTANCEBUFFER_H
+#define TNT_DANTE_DETAILS_INSTANCEBUFFER_H
 
 #include "downcast.h"
 
-#include <filament/InstanceBuffer.h>
+#include <dante/InstanceBuffer.h>
 
 #include <backend/Handle.h>
 
@@ -20,7 +16,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 class RenderableManager;
 class FEngine;
@@ -57,8 +53,8 @@ private:
     uint32_t mIndex = 0;
 };
 
-FILAMENT_DOWNCAST(InstanceBuffer)
+DANTE_DOWNCAST(InstanceBuffer)
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_DETAILS_INSTANCEBUFFER_H
+#endif //TNT_DANTE_DETAILS_INSTANCEBUFFER_H

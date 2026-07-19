@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_DETAILS_PASSNODE_H
-#define TNT_FILAMENT_FG_DETAILS_PASSNODE_H
+#ifndef TNT_DANTE_FG_DETAILS_PASSNODE_H
+#define TNT_DANTE_FG_DETAILS_PASSNODE_H
 
 #include "fg/details/DependencyGraph.h"
 #include "fg/details/Utilities.h"
 #include "fg/FrameGraph.h"
 #include "fg/FrameGraphRenderPass.h"
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 #include <fgviewer/FrameGraphInfo.h>
 #endif
 
@@ -26,7 +22,7 @@ namespace utils {
 class CString;
 } // namespace utils
 
-namespace filament {
+namespace dante {
 
 class FrameGraph;
 class FrameGraphResources;
@@ -52,7 +48,7 @@ public:
     virtual void resolve() noexcept = 0;
     utils::CString graphvizifyEdgeColor() const noexcept override;
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     virtual std::vector<fgviewer::FrameGraphInfo::Pass::RenderTargetInfo>
             getRenderTargetInfo() const noexcept {
         return {};
@@ -99,7 +95,7 @@ private:
     utils::CString graphvizify() const noexcept override;
     void execute(FrameGraphResources const& resources, backend::DriverApi& driver) noexcept override;
     void resolve() noexcept override;
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     std::vector<fgviewer::FrameGraphInfo::Pass::RenderTargetInfo>
             getRenderTargetInfo() const noexcept override;
 #endif
@@ -127,6 +123,6 @@ private:
     utils::CString graphvizify() const noexcept override;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FG_DETAILS_PASSNODE_H
+#endif // TNT_DANTE_FG_DETAILS_PASSNODE_H

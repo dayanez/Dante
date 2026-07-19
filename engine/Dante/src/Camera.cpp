@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Camera.h"
 
-#include <filament/Camera.h>
+#include <dante/Camera.h>
 
 #include <utils/Panic.h>
 
@@ -17,14 +13,14 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
 void Camera::setProjection(double const fovInDegrees, double const aspect,
         double const near, double const far, Fov const direction) {
 
-    FILAMENT_CHECK_PRECONDITION(near > 0 && far > near)
+    DANTE_CHECK_PRECONDITION(near > 0 && far > near)
             << "Camera preconditions not met in setProjection(): near <= 0 or far <= near, near="
             << near << ", far=" << far;
 
@@ -37,7 +33,7 @@ void Camera::setProjection(double const fovInDegrees, double const aspect,
 void Camera::setLensProjection(double const focalLengthInMillimeters,
         double const aspect, double const near, double const far) {
 
-    FILAMENT_CHECK_PRECONDITION(near > 0 && far > near)
+    DANTE_CHECK_PRECONDITION(near > 0 && far > near)
         << "Camera preconditions not met in setLensProjection(): near <= 0 or far <= near, near="
         << near << ", far=" << far;
 
@@ -210,4 +206,4 @@ mat4 Camera::projection(double const focalLengthInMillimeters,
     return FCamera::projection(focalLengthInMillimeters, aspect, near, far);
 }
 
-} // namespace filament
+} // namespace dante

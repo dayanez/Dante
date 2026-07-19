@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <geometry/SurfaceOrientation.h>
 
@@ -13,10 +9,10 @@
 
 #include <vector>
 
-namespace filament {
+namespace dante {
 namespace geometry {
 
-using namespace filament::math;
+using namespace dante::math;
 using std::vector;
 using Builder = SurfaceOrientation::Builder;
 
@@ -360,4 +356,4 @@ SurfaceOrientation* OrientationBuilderImpl::buildWithFlatNormals() {
 }
 
 } // namespace geometry
-} // namespace filament
+} // namespace dante

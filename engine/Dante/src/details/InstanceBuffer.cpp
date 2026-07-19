@@ -1,19 +1,15 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/InstanceBuffer.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 
-#include <private/filament/UibStructs.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/Engine.h>
-#include <filament/FilamentAPI.h>
-#include <filament/InstanceBuffer.h>
+#include <dante/Engine.h>
+#include <dante/DanteAPI.h>
+#include <dante/InstanceBuffer.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -32,7 +28,7 @@
 #include <cstring>
 #include <utility>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -67,8 +63,8 @@ InstanceBuffer::Builder& InstanceBuffer::Builder::name(utils::StaticString const
 }
 
 InstanceBuffer* InstanceBuffer::Builder::build(Engine& engine) const {
-    FILAMENT_CHECK_PRECONDITION(mImpl->mInstanceCount >= 1) << "instanceCount must be >= 1.";
-    FILAMENT_CHECK_PRECONDITION(mImpl->mInstanceCount <= engine.getMaxAutomaticInstances())
+    DANTE_CHECK_PRECONDITION(mImpl->mInstanceCount >= 1) << "instanceCount must be >= 1.";
+    DANTE_CHECK_PRECONDITION(mImpl->mInstanceCount <= engine.getMaxAutomaticInstances())
             << "instanceCount is " << mImpl->mInstanceCount
             << ", but instance count is limited to Engine::getMaxAutomaticInstances() ("
             << engine.getMaxAutomaticInstances() << ") instances when supplying transforms.";
@@ -98,7 +94,7 @@ FInstanceBuffer::~FInstanceBuffer() noexcept = default;
 
 void FInstanceBuffer::setLocalTransforms(
         math::mat4f const* localTransforms, size_t const count, size_t const offset) {
-    FILAMENT_CHECK_PRECONDITION(offset + count <= mInstanceCount)
+    DANTE_CHECK_PRECONDITION(offset + count <= mInstanceCount)
             << "setLocalTransforms overflow. InstanceBuffer has only " << mInstanceCount
             << " instances, but trying to set " << count 
             << " transforms at offset " << offset << ".";
@@ -106,7 +102,7 @@ void FInstanceBuffer::setLocalTransforms(
 }
 
 math::mat4f const& FInstanceBuffer::getLocalTransform(size_t index) const {
-    FILAMENT_CHECK_PRECONDITION(index < mInstanceCount)
+    DANTE_CHECK_PRECONDITION(index < mInstanceCount)
             << "getLocalTransform overflow: 'index (" << index
             << ") must be < getInstanceCount() ("<< mInstanceCount << ").";
     return mLocalTransforms[index];
@@ -129,5 +125,5 @@ void FInstanceBuffer::prepare(
     mIndex = index;
 }
 
-} // namespace filament
+} // namespace dante
 

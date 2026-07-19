@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_VIEW_H
-#define TNT_FILAMENT_DETAILS_VIEW_H
+#ifndef TNT_DANTE_DETAILS_VIEW_H
+#define TNT_DANTE_DETAILS_VIEW_H
 
 #include "downcast.h"
 
@@ -29,11 +25,11 @@
 #include "details/RenderTarget.h"
 #include "details/Scene.h"
 
-#include <private/filament/UibStructs.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/Frustum.h>
-#include <filament/Renderer.h>
-#include <filament/View.h>
+#include <dante/Frustum.h>
+#include <dante/Renderer.h>
+#include <dante/View.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -44,10 +40,10 @@
 #include <utils/Range.h>
 #include <utils/Slice.h>
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 #include <fgviewer/DebugServer.h>
 #else
-namespace filament::fgviewer {
+namespace dante::fgviewer {
     using ViewHandle = uint32_t;
 }
 #endif
@@ -75,7 +71,7 @@ class JobSystem;
 #pragma warning(disable : 4996)
 #endif
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FMaterialInstance;
@@ -691,9 +687,9 @@ private:
 #endif
 };
 
-FILAMENT_DOWNCAST(View)
+DANTE_DOWNCAST(View)
 
-} // namespace filament
+} // namespace dante
 
 #if defined(__clang__)
 #pragma clang diagnostic pop
@@ -701,4 +697,4 @@ FILAMENT_DOWNCAST(View)
 #pragma warning(pop)
 #endif
 
-#endif // TNT_FILAMENT_DETAILS_VIEW_H
+#endif // TNT_DANTE_DETAILS_VIEW_H

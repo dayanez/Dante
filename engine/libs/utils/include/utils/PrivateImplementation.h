@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef UTILS_PRIVATEIMPLEMENTATION_H
 #define UTILS_PRIVATEIMPLEMENTATION_H

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <backend/BufferDescriptor.h>
 #include <backend/DescriptorSetOffsetArray.h>
@@ -14,13 +10,13 @@
 
 #include <variant>
 
-using namespace filament;
+using namespace dante;
 using namespace backend;
 using namespace utils;
 
 // ------------------------------------------------------------------------------------------------
 // Stream operators for all types in DriverEnums.h
-// (These must live outside the filament namespace)
+// (These must live outside the dante namespace)
 // ------------------------------------------------------------------------------------------------
 
 #if !defined(NDEBUG)
@@ -433,7 +429,7 @@ io::ostream& operator<<(io::ostream& out, PixelBufferDescriptor const& b) {
     << ", alignment=" << b.alignment << " }";
 }
 
-io::ostream& operator<<(io::ostream& out, filament::backend::Viewport const& viewport) {
+io::ostream& operator<<(io::ostream& out, dante::backend::Viewport const& viewport) {
     return out << "Viewport{"
     <<   "left=" << viewport.left
     << ", bottom=" << viewport.bottom

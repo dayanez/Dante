@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/FramePacer.h"
 
 #include "details/Engine.h"
 #include "details/Renderer.h"
 
-#include <filament/FramePipelineEstimator.h>
+#include <dante/FramePipelineEstimator.h>
 
 #include <utils/Logger.h>
 #include <utils/Panic.h>
@@ -20,7 +16,7 @@
 #include <android/log.h>
 #endif
 
-namespace filament {
+namespace dante {
 
 // ------------------------------------------------------------------------------------------------
 // Concrete FFramePacer Implementation
@@ -36,9 +32,9 @@ void FFramePacer::terminate(FEngine&) noexcept {
 }
 
 void FFramePacer::configure(Configuration const& config) {
-    FILAMENT_CHECK_PRECONDITION(config.targetFrameRate >= 0.0f)
+    DANTE_CHECK_PRECONDITION(config.targetFrameRate >= 0.0f)
             << "targetFrameRate must be non-negative";
-    FILAMENT_CHECK_PRECONDITION(config.latency > std::chrono::nanoseconds::zero())
+    DANTE_CHECK_PRECONDITION(config.latency > std::chrono::nanoseconds::zero())
             << "latency must be greater than 0";
 
     if (mConfig.latency != config.latency) {
@@ -445,4 +441,4 @@ std::vector<FramePacer::HardwareTimeline>& FramePacer::extractTimelines(
 }
 #endif
 
-} // namespace filament
+} // namespace dante

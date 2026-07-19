@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ostream_.h"
 
@@ -188,7 +184,7 @@ void TPanic<T>::log() const noexcept {
 
 UTILS_ALWAYS_INLINE
 static const char* formatFile(char const* file) noexcept {
-    const char * p = std::strstr(file, "filament/");
+    const char * p = std::strstr(file, "dante/");
     return p ? p : file;
 }
 

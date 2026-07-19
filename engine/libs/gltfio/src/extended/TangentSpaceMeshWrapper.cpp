@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "TangentSpaceMeshWrapper.h"
 
@@ -12,7 +8,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 namespace {
 
@@ -326,4 +322,4 @@ size_t TangentSpaceMeshWrapper::getTriangleCount() const noexcept {
     return mImpl->getTriangleCount();
 }
 
-} // filament::gltfio
+} // dante::gltfio

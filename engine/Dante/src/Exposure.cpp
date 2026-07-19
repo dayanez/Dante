@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Camera.h"
 
-#include <filament/Exposure.h>
+#include <dante/Exposure.h>
 
 #include <cmath>
 
-namespace filament {
+namespace dante {
 namespace Exposure {
 
 float ev100(const Camera& c) noexcept {
@@ -188,4 +184,4 @@ float illuminance(float const ev100) noexcept {
 }
 
 } // namespace Exposure
-} // namespace filament
+} // namespace dante

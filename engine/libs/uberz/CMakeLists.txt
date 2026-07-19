@@ -49,7 +49,7 @@ install(DIRECTORY ${PUBLIC_HDR_DIR}/uberz DESTINATION include)
 # ==================================================================================================
 # Tests
 # ==================================================================================================
-if (FILAMENT_BUILD_TESTING)
+if (DANTE_BUILD_TESTING)
     add_executable(test_${TARGET} tests/test_ReadableArchive.cpp)
     target_link_libraries(test_${TARGET} PRIVATE ${TARGET} gtest)
     set_target_properties(test_${TARGET} PROPERTIES FOLDER Tests)

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <imageio/HDRDecoder.h>
 
@@ -101,15 +97,15 @@ LinearImage HDRDecoder::decode() {
 
     if (rgbe[0] != 0x2 || rgbe[1] != 0x2 || (rgbe[2] & 0x80) || width < 8 || width > 32767) {
         for (uint32_t y = 0; y < height; y++) {
-            filament::math::float3* dst = reinterpret_cast<filament::math::float3*>(image.getPixelRef(0, y));
+            dante::math::float3* dst = reinterpret_cast<dante::math::float3*>(image.getPixelRef(0, y));
             mStream.read((char*) rgbe.get(), width * 4);
             // (rgb/256) * 2^(e-128)
             size_t pixel = 0;
             for (size_t x = 0; x < width; x++, pixel += 4) {
                 if (rgbe[pixel + 3] == 0.0f) {
-                    dst[x] = filament::math::float3{0.0f};
+                    dst[x] = dante::math::float3{0.0f};
                 } else {
-                    filament::math::float3 v(rgbe[pixel], rgbe[pixel + 1], rgbe[pixel + 2]);
+                    dante::math::float3 v(rgbe[pixel], rgbe[pixel + 1], rgbe[pixel + 2]);
                     dst[x] = (v + 0.5f) * std::ldexp(1.0f, rgbe[pixel + 3] - (128 + 8));
                 }
             }
@@ -174,13 +170,13 @@ LinearImage HDRDecoder::decode() {
             uint8_t const* g = &rgbe[width];
             uint8_t const* b = &rgbe[2 * width];
             uint8_t const* e = &rgbe[3 * width];
-            filament::math::float3* dst = reinterpret_cast<filament::math::float3*>(image.getPixelRef(0, y));
+            dante::math::float3* dst = reinterpret_cast<dante::math::float3*>(image.getPixelRef(0, y));
             // (rgb/256) * 2^(e-128)
             for (size_t x = 0; x < width; x++, r++, g++, b++, e++) {
                 if (e[0] == 0.0f) {
-                    dst[x] = filament::math::float3{0.0f};
+                    dst[x] = dante::math::float3{0.0f};
                 } else {
-                    filament::math::float3 v(r[0], g[0], b[0]);
+                    dante::math::float3 v(r[0], g[0], b[0]);
                     dst[x] = (v + 0.5f) * std::ldexp(1.0f, e[0] - (128 + 8));
                 }
             }

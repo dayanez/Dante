@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_INDIRECTLIGHT_H
-#define TNT_FILAMENT_DETAILS_INDIRECTLIGHT_H
+#ifndef TNT_DANTE_DETAILS_INDIRECTLIGHT_H
+#define TNT_DANTE_DETAILS_INDIRECTLIGHT_H
 
 #include "downcast.h"
 
-#include <filament/IndirectLight.h>
-#include <filament/Texture.h>
+#include <dante/IndirectLight.h>
+#include <dante/Texture.h>
 
 #include <backend/Handle.h>
 
@@ -19,7 +15,7 @@
 
 #include <array>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -55,8 +51,8 @@ private:
     uint8_t mLevelCount = 0;
 };
 
-FILAMENT_DOWNCAST(IndirectLight)
+DANTE_DOWNCAST(IndirectLight)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_INDIRECTLIGHT_H
+#endif // TNT_DANTE_DETAILS_INDIRECTLIGHT_H

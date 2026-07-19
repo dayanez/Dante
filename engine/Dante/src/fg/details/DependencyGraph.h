@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_DETAILS_DEPENDENCYGRAPH_H
-#define TNT_FILAMENT_FG_DETAILS_DEPENDENCYGRAPH_H
+#ifndef TNT_DANTE_FG_DETAILS_DEPENDENCYGRAPH_H
+#define TNT_DANTE_FG_DETAILS_DEPENDENCYGRAPH_H
 
 #include <utils/CString.h>
 #include <utils/debug.h>
@@ -13,7 +9,7 @@
 
 #include <vector>
 
-namespace filament {
+namespace dante {
 
 /**
  * A very simple dependency graph (DAG) class that support culling of unused nodes
@@ -182,6 +178,6 @@ inline DependencyGraph::Edge::Edge(DependencyGraph& graph,
     graph.link(this);
 }
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FG_DETAILS_DEPENDENCYGRAPH_H
+#endif // TNT_DANTE_FG_DETAILS_DEPENDENCYGRAPH_H

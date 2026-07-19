@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "dof.h"
 #include "generated/resources/dof.h"
@@ -14,7 +10,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 static const StaticMaterialInfo sMaterialList[] = {
         { "dof",                MATERIAL(DOF, DOF) },
@@ -32,4 +28,4 @@ utils::Slice<const StaticMaterialInfo> getDofMaterialList() noexcept {
     return { std::begin(sMaterialList), std::end(sMaterialList) };
 }
 
-} // namespace filament
+} // namespace dante

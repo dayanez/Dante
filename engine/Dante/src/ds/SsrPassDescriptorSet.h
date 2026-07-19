@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_SSRPASSDESCRIPTORSET_H
-#define TNT_FILAMENT_SSRPASSDESCRIPTORSET_H
+#ifndef TNT_DANTE_SSRPASSDESCRIPTORSET_H
+#define TNT_DANTE_SSRPASSDESCRIPTORSET_H
 
 #include "DescriptorSet.h"
 #include "TypedUniformBuffer.h"
 
-#include <private/filament/UibStructs.h>
+#include <private/dante/UibStructs.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/Handle.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -48,6 +44,6 @@ private:
     backend::BufferObjectHandle mShadowUbh;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_SSRPASSDESCRIPTORSET_H
+#endif //TNT_DANTE_SSRPASSDESCRIPTORSET_H

@@ -1,21 +1,17 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_SKYBOX_H
-#define TNT_FILAMENT_DETAILS_SKYBOX_H
+#ifndef TNT_DANTE_DETAILS_SKYBOX_H
+#define TNT_DANTE_DETAILS_SKYBOX_H
 
 #include "downcast.h"
 
-#include <filament/Skybox.h>
+#include <dante/Skybox.h>
 
 #include <private/backend/DriverApi.h>
 
 #include <utils/compiler.h>
 #include <utils/Entity.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FTexture;
@@ -54,9 +50,9 @@ private:
     uint8_t mLayerMask = 0x1;
 };
 
-FILAMENT_DOWNCAST(Skybox)
+DANTE_DOWNCAST(Skybox)
 
-} // namespace filament
+} // namespace dante
 
 
-#endif // TNT_FILAMENT_DETAILS_SKYBOX_H
+#endif // TNT_DANTE_DETAILS_SKYBOX_H

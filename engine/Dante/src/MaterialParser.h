@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_MATERIALPARSER_H
-#define TNT_FILAMENT_MATERIALPARSER_H
+#ifndef TNT_DANTE_MATERIALPARSER_H
+#define TNT_DANTE_MATERIALPARSER_H
 
-#include <private/filament/Variant.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialChunkType.h>
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialChunkType.h>
+#include <dante/MaterialEnums.h>
 
 #include <filaflat/ChunkContainer.h>
 #include <filaflat/MaterialChunk.h>
@@ -33,7 +29,7 @@ class ChunkContainer;
 class Unflattener;
 }
 
-namespace filament {
+namespace dante {
 
 class BufferInterfaceBlock;
 class SamplerInterfaceBlock;
@@ -248,6 +244,6 @@ struct ChunkMaterialPushConstants {
             utils::FixedCapacityVector<MaterialPushConstant>* materialPushConstants);
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_MATERIALPARSER_H
+#endif // TNT_DANTE_MATERIALPARSER_H

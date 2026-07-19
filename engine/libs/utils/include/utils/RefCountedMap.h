@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 #ifndef TNT_UTILS_REFCOUNTEDMAP_H
 #define TNT_UTILS_REFCOUNTEDMAP_H
 
@@ -154,7 +150,7 @@ public:
     template<typename F>
     void release(KeyRef key, size_t hash, F releaser) {
         auto it = mMap.find(key, hash);
-        FILAMENT_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
+        DANTE_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
         if (--it.value().referenceCount == 0) {
             if (it.value().value != NullValue{}()) {
                 if (mLruCache.capacity() > 0) {
@@ -181,7 +177,7 @@ public:
      */
     void release(KeyRef key, size_t hash) {
         auto it = mMap.find(key, hash);
-        FILAMENT_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
+        DANTE_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
         if (--it.value().referenceCount == 0) {
             if (mLruCache.capacity() > 0) {
                 mLruCache.put(key, std::move(it.value().value), hash, [](T&&){});
@@ -203,7 +199,7 @@ public:
     template<typename F>
     TValue* UTILS_NULLABLE get(KeyRef key, size_t hash, F factory) {
         auto it = mMap.find(key, hash);
-        FILAMENT_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
+        DANTE_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
         const T nullValue = NullValue{}();
         if (it.value().value == nullValue) {
             it.value().value = factory();
@@ -227,8 +223,8 @@ public:
      */
     TValue& get(KeyRef key, size_t hash) {
         auto it = mMap.find(key, hash);
-        FILAMENT_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
-        FILAMENT_CHECK_PRECONDITION(it.value().value != NullValue{}())
+        DANTE_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
+        DANTE_CHECK_PRECONDITION(it.value().value != NullValue{}())
                 << MISSING_VALUE_ERROR_STRING;
         return deref(it.value().value);
     }
@@ -237,8 +233,8 @@ public:
 
     TValue const& get(KeyRef key, size_t hash) const {
         auto it = mMap.find(key);
-        FILAMENT_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
-        FILAMENT_CHECK_PRECONDITION(it.value().value != NullValue{}())
+        DANTE_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
+        DANTE_CHECK_PRECONDITION(it.value().value != NullValue{}())
                 << MISSING_VALUE_ERROR_STRING;
         return deref(it->second.value);
     }

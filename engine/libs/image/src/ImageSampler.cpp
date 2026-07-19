@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <image/ImageSampler.h>
 #include <image/ImageOps.h>
@@ -21,7 +17,7 @@ using namespace image;
 
 namespace {
 
-using namespace filament::math;
+using namespace dante::math;
 
 struct FilterFunction {
     float (*fn)(float) = nullptr;
@@ -206,12 +202,12 @@ void normalizeImpl(LinearImage& image) {
 }
 
 void normalize(LinearImage& image) {
-    FILAMENT_CHECK_PRECONDITION(image.getChannels() == 3 || image.getChannels() == 4)
+    DANTE_CHECK_PRECONDITION(image.getChannels() == 3 || image.getChannels() == 4)
             << "Must be a 3 or 4 channel image";
     if (image.getChannels() == 3) {
-      normalizeImpl< filament::math::float3>(image);
+      normalizeImpl< dante::math::float3>(image);
     } else {
-      normalizeImpl< filament::math::float4>(image);
+      normalizeImpl< dante::math::float4>(image);
     }
 }
 
@@ -277,7 +273,7 @@ SingleSample::~SingleSample() {
 
 LinearImage resampleImage(const LinearImage& source, uint32_t width, uint32_t height,
         const ImageSampler& sampler) {
-    FILAMENT_CHECK_PRECONDITION(sampler.east.mode == Boundary::EXCLUDE &&
+    DANTE_CHECK_PRECONDITION(sampler.east.mode == Boundary::EXCLUDE &&
             sampler.north.mode == Boundary::EXCLUDE && sampler.west.mode == Boundary::EXCLUDE &&
             sampler.south.mode == Boundary::EXCLUDE)
             << "Not yet implemented.";

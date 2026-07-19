@@ -1,16 +1,12 @@
-/*
- * Copyright 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <camutils/Bookmark.h>
 #include <camutils/Manipulator.h>
 
 #include <gtest/gtest.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
-namespace camutils = filament::camutils;
+namespace camutils = dante::camutils;
 
 using CamManipulator = camutils::Manipulator<float>;
 

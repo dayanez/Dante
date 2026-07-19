@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Stream.h"
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -30,4 +26,4 @@ int64_t Stream::getTimestamp() const noexcept {
     return downcast(this)->getTimestamp();
 }
 
-} // namespace filament
+} // namespace dante

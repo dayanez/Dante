@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_MATERIALINSTANCE_H
-#define TNT_FILAMENT_DETAILS_MATERIALINSTANCE_H
+#ifndef TNT_DANTE_DETAILS_MATERIALINSTANCE_H
+#define TNT_DANTE_DETAILS_MATERIALINSTANCE_H
 
 #include "downcast.h"
 #include "LocalProgramCache.h"
@@ -15,9 +11,9 @@
 
 #include "ds/DescriptorSet.h"
 
-#include <private/filament/Variant.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialInstance.h>
+#include <dante/MaterialInstance.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -37,7 +33,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class FMaterial;
 class FTexture;
@@ -94,7 +90,7 @@ public:
     [[nodiscard]]
     backend::Handle<backend::HwProgram> getProgram(Variant const variant,
             DynamicSpecConstKey const specKey) const noexcept {
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
         updateActiveProgramsForMatdbg(variant);
 #endif
         return getPrograms().getProgram(variant, specKey);
@@ -305,7 +301,7 @@ private:
 
     void flushSpecializationConstants() const noexcept;
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     // Called by getProgram() to update active program list for matdbg UI.
     void updateActiveProgramsForMatdbg(Variant const variant) const noexcept;
 #endif
@@ -361,8 +357,8 @@ private:
     mutable std::once_flag mMissingSamplersFlag;
 };
 
-FILAMENT_DOWNCAST(MaterialInstance)
+DANTE_DOWNCAST(MaterialInstance)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_MATERIALINSTANCE_H
+#endif // TNT_DANTE_DETAILS_MATERIALINSTANCE_H

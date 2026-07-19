@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_FRAMEGRAPH_H
-#define TNT_FILAMENT_FG_FRAMEGRAPH_H
+#ifndef TNT_DANTE_FG_FRAMEGRAPH_H
+#define TNT_DANTE_FG_FRAMEGRAPH_H
 
 #include "Allocators.h"
 
@@ -25,19 +21,19 @@
 
 #include <functional>
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 #include <fgviewer/FrameGraphInfo.h>
 #include "fg/FgviewerManager.h"
 #else
-namespace filament::fgviewer {
+namespace dante::fgviewer {
     class FrameGraphInfo{};
-} // namespace filament::fgviewer
-namespace filament {
+} // namespace dante::fgviewer
+namespace dante {
     class FgviewerManager;
 }
 #endif
 
-namespace filament {
+namespace dante {
 
 class TextureCacheInterface;
 
@@ -228,7 +224,7 @@ public:
     explicit FrameGraph(TextureCacheInterface& resourceAllocator,
             Mode mode = Mode::UNPROTECTED);
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     // When fgviewer is enabled, we update the fgviewer at different points of framegraph
     // life-cycles. The view is useful for associating a graph with the view it's rendering into.
     void setFgviewerData(FgviewerManager* manager, FView const* view);
@@ -448,7 +444,7 @@ public:
      * Export a fgviewer::FrameGraphInfo for current graph.
      * Note that this function should be called after FrameGraph::compile().
      */
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     fgviewer::FrameGraphInfo getFrameGraphInfo(const char *viewName) const;
 
     /**
@@ -566,7 +562,7 @@ private:
     Vector<PassNode*> mPassNodes;
     Vector<PassNode*>::iterator mActivePassNodesEnd;
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     FgviewerManager* mFgviewer = nullptr;
     FView const* mView = nullptr;
 #endif
@@ -694,6 +690,6 @@ extern template FrameGraphId<FrameGraphTexture> FrameGraph::write(PassNode* pass
 extern template FrameGraphId<FrameGraphTexture> FrameGraph::forwardResource(
         FrameGraphId<FrameGraphTexture> resource, FrameGraphId<FrameGraphTexture> replacedResource);
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_FG_FRAMEGRAPH_H
+#endif //TNT_DANTE_FG_FRAMEGRAPH_H

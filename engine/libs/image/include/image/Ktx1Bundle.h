@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IMAGE_KTX1BUNDLE_H
 #define IMAGE_KTX1BUNDLE_H
@@ -67,7 +63,7 @@ public:
      *
      * Typically, this constructor is used to consume the contents of a KTX file.
      * 
-     * \note Asserts via `FILAMENT_CHECK_POSTCONDITION` if the input is malformed, truncated, or exceeds dimension limits.
+     * \note Asserts via `DANTE_CHECK_POSTCONDITION` if the input is malformed, truncated, or exceeds dimension limits.
      */
     Ktx1Bundle(uint8_t const* bytes, uint32_t nbytes);
 
@@ -77,14 +73,14 @@ public:
      *
      * Typically, this method is used to write out the contents of a KTX file.
      * 
-     * \note Asserts via `FILAMENT_CHECK_POSTCONDITION` if internal payload constraints are violated.
+     * \note Asserts via `DANTE_CHECK_POSTCONDITION` if internal payload constraints are violated.
      */
     bool serialize(uint8_t* destination, uint32_t numBytes) const;
 
     /**
      * Computes the size (in bytes) of the serialized bundle.
      * 
-     * \note Asserts via `FILAMENT_CHECK_POSTCONDITION` if internal LOD sizes are inconsistent or total size overflows 32-bit bounds.
+     * \note Asserts via `DANTE_CHECK_POSTCONDITION` if internal LOD sizes are inconsistent or total size overflows 32-bit bounds.
      */
     uint32_t getSerializedLength() const;
 
@@ -106,7 +102,7 @@ public:
      * Assumes 3 bands for a total of 9 RGB coefficients.
      * Returns true if successful.
      */
-    bool getSphericalHarmonics(filament::math::float3* result);
+    bool getSphericalHarmonics(dante::math::float3* result);
 
     /**
      * Gets the number of miplevels (this is never zero).

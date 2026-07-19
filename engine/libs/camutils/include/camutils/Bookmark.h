@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef CAMUTILS_BOOKMARK_H
 #define CAMUTILS_BOOKMARK_H
@@ -11,7 +7,7 @@
 #include <math/vec2.h>
 #include <math/vec3.h>
 
-namespace filament {
+namespace dante {
 namespace camutils {
 
 template <typename FLOAT> class FreeFlightManipulator;
@@ -46,18 +42,18 @@ struct CAMUTILS_PUBLIC Bookmark {
 private:
     struct MapParams {
         FLOAT extent;
-        filament::math::vec2<FLOAT> center;
+        dante::math::vec2<FLOAT> center;
     };
     struct OrbitParams {
         FLOAT phi;
         FLOAT theta;
         FLOAT distance;
-        filament::math::vec3<FLOAT> pivot;
+        dante::math::vec3<FLOAT> pivot;
     };
     struct FlightParams {
         FLOAT pitch;
         FLOAT yaw;
-        filament::math::vec3<FLOAT> position;
+        dante::math::vec3<FLOAT> position;
     };
     Mode mode;
     MapParams map;
@@ -69,6 +65,6 @@ private:
 };
 
 } // namespace camutils
-} // namespace filament
+} // namespace dante
 
 #endif // CAMUTILS_BOOKMARK_H

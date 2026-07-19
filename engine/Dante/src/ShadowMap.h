@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_SHADOWMAP_H
-#define TNT_FILAMENT_DETAILS_SHADOWMAP_H
+#ifndef TNT_DANTE_DETAILS_SHADOWMAP_H
+#define TNT_DANTE_DETAILS_SHADOWMAP_H
 
 #include "Culler.h"
 
@@ -15,7 +11,7 @@
 
 #include "ds/ShadowMapDescriptorSet.h"
 
-#include <filament/Box.h>
+#include <dante/Box.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -29,7 +25,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class RenderPass;
 
@@ -348,6 +344,6 @@ private:
     UTILS_UNUSED uint8_t reserved[4] = {};                                  // 4
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_SHADOWMAP_H
+#endif // TNT_DANTE_DETAILS_SHADOWMAP_H

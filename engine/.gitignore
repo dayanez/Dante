@@ -8,7 +8,7 @@ ImportExecutables-*.cmake
 dist
 dist-*
 toolchains
-filament/docs/html/**
+dante/docs/html/**
 .vscode
 *tmp*.png
 civetweb.txt
@@ -23,5 +23,5 @@ results
 # For /test/renderdiff dependencies
 /mesa
 /gltf
-/filament-assets
+/dante-assets
 /venv

@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_GLMEMORYMAPPEDBUFFER_H
-#define TNT_FILAMENT_BACKEND_OPENGL_GLMEMORYMAPPEDBUFFER_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_GLMEMORYMAPPEDBUFFER_H
+#define TNT_DANTE_BACKEND_OPENGL_GLMEMORYMAPPEDBUFFER_H
 
 #include "DriverBase.h"
 #include "gl_headers.h"
@@ -17,7 +13,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class OpenGLState;
 class OpenGLDriver;
@@ -49,6 +45,6 @@ struct GLMemoryMappedBuffer : public HwMemoryMappedBuffer {
             size_t offset, BufferDescriptor&& data) const;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif //TNT_FILAMENT_BACKEND_OPENGL_GLMEMORYMAPPEDBUFFER_H
+#endif //TNT_DANTE_BACKEND_OPENGL_GLMEMORYMAPPEDBUFFER_H

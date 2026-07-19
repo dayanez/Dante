@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BUFFERPOOLALLOCATOR_H
-#define TNT_FILAMENT_BUFFERPOOLALLOCATOR_H
+#ifndef TNT_DANTE_BUFFERPOOLALLOCATOR_H
+#define TNT_DANTE_BUFFERPOOLALLOCATOR_H
 
 #include <utils/Allocator.h>
 #include <utils/compiler.h>
@@ -16,7 +12,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-namespace filament {
+namespace dante {
 
 /*
  * A simple buffer pool-allocator. The pool has a fixed size and buffers held by the pool all have
@@ -142,6 +138,6 @@ void BufferPoolAllocator<POOL_SIZE, ALIGNMENT, AllocatorPolicy, LockingPolicy>::
     mEntries.push_back(const_cast<Header *>(p));
 }
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_BUFFERPOOLALLOCATOR_H
+#endif // TNT_DANTE_BUFFERPOOLALLOCATOR_H

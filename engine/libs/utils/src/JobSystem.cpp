@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 // TODO: Clean-up. We shouldn't need this #ifndef here, but a client has requested that perfetto be
 // disabled due to size increase.  In their case, this flag would be defined across targets. Hence
 // we guard below with an #ifndef.
 #include <cstring>
-#ifndef FILAMENT_TRACING_ENABLED
+#ifndef DANTE_TRACING_ENABLED
 // Note: The overhead of TRACING is not negligible especially with parallel_for().
-#define FILAMENT_TRACING_ENABLED false
+#define DANTE_TRACING_ENABLED false
 #endif
 
-// when FILAMENT_TRACING_ENABLED is true, enables even heavier tracing
+// when DANTE_TRACING_ENABLED is true, enables even heavier tracing
 #define HEAVY_TRACING  0
 
 #include <utils/JobSystem.h>
@@ -74,13 +70,13 @@
 #endif
 
 #if HEAVY_TRACING
-#   define HEAVY_FILAMENT_TRACING_CALL(tag)              FILAMENT_TRACING_CALL(tag)
-#   define HEAVY_FILAMENT_TRACING_NAME(tag, name)        FILAMENT_TRACING_NAME(tag, name)
-#   define HEAVY_FILAMENT_TRACING_VALUE(tag, name, v)    FILAMENT_TRACING_VALUE(tag, name, v)
+#   define HEAVY_DANTE_TRACING_CALL(tag)              DANTE_TRACING_CALL(tag)
+#   define HEAVY_DANTE_TRACING_NAME(tag, name)        DANTE_TRACING_NAME(tag, name)
+#   define HEAVY_DANTE_TRACING_VALUE(tag, name, v)    DANTE_TRACING_VALUE(tag, name, v)
 #else
-#   define HEAVY_FILAMENT_TRACING_CALL(tag)
-#   define HEAVY_FILAMENT_TRACING_NAME(tag, name)
-#   define HEAVY_FILAMENT_TRACING_VALUE(tag, name, v)
+#   define HEAVY_DANTE_TRACING_CALL(tag)
+#   define HEAVY_DANTE_TRACING_NAME(tag, name)
+#   define HEAVY_DANTE_TRACING_VALUE(tag, name, v)
 #endif
 
 namespace utils {
@@ -171,7 +167,7 @@ JobSystem::JobSystem(const size_t userThreadCount, const size_t adoptableThreads
     : mJobPool("JobSystem Job pool", MAX_JOB_COUNT * sizeof(Job)),
       mJobStorageBase(static_cast<Job *>(mJobPool.getAllocator().getCurrent()))
 {
-    FILAMENT_TRACING_ENABLE(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    DANTE_TRACING_ENABLE(DANTE_TRACING_CATEGORY_JOBSYSTEM);
 
     unsigned int threadPoolCount = userThreadCount;
     if (threadPoolCount == 0) {
@@ -279,12 +275,12 @@ inline bool JobSystem::hasJobCompleted(Job const* job) noexcept {
 }
 
 inline void JobSystem::wait(UniqueLock& lock) noexcept {
-    HEAVY_FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    HEAVY_DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
     mWaiterCondition.wait(lock);
 }
 
 inline uint32_t JobSystem::wait(UniqueLock& lock, Job* const job) noexcept {
-    HEAVY_FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    HEAVY_DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
     // signal we are waiting
 
     if (hasActiveJobs() || exitRequested()) {
@@ -309,7 +305,7 @@ inline uint32_t JobSystem::wait(UniqueLock& lock, Job* const job) noexcept {
 UTILS_NOINLINE
 void JobSystem::wakeAll() noexcept {
     // wakeAll() is called when a job finishes (to wake up any thread that might be waiting on it)
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
     mWaiterLock.lock();
     // this empty critical section is needed -- it guarantees that notify_all() happens
     // either before the condition is checked, or after the condition variable sleeps.
@@ -320,7 +316,7 @@ void JobSystem::wakeAll() noexcept {
 
 void JobSystem::wakeOne() noexcept {
     // wakeOne() is called when a new job is added to a queue
-    HEAVY_FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    HEAVY_DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
     mWaiterLock.lock();
     // this empty critical section is needed -- it guarantees that notify_one() happens
     // either before the condition is checked, or after the condition variable sleeps.
@@ -332,7 +328,7 @@ void JobSystem::wakeOne() noexcept {
 inline JobSystem::ThreadState& JobSystem::getState() {
     LockGuard const lock(mThreadMapLock);
     auto const iter = mThreadMap.find(std::this_thread::get_id());
-    FILAMENT_CHECK_PRECONDITION(iter != mThreadMap.end()) << "This thread has not been adopted.";
+    DANTE_CHECK_PRECONDITION(iter != mThreadMap.end()) << "This thread has not been adopted.";
     return *iter->second;
 }
 
@@ -403,7 +399,7 @@ inline JobSystem::ThreadState* JobSystem::getStateToStealFrom(ThreadState& state
 }
 
 JobSystem::Job* JobSystem::steal(ThreadState& state) noexcept {
-    HEAVY_FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    HEAVY_DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
     Job* job = nullptr;
     do {
         ThreadState* const stateToStealFrom = getStateToStealFrom(state);
@@ -417,7 +413,7 @@ JobSystem::Job* JobSystem::steal(ThreadState& state) noexcept {
 }
 
 bool JobSystem::execute(ThreadState& state) noexcept {
-    HEAVY_FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    HEAVY_DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
 
     Job* job = pop(state.workQueue);
 
@@ -433,7 +429,7 @@ bool JobSystem::execute(ThreadState& state) noexcept {
     if (UTILS_LIKELY(job)) {
         assert((job->runningJobCount.load(std::memory_order_relaxed) & JOB_COUNT_MASK) >= 1);
         if (UTILS_LIKELY(job->function)) {
-            HEAVY_FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_JOBSYSTEM, "job->function");
+            HEAVY_DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_JOBSYSTEM, "job->function");
             job->id = std::distance(mThreadStates.data(), &state);
             job->function(job->storage, *this, job);
             job->id = invalidThreadId;
@@ -454,7 +450,7 @@ void JobSystem::loop(ThreadState* state) {
         inserted = mThreadMap.emplace(std::this_thread::get_id(), state).second;
     }
 
-    FILAMENT_CHECK_PRECONDITION(inserted) << "This thread is already in a loop.";
+    DANTE_CHECK_PRECONDITION(inserted) << "This thread is already in a loop.";
 
     // run our main loop...
     do {
@@ -469,7 +465,7 @@ void JobSystem::loop(ThreadState* state) {
 
 UTILS_NOINLINE
 void JobSystem::finish(Job* job) noexcept {
-    HEAVY_FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    HEAVY_DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
 
     bool notify = false;
 
@@ -549,7 +545,7 @@ void JobSystem::release(Job*& job) noexcept {
 }
 
 void JobSystem::run(Job*& job) noexcept {
-    HEAVY_FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    HEAVY_DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
 
     ThreadState& state(getState());
 
@@ -560,7 +556,7 @@ void JobSystem::run(Job*& job) noexcept {
 }
 
 void JobSystem::run(Job*& job, uint8_t id) noexcept {
-    HEAVY_FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    HEAVY_DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
 
     ThreadState& state = mThreadStates[id];
     assert_invariant(&state == &getState());
@@ -578,7 +574,7 @@ JobSystem::Job* JobSystem::runAndRetain(Job* job) noexcept {
 }
 
 void JobSystem::waitAndRelease(Job*& job) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
 
     assert(job);
     assert(job->refCount.load(std::memory_order_relaxed) >= 1);
@@ -627,7 +623,7 @@ void JobSystem::waitAndRelease(Job*& job) noexcept {
 }
 
 void JobSystem::runAndWait(Job*& job) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_JOBSYSTEM);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_JOBSYSTEM);
     runAndRetain(job);
     waitAndRelease(job);
 }
@@ -644,7 +640,7 @@ void JobSystem::adopt() {
 
     if (state) {
         // we're already part of a JobSystem, do nothing.
-        FILAMENT_CHECK_PRECONDITION(this == state->js)
+        DANTE_CHECK_PRECONDITION(this == state->js)
                 << "Called adopt on a thread owned by another JobSystem (" << state->js
                 << "), this=" << this << "!";
         return;
@@ -654,7 +650,7 @@ void JobSystem::adopt() {
     uint16_t const adopted = mAdoptedThreads.fetch_add(1, std::memory_order_relaxed);
     size_t const index = mThreadCount + adopted;
 
-    FILAMENT_CHECK_POSTCONDITION(index < mThreadStates.size())
+    DANTE_CHECK_POSTCONDITION(index < mThreadStates.size())
             << "Too many calls to adopt(). No more adoptable threads!";
 
     // all threads adopted by the JobSystem need to run at the same priority
@@ -675,8 +671,8 @@ void JobSystem::emancipate() {
     LockGuard const lock(mThreadMapLock);
     auto const iter = mThreadMap.find(tid);
     ThreadState const* const state = iter ==  mThreadMap.end() ? nullptr : iter->second;
-    FILAMENT_CHECK_PRECONDITION(state) << "this thread is not an adopted thread";
-    FILAMENT_CHECK_PRECONDITION(state->js == this) << "this thread is not adopted by us";
+    DANTE_CHECK_PRECONDITION(state) << "this thread is not an adopted thread";
+    DANTE_CHECK_PRECONDITION(state->js == this) << "this thread is not adopted by us";
     mThreadMap.erase(iter);
 }
 

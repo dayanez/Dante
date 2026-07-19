@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_FAST_H
 #define TNT_MATH_FAST_H
@@ -18,7 +14,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 namespace math {
 namespace fast {
 
@@ -159,6 +155,6 @@ inline T MATH_PURE qdec(T a) noexcept {
 
 } // namespace fast
 } // namespace math
-} // namespace filament
+} // namespace dante
 
 #endif // TNT_MATH_FAST_H

@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_FRAMEGRAPHRESOURCES_H
-#define TNT_FILAMENT_FG_FRAMEGRAPHRESOURCES_H
+#ifndef TNT_DANTE_FG_FRAMEGRAPHRESOURCES_H
+#define TNT_DANTE_FG_FRAMEGRAPHRESOURCES_H
 
 #include "fg/details/Resource.h"
 #include "fg/FrameGraphId.h"
@@ -12,7 +8,7 @@
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
 
-namespace filament {
+namespace dante {
 
 class FrameGraph;
 class PassNode;
@@ -152,6 +148,6 @@ void FrameGraphResources::detach(FrameGraphId<RESOURCE> handle, RESOURCE* pOutRe
     }
 }
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_FG_FRAMEGRAPHRESOURCES_H
+#endif //TNT_DANTE_FG_FRAMEGRAPHRESOURCES_H

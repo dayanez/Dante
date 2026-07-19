@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "flare.h"
 #include "generated/resources/flare.h"
@@ -14,7 +10,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 static const StaticMaterialInfo sMaterialList[] = {
         { "flare",                      MATERIAL(FLARE, FLARE) },
@@ -24,4 +20,4 @@ utils::Slice<const StaticMaterialInfo> getFlareMaterialList() noexcept {
     return { std::begin(sMaterialList), std::end(sMaterialList) };
 }
 
-} // namespace filament
+} // namespace dante

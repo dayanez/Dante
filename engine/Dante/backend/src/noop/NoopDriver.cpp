@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "noop/NoopDriver.h"
 
@@ -15,7 +11,7 @@
 
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 Driver* NoopDriver::create() {
     Platform::DriverConfig driverConfig;
@@ -33,7 +29,7 @@ Dispatcher NoopDriver::getDispatcher() const noexcept {
 }
 
 ShaderModel NoopDriver::getShaderModel() const noexcept {
-#if defined(__ANDROID__) || defined(FILAMENT_IOS) || defined(__EMSCRIPTEN__)
+#if defined(__ANDROID__) || defined(DANTE_IOS) || defined(__EMSCRIPTEN__)
     return ShaderModel::MOBILE;
 #else
     return ShaderModel::DESKTOP;
@@ -484,4 +480,4 @@ bool NoopDriver::cancelAsyncJob(AsyncCallId jobId) {
     return false;
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fg/FrameGraphResources.h"
 
@@ -15,7 +11,7 @@
 
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 FrameGraphResources::FrameGraphResources(FrameGraph& fg, PassNode& passNode) noexcept
     : mFrameGraph(fg), mPassNode(passNode) {
@@ -28,16 +24,16 @@ const char* FrameGraphResources::getPassName() const noexcept {
 // this perhaps weirdly returns a reference, this is to express the fact that if this method
 // fails, it has to assert (or throw), it can't return for e.g. a nullptr, because the public
 // API doesn't return pointers.
-// We use FILAMENT_CHECK_PRECONDITION() because these failures are due to caller contract violations (preconditions).
+// We use DANTE_CHECK_PRECONDITION() because these failures are due to caller contract violations (preconditions).
 VirtualResource& FrameGraphResources::getResource(FrameGraphHandle const handle) const {
-    FILAMENT_CHECK_PRECONDITION(handle) << "Uninitialized handle when using FrameGraphResources.";
+    DANTE_CHECK_PRECONDITION(handle) << "Uninitialized handle when using FrameGraphResources.";
 
     VirtualResource* const resource = mFrameGraph.getResource(handle);
 
     auto& declaredHandles = mPassNode.mDeclaredHandles;
     const bool hasReadOrWrite = declaredHandles.find(handle.index) != declaredHandles.cend();
 
-    FILAMENT_CHECK_PRECONDITION(hasReadOrWrite)
+    DANTE_CHECK_PRECONDITION(hasReadOrWrite)
             << "Pass \"" << mPassNode.getName() << "\" didn't declare any access to resource \""
             << resource->name.c_str() << "\"";
 
@@ -51,10 +47,10 @@ FrameGraphResources::RenderPassInfo FrameGraphResources::getRenderPassInfo(uint3
     RenderPassNode const& renderPassNode = static_cast<RenderPassNode const&>(mPassNode);
     RenderPassNode::RenderPassData const* pRenderPassData = renderPassNode.getRenderPassData(id);
 
-    FILAMENT_CHECK_PRECONDITION(pRenderPassData) << "using invalid RenderPass index " << id
+    DANTE_CHECK_PRECONDITION(pRenderPassData) << "using invalid RenderPass index " << id
                                                  << " in Pass \"" << mPassNode.getName() << "\"";
 
     return { pRenderPassData->backend.target, pRenderPassData->backend.params };
 }
 
-} // namespace filament
+} // namespace dante

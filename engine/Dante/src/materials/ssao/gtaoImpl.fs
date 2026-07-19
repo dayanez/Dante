@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 /*
  * This is our implementation of GTAO -- it's not standalone because it uses materialParams

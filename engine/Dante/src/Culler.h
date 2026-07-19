@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_CULLER_H
-#define TNT_FILAMENT_DETAILS_CULLER_H
+#ifndef TNT_DANTE_DETAILS_CULLER_H
+#define TNT_DANTE_DETAILS_CULLER_H
 
-#include <filament/Frustum.h>
+#include <dante/Frustum.h>
 
 #include <utils/compiler.h>
 #include <utils/Slice.h>
@@ -14,7 +10,7 @@
 #include <math/vec2.h>
 #include <math/vec4.h>
 
-namespace filament {
+namespace dante {
 
 /*
  * This is where culling is implemented.
@@ -80,6 +76,6 @@ public:
     };
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_CULLER_H
+#endif // TNT_DANTE_DETAILS_CULLER_H

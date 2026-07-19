@@ -2,7 +2,7 @@
 #define gpu_shader5        1
 
 // ES 3.0 does not have gather though
-#if defined(FILAMENT_HAS_FEATURE_TEXTURE_GATHER)
+#if defined(DANTE_HAS_FEATURE_TEXTURE_GATHER)
 #define FXAA_GATHER4_ALPHA 1
 #else
 #define FXAA_GATHER4_ALPHA 0

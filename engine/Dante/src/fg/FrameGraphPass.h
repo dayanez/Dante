@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_FRAMEGRAPHPASS_H
-#define TNT_FILAMENT_FG_FRAMEGRAPHPASS_H
+#ifndef TNT_DANTE_FG_FRAMEGRAPHPASS_H
+#define TNT_DANTE_FG_FRAMEGRAPHPASS_H
 
 #include "fg/FrameGraphResources.h"
 
@@ -14,7 +10,7 @@
 
 #include <type_traits>
 
-namespace filament {
+namespace dante {
 
 class FrameGraphPassExecutor {
     friend class FrameGraph;
@@ -74,6 +70,6 @@ public:
     Data const* operator->() const { return &mData; }
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_FG_FRAMEGRAPHPASS_H
+#endif //TNT_DANTE_FG_FRAMEGRAPHPASS_H

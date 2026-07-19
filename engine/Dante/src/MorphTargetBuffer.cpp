@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/MorphTargetBuffer.h"
 
 #include "details/Engine.h"
 
-namespace filament {
+namespace dante {
 
 void MorphTargetBuffer::setPositionsAt(Engine& engine, size_t const targetIndex,
         math::float3 const* positions, size_t const count, size_t const offset) {
@@ -44,4 +40,4 @@ bool MorphTargetBuffer::isCustomMorphingEnabled() const noexcept {
     return downcast(this)->isCustomMorphingEnabled();
 }
 
-} // namespace filament
+} // namespace dante

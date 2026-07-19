@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_UTILITY_H
 #define GLTFIO_UTILITY_H
@@ -13,23 +9,23 @@
 #include <stddef.h>
 #include <stdint.h>
 
-struct FFilamentAsset;
+struct FDanteAsset;
 struct cgltf_primitive;
 struct cgltf_data;
 class DracoCache;
 
 struct cgltf_accessor;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 // Referenced in ResourceLoader and AssetLoaderExtended
-using BufferDescriptor = filament::backend::BufferDescriptor;
+using BufferDescriptor = dante::backend::BufferDescriptor;
 using UriDataCache = tsl::robin_map<std::string, BufferDescriptor>;
 using UriDataCacheHandle = std::shared_ptr<UriDataCache>;
 
-} // namespace filament::gltfio::utility
+} // namespace dante::gltfio::utility
 
-namespace filament::gltfio::utility {
+namespace dante::gltfio::utility {
 
 // Functions that are shared between the original implementation and the extended implementation.
 void decodeDracoMeshes(cgltf_data const* gltf, cgltf_primitive const* prim, DracoCache* dracoCache);
@@ -43,6 +39,6 @@ bool requiresPacking(cgltf_accessor const* accessor);
 bool loadCgltfBuffers(cgltf_data const* gltf, char const* gltfPath,
         UriDataCacheHandle uriDataCacheHandle);
 
-} // namespace filament::gltfio::utility
+} // namespace dante::gltfio::utility
 
 #endif

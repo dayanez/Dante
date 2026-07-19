@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fg/FrameGraphTexture.h"
 
@@ -12,7 +8,7 @@
 #include <algorithm>
 #include <array>
 
-namespace filament {
+namespace dante {
 
 void FrameGraphTexture::create(TextureCacheInterface& textureCache,
         utils::StaticString const name,
@@ -44,4 +40,4 @@ FrameGraphTexture::Descriptor FrameGraphTexture::generateSubResourceDescriptor(
     return descriptor;
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_FENCE_H
-#define TNT_FILAMENT_DETAILS_FENCE_H
+#ifndef TNT_DANTE_DETAILS_FENCE_H
+#define TNT_DANTE_DETAILS_FENCE_H
 
 #include "downcast.h"
 
-#include <filament/Fence.h>
+#include <dante/Fence.h>
 
 #include <backend/Handle.h>
 
@@ -16,7 +12,7 @@
 #include <utils/Condition.h>
 #include <utils/Mutex.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -41,8 +37,8 @@ private:
     std::shared_ptr<FenceSignal> mFenceSignal;
 };
 
-FILAMENT_DOWNCAST(Fence)
+DANTE_DOWNCAST(Fence)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_FENCE_H
+#endif // TNT_DANTE_DETAILS_FENCE_H

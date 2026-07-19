@@ -1,14 +1,14 @@
 
 
-#ifndef TNT_FILAMENT_DETAILS_CAMERA_H
-#define TNT_FILAMENT_DETAILS_CAMERA_H
+#ifndef TNT_DANTE_DETAILS_CAMERA_H
+#define TNT_DANTE_DETAILS_CAMERA_H
 
 #include "downcast.h"
 
-#include <private/filament/EngineEnums.h>
+#include <private/dante/EngineEnums.h>
 
-#include <filament/Camera.h>
-#include <filament/Frustum.h>
+#include <dante/Camera.h>
+#include <dante/Frustum.h>
 
 #include <utils/compiler.h>
 #include <utils/Entity.h>
@@ -17,7 +17,7 @@
 #include <math/mat4.h>
 #include <math/scalar.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -248,8 +248,8 @@ private:
             math::mat4 const& modelMatrix) noexcept;
 };
 
-FILAMENT_DOWNCAST(Camera)
+DANTE_DOWNCAST(Camera)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_CAMERA_H
+#endif // TNT_DANTE_DETAILS_CAMERA_H

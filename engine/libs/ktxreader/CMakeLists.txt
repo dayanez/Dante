@@ -24,7 +24,7 @@ include_directories(${PUBLIC_HDR_DIR})
 
 add_library(${TARGET} STATIC ${PUBLIC_HDRS} ${SRCS})
 
-target_link_libraries(${TARGET} PUBLIC utils image filament basis_transcoder)
+target_link_libraries(${TARGET} PUBLIC utils image dante basis_transcoder)
 
 target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
 set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
@@ -60,7 +60,7 @@ endfunction()
 add_testfile(color_grid_uastc_zstd.ktx2)
 add_testfile(lightroom_ibl.ktx)
 
-if (FILAMENT_BUILD_TESTING AND NOT ANDROID AND NOT WASM AND NOT IOS)
+if (DANTE_BUILD_TESTING AND NOT ANDROID AND NOT WASM AND NOT IOS)
     add_executable(test_ktxreader tests/test_ktxreader.cpp ${TESTFILES})
     target_link_libraries(test_ktxreader PRIVATE ${TARGET} gtest)
     set_target_properties(test_ktxreader PROPERTIES FOLDER Tests)

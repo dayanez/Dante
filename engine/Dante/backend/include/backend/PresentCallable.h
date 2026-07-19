@@ -1,22 +1,18 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 //! \file
 
-#ifndef TNT_FILAMENT_BACKEND_PRESENTCALLABLE
-#define TNT_FILAMENT_BACKEND_PRESENTCALLABLE
+#ifndef TNT_DANTE_BACKEND_PRESENTCALLABLE
+#define TNT_DANTE_BACKEND_PRESENTCALLABLE
 
 #include <utils/compiler.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * A PresentCallable is a callable object that, when called, schedules a frame for presentation on
  * a SwapChain.
  *
- * Typically, Filament's backend is responsible for scheduling a frame's presentation. However,
+ * Typically, Dante's backend is responsible for scheduling a frame's presentation. However,
  * there are certain cases where the application might want to control when a frame is scheduled for
  * presentation.
  *
@@ -45,7 +41,7 @@ namespace filament::backend {
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
  * @remark The PresentCallable mechanism for user-controlled presentation is only supported by
- * Filament's Metal backend. On other backends, the FrameScheduledCallback is still invoked, but the
+ * Dante's Metal backend. On other backends, the FrameScheduledCallback is still invoked, but the
  * PresentCallable passed to it is a no-op and calling it has no effect.
  *
  * When using the Metal backend, applications *must* call each PresentCallable they receive. Each
@@ -86,6 +82,6 @@ private:
  */
 using FrameFinishedCallback UTILS_DEPRECATED = void(*)(PresentCallable callable, void* user);
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRESENTCALLABLE
+#endif // TNT_DANTE_BACKEND_PRESENTCALLABLE

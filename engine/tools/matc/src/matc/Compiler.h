@@ -18,7 +18,7 @@
 #define TNT_COMPILER_H
 
 #include "CommandlineConfig.h"
-#include <filament-matp/Config.h>
+#include <dante-matp/Config.h>
 
 #include <filamat/Package.h>
 

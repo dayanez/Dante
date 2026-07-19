@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "components/RenderableManager.h"
 
@@ -12,7 +8,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -217,4 +213,4 @@ bool RenderableManager::getFogEnabled(Instance const instance) const noexcept {
     return downcast(this)->getFogEnabled(instance);
 }
 
-} // namespace filament
+} // namespace dante

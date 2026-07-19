@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DriverBase.h"
 
@@ -35,9 +31,9 @@
 #include <stdint.h>
 
 using namespace utils;
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament::backend {
+namespace dante::backend {
 
 DriverBase::DriverBase(const Platform::DriverConfig& driverConfig) noexcept
     : mDriverConfig(driverConfig) {
@@ -137,18 +133,18 @@ void DriverBase::scheduleRelease(AcquiredImage const& image) {
 }
 
 void DriverBase::debugCommandBegin(CommandStream* cmds, bool synchronous, const char* methodName) noexcept {
-    if constexpr (bool(FILAMENT_DEBUG_COMMANDS > FILAMENT_DEBUG_COMMANDS_NONE)) {
-        if constexpr (bool(FILAMENT_DEBUG_COMMANDS & FILAMENT_DEBUG_COMMANDS_LOG)) {
+    if constexpr (bool(DANTE_DEBUG_COMMANDS > DANTE_DEBUG_COMMANDS_NONE)) {
+        if constexpr (bool(DANTE_DEBUG_COMMANDS & DANTE_DEBUG_COMMANDS_LOG)) {
             DLOG(INFO) << methodName;
         }
-        if constexpr (bool(FILAMENT_DEBUG_COMMANDS & FILAMENT_DEBUG_COMMANDS_SYSTRACE)) {
-            FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-            FILAMENT_TRACING_NAME_BEGIN(FILAMENT_TRACING_CATEGORY_FILAMENT, methodName);
+        if constexpr (bool(DANTE_DEBUG_COMMANDS & DANTE_DEBUG_COMMANDS_SYSTRACE)) {
+            DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+            DANTE_TRACING_NAME_BEGIN(DANTE_TRACING_CATEGORY_DANTE, methodName);
 
             if (!synchronous) {
                 cmds->queueCommand([=]() {
-                    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-                    FILAMENT_TRACING_NAME_BEGIN(FILAMENT_TRACING_CATEGORY_FILAMENT, methodName);
+                    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+                    DANTE_TRACING_NAME_BEGIN(DANTE_TRACING_CATEGORY_DANTE, methodName);
                 });
             }
         }
@@ -157,16 +153,16 @@ void DriverBase::debugCommandBegin(CommandStream* cmds, bool synchronous, const 
 
 void DriverBase::debugCommandEnd(CommandStream* cmds, bool synchronous,
         const char* methodName) noexcept {
-    if constexpr (bool(FILAMENT_DEBUG_COMMANDS > FILAMENT_DEBUG_COMMANDS_NONE)) {
-        if constexpr (bool(FILAMENT_DEBUG_COMMANDS & FILAMENT_DEBUG_COMMANDS_SYSTRACE)) {
+    if constexpr (bool(DANTE_DEBUG_COMMANDS > DANTE_DEBUG_COMMANDS_NONE)) {
+        if constexpr (bool(DANTE_DEBUG_COMMANDS & DANTE_DEBUG_COMMANDS_SYSTRACE)) {
             if (!synchronous) {
                 cmds->queueCommand([]() {
-                    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-                    FILAMENT_TRACING_NAME_END(FILAMENT_TRACING_CATEGORY_FILAMENT);
+                    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+                    DANTE_TRACING_NAME_END(DANTE_TRACING_CATEGORY_DANTE);
                 });
             }
-            FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-            FILAMENT_TRACING_NAME_END(FILAMENT_TRACING_CATEGORY_FILAMENT);
+            DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+            DANTE_TRACING_NAME_END(DANTE_TRACING_CATEGORY_DANTE);
         }
     }
 }
@@ -233,4 +229,4 @@ void Driver::execute(std::function<void(void)> const& fn) {
     fn();
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

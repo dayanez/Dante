@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DataReshaper.h"
 
@@ -19,7 +15,7 @@
 #include <string_view>
 #include <utility>
 
-namespace filament::backend {
+namespace dante::backend {
 
 bool requestsGoogleLineDirectivesExtension(std::string_view source) noexcept {
     return source.find("GL_GOOGLE_cpp_style_line_directive") != std::string_view::npos;
@@ -670,14 +666,14 @@ bool reshape(const PixelBufferDescriptor& data, PixelBufferDescriptor& reshaped)
     }
 }
 
-} // namespace backend::filament
+} // namespace backend::dante
 
 
 namespace utils {
 
 template<>
-CString to_string<filament::backend::TextureUsage>(filament::backend::TextureUsage value) noexcept {
-    using namespace filament::backend;
+CString to_string<dante::backend::TextureUsage>(dante::backend::TextureUsage value) noexcept {
+    using namespace dante::backend;
     char string[7] = {'-', '-', '-', '-', '-', '-', 0};
     if (any(value & TextureUsage::UPLOADABLE)) {
         string[0]='U';
@@ -701,8 +697,8 @@ CString to_string<filament::backend::TextureUsage>(filament::backend::TextureUsa
 }
 
 template<>
-CString to_string<filament::backend::TargetBufferFlags>(filament::backend::TargetBufferFlags value) noexcept {
-    using namespace filament::backend;
+CString to_string<dante::backend::TargetBufferFlags>(dante::backend::TargetBufferFlags value) noexcept {
+    using namespace dante::backend;
     char string[7] = {'-', '-', '-', '-', '-', '-', 0};
     if (any(value & TargetBufferFlags::COLOR0)) {
         string[0]='0';
@@ -727,8 +723,8 @@ CString to_string<filament::backend::TargetBufferFlags>(filament::backend::Targe
 
 
 template<>
-CString to_string<filament::backend::TextureFormat>(filament::backend::TextureFormat value) noexcept {
-    using namespace filament::backend;
+CString to_string<dante::backend::TextureFormat>(dante::backend::TextureFormat value) noexcept {
+    using namespace dante::backend;
     switch (value) {
 #define CASE(T) case TextureFormat::T: return #T;
         CASE(R8) CASE(R8_SNORM) CASE(R8UI) CASE(R8I) CASE(STENCIL8)

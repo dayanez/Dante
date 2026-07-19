@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/SwapChain.h"
 
@@ -11,7 +7,7 @@
 
 #include <utility>
 
-namespace filament {
+namespace dante {
 
 void* SwapChain::getNativeWindow() const noexcept {
     return downcast(this)->getNativeWindow();
@@ -53,5 +49,5 @@ void SwapChain::setFrameRate(float const frameRate, FrameRateCompatibility const
     downcast(this)->setFrameRate(frameRate, compatibility, strategy);
 }
 
-} // namespace filament
+} // namespace dante
 

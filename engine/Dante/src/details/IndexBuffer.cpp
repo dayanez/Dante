@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/IndexBuffer.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/AsyncHelpers.h"
 #include "details/Engine.h"
 
-#include <filament/FilamentAPI.h>
+#include <dante/DanteAPI.h>
 
 #include <backend/DriverEnums.h>
 
@@ -23,7 +19,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 struct IndexBuffer::BuilderDetails {
     uint32_t mIndexCount = 0;
@@ -70,7 +66,7 @@ IndexBuffer::Builder& IndexBuffer::Builder::async(backend::CallbackHandler* hand
 }
 
 IndexBuffer* IndexBuffer::Builder::build(Engine& engine) {
-    FILAMENT_CHECK_PRECONDITION(!mImpl->mAsynchronous || engine.isAsynchronousModeEnabled())
+    DANTE_CHECK_PRECONDITION(!mImpl->mAsynchronous || engine.isAsynchronousModeEnabled())
             << "Engine not configured for async operations";
 
     return downcast(engine).createIndexBuffer(*this);
@@ -83,7 +79,7 @@ FIndexBuffer::FIndexBuffer(FEngine& engine, const Builder& builder)
     auto name = builder.getName();
     const char* const tag = name.empty() ? "(no tag)" : name.c_str_safe();
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             builder->mIndexType == IndexType::UINT || builder->mIndexType == IndexType::USHORT)
             << "Invalid index type " << static_cast<int>(builder->mIndexType) << ", tag=" << tag;
 
@@ -135,7 +131,7 @@ void FIndexBuffer::terminate(FEngine& engine) {
 
 void FIndexBuffer::setBuffer(FEngine& engine, BufferDescriptor&& buffer, uint32_t const byteOffset) {
 
-    FILAMENT_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
+    DANTE_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
             << "byteOffset must be a multiple of 4";
 
     engine.getDriverApi().updateIndexBuffer(mHandle, std::move(buffer), byteOffset);
@@ -145,7 +141,7 @@ backend::AsyncCallId FIndexBuffer::setBufferAsync(FEngine& engine, BufferDescrip
             uint32_t byteOffset, backend::CallbackHandler* handler,
             AsyncCompletionCallback callback, void* user) {
 
-    FILAMENT_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
+    DANTE_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
             << "byteOffset must be a multiple of 4";
 
     using IndexBufferCallbackAdapter = CallbackAdapter<IndexBuffer>;
@@ -154,4 +150,4 @@ backend::AsyncCallId FIndexBuffer::setBufferAsync(FEngine& engine, BufferDescrip
             handler, &IndexBufferCallbackAdapter::func, cbWrapper);
 }
 
-} // namespace filament
+} // namespace dante

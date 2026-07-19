@@ -1,23 +1,19 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <math/vec4.h>
 
 #include <cgltf.h>
 
-namespace filament {
+namespace dante {
 
 class VertexBuffer;
 class MorphTargetBuffer;
 
 }
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 /**
- * Internal helper that examines a cgltf primitive and generates data suitable for Filament's
+ * Internal helper that examines a cgltf primitive and generates data suitable for Dante's
  * TANGENTS attribute. This has been designed to be run as a JobSystem job, but clients are not
  * required to do so.
  */
@@ -59,4 +55,4 @@ struct TangentsJob {
     static void run(Params* params);
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

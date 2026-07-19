@@ -1,22 +1,18 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_COMPONENTS_CAMERAMANAGER_H
-#define TNT_FILAMENT_COMPONENTS_CAMERAMANAGER_H
+#ifndef TNT_DANTE_COMPONENTS_CAMERAMANAGER_H
+#define TNT_DANTE_COMPONENTS_CAMERAMANAGER_H
 
 #include "downcast.h"
 
-#include <filament/FilamentAPI.h>
+#include <dante/DanteAPI.h>
 
 #include <utils/compiler.h>
 #include <utils/Entity.h>
 #include <utils/SingleInstanceComponentManager.h>
 
-namespace filament {
+namespace dante {
 
-class CameraManager : public FilamentAPI {
+class CameraManager : public DanteAPI {
 public:
     using Instance = utils::EntityInstance<CameraManager>;
 };
@@ -89,6 +85,6 @@ private:
     } mManager;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_COMPONENTS_CAMERAMANAGER_H
+#endif // TNT_DANTE_COMPONENTS_CAMERAMANAGER_H

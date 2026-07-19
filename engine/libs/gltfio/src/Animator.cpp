@@ -1,19 +1,15 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "downcast.h"
-#include "FFilamentAsset.h"
-#include "FFilamentInstance.h"
+#include "FDanteAsset.h"
+#include "FDanteInstance.h"
 #include "FTrsTransformManager.h"
 
 #include <gltfio/Animator.h>
 #include <gltfio/math.h>
 
-#include <filament/RenderableManager.h>
-#include <filament/TransformManager.h>
-#include <filament/VertexBuffer.h>
+#include <dante/RenderableManager.h>
+#include <dante/TransformManager.h>
+#include <dante/VertexBuffer.h>
 
 #include <utils/Log.h>
 
@@ -27,12 +23,12 @@
 #include <string>
 #include <vector>
 
-using namespace filament;
-using namespace filament::math;
+using namespace dante;
+using namespace dante::math;
 using namespace std;
 using namespace utils;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 using TimeValues = map<float, size_t>;
 using SourceValues = vector<float>;
@@ -61,8 +57,8 @@ struct Animation {
 struct AnimatorImpl {
     vector<Animation> animations;
     BoneVector boneMatrices;
-    FFilamentAsset const* asset = nullptr;
-    FFilamentInstance* instance = nullptr;
+    FDanteAsset const* asset = nullptr;
+    FDanteInstance* instance = nullptr;
     RenderableManager* renderableManager;
     TransformManager* transformManager;
     TrsTransformManager* trsTransformManager;
@@ -73,8 +69,8 @@ struct AnimatorImpl {
     void applyAnimation(const Channel& channel, float t, size_t prevIndex, size_t nextIndex);
     void stashCrossFade();
     void applyCrossFade(float alpha);
-    void resetBoneMatrices(FFilamentInstance* instance);
-    void updateBoneMatrices(FFilamentInstance* instance);
+    void resetBoneMatrices(FDanteInstance* instance);
+    void updateBoneMatrices(FDanteInstance* instance);
 };
 
 static void createSampler(const cgltf_animation_sampler& src, Sampler& dst) {
@@ -238,7 +234,7 @@ static bool validateAnimation(const cgltf_animation& anim) {
     return true;
 }
 
-Animator::Animator(FFilamentAsset const* asset, FFilamentInstance* instance) {
+Animator::Animator(FDanteAsset const* asset, FDanteInstance* instance) {
     assert(asset->mResourcesLoaded && asset->mSourceAsset);
     mImpl = new AnimatorImpl();
     mImpl->asset = asset;
@@ -284,7 +280,7 @@ Animator::Animator(FFilamentAsset const* asset, FFilamentInstance* instance) {
         if (instance) {
             mImpl->addChannels(instance->mNodeMap, srcAnim, dstAnim);
         } else {
-            for (FFilamentInstance* instance : asset->mInstances) {
+            for (FDanteInstance* instance : asset->mInstances) {
                 mImpl->addChannels(instance->mNodeMap, srcAnim, dstAnim);
             }
         }
@@ -297,7 +293,7 @@ void Animator::applyCrossFade(size_t previousAnimIndex, float previousAnimTime, 
     mImpl->applyCrossFade(alpha);
 }
 
-void Animator::addInstance(FFilamentInstance* instance) {
+void Animator::addInstance(FDanteInstance* instance) {
     const cgltf_data* srcAsset = mImpl->asset->mSourceAsset->hierarchy;
     const cgltf_animation* srcAnims = srcAsset->animations;
     for (cgltf_size i = 0, len = srcAsset->animations_count; i < len; ++i) {
@@ -374,7 +370,7 @@ void Animator::resetBoneMatrices() {
     }
 
     // If this is a broadcast animator, then reset all instances.
-    for (FFilamentInstance* instance : mImpl->asset->mInstances) {
+    for (FDanteInstance* instance : mImpl->asset->mInstances) {
         mImpl->resetBoneMatrices(instance);
     }
 }
@@ -387,7 +383,7 @@ void Animator::updateBoneMatrices() {
     }
 
     // If this is a broadcast animator, then update all instances.
-    for (FFilamentInstance* instance : mImpl->asset->mInstances) {
+    for (FDanteInstance* instance : mImpl->asset->mInstances) {
         mImpl->updateBoneMatrices(instance);
     }
 }
@@ -584,7 +580,7 @@ void AnimatorImpl::applyAnimation(const Channel& channel, float t, size_t prevIn
     transformManager->setTransform(node, trsTransformManager->getTransform(trsNode));
 }
 
-void AnimatorImpl::resetBoneMatrices(FFilamentInstance* instance) {
+void AnimatorImpl::resetBoneMatrices(FDanteInstance* instance) {
     for (const auto& skin : instance->mSkins) {
         size_t njoints = skin.joints.size();
         boneMatrices.resize(njoints);
@@ -600,7 +596,7 @@ void AnimatorImpl::resetBoneMatrices(FFilamentInstance* instance) {
     }
 }
 
-void AnimatorImpl::updateBoneMatrices(FFilamentInstance* instance) {
+void AnimatorImpl::updateBoneMatrices(FDanteInstance* instance) {
     assert_invariant(instance->mSkins.size() == asset->mSkins.size());
     size_t skinIndex = 0;
     for (const auto& skin : instance->mSkins) {
@@ -631,4 +627,4 @@ void AnimatorImpl::updateBoneMatrices(FFilamentInstance* instance) {
     }
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

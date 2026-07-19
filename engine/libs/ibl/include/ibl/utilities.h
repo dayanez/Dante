@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IBL_UTILITIES_H
 #define IBL_UTILITIES_H
@@ -11,7 +7,7 @@
 #include <math/vec2.h>
 #include <math/vec3.h>
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 template<typename T>
@@ -30,7 +26,7 @@ inline bool isPOT(size_t x) {
     return !(x & (x - 1));
 }
 
-inline filament::math::float2 hammersley(uint32_t i, float iN) {
+inline dante::math::float2 hammersley(uint32_t i, float iN) {
     constexpr float tof = 0.5f / 0x80000000U;
     uint32_t bits = i;
     bits = (bits << 16u) | (bits >> 16u);
@@ -42,5 +38,5 @@ inline filament::math::float2 hammersley(uint32_t i, float iN) {
 }
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante
 #endif /* IBL_UTILITIES_H */

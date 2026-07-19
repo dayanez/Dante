@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 #include "MaterialInterfaceBlockChunk.h"
 
-#include <private/filament/BufferInterfaceBlock.h>
-#include <private/filament/ConstantInfo.h>
-#include <private/filament/DescriptorSets.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/PushConstantInfo.h>
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/SubpassInfo.h>
+#include <private/dante/BufferInterfaceBlock.h>
+#include <private/dante/ConstantInfo.h>
+#include <private/dante/DescriptorSets.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/PushConstantInfo.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/SubpassInfo.h>
 
-#include <filament/MaterialChunkType.h>
+#include <dante/MaterialChunkType.h>
 
 #include <backend/DriverEnums.h>
 
@@ -25,7 +21,7 @@
 
 #include <stdint.h>
 
-using namespace filament;
+using namespace dante;
 
 namespace filamat {
 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
-project(filament C ASM)
+project(dante C ASM)
 
-set(TARGET filament-iblprefilter)
+set(TARGET dante-iblprefilter)
 set(PUBLIC_HDR_DIR include)
 set(GENERATION_ROOT ${CMAKE_CURRENT_BINARY_DIR})
 set(RESOURCE_DIR "${GENERATION_ROOT}/generated/resources")
@@ -11,7 +11,7 @@ set(MATERIAL_DIR "${GENERATION_ROOT}/generated/material")
 # Sources and headers
 # ==================================================================================================
 set(PUBLIC_HDRS
-        include/filament-iblprefilter/IBLPrefilterContext.h
+        include/dante-iblprefilter/IBLPrefilterContext.h
 )
 
 set(SRCS
@@ -36,7 +36,7 @@ list(APPEND SRCS ${RESGEN_SOURCE})
 # Generate all .filamat: default material, skyboxes, and post-process
 # ==================================================================================================
 
-if (CMAKE_CROSSCOMPILING OR FILAMENT_IMPORT_PREBUILT_EXECUTABLES)
+if (CMAKE_CROSSCOMPILING OR DANTE_IMPORT_PREBUILT_EXECUTABLES)
     include(${IMPORT_EXECUTABLES})
 endif()
 
@@ -90,7 +90,7 @@ set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
 
 target_link_libraries(${TARGET} PUBLIC math)
 target_link_libraries(${TARGET} PUBLIC utils)
-target_link_libraries(${TARGET} PUBLIC filament)
+target_link_libraries(${TARGET} PUBLIC dante)
 
 # ==================================================================================================
 # Compiler flags
@@ -115,7 +115,7 @@ else()
 endif()
 
 target_compile_options(${TARGET} PRIVATE
-        ${FILAMENT_WARNINGS}
+        ${DANTE_WARNINGS}
         $<$<CONFIG:Release>:${OPTIMIZATION_FLAGS}>
         $<$<AND:$<PLATFORM_ID:Darwin>,$<CONFIG:Release>>:${DARWIN_OPTIMIZATION_FLAGS}>
 )
@@ -129,4 +129,4 @@ target_link_libraries(${TARGET} PRIVATE
 # ==================================================================================================
 set(INSTALL_TYPE ARCHIVE)
 install(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib/${DIST_DIR})
-install(DIRECTORY ${PUBLIC_HDR_DIR}/filament-iblprefilter DESTINATION include)
+install(DIRECTORY ${PUBLIC_HDR_DIR}/dante-iblprefilter DESTINATION include)

@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <ktxreader/Ktx1Reader.h>
 #include <utils/Log.h>
 
-#include <filament/Engine.h>
-#include <filament/Texture.h>
+#include <dante/Engine.h>
+#include <dante/Texture.h>
 
 namespace ktxreader {
 namespace Ktx1Reader {
@@ -130,7 +126,7 @@ Texture* createTexture(Engine* engine, Ktx1Bundle* ktx, bool srgb) {
 }
 
 CompressedPixelDataType toCompressedPixelDataType(const KtxInfo& info) {
-    return toCompressedFilamentEnum<CompressedPixelDataType>(info.glInternalFormat);
+    return toCompressedDanteEnum<CompressedPixelDataType>(info.glInternalFormat);
 }
 
 PixelDataType toPixelDataType(const KtxInfo& info) {
@@ -152,7 +148,7 @@ PixelDataFormat toPixelDataFormat(const KtxInfo& info) {
         case Ktx1Bundle::RGB: return PixelDataFormat::RGB;
         case Ktx1Bundle::RGBA: return PixelDataFormat::RGBA;
         // glFormat should NOT be a sized format according to the spec
-        // however cmgen was generating incorrect files until after Filament 1.8.0
+        // however cmgen was generating incorrect files until after Dante 1.8.0
         // so we keep this line here to preserve compatibility with older assets
         case Ktx1Bundle::R11F_G11F_B10F: return PixelDataFormat::RGB;
     }
@@ -279,7 +275,7 @@ TextureFormat toTextureFormat(const KtxInfo& info) {
         case Ktx1Bundle::RGBA32UI: return TextureFormat::RGBA32UI;
         case Ktx1Bundle::RGBA32I: return TextureFormat::RGBA32I;
     }
-    return toCompressedFilamentEnum<TextureFormat>(info.glInternalFormat);
+    return toCompressedDanteEnum<TextureFormat>(info.glInternalFormat);
 }
 
 } // namespace Ktx1Reader

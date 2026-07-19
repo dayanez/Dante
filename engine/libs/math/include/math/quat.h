@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_QUAT_H
 #define TNT_MATH_QUAT_H
@@ -16,7 +12,7 @@
 
 #include <stdint.h>
 
-namespace filament::math {
+namespace dante::math {
 namespace details {
 
 template<typename T>
@@ -187,6 +183,6 @@ constexpr inline quat operator ""_k(unsigned long long v) {
     return { 0.0, 0.0, 0.0, double(v) };
 }
 
-}  // namespace filament::math
+}  // namespace dante::math
 
 #endif  // TNT_MATH_QUAT_H

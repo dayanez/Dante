@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_GLUTILS_H
-#define TNT_FILAMENT_BACKEND_OPENGL_GLUTILS_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_GLUTILS_H
+#define TNT_DANTE_BACKEND_OPENGL_GLUTILS_H
 
 #include "gl_headers.h"
 
@@ -19,7 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend::GLUtils {
+namespace dante::backend::GLUtils {
 
 std::string_view getGLErrorString(GLenum error) noexcept;
 GLenum checkGLError(const char* function, size_t line) noexcept;
@@ -109,7 +105,7 @@ constexpr GLenum getBufferBindingType(BufferObjectBinding const bindingType) noe
         case BufferObjectBinding::VERTEX:
             return GL_ARRAY_BUFFER;
         case BufferObjectBinding::UNIFORM:
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             return GL_UNIFORM_BUFFER;
 #else
             utils::panic(__func__, __FILE__, __LINE__, "UNIFORM not supported");
@@ -168,7 +164,7 @@ constexpr GLenum getComponentType(ElementType const type) noexcept {
         case ElementType::HALF3:
         case ElementType::HALF4:
             // on ES2 we should never end-up here
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             return GL_HALF_FLOAT;
 #else
             return GL_HALF_FLOAT_OES;
@@ -286,7 +282,7 @@ constexpr GLenum getCompareFunc(SamplerCompareFunc const func) noexcept {
     return GL_LEQUAL;
 }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
 constexpr GLenum getTextureCompareMode(SamplerCompareMode const mode) noexcept {
     return mode == SamplerCompareMode::NONE ?
            GL_NONE : GL_COMPARE_REF_TO_TEXTURE;
@@ -329,7 +325,7 @@ constexpr GLenum getFormat(PixelDataFormat const format) noexcept {
         case PixelDataFormat::DEPTH_COMPONENT:  return GL_DEPTH_COMPONENT;
         case PixelDataFormat::ALPHA:            return GL_ALPHA;
         case PixelDataFormat::DEPTH_STENCIL:    return GL_DEPTH_STENCIL;
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         // when context is ES2 we should never end-up here
         case PixelDataFormat::R:                return GL_RED;
         case PixelDataFormat::R_INTEGER:        return GL_RED_INTEGER;
@@ -357,7 +353,7 @@ constexpr GLenum getType(PixelDataType const type) noexcept {
         case PixelDataType::INT:                  return GL_INT;
         case PixelDataType::FLOAT:                return GL_FLOAT;
         case PixelDataType::USHORT_565:           return GL_UNSIGNED_SHORT_5_6_5;
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         // when context is ES2 we should never end-up here
         case PixelDataType::HALF:                 return GL_HALF_FLOAT;
         case PixelDataType::UINT_10F_11F_11F_REV: return GL_UNSIGNED_INT_10F_11F_11F_REV;
@@ -372,7 +368,7 @@ constexpr GLenum getType(PixelDataType const type) noexcept {
     return GL_UNSIGNED_INT;
 }
 
-#if !defined(__EMSCRIPTEN__)  && !defined(FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2)
+#if !defined(__EMSCRIPTEN__)  && !defined(DANTE_SILENCE_NOT_SUPPORTED_BY_ES2)
 constexpr GLenum getSwizzleChannel(TextureSwizzle const c) noexcept {
     using TextureSwizzle = TextureSwizzle;
     switch (c) {
@@ -451,7 +447,7 @@ constexpr /* inline */ GLenum getInternalFormat(TextureFormat const format) noex
 
         /* Formats not supported by our ES2 implementations */
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         // 8-bits per element
         case TextureFormat::R8:                return GL_R8;
         case TextureFormat::R8_SNORM:          return GL_R8_SNORM;
@@ -675,7 +671,7 @@ public:
 
 unordered_string_set split(const char* extensions) noexcept;
 
-} // namespace filament::backend::GLUtils
+} // namespace dante::backend::GLUtils
 
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_GLUTILS_H
+#endif // TNT_DANTE_BACKEND_OPENGL_GLUTILS_H

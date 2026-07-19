@@ -1,19 +1,15 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/VertexBuffer.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/AsyncHelpers.h"
 #include "details/BufferObject.h"
 #include "details/Engine.h"
 
-#include <filament/FilamentAPI.h>
-#include <filament/MaterialEnums.h>
-#include <filament/VertexBuffer.h>
+#include <dante/DanteAPI.h>
+#include <dante/MaterialEnums.h>
+#include <dante/VertexBuffer.h>
 
 #include <backend/BufferDescriptor.h>
 #include <backend/DriverEnums.h>
@@ -35,7 +31,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 namespace {
 
@@ -45,7 +41,7 @@ constexpr size_t DOCUMENTED_MAX_VERTEX_BUFFER_COUNT = 8;
 } // anonymous
 
 using namespace backend;
-using namespace filament::math;
+using namespace dante::math;
 
 struct VertexBuffer::BuilderDetails {
     struct AttributeData : Attribute {
@@ -156,27 +152,27 @@ VertexBuffer::Builder& VertexBuffer::Builder::async(CallbackHandler* handler,
 }
 
 VertexBuffer* VertexBuffer::Builder::build(Engine& engine) const {
-    FILAMENT_CHECK_PRECONDITION(mImpl->mVertexCount > 0) << "vertexCount cannot be 0";
+    DANTE_CHECK_PRECONDITION(mImpl->mVertexCount > 0) << "vertexCount cannot be 0";
 
     // Attribute-less rendering: allow bufferCount(0) only when no attributes are declared.
     // This is used for procedural geometry that reads gl_VertexID/gl_VertexIndex/[[vertex_id]].
     bool const isAttributeless = mImpl->mBufferCount == 0 && mImpl->mDeclaredAttributes.none();
 
     if (!isAttributeless) {
-        FILAMENT_CHECK_PRECONDITION(mImpl->mBufferCount > 0) << "bufferCount cannot be 0";
+        DANTE_CHECK_PRECONDITION(mImpl->mBufferCount > 0) << "bufferCount cannot be 0";
     } else {
-        FILAMENT_CHECK_PRECONDITION(
+        DANTE_CHECK_PRECONDITION(
                 engine.getActiveFeatureLevel() != FeatureLevel::FEATURE_LEVEL_0)
                 << "Attribute-less vertex buffers (bufferCount == 0) are not supported at "
                    "FEATURE_LEVEL_0"; // GLES2 has no `gl_VertexID`
-        FILAMENT_CHECK_PRECONDITION(!mImpl->mAdvancedSkinningEnabled)
+        DANTE_CHECK_PRECONDITION(!mImpl->mAdvancedSkinningEnabled)
                 << "Attribute-less vertex buffers are incompatible with advanced skinning";
     }
 
     static_assert(DOCUMENTED_MAX_VERTEX_BUFFER_COUNT <= MAX_VERTEX_BUFFER_COUNT);
 
     auto const& featureFlags = static_cast<FEngine*>(&engine)->features.engine.debug;
-    FILAMENT_FLAG_GUARDED_CHECK_PRECONDITION(
+    DANTE_FLAG_GUARDED_CHECK_PRECONDITION(
             mImpl->mBufferCount <= DOCUMENTED_MAX_VERTEX_BUFFER_COUNT,
             featureFlags.assert_vertex_buffer_count_exceeds_8)
             << "bufferCount cannot be more than " << DOCUMENTED_MAX_VERTEX_BUFFER_COUNT;
@@ -189,17 +185,17 @@ VertexBuffer* VertexBuffer::Builder::build(Engine& engine) const {
 
     declaredAttributes.forEachSetBit([&](size_t const j) {
 
-        FILAMENT_CHECK_PRECONDITION((attributes[j].offset & 0x3u) == 0)
+        DANTE_CHECK_PRECONDITION((attributes[j].offset & 0x3u) == 0)
                 << "attribute " << j << " offset=" << attributes[j].offset
                 << " is not multiple of 4";
 
-        FILAMENT_FLAG_GUARDED_CHECK_PRECONDITION((attributes[j].stride & 0x3u) == 0,
+        DANTE_FLAG_GUARDED_CHECK_PRECONDITION((attributes[j].stride & 0x3u) == 0,
                 featureFlags.assert_vertex_buffer_attribute_stride_mult_of_4)
                 << "attribute " << j << " stride=" << +attributes[j].stride
                 << " is not multiple of 4";
 
         if (engine.getActiveFeatureLevel() == FeatureLevel::FEATURE_LEVEL_0) {
-            FILAMENT_CHECK_PRECONDITION(!(attributes[j].flags & Attribute::FLAG_INTEGER_TARGET))
+            DANTE_CHECK_PRECONDITION(!(attributes[j].flags & Attribute::FLAG_INTEGER_TARGET))
                     << "Attribute::FLAG_INTEGER_TARGET not supported at FEATURE_LEVEL_0";
         }
 
@@ -216,7 +212,7 @@ VertexBuffer* VertexBuffer::Builder::build(Engine& engine) const {
                     (1 << int(ET::HALF3)) |
                     (1 << int(ET::HALF4));
 
-            FILAMENT_CHECK_PRECONDITION(!(invalidIntegerTypes & (1 << int(attributes[j].type))))
+            DANTE_CHECK_PRECONDITION(!(invalidIntegerTypes & (1 << int(attributes[j].type))))
                     << "invalid integer vertex attribute type " << int(attributes[j].type);
         }
 
@@ -224,21 +220,21 @@ VertexBuffer* VertexBuffer::Builder::build(Engine& engine) const {
         attributedBuffers.set(attributes[j].buffer);
     });
 
-    FILAMENT_CHECK_PRECONDITION(attributedBuffers.count() == mImpl->mBufferCount)
+    DANTE_CHECK_PRECONDITION(attributedBuffers.count() == mImpl->mBufferCount)
             << "At least one buffer slot was never assigned to an attribute.";
 
     if (mImpl->mAdvancedSkinningEnabled) {
-        FILAMENT_CHECK_PRECONDITION(!mImpl->mDeclaredAttributes[VertexAttribute::BONE_INDICES])
+        DANTE_CHECK_PRECONDITION(!mImpl->mDeclaredAttributes[VertexAttribute::BONE_INDICES])
                 << "Vertex buffer attribute BONE_INDICES is already defined, "
                    "no advanced skinning is allowed";
-        FILAMENT_CHECK_PRECONDITION(!mImpl->mDeclaredAttributes[VertexAttribute::BONE_WEIGHTS])
+        DANTE_CHECK_PRECONDITION(!mImpl->mDeclaredAttributes[VertexAttribute::BONE_WEIGHTS])
                 << "Vertex buffer attribute BONE_WEIGHTS is already defined, "
                    "no advanced skinning is allowed";
-        FILAMENT_CHECK_PRECONDITION(mImpl->mBufferCount < (MAX_VERTEX_BUFFER_COUNT - 2))
+        DANTE_CHECK_PRECONDITION(mImpl->mBufferCount < (MAX_VERTEX_BUFFER_COUNT - 2))
                 << "Vertex buffer uses to many buffers (" << mImpl->mBufferCount << ")";
     }
 
-    FILAMENT_CHECK_PRECONDITION(!mImpl->mAsynchronous || engine.isAsynchronousModeEnabled())
+    DANTE_CHECK_PRECONDITION(!mImpl->mAsynchronous || engine.isAsynchronousModeEnabled())
             << "Engine not configured for async operations";
 
     return downcast(engine).createVertexBuffer(*this);
@@ -414,11 +410,11 @@ size_t FVertexBuffer::getVertexCount() const noexcept {
 
 void FVertexBuffer::setBufferAt(FEngine& engine, uint8_t const bufferIndex,
         backend::BufferDescriptor&& buffer, uint32_t const byteOffset) {
-    FILAMENT_CHECK_PRECONDITION(!mBufferObjectsEnabled)
+    DANTE_CHECK_PRECONDITION(!mBufferObjectsEnabled)
             << "buffer objects enabled, use setBufferObjectAt() instead";
-    FILAMENT_CHECK_PRECONDITION(bufferIndex < mBufferCount)
+    DANTE_CHECK_PRECONDITION(bufferIndex < mBufferCount)
             << "bufferIndex must be < bufferCount";
-    FILAMENT_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
+    DANTE_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
         << "byteOffset must be a multiple of 4";
 
     engine.getDriverApi().updateBufferObject(mBufferObjects[bufferIndex],
@@ -428,11 +424,11 @@ void FVertexBuffer::setBufferAt(FEngine& engine, uint8_t const bufferIndex,
 AsyncCallId FVertexBuffer::setBufferAtAsync(FEngine& engine, uint8_t const bufferIndex,
         backend::BufferDescriptor&& buffer, uint32_t const byteOffset, CallbackHandler* handler,
         AsyncCompletionCallback callback, void* user) {
-    FILAMENT_CHECK_PRECONDITION(!mBufferObjectsEnabled)
+    DANTE_CHECK_PRECONDITION(!mBufferObjectsEnabled)
             << "buffer objects enabled, use setBufferObjectAt() instead";
-    FILAMENT_CHECK_PRECONDITION(bufferIndex < mBufferCount)
+    DANTE_CHECK_PRECONDITION(bufferIndex < mBufferCount)
             << "bufferIndex must be < bufferCount";
-    FILAMENT_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
+    DANTE_CHECK_PRECONDITION((byteOffset & 0x3) == 0)
         << "byteOffset must be a multiple of 4";
 
     using VertexBufferCallbackAdapter = CallbackAdapter<VertexBuffer>;
@@ -443,12 +439,12 @@ AsyncCallId FVertexBuffer::setBufferAtAsync(FEngine& engine, uint8_t const buffe
 
 void FVertexBuffer::setBufferObjectAt(FEngine& engine, uint8_t const bufferIndex,
         FBufferObject const* bufferObject) {
-    FILAMENT_CHECK_PRECONDITION(mBufferObjectsEnabled)
+    DANTE_CHECK_PRECONDITION(mBufferObjectsEnabled)
             << "buffer objects disabled, use setBufferAt() instead";
-    FILAMENT_CHECK_PRECONDITION(bufferObject->getBindingType() == BufferObject::BindingType::VERTEX)
+    DANTE_CHECK_PRECONDITION(bufferObject->getBindingType() == BufferObject::BindingType::VERTEX)
             << "bufferObject binding type must be VERTEX but is "
             << to_string(bufferObject->getBindingType());
-    FILAMENT_CHECK_PRECONDITION(bufferIndex < mBufferCount)
+    DANTE_CHECK_PRECONDITION(bufferIndex < mBufferCount)
             << "bufferIndex must be < bufferCount";
 
     auto const boh = bufferObject->getHwHandle();
@@ -461,12 +457,12 @@ void FVertexBuffer::setBufferObjectAt(FEngine& engine, uint8_t const bufferIndex
 AsyncCallId FVertexBuffer::setBufferObjectAtAsync(FEngine& engine, uint8_t const bufferIndex,
         FBufferObject const* bufferObject, CallbackHandler* handler,
         AsyncCompletionCallback callback, void* user) {
-    FILAMENT_CHECK_PRECONDITION(mBufferObjectsEnabled)
+    DANTE_CHECK_PRECONDITION(mBufferObjectsEnabled)
             << "buffer objects disabled, use setBufferAt() instead";
-    FILAMENT_CHECK_PRECONDITION(bufferObject->getBindingType() == BufferObject::BindingType::VERTEX)
+    DANTE_CHECK_PRECONDITION(bufferObject->getBindingType() == BufferObject::BindingType::VERTEX)
             << "bufferObject binding type must be VERTEX but is "
             << to_string(bufferObject->getBindingType());
-    FILAMENT_CHECK_PRECONDITION(bufferIndex < mBufferCount)
+    DANTE_CHECK_PRECONDITION(bufferIndex < mBufferCount)
             << "bufferIndex must be < bufferCount";
 
     auto const boh = bufferObject->getHwHandle();
@@ -485,7 +481,7 @@ AsyncCallId FVertexBuffer::setBufferObjectAtAsync(FEngine& engine, uint8_t const
 void FVertexBuffer::updateBoneIndicesAndWeights(FEngine& engine,
         std::unique_ptr<uint16_t[]> skinJoints,
         std::unique_ptr<float[]> skinWeights) {
-    FILAMENT_CHECK_PRECONDITION(mAdvancedSkinningEnabled) << "No advanced skinning enabled";
+    DANTE_CHECK_PRECONDITION(mAdvancedSkinningEnabled) << "No advanced skinning enabled";
     auto jointsData = skinJoints.release();
     uint8_t const indicesIndex = mAttributes[BONE_INDICES].buffer;
     engine.getDriverApi().updateBufferObject(mBufferObjects[indicesIndex], {
@@ -501,4 +497,4 @@ void FVertexBuffer::updateBoneIndicesAndWeights(FEngine& engine,
             }, 0);
 }
 
-} // namespace filament
+} // namespace dante

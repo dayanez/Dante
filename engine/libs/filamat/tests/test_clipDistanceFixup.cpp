@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "SpirvFixup.h"
 
@@ -23,12 +19,12 @@ TEST(ClipDistanceFixup, NoReplacement) {
 TEST(ClipDistanceFixup, BasicReplacement) {
     std::string disassembly =
             "       OpDecorate %gl_PerVertex Block\n"
-            "       OpDecorate %filament_gl_ClipDistance Location 100\n"
+            "       OpDecorate %dante_gl_ClipDistance Location 100\n"
             "       %void = OpTypeVoid\n"
             "       %3 = OpTypeFunction %void\n";
     std::string expected =
             "       OpDecorate %gl_PerVertex Block\n"
-            "       OpDecorate %filament_gl_ClipDistance BuiltIn ClipDistance\n"
+            "       OpDecorate %dante_gl_ClipDistance BuiltIn ClipDistance\n"
             "       %void = OpTypeVoid\n"
             "       %3 = OpTypeFunction %void\n";
     EXPECT_EQ(filamat::fixupClipDistance(disassembly), true);
@@ -38,10 +34,10 @@ TEST(ClipDistanceFixup, BasicReplacement) {
 TEST(ClipDistanceFixup, NoNewline) {
     std::string disassembly =
             "       OpDecorate %gl_PerVertex Block\n"
-            "       OpDecorate %filament_gl_ClipDistance Location 100";
+            "       OpDecorate %dante_gl_ClipDistance Location 100";
     std::string expected =
             "       OpDecorate %gl_PerVertex Block\n"
-            "       OpDecorate %filament_gl_ClipDistance BuiltIn ClipDistance";
+            "       OpDecorate %dante_gl_ClipDistance BuiltIn ClipDistance";
     EXPECT_EQ(filamat::fixupClipDistance(disassembly), true);
     EXPECT_EQ(disassembly, expected);
 }

@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "components/TransformManager.h"
 
-#include <filament/TransformManager.h>
+#include <dante/TransformManager.h>
 
 #include <utils/debug.h>
 
@@ -13,9 +9,9 @@
 
 
 using namespace utils;
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 
 FTransformManager::FTransformManager() noexcept = default;
 
@@ -483,4 +479,4 @@ TransformManager::children_iterator& TransformManager::children_iterator::operat
     return *this;
 }
 
-} // namespace filament
+} // namespace dante

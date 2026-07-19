@@ -2,7 +2,7 @@
 // Directional light evaluation
 //------------------------------------------------------------------------------
 
-#if FILAMENT_QUALITY >= FILAMENT_QUALITY_HIGH
+#if DANTE_QUALITY >= DANTE_QUALITY_HIGH
 #define SUN_AS_AREA_LIGHT
 #endif
 
@@ -61,7 +61,7 @@ void evaluateDirectionalLight(const MaterialInputs material,
 #if defined(MATERIAL_HAS_SHADOW_STRENGTH)
             applyShadowStrength(visibility, material.shadowStrength);
 #endif
-#if defined (FILAMENT_SHADOW_FAR_ATTENUATION)
+#if defined (DANTE_SHADOW_FAR_ATTENUATION)
             // shadow far attenuation
             highp vec3 v = getWorldPosition() - getWorldCameraPosition();
             // (viewFromWorld * v).z == dot(transpose(viewFromWorld), v)
@@ -71,7 +71,7 @@ void evaluateDirectionalLight(const MaterialInputs material,
 #endif
         }
         if ((frameUniforms.directionalShadows & 0x2) != 0 && visibility > 0.0) {
-            if ((object_uniforms_flagsChannels & FILAMENT_OBJECT_CONTACT_SHADOWS_BIT) != 0) {
+            if ((object_uniforms_flagsChannels & DANTE_OBJECT_CONTACT_SHADOWS_BIT) != 0) {
                 ssContactShadowOcclusion = screenSpaceContactShadow(light.l);
             }
         }

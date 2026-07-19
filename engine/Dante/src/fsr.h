@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FSR_H
-#define TNT_FILAMENT_FSR_H
+#ifndef TNT_DANTE_FSR_H
+#define TNT_DANTE_FSR_H
 
-#include <filament/Viewport.h>
+#include <dante/Viewport.h>
 
 #include <math/vec4.h>
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 struct FSRScalingConfig {
     backend::Backend backend;
@@ -40,6 +36,6 @@ struct FSRUniforms {
 void FSR_ScalingSetup(FSRUniforms* inoutUniforms, FSRScalingConfig config) noexcept;
 void FSR_SharpeningSetup(FSRUniforms* inoutUniforms, FSRSharpeningConfig config) noexcept;
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FSR_H
+#endif // TNT_DANTE_FSR_H

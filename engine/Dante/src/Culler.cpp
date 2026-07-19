@@ -1,24 +1,20 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "Culler.h"
 
-#include <filament/Box.h>
+#include <dante/Box.h>
 
 #include <math/fast.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
 // use 8 if Culler::result_type is 8-bits, on ARMv8 it allows the compiler to write eight
 // results in one go.
-#define FILAMENT_CULLER_VECTORIZE_HINT 4
+#define DANTE_CULLER_VECTORIZE_HINT 4
 
-namespace filament {
+namespace dante {
 
-static_assert(Culler::MODULO % FILAMENT_CULLER_VECTORIZE_HINT == 0,
-        "MODULO m=must be a multiple of FILAMENT_CULLER_VECTORIZE_HINT");
+static_assert(Culler::MODULO % DANTE_CULLER_VECTORIZE_HINT == 0,
+        "MODULO m=must be a multiple of DANTE_CULLER_VECTORIZE_HINT");
 
 void Culler::intersects(
         result_type* UTILS_RESTRICT results,
@@ -30,7 +26,7 @@ void Culler::intersects(
 
     count = round(count);
 #if defined(__clang__)
-    #pragma clang loop vectorize_width(FILAMENT_CULLER_VECTORIZE_HINT)
+    #pragma clang loop vectorize_width(DANTE_CULLER_VECTORIZE_HINT)
 #endif
     for (size_t i = 0; i < count; i++) {
         int visible = ~0;
@@ -63,7 +59,7 @@ void Culler::intersects(
 
     count = round(count);
 #if defined(__clang__)
-    #pragma clang loop vectorize_width(FILAMENT_CULLER_VECTORIZE_HINT)
+    #pragma clang loop vectorize_width(DANTE_CULLER_VECTORIZE_HINT)
 #endif
     for (size_t i = 0; i < count; i++) {
         int visible = ~0;
@@ -135,4 +131,4 @@ void Culler::Test::intersects(
     Culler::intersects(results, frustum, b, count);
 }
 
-} // namespace filament
+} // namespace dante

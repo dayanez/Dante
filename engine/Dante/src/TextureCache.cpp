@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "TextureCache.h"
 
 #include "details/Texture.h"
 
-#include <filament/Engine.h>
+#include <dante/Engine.h>
 
 #include <private/backend/DriverApi.h>
 
@@ -37,7 +33,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -113,7 +109,7 @@ TextureCache::TextureCache(Engine::Config const& config, DriverApi& driverApi) n
         : mCacheMaxAge(config.resourceAllocatorCacheMaxAge),
           mBackend(driverApi),
           mDisposer(std::make_shared<TextureCacheDisposer>(driverApi)) {
-#if FILAMENT_TEXTURE_CACHE_DEBUG
+#if DANTE_TEXTURE_CACHE_DEBUG
     mDebugger = std::make_unique<Debugger>();
 #endif
 }
@@ -123,7 +119,7 @@ TextureCache::TextureCache(std::shared_ptr<TextureCacheDisposer> disposer,
         : mCacheMaxAge(config.resourceAllocatorCacheMaxAge),
           mBackend(driverApi),
           mDisposer(std::move(disposer)) {
-#if FILAMENT_TEXTURE_CACHE_DEBUG
+#if DANTE_TEXTURE_CACHE_DEBUG
     mDebugger = std::make_unique<Debugger>();
 #endif
 }
@@ -179,7 +175,7 @@ TextureHandle TextureCache::createTexture(StaticString const name,
             mCacheSize -= it->second.size;
             textureCache.erase(it);
         } else {
-#if FILAMENT_TEXTURE_CACHE_DEBUG
+#if DANTE_TEXTURE_CACHE_DEBUG
             StaticString evictedName;
             EvictionReason reason;
             if (mDebugger && mDebugger->checkRecentEviction(key, evictedName, reason)) {
@@ -304,7 +300,7 @@ void TextureCache::gc(bool const skippedFrame) noexcept {
         }
     }
 
-#if FILAMENT_TEXTURE_CACHE_DEBUG
+#if DANTE_TEXTURE_CACHE_DEBUG
     if (mDebugger) {
         mDebugger->ageRecentEvictions(mAge);
     }
@@ -334,7 +330,7 @@ TextureCache::purge(
     // DLOG(INFO) << "purging " << pos->second.handle.getId() << ", age=" << pos->second.age;
     mBackend.destroyTexture(pos->second.handle);
     mCacheSize -= pos->second.size;
-#if FILAMENT_TEXTURE_CACHE_DEBUG
+#if DANTE_TEXTURE_CACHE_DEBUG
     if (mDebugger) {
         mDebugger->recordEviction(pos->first, reason, mAge);
     }
@@ -452,4 +448,4 @@ void TextureCache::Debugger::ageRecentEvictions(size_t const age) noexcept {
     }
 }
 
-} // namespace filament
+} // namespace dante

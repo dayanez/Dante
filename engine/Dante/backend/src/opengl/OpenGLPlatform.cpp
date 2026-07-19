@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "OpenGLDriver.h"
 #include "OpenGLDriverBase.h"
@@ -21,7 +17,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 OpenGLDriverBase::~OpenGLDriverBase() = default;
 
@@ -45,7 +41,7 @@ utils::CString OpenGLPlatform::getDeviceInfo(DeviceInfoType infoType, Driver* dr
             getter = OpenGLPlatform::getVersionString;
             break;
         default:
-            FILAMENT_CHECK_POSTCONDITION(false) << "Unsupported DeviceInfoType for OpenGLPlatform";
+            DANTE_CHECK_POSTCONDITION(false) << "Unsupported DeviceInfoType for OpenGLPlatform";
             break;
     }
 
@@ -60,7 +56,7 @@ utils::CString OpenGLPlatform::getDeviceInfo(DeviceInfoType infoType, Driver* dr
 utils::CString OpenGLPlatform::getVendorString(Driver const* driver) {
     auto const p = static_cast<OpenGLDriverBase const*>(driver);
 #if UTILS_HAS_RTTI
-    FILAMENT_CHECK_POSTCONDITION(dynamic_cast<OpenGLDriverBase const*>(driver))
+    DANTE_CHECK_POSTCONDITION(dynamic_cast<OpenGLDriverBase const*>(driver))
             << "Driver* has not been allocated with OpenGLPlatform";
 #endif
     return p->getVendorString();
@@ -69,7 +65,7 @@ utils::CString OpenGLPlatform::getVendorString(Driver const* driver) {
 utils::CString OpenGLPlatform::getRendererString(Driver const* driver) {
     auto const p = static_cast<OpenGLDriverBase const*>(driver);
 #if UTILS_HAS_RTTI
-    FILAMENT_CHECK_POSTCONDITION(dynamic_cast<OpenGLDriverBase const*>(driver))
+    DANTE_CHECK_POSTCONDITION(dynamic_cast<OpenGLDriverBase const*>(driver))
             << "Driver* has not been allocated with OpenGLPlatform";
 #endif
     return p->getRendererString();
@@ -78,7 +74,7 @@ utils::CString OpenGLPlatform::getRendererString(Driver const* driver) {
 utils::CString OpenGLPlatform::getVersionString(Driver const* driver) {
     auto const p = static_cast<OpenGLDriverBase const*>(driver);
 #if UTILS_HAS_RTTI
-    FILAMENT_CHECK_POSTCONDITION(dynamic_cast<OpenGLDriverBase const*>(driver))
+    DANTE_CHECK_POSTCONDITION(dynamic_cast<OpenGLDriverBase const*>(driver))
             << "Driver* has not been allocated with OpenGLPlatform";
 #endif
     return p->getVersionString();
@@ -227,4 +223,4 @@ void OpenGLPlatform::createContext(bool) {
 void OpenGLPlatform::releaseContext() noexcept {
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

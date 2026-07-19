@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_ENTITYMANAGERIMPL_H
 #define TNT_UTILS_ENTITYMANAGERIMPL_H
@@ -20,7 +16,7 @@
 #include <utils/PagedArenaBitset.h>
 #include <utils/Slice.h>
 
-#if FILAMENT_UTILS_TRACK_ENTITIES
+#if DANTE_UTILS_TRACK_ENTITIES
 #include <tsl/robin_map.h>
 #endif
 #include <tsl/robin_set.h>
@@ -108,7 +104,7 @@ public:
             }
             entities[i] = Entity{ makeIdentity(gens[index], index) };
             mAliveEntities.add(entities[i].getId());
-#if FILAMENT_UTILS_TRACK_ENTITIES
+#if DANTE_UTILS_TRACK_ENTITIES
             mDebugActiveEntities.emplace(entities[i], CallStack::unwind(5));
 #endif
         }
@@ -140,7 +136,7 @@ public:
                 gens[index]++;
                 mAliveEntities.remove(entities[i].getId());
 
-#if FILAMENT_UTILS_TRACK_ENTITIES
+#if DANTE_UTILS_TRACK_ENTITIES
                 mDebugActiveEntities.erase(entities[i]);
 #endif
                 mDirtyEntities[mDirtyCount++] = entities[i];
@@ -205,7 +201,7 @@ public:
         }
     }
 
-#if FILAMENT_UTILS_TRACK_ENTITIES
+#if DANTE_UTILS_TRACK_ENTITIES
     std::vector<Entity> getActiveEntities() const {
         std::vector<Entity> result;
         {
@@ -282,7 +278,7 @@ private:
     Entity mDirtyEntities[MAX_DIRTY_COUNT] UTILS_GUARDED_BY(mFreeListLock);
     size_t mDirtyCount UTILS_GUARDED_BY(mFreeListLock) = 0;
 
-#if FILAMENT_UTILS_TRACK_ENTITIES
+#if DANTE_UTILS_TRACK_ENTITIES
     tsl::robin_map<Entity, CallStack, Entity::Hasher> mDebugActiveEntities UTILS_GUARDED_BY(mFreeListLock);
 #endif
 };

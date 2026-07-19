@@ -1,19 +1,15 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_BUFFERSTUFFINGDETECTOR_H
-#define TNT_FILAMENT_DETAILS_BUFFERSTUFFINGDETECTOR_H
+#ifndef TNT_DANTE_DETAILS_BUFFERSTUFFINGDETECTOR_H
+#define TNT_DANTE_DETAILS_BUFFERSTUFFINGDETECTOR_H
 
-#include <filament/Renderer.h>
+#include <dante/Renderer.h>
 
 #include <utils/Slice.h>
 
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 /**
  * BufferStuffingDetector monitors FrameInfo history to detect when completed frames are backing up
@@ -74,6 +70,6 @@ private:
     uint32_t mLastFrameId = 0;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_BUFFERSTUFFINGDETECTOR_H
+#endif // TNT_DANTE_DETAILS_BUFFERSTUFFINGDETECTOR_H

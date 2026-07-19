@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "MetalArgumentBuffer.h"
 
@@ -18,11 +14,11 @@ MetalArgumentBuffer::Builder& filamat::MetalArgumentBuffer::Builder::name(
 }
 
 MetalArgumentBuffer::Builder& MetalArgumentBuffer::Builder::texture(size_t index,
-        const std::string& name, filament::backend::SamplerType type,
-        filament::backend::SamplerFormat format,
+        const std::string& name, dante::backend::SamplerType type,
+        dante::backend::SamplerFormat format,
         bool multisample) noexcept {
 
-    using namespace filament::backend;
+    using namespace dante::backend;
 
     // All combinations of SamplerType and SamplerFormat are valid except for SAMPLER_3D / SHADOW.
     assert_invariant(type != SamplerType::SAMPLER_3D || format != SamplerFormat::SHADOW);
@@ -55,31 +51,31 @@ MetalArgumentBuffer* MetalArgumentBuffer::Builder::build() {
 
 std::ostream& MetalArgumentBuffer::Builder::TextureArgument::write(std::ostream& os) const {
     switch (format) {
-        case filament::backend::SamplerFormat::INT:
-        case filament::backend::SamplerFormat::UINT:
-        case filament::backend::SamplerFormat::FLOAT:
+        case dante::backend::SamplerFormat::INT:
+        case dante::backend::SamplerFormat::UINT:
+        case dante::backend::SamplerFormat::FLOAT:
             os << "texture";
             break;
-        case filament::backend::SamplerFormat::SHADOW:
+        case dante::backend::SamplerFormat::SHADOW:
             os << "depth";
             break;
     }
 
     switch (type) {
-        case filament::backend::SamplerType::SAMPLER_EXTERNAL:
-        case filament::backend::SamplerType::SAMPLER_2D:
+        case dante::backend::SamplerType::SAMPLER_EXTERNAL:
+        case dante::backend::SamplerType::SAMPLER_2D:
             os << "2d";
             break;
-        case filament::backend::SamplerType::SAMPLER_2D_ARRAY:
+        case dante::backend::SamplerType::SAMPLER_2D_ARRAY:
             os << "2d_array";
             break;
-        case filament::backend::SamplerType::SAMPLER_CUBEMAP:
+        case dante::backend::SamplerType::SAMPLER_CUBEMAP:
             os << "cube";
             break;
-        case filament::backend::SamplerType::SAMPLER_3D:
+        case dante::backend::SamplerType::SAMPLER_3D:
             os << "3d";
             break;
-        case filament::backend::SamplerType::SAMPLER_CUBEMAP_ARRAY:
+        case dante::backend::SamplerType::SAMPLER_CUBEMAP_ARRAY:
             os << "cube_array";
             break;
     }
@@ -89,14 +85,14 @@ std::ostream& MetalArgumentBuffer::Builder::TextureArgument::write(std::ostream&
     }
 
     switch (format) {
-        case filament::backend::SamplerFormat::INT:
+        case dante::backend::SamplerFormat::INT:
             os << "<int>";
             break;
-        case filament::backend::SamplerFormat::UINT:
+        case dante::backend::SamplerFormat::UINT:
             os << "<uint>";
             break;
-        case filament::backend::SamplerFormat::FLOAT:
-        case filament::backend::SamplerFormat::SHADOW:
+        case dante::backend::SamplerFormat::FLOAT:
+        case dante::backend::SamplerFormat::SHADOW:
             os << "<float>";
             break;
     }

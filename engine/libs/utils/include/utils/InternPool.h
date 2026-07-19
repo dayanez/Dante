@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 #ifndef TNT_UTILS_INTERNPOOL_H
 #define TNT_UTILS_INTERNPOOL_H
 
@@ -98,7 +94,7 @@ public:
             return;
         }
         auto it = mMap.find(slice, hash);
-        FILAMENT_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
+        DANTE_CHECK_PRECONDITION(it != mMap.end()) << MISSING_ENTRY_ERROR_STRING;
         if (--it.value().referenceCount == 0) {
             // TODO: change to erase_fast
             mMap.erase(it);

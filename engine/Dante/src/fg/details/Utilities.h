@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_DETAILS_UTILITIES_H
-#define TNT_FILAMENT_FG_DETAILS_UTILITIES_H
+#ifndef TNT_DANTE_FG_DETAILS_UTILITIES_H
+#define TNT_DANTE_FG_DETAILS_UTILITIES_H
 
 #include "Allocators.h"
 
 #include <memory>
 #include <vector>
 
-namespace filament {
+namespace dante {
 
 class FrameGraph;
 
@@ -26,6 +22,6 @@ template<typename T, typename ARENA> using UniquePtr = std::unique_ptr<T, Delete
 template<typename T> using Allocator = utils::STLAllocator<T, LinearAllocatorArena>;
 template<typename T> using Vector = std::vector<T, Allocator<T>>; // 32 bytes
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FG_DETAILS_UTILITIES_H
+#endif // TNT_DANTE_FG_DETAILS_UTILITIES_H

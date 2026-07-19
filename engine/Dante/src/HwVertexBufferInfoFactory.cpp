@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "HwVertexBufferInfoFactory.h"
 
@@ -19,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 using namespace backend;
@@ -79,4 +75,4 @@ void HwVertexBufferInfoFactory::destroy(DriverApi& driver, Handle handle) noexce
     }
 }
 
-} // namespace filament
+} // namespace dante

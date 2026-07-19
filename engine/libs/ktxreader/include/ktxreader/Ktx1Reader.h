@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef KTXREADER_KTX1READER_H
 #define KTXREADER_KTX1READER_H
 
 #include <image/Ktx1Bundle.h>
 
-#include <filament/Texture.h>
+#include <dante/Texture.h>
 
-namespace filament {
+namespace dante {
     class Engine;
 }
 
@@ -20,12 +16,12 @@ using KtxInfo = image::KtxInfo;
 using Ktx1Bundle = image::Ktx1Bundle;
 
 /**
- * Allows clients to create Filament textures from Ktx1Bundle objects.
+ * Allows clients to create Dante textures from Ktx1Bundle objects.
  */
 namespace Ktx1Reader {
 
-    using Texture = filament::Texture;
-    using Engine = filament::Engine;
+    using Texture = dante::Texture;
+    using Engine = dante::Engine;
 
     using TextureFormat = Texture::InternalFormat;
     using CompressedPixelDataType = Texture::CompressedType;
@@ -42,7 +38,7 @@ namespace Ktx1Reader {
     TextureFormat toTextureFormat(const KtxInfo& info);
 
     template<typename T>
-    T toCompressedFilamentEnum(uint32_t format) {
+    T toCompressedDanteEnum(uint32_t format) {
         switch (format) {
             case Ktx1Bundle::RGB_S3TC_DXT1: return T::DXT1_RGB;
             case Ktx1Bundle::RGBA_S3TC_DXT1: return T::DXT1_RGBA;
@@ -101,7 +97,7 @@ namespace Ktx1Reader {
     /**
      * Creates a Texture object from a KTX file and populates all of its faces and miplevels.
      *
-     * @param engine Used to create the Filament Texture
+     * @param engine Used to create the Dante Texture
      * @param ktx In-memory representation of a KTX file
      * @param srgb Requests an sRGB format from the KTX file
      * @param callback Gets called after all texture data has been uploaded to the GPU
@@ -114,7 +110,7 @@ namespace Ktx1Reader {
      * Creates a Texture object from a KTX bundle, populates all of its faces and miplevels,
      * and automatically destroys the bundle after all the texture data has been uploaded.
      *
-     * @param engine Used to create the Filament Texture
+     * @param engine Used to create the Dante Texture
      * @param ktx In-memory representation of a KTX file
      * @param srgb Requests an sRGB format from the KTX file
      */

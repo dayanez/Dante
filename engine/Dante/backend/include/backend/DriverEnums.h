@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 //! \file
 
-#ifndef TNT_FILAMENT_BACKEND_DRIVERENUMS_H
-#define TNT_FILAMENT_BACKEND_DRIVERENUMS_H
+#ifndef TNT_DANTE_BACKEND_DRIVERENUMS_H
+#define TNT_DANTE_BACKEND_DRIVERENUMS_H
 
 #include <utils/unwindows.h> // Because we define ERROR in the FenceStatus enum.
 
@@ -35,13 +31,13 @@ class ostream;
 } // namespace utils::io
 
 /**
- * Types and enums used by filament's driver.
+ * Types and enums used by dante's driver.
  *
  * Effectively these types are public but should not be used directly. Instead, use public classes
  * internal redeclaration of these types.
- * For e.g. Use Texture::Sampler instead of filament::SamplerType.
+ * For e.g. Use Texture::Sampler instead of dante::SamplerType.
  */
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * Requests a SwapChain with an alpha channel.
@@ -68,7 +64,7 @@ static constexpr uint64_t SWAP_CHAIN_CONFIG_ENABLE_XCB          = 0x4;
  * kCVPixelFormatType_32BGRA format.
  *
  * It is not necessary to add an additional retain call before passing the pixel buffer to
- * Filament. Filament will call CVPixelBufferRetain during Engine::createSwapChain, and
+ * Dante. Dante will call CVPixelBufferRetain during Engine::createSwapChain, and
  * CVPixelBufferRelease when the swap chain is destroyed.
  */
 static constexpr uint64_t SWAP_CHAIN_CONFIG_APPLE_CVPIXELBUFFER = 0x8;
@@ -1767,61 +1763,61 @@ static constexpr AsyncCallId InvalidAsyncCallId = std::numeric_limits<AsyncCallI
 
 using AsynchronousMode = Platform::AsynchronousMode;
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-template<> struct utils::EnableBitMaskOperators<filament::backend::ShaderStageFlags>
+template<> struct utils::EnableBitMaskOperators<dante::backend::ShaderStageFlags>
         : public std::true_type {};
-template<> struct utils::EnableBitMaskOperators<filament::backend::TargetBufferFlags>
+template<> struct utils::EnableBitMaskOperators<dante::backend::TargetBufferFlags>
         : public std::true_type {};
-template<> struct utils::EnableBitMaskOperators<filament::backend::DescriptorFlags>
+template<> struct utils::EnableBitMaskOperators<dante::backend::DescriptorFlags>
         : public std::true_type {};
-template<> struct utils::EnableBitMaskOperators<filament::backend::TextureUsage>
+template<> struct utils::EnableBitMaskOperators<dante::backend::TextureUsage>
         : public std::true_type {};
-template<> struct utils::EnableBitMaskOperators<filament::backend::StencilFace>
+template<> struct utils::EnableBitMaskOperators<dante::backend::StencilFace>
         : public std::true_type {};
-template<> struct utils::EnableBitMaskOperators<filament::backend::BufferUsage>
+template<> struct utils::EnableBitMaskOperators<dante::backend::BufferUsage>
         : public std::true_type {};
-template<> struct utils::EnableBitMaskOperators<filament::backend::MapBufferAccessFlags>
+template<> struct utils::EnableBitMaskOperators<dante::backend::MapBufferAccessFlags>
         : public std::true_type {};
 
-template<> struct utils::EnableIntegerOperators<filament::backend::TextureCubemapFace>
+template<> struct utils::EnableIntegerOperators<dante::backend::TextureCubemapFace>
         : public std::true_type {};
-template<> struct utils::EnableIntegerOperators<filament::backend::FeatureLevel>
+template<> struct utils::EnableIntegerOperators<dante::backend::FeatureLevel>
         : public std::true_type {};
 
 #if !defined(NDEBUG)
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::BufferUsage usage);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::CullingMode mode);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::ElementType type);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::PixelDataFormat format);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::PixelDataType type);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::Precision precision);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::PrimitiveType type);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::TargetBufferFlags f);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::SamplerCompareFunc func);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::SamplerCompareMode mode);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::SamplerFormat format);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::SamplerMagFilter filter);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::SamplerMinFilter filter);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::SamplerParams params);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::SamplerType type);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::SamplerWrapMode wrap);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::ShaderModel model);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::TextureCubemapFace face);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::TextureFormat format);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::TextureUsage usage);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::BufferObjectBinding binding);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::TextureSwizzle swizzle);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::ShaderStage shaderStage);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::ShaderStageFlags stageFlags);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::CompilerPriorityQueue compilerPriorityQueue);
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::backend::PushConstantVariant pushConstantVariant);
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::AttributeArray& type);
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::DescriptorSetLayout& dsl);
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::PolygonOffset& po);
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::RasterState& rs);
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::RenderPassParams& b);
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::Viewport& v);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::BufferUsage usage);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::CullingMode mode);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::ElementType type);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::PixelDataFormat format);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::PixelDataType type);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::Precision precision);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::PrimitiveType type);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::TargetBufferFlags f);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::SamplerCompareFunc func);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::SamplerCompareMode mode);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::SamplerFormat format);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::SamplerMagFilter filter);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::SamplerMinFilter filter);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::SamplerParams params);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::SamplerType type);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::SamplerWrapMode wrap);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::ShaderModel model);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::TextureCubemapFace face);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::TextureFormat format);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::TextureUsage usage);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::BufferObjectBinding binding);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::TextureSwizzle swizzle);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::ShaderStage shaderStage);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::ShaderStageFlags stageFlags);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::CompilerPriorityQueue compilerPriorityQueue);
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::backend::PushConstantVariant pushConstantVariant);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::AttributeArray& type);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::DescriptorSetLayout& dsl);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::PolygonOffset& po);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::RasterState& rs);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::RenderPassParams& b);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::Viewport& v);
 #endif
 
-#endif // TNT_FILAMENT_BACKEND_DRIVERENUMS_H
+#endif // TNT_DANTE_BACKEND_DRIVERENUMS_H

@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_COLORSPACE_H
-#define TNT_FILAMENT_COLORSPACE_H
+#ifndef TNT_DANTE_COLORSPACE_H
+#define TNT_DANTE_COLORSPACE_H
 
 #include <utils/compiler.h>
 
@@ -14,7 +10,7 @@
 
 #include <cmath>
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -375,6 +371,6 @@ inline float3 ICtCp_to_Rec2020(float3 const x) noexcept {
 
 float3 gamutMapping_sRGB(float3 rgb) noexcept;
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_COLORSPACE_H
+#endif // TNT_DANTE_COLORSPACE_H

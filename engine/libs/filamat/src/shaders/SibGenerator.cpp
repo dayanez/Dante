@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "SibGenerator.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/SibStructs.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/SibStructs.h>
+#include <private/dante/Variant.h>
 
 #include <backend/DriverEnums.h>
 
 #include <utils/debug.h>
 
-namespace filament {
+namespace dante {
 
 namespace {
 constexpr bool FILTERABLE = true;
@@ -109,4 +105,4 @@ SamplerInterfaceBlock const* SibGenerator::getSib(DescriptorSetBindingPoints set
     }
 }
 
-} // namespace filament
+} // namespace dante

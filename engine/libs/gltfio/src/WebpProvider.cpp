@@ -1,13 +1,9 @@
- /*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <gltfio/TextureProvider.h>
 
-#if !defined(FILAMENT_SUPPORTS_WEBP_TEXTURES)
+#if !defined(DANTE_SUPPORTS_WEBP_TEXTURES)
 
-namespace filament::gltfio {
+namespace dante::gltfio {
     bool isWebpSupported() {
         return false;
     }
@@ -17,7 +13,7 @@ namespace filament::gltfio {
     }
 }
 
-#else // FILAMENT_SUPPORTS_WEBP_TEXTURES
+#else // DANTE_SUPPORTS_WEBP_TEXTURES
 
 #include <string>
 #include <vector>
@@ -25,19 +21,19 @@ namespace filament::gltfio {
 #include <utils/JobSystem.h>
 #include <utils/Log.h>
 
-#include <filament/Engine.h>
-#include <filament/Texture.h>
+#include <dante/Engine.h>
+#include <dante/Texture.h>
 
 #include <webp/decode.h>
 
-using namespace filament;
+using namespace dante;
 using namespace utils;
 
 using std::atomic;
 using std::vector;
 using std::unique_ptr;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 class WebpProvider final : public TextureProvider {
 public:
@@ -287,6 +283,6 @@ TextureProvider* createWebpProvider(Engine* engine) {
     return new WebpProvider(engine);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
-#endif // FILAMENT_SUPPORTS_WEBP_TEXTURES
+#endif // DANTE_SUPPORTS_WEBP_TEXTURES

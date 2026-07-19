@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ColorPassDescriptorSet.h"
 
@@ -16,14 +12,14 @@
 #include "details/IndirectLight.h"
 #include "details/Texture.h"
 
-#include <private/filament/DescriptorSets.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/DescriptorSets.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/Exposure.h>
-#include <filament/MaterialEnums.h>
-#include <filament/Options.h>
-#include <filament/Viewport.h>
+#include <dante/Exposure.h>
+#include <dante/MaterialEnums.h>
+#include <dante/Options.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -49,7 +45,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -149,8 +145,8 @@ void ColorPassDescriptorSet::prepareExposure(float const ev100) noexcept {
 }
 
 void ColorPassDescriptorSet::prepareViewport(
-        const filament::Viewport& physicalViewport,
-        const filament::Viewport& logicalViewport) noexcept {
+        const dante::Viewport& physicalViewport,
+        const dante::Viewport& logicalViewport) noexcept {
     PerViewDescriptorSetUtils::prepareViewport(mUniforms.edit(), physicalViewport, logicalViewport);
 }
 
@@ -439,4 +435,4 @@ void ColorPassDescriptorSet::setBuffer(descriptor_binding_t const binding,
     }
 }
 
-} // namespace filament
+} // namespace dante

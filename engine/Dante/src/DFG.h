@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_DFG_H
-#define TNT_FILAMENT_DETAILS_DFG_H
+#ifndef TNT_DANTE_DETAILS_DFG_H
+#define TNT_DANTE_DETAILS_DFG_H
 
 #include "details/Texture.h"
 
@@ -15,12 +11,12 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
-#if !defined(FILAMENT_DFG_LUT_SIZE)
-#define FILAMENT_DFG_LUT_SIZE 128
+#if !defined(DANTE_DFG_LUT_SIZE)
+#define DANTE_DFG_LUT_SIZE 128
 #endif
 
 class DFG {
@@ -52,11 +48,11 @@ private:
     FTexture* mLUT = nullptr;
 
     // make sure to use the right size here
-    static constexpr size_t DFG_LUT_SIZE = FILAMENT_DFG_LUT_SIZE;
+    static constexpr size_t DFG_LUT_SIZE = DANTE_DFG_LUT_SIZE;
 };
 
-#undef FILAMENT_DFG_LUT_SIZE
+#undef DANTE_DFG_LUT_SIZE
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_DFG_H
+#endif // TNT_DANTE_DETAILS_DFG_H

@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fg/Blackboard.h"
 
 #include <string_view>
 
-namespace filament {
+namespace dante {
 
 Blackboard::Blackboard() noexcept = default;
 
@@ -35,4 +31,4 @@ void Blackboard::remove(std::string_view const name) noexcept {
     mMap.erase(name);
 }
 
-} // namespace filament
+} // namespace dante

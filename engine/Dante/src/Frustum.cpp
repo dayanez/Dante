@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "Culler.h"
 
-#include <filament/Frustum.h>
+#include <dante/Frustum.h>
 
 #include <utils/compiler.h>
 #include <utils/ostream.h>
@@ -16,9 +12,9 @@
 
 #include <algorithm>
 
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 
 Frustum::Frustum(const mat4f& pv) {
     setProjection(pv);
@@ -100,11 +96,11 @@ float Frustum::contains(float3 const p) const noexcept {
     return d;
 }
 
-} // namespace filament
+} // namespace dante
 
 #if !defined(NDEBUG)
 
-utils::io::ostream& operator<<(utils::io::ostream& out, filament::Frustum const& frustum) {
+utils::io::ostream& operator<<(utils::io::ostream& out, dante::Frustum const& frustum) {
     float4 planes[6];
     frustum.getNormalizedPlanes(planes);
     out     << planes[0] << '\n'

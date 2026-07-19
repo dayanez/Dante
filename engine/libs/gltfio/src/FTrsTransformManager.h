@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_FTRSTRANSFORMMANAGER_H
 #define GLTFIO_FTRSTRANSFORMMANAGER_H
@@ -20,7 +16,7 @@
 
 #include <math/quat.h>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 class UTILS_PRIVATE FTrsTransformManager : public TrsTransformManager {
 public:
@@ -150,8 +146,8 @@ private:
     Sim mManager;
 };
 
-FILAMENT_DOWNCAST(TrsTransformManager)
+DANTE_DOWNCAST(TrsTransformManager)
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_FTRSTRANSFORMMANAGER_H

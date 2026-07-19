@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <image/Ktx1Bundle.h>
 
@@ -115,11 +111,11 @@ Ktx1Bundle::Ktx1Bundle(uint32_t numMipLevels, uint32_t arrayLength, bool isCubem
 
 Ktx1Bundle::Ktx1Bundle(uint8_t const* bytes, uint32_t nbytes) :
         mBlobs(new(std::nothrow) KtxBlobList), mMetadata(new(std::nothrow) KtxMetadata) {
-    FILAMENT_CHECK_POSTCONDITION(sizeof(SerializationHeader) <= nbytes) << "KTX buffer is too small";
+    DANTE_CHECK_POSTCONDITION(sizeof(SerializationHeader) <= nbytes) << "KTX buffer is too small";
 
     // First, "parse" the header by casting it to a struct.
     SerializationHeader const* header = reinterpret_cast<SerializationHeader const*>(bytes);
-    FILAMENT_CHECK_POSTCONDITION(memcmp(header->magic, MAGIC, 12) == 0)
+    DANTE_CHECK_POSTCONDITION(memcmp(header->magic, MAGIC, 12) == 0)
             << "KTX has unexpected identifier";
     mInfo = header->info;
 
@@ -130,31 +126,31 @@ Ktx1Bundle::Ktx1Bundle(uint8_t const* bytes, uint32_t nbytes) :
     mNumMipLevels = header->numberOfMipmapLevels ? header->numberOfMipmapLevels : 1;
     mArrayLength = header->numberOfArrayElements ? header->numberOfArrayElements : 1;
 
-    FILAMENT_CHECK_POSTCONDITION(header->numberOfFaces == 0 || header->numberOfFaces == 1 || header->numberOfFaces == 6)
+    DANTE_CHECK_POSTCONDITION(header->numberOfFaces == 0 || header->numberOfFaces == 1 || header->numberOfFaces == 6)
             << "KTX numberOfFaces must be 1 or 6";
     mNumCubeFaces = header->numberOfFaces ? header->numberOfFaces : 1;
 
     uint64_t const totalBlobs = (uint64_t)mNumMipLevels * mArrayLength * mNumCubeFaces;
-    FILAMENT_CHECK_POSTCONDITION(totalBlobs <= (uint64_t)std::numeric_limits<uint32_t>::max()) << "KTX dimensions overflow";
+    DANTE_CHECK_POSTCONDITION(totalBlobs <= (uint64_t)std::numeric_limits<uint32_t>::max()) << "KTX dimensions overflow";
     mBlobs->sizes.resize((uint32_t)totalBlobs);
 
-    FILAMENT_CHECK_POSTCONDITION(nbytes - sizeof(SerializationHeader) >= header->bytesOfKeyValueData) << "KTX metadata length exceeds buffer";
+    DANTE_CHECK_POSTCONDITION(nbytes - sizeof(SerializationHeader) >= header->bytesOfKeyValueData) << "KTX metadata length exceeds buffer";
 
     // We use std::string to store both the key and the value. Note that the spec says the value can
     // be a binary blob that contains null characters.
     uint8_t const* pdata = bytes + sizeof(SerializationHeader);
     uint8_t const* end = pdata + header->bytesOfKeyValueData;
     while (pdata < end) {
-        FILAMENT_CHECK_POSTCONDITION((size_t)(end - pdata) >= sizeof(uint32_t)) << "KTX truncation in metadata";
+        DANTE_CHECK_POSTCONDITION((size_t)(end - pdata) >= sizeof(uint32_t)) << "KTX truncation in metadata";
         const uint32_t keyAndValueByteSize = *((uint32_t const*) pdata);
         pdata += sizeof(uint32_t);
-        FILAMENT_CHECK_POSTCONDITION(keyAndValueByteSize <= (size_t)(end - pdata)) << "KTX metadata entry exceeds bounds";
+        DANTE_CHECK_POSTCONDITION(keyAndValueByteSize <= (size_t)(end - pdata)) << "KTX metadata entry exceeds bounds";
 
         // Use std::find to safely find the null terminator
         const char* keyStart = (const char*) pdata;
         const char* keyEnd = (const char*) std::find(keyStart, keyStart + keyAndValueByteSize, '\0');
         size_t const keyLength = keyEnd - keyStart;
-        FILAMENT_CHECK_POSTCONDITION(keyLength < keyAndValueByteSize) << "KTX metadata key is not null terminated";
+        DANTE_CHECK_POSTCONDITION(keyLength < keyAndValueByteSize) << "KTX metadata key is not null terminated";
 
         std::string const key(keyStart, keyLength);
         uint8_t const* pval = pdata + keyLength + 1;
@@ -165,7 +161,7 @@ Ktx1Bundle::Ktx1Bundle(uint8_t const* bytes, uint32_t nbytes) :
         mMetadata->keyvals.insert({key, val});
 
         const uint32_t paddingSize = 3 - ((keyAndValueByteSize + 3) % 4);
-        FILAMENT_CHECK_POSTCONDITION(paddingSize <= (size_t)(end - pdata)) << "KTX metadata padding exceeds bounds";
+        DANTE_CHECK_POSTCONDITION(paddingSize <= (size_t)(end - pdata)) << "KTX metadata padding exceeds bounds";
         pdata += paddingSize;
     }
 
@@ -184,24 +180,24 @@ Ktx1Bundle::Ktx1Bundle(uint8_t const* bytes, uint32_t nbytes) :
     uint64_t measuredTotalSize = 0;
 
     for (uint32_t mipmap = 0; mipmap < mNumMipLevels; ++mipmap) {
-        FILAMENT_CHECK_POSTCONDITION((size_t)(b_end - scan_pdata) >= sizeof(uint32_t)) << "KTX truncation during image sizes";
+        DANTE_CHECK_POSTCONDITION((size_t)(b_end - scan_pdata) >= sizeof(uint32_t)) << "KTX truncation during image sizes";
         const uint32_t imageSize = *((uint32_t const*) scan_pdata);
         scan_pdata += sizeof(uint32_t);
 
         const uint32_t faceSize = isNonArrayCube ? imageSize : (imageSize / facesPerMip);
         const uint64_t levelSize = (uint64_t)faceSize * mNumCubeFaces * mArrayLength;
 
-        FILAMENT_CHECK_POSTCONDITION(levelSize <= (size_t)(b_end - scan_pdata)) << "KTX image data exceeds buffer";
+        DANTE_CHECK_POSTCONDITION(levelSize <= (size_t)(b_end - scan_pdata)) << "KTX image data exceeds buffer";
         scan_pdata += levelSize;
 
         measuredTotalSize += levelSize;
-        FILAMENT_CHECK_POSTCONDITION(measuredTotalSize <= (uint64_t)std::numeric_limits<uint32_t>::max()) << "KTX images total size overflow";
+        DANTE_CHECK_POSTCONDITION(measuredTotalSize <= (uint64_t)std::numeric_limits<uint32_t>::max()) << "KTX images total size overflow";
 
         const uint64_t numElements = (uint64_t)mArrayLength * mNumCubeFaces;
         std::fill_n(&mBlobs->sizes[flatten(this, {mipmap, 0, 0})], numElements, faceSize);
 
         const uint64_t paddingAdvances = (uint64_t)cubePadding * mNumCubeFaces * mArrayLength + mipPadding;
-        FILAMENT_CHECK_POSTCONDITION(paddingAdvances <= (size_t)(b_end - scan_pdata)) << "KTX padding data exceeds buffer";
+        DANTE_CHECK_POSTCONDITION(paddingAdvances <= (size_t)(b_end - scan_pdata)) << "KTX padding data exceeds buffer";
         scan_pdata += paddingAdvances;
     }
 
@@ -304,12 +300,12 @@ uint32_t Ktx1Bundle::getSerializedLength() const {
         const uint32_t blobSize = mBlobs->sizes[startIndex];
         
         for (size_t i = 0; i < numElements; ++i) {
-            FILAMENT_CHECK_POSTCONDITION(mBlobs->sizes[startIndex + i] == blobSize)
+            DANTE_CHECK_POSTCONDITION(mBlobs->sizes[startIndex + i] == blobSize)
                     << "Inconsistent blob sizes within LOD";
         }
         total += uint64_t(blobSize) * numElements;
     }
-    FILAMENT_CHECK_POSTCONDITION(total <= uint64_t(std::numeric_limits<uint32_t>::max()))
+    DANTE_CHECK_POSTCONDITION(total <= uint64_t(std::numeric_limits<uint32_t>::max()))
             << "KTX serialization size overflow";
     return (uint32_t)total;
 }
@@ -330,7 +326,7 @@ void Ktx1Bundle::setMetadata(const char* key, const char* value) {
     mMetadata->keyvals.insert({key, value});
 }
 
-bool Ktx1Bundle::getSphericalHarmonics(filament::math::float3* result) {
+bool Ktx1Bundle::getSphericalHarmonics(dante::math::float3* result) {
     char const* src = getMetadata("sh");
     if (!src) {
         return false;

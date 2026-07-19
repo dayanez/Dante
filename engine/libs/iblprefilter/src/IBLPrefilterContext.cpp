@@ -1,23 +1,19 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#include "filament-iblprefilter/IBLPrefilterContext.h"
+#include "dante-iblprefilter/IBLPrefilterContext.h"
 
-#include <filament/Engine.h>
-#include <filament/IndexBuffer.h>
-#include <filament/Material.h>
-#include <filament/MaterialEnums.h>
-#include <filament/RenderTarget.h>
-#include <filament/RenderableManager.h>
-#include <filament/Renderer.h>
-#include <filament/Scene.h>
-#include <filament/Texture.h>
-#include <filament/TextureSampler.h>
-#include <filament/VertexBuffer.h>
-#include <filament/View.h>
-#include <filament/Viewport.h>
+#include <dante/Engine.h>
+#include <dante/IndexBuffer.h>
+#include <dante/Material.h>
+#include <dante/MaterialEnums.h>
+#include <dante/RenderTarget.h>
+#include <dante/RenderableManager.h>
+#include <dante/Renderer.h>
+#include <dante/Scene.h>
+#include <dante/Texture.h>
+#include <dante/TextureSampler.h>
+#include <dante/VertexBuffer.h>
+#include <dante/View.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverEnums.h>
 
@@ -41,8 +37,8 @@
 
 namespace {
 
-using namespace filament::math;
-using namespace filament;
+using namespace dante::math;
+using namespace dante;
 
 constexpr float4 sFullScreenTriangleVertices[3] = {
     { -1.0f, -1.0f, 1.0f, 1.0f },
@@ -223,7 +219,7 @@ IBLPrefilterContext::EquirectangularToCubemap::operator=(
 
 Texture* IBLPrefilterContext::EquirectangularToCubemap::operator()(
         Texture const* equirect, Texture* outCube) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     using namespace backend;
 
     const TextureCubemapFace faces[2][3] = {
@@ -236,15 +232,15 @@ Texture* IBLPrefilterContext::EquirectangularToCubemap::operator()(
     Renderer* const renderer = mContext.mRenderer;
     MaterialInstance* const mi = mEquirectMaterial->createInstance();
 
-    FILAMENT_CHECK_PRECONDITION(equirect != nullptr) << "equirect is null!";
+    DANTE_CHECK_PRECONDITION(equirect != nullptr) << "equirect is null!";
 
-    FILAMENT_CHECK_PRECONDITION(equirect->getTarget() == Texture::Sampler::SAMPLER_2D)
+    DANTE_CHECK_PRECONDITION(equirect->getTarget() == Texture::Sampler::SAMPLER_2D)
             << "equirect must be a 2D texture.";
 
     UTILS_UNUSED_IN_RELEASE
     const uint8_t maxLevelCount = std::max(1, std::ilogbf(float(equirect->getWidth())) + 1);
 
-    FILAMENT_CHECK_PRECONDITION(equirect->getLevels() == maxLevelCount)
+    DANTE_CHECK_PRECONDITION(equirect->getLevels() == maxLevelCount)
             << "equirect must have " << +maxLevelCount << " mipmap levels allocated.";
 
     if (outCube == nullptr) {
@@ -256,7 +252,7 @@ Texture* IBLPrefilterContext::EquirectangularToCubemap::operator()(
                 .build(engine);
     }
 
-    FILAMENT_CHECK_PRECONDITION(outCube->getTarget() == Texture::Sampler::SAMPLER_CUBEMAP)
+    DANTE_CHECK_PRECONDITION(outCube->getTarget() == Texture::Sampler::SAMPLER_CUBEMAP)
             << "outCube must be a Cubemap texture.";
 
     const uint32_t dim = outCube->getWidth();
@@ -312,7 +308,7 @@ IBLPrefilterContext::IrradianceFilter::IrradianceFilter(IBLPrefilterContext& con
         : mContext(context),
          mSampleCount(std::min(config.sampleCount, uint16_t(2048))) {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     using namespace backend;
 
     Engine& engine = mContext.mEngine;
@@ -387,19 +383,19 @@ IBLPrefilterContext::IrradianceFilter& IBLPrefilterContext::IrradianceFilter::op
 Texture* IBLPrefilterContext::IrradianceFilter::operator()(Options options,
         Texture const* environmentCubemap, Texture* outIrradianceTexture) {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     using namespace backend;
 
-    FILAMENT_CHECK_PRECONDITION(environmentCubemap != nullptr) << "environmentCubemap is null!";
+    DANTE_CHECK_PRECONDITION(environmentCubemap != nullptr) << "environmentCubemap is null!";
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             environmentCubemap->getTarget() == Texture::Sampler::SAMPLER_CUBEMAP)
             << "environmentCubemap must be a cubemap.";
 
     UTILS_UNUSED_IN_RELEASE
     const uint8_t maxLevelCount = uint8_t(std::log2(environmentCubemap->getWidth()) + 0.5f) + 1u;
 
-    FILAMENT_CHECK_PRECONDITION(environmentCubemap->getLevels() == maxLevelCount)
+    DANTE_CHECK_PRECONDITION(environmentCubemap->getLevels() == maxLevelCount)
             << "environmentCubemap must have " << +maxLevelCount << " mipmap levels allocated.";
 
     if (outIrradianceTexture == nullptr) {
@@ -415,7 +411,7 @@ Texture* IBLPrefilterContext::IrradianceFilter::operator()(Options options,
                         .build(mContext.mEngine);
     }
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             outIrradianceTexture->getTarget() == Texture::Sampler::SAMPLER_CUBEMAP)
             << "outReflectionsTexture must be a cubemap.";
 
@@ -505,7 +501,7 @@ IBLPrefilterContext::SpecularFilter::SpecularFilter(IBLPrefilterContext& context
         return (lod != 0.0f) ? saturate((sqrt(a * a + 4.0f * b * lod) - a) / (2.0f * b)) : 0.0f;
     };
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     using namespace backend;
 
     Engine& engine = mContext.mEngine;
@@ -598,19 +594,19 @@ Texture* IBLPrefilterContext::SpecularFilter::operator()(
         Options options,
         Texture const* environmentCubemap, Texture* outReflectionsTexture) {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     using namespace backend;
 
-    FILAMENT_CHECK_PRECONDITION(environmentCubemap != nullptr) << "environmentCubemap is null!";
+    DANTE_CHECK_PRECONDITION(environmentCubemap != nullptr) << "environmentCubemap is null!";
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             environmentCubemap->getTarget() == Texture::Sampler::SAMPLER_CUBEMAP)
             << "environmentCubemap must be a cubemap.";
 
     UTILS_UNUSED_IN_RELEASE
     const uint8_t maxLevelCount = uint8_t(std::log2(environmentCubemap->getWidth()) + 0.5f) + 1u;
 
-    FILAMENT_CHECK_PRECONDITION(environmentCubemap->getLevels() == maxLevelCount)
+    DANTE_CHECK_PRECONDITION(environmentCubemap->getLevels() == maxLevelCount)
             << "environmentCubemap must have " << +maxLevelCount << " mipmap levels allocated.";
 
     if (outReflectionsTexture == nullptr) {
@@ -631,11 +627,11 @@ Texture* IBLPrefilterContext::SpecularFilter::operator()(
                         .build(mContext.mEngine);
     }
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             outReflectionsTexture->getTarget() == Texture::Sampler::SAMPLER_CUBEMAP)
             << "outReflectionsTexture must be a cubemap.";
 
-    FILAMENT_CHECK_PRECONDITION(mLevelCount <= outReflectionsTexture->getLevels())
+    DANTE_CHECK_PRECONDITION(mLevelCount <= outReflectionsTexture->getLevels())
             << "outReflectionsTexture has " << +outReflectionsTexture->getLevels() << " levels but "
             << +mLevelCount << " are requested.";
 
@@ -679,14 +675,14 @@ Texture* IBLPrefilterContext::SpecularFilter::operator()(
            .texture(RenderTarget::AttachmentPoint::COLOR2, outReflectionsTexture);
 
     for (size_t lod = 0; lod < levels; lod++) {
-        FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "executeFilterLOD");
+        DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "executeFilterLOD");
 
         mi->setParameter("sampleCount", uint32_t(lod == 0 ? 1u : sampleCount));
         mi->setParameter("attachmentLevel", uint32_t(lod));
 
         if (lod == levels - 1) {
             // this is the last lod, use a more aggressive filtering because this level is also
-            // used for the diffuse brdf by filament, and we need it to be very smooth.
+            // used for the diffuse brdf by dante, and we need it to be very smooth.
             // So we set the lod offset to at least 2.
             mi->setParameter("lodOffset", std::max(2.0f, options.lodOffset) - log4(omegaP));
         }

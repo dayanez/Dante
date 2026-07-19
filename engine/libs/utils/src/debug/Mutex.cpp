@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <utils/CallStack.h>
 #include <utils/compiler.h>
@@ -149,7 +145,7 @@ Mutex::~Mutex() noexcept {
     for (size_t i = 0; i < t_lockState.count; ++i) {
         if (UTILS_UNLIKELY(t_lockState.heldLocks[i].mutex == this)) {
             io::sstream stream;
-            stream << "[FILAMENT CONCURRENCY PANIC] Destroying Mutex (0x" << (const void*)this
+            stream << "[DANTE CONCURRENCY PANIC] Destroying Mutex (0x" << (const void*)this
                    << ") while it is currently held by Thread (ID " << (unsigned long long)t_lockState.getThreadId() << ")!\n";
             LOG(ERROR) << stream.c_str();
             std::abort();
@@ -204,7 +200,7 @@ void Mutex::lock() UTILS_ACQUIRE() {
             CallStack currentStack = CallStack::unwind(3);
             io::sstream stream;
             stream << "================================================================================\n";
-            stream << "[FILAMENT CONCURRENCY PANIC] Self-Deadlock / Recursive Lock Detected!\n";
+            stream << "[DANTE CONCURRENCY PANIC] Self-Deadlock / Recursive Lock Detected!\n";
             stream << "================================================================================\n";
             stream << "Thread (ID " << (unsigned long long)t_lockState.getThreadId()
                    << ") attempted to recursively acquire non-recursive Lock (0x" << (const void*)this << ")!\n\n";
@@ -240,7 +236,7 @@ void Mutex::lock() UTILS_ACQUIRE() {
                 if (findCyclePath(this, L_i, graph, cycleEdges)) {
                     io::sstream stream;
                     stream << "================================================================================\n";
-                    stream << "[FILAMENT CONCURRENCY PANIC] Lock-Order Inversion / Potential Deadlock Detected!\n";
+                    stream << "[DANTE CONCURRENCY PANIC] Lock-Order Inversion / Potential Deadlock Detected!\n";
                     stream << "================================================================================\n";
                     stream << "Thread (ID " << (unsigned long long)t_lockState.getThreadId()
                            << ") attempted to acquire Lock (0x" << (const void*)this
@@ -319,7 +315,7 @@ bool Mutex::try_lock() UTILS_TRY_ACQUIRE(true) {
             CallStack currentStack = CallStack::unwind(3);
             io::sstream stream;
             stream << "================================================================================\n";
-            stream << "[FILAMENT CONCURRENCY PANIC] Self-Deadlock / Recursive Lock Detected!\n";
+            stream << "[DANTE CONCURRENCY PANIC] Self-Deadlock / Recursive Lock Detected!\n";
             stream << "================================================================================\n";
             stream << "Thread (ID " << (unsigned long long)t_lockState.getThreadId()
                    << ") attempted to recursively acquire non-recursive Lock (0x" << (const void*)this << ")!\n\n";
@@ -355,7 +351,7 @@ bool Mutex::try_lock() UTILS_TRY_ACQUIRE(true) {
                 if (findCyclePath(this, L_i, graph, cycleEdges)) {
                     io::sstream stream;
                     stream << "================================================================================\n";
-                    stream << "[FILAMENT CONCURRENCY PANIC] Lock-Order Inversion / Potential Deadlock Detected!\n";
+                    stream << "[DANTE CONCURRENCY PANIC] Lock-Order Inversion / Potential Deadlock Detected!\n";
                     stream << "================================================================================\n";
                     stream << "Thread (ID " << (unsigned long long)t_lockState.getThreadId()
                            << ") attempted to acquire Lock (0x" << (const void*)this
@@ -436,7 +432,7 @@ void Mutex::unlock() UTILS_RELEASE() {
 
     if (UTILS_UNLIKELY(!found)) {
         io::sstream stream;
-        stream << "[FILAMENT CONCURRENCY PANIC] Attempting to unlock Mutex (0x" << (const void*)this
+        stream << "[DANTE CONCURRENCY PANIC] Attempting to unlock Mutex (0x" << (const void*)this
                << ") that is not held by Thread (ID " << (unsigned long long)t_lockState.getThreadId() << ")!\n";
         LOG(ERROR) << stream.c_str();
         std::abort();

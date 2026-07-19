@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "GLDescriptorSet.h"
 
@@ -35,7 +31,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 GLDescriptorSet::GLDescriptorSet(OpenGLState& gl, DescriptorSetLayoutHandle dslh,
         GLDescriptorSetLayout const* layout)
@@ -146,7 +142,7 @@ void GLDescriptorSet::update(OpenGLState&,
             arg.offset = uint32_t(offset);
         } else {
             // User asked to update the wrong type of descriptor. This should never happen
-            // because we're checking that on the filament side
+            // because we're checking that on the dante side
             LOG(ERROR) << "descriptor " << +binding << " is not a buffer";
         }
     }, descriptors[binding].desc);
@@ -204,7 +200,7 @@ void GLDescriptorSet::update(OpenGLState& gl, HandleAllocatorGL& handleAllocator
                 if constexpr (std::is_same_v<T, SamplerWithAnisotropyWorkaround>) {
                     arg.anisotropy = float(1u << params.anisotropyLog2);
                 }
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
                 arg.sampler = gl.getSampler(params);
 #else
                 (void)gl;
@@ -214,7 +210,7 @@ void GLDescriptorSet::update(OpenGLState& gl, HandleAllocatorGL& handleAllocator
             }
         } else {
             // User asked to update the wrong type of descriptor. This should never happen
-            // because we're checking that on the filament side
+            // because we're checking that on the dante side
             LOG(ERROR) << "descriptor " << +binding << " is not a texture";
         }
     }, descriptors[binding].desc);
@@ -246,7 +242,7 @@ void GLDescriptorSet::updateTextureView(OpenGLState& gl,
     if (UTILS_UNLIKELY(t->gl.swizzle != ref->swizzle)) {
         using namespace GLUtils;
         gl.activeTexture(unit);
-#if !defined(__EMSCRIPTEN__)  && !defined(FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2)
+#if !defined(__EMSCRIPTEN__)  && !defined(DANTE_SILENCE_NOT_SUPPORTED_BY_ES2)
         glTexParameteri(t->gl.target, GL_TEXTURE_SWIZZLE_R, (GLint)getSwizzleChannel(t->gl.swizzle[0]));
         glTexParameteri(t->gl.target, GL_TEXTURE_SWIZZLE_G, (GLint)getSwizzleChannel(t->gl.swizzle[1]));
         glTexParameteri(t->gl.target, GL_TEXTURE_SWIZZLE_B, (GLint)getSwizzleChannel(t->gl.swizzle[2]));
@@ -421,4 +417,4 @@ void GLDescriptorSet::validate(HandleAllocatorGL& allocator,
     }
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

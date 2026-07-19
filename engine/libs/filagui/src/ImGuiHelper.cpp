@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <filagui/ImGuiHelper.h>
 
@@ -10,22 +6,22 @@
 
 #include <imgui.h>
 
-#include <filament/Camera.h>
-#include <filament/Fence.h>
-#include <filament/IndexBuffer.h>
-#include <filament/Material.h>
-#include <filament/MaterialInstance.h>
-#include <filament/RenderableManager.h>
-#include <filament/Scene.h>
-#include <filament/Texture.h>
-#include <filament/TextureSampler.h>
-#include <filament/TransformManager.h>
-#include <filament/VertexBuffer.h>
+#include <dante/Camera.h>
+#include <dante/Fence.h>
+#include <dante/IndexBuffer.h>
+#include <dante/Material.h>
+#include <dante/MaterialInstance.h>
+#include <dante/RenderableManager.h>
+#include <dante/Scene.h>
+#include <dante/Texture.h>
+#include <dante/TextureSampler.h>
+#include <dante/TransformManager.h>
+#include <dante/VertexBuffer.h>
 
 #include <utils/EntityManager.h>
 
-using namespace filament::math;
-using namespace filament;
+using namespace dante::math;
+using namespace dante;
 using namespace utils;
 
 using MinFilter = TextureSampler::MinFilter;
@@ -35,7 +31,7 @@ namespace filagui {
 
 #include "generated/resources/filagui_resources.h"
 
-ImGuiHelper::ImGuiHelper(Engine* engine, filament::View* view, const Path& fontPath,
+ImGuiHelper::ImGuiHelper(Engine* engine, dante::View* view, const Path& fontPath,
         ImGuiContext *imGuiContext)
         : mEngine(engine), mView(view), mScene(engine->createScene()),
         mImGuiContext(imGuiContext ? imGuiContext : ImGui::CreateContext()) {
@@ -178,7 +174,7 @@ void ImGuiHelper::render(float timeStepInSeconds, Callback imguiCommands) {
     imguiCommands(mEngine, mView);
     // Let ImGui build up its draw data.
     ImGui::Render();
-    // Finally, translate the draw data into Filament objects.
+    // Finally, translate the draw data into Dante objects.
     processImGuiCommands(ImGui::GetDrawData(), ImGui::GetIO());
 }
 
@@ -212,13 +208,13 @@ void ImGuiHelper::processImGuiCommands(ImDrawData* commands, const ImGuiIO& io) 
                 Texture::PixelBufferDescriptor pb(tex->GetPixels(), size,
                                                 Texture::Format::RGBA,
                                                 Texture::Type::UBYTE);
-                filament::Texture* ftex = (filament::Texture*)tex->TexID;
+                dante::Texture* ftex = (dante::Texture*)tex->TexID;
                 ftex->setImage(*mEngine, 0, std::move(pb));
                 tex->SetStatus(ImTextureStatus_OK);
             } else if (tex->Status == ImTextureStatus_WantDestroy &&
                     tex->UnusedFrames > 0) {
 
-                filament::Texture* ftex = (filament::Texture*)tex->TexID;
+                dante::Texture* ftex = (dante::Texture*)tex->TexID;
                 mEngine->destroy(ftex);
                 tex->SetTexID(ImTextureID_Invalid);
                 tex->SetStatus(ImTextureStatus_Destroyed);
@@ -242,7 +238,7 @@ void ImGuiHelper::processImGuiCommands(ImDrawData* commands, const ImGuiIO& io) 
 
     // Count how many primitives we'll need, then create a Renderable builder.
     size_t nPrims = 0;
-    std::unordered_map<uint64_t, filament::MaterialInstance*> scissorRects;
+    std::unordered_map<uint64_t, dante::MaterialInstance*> scissorRects;
     for (int cmdListIndex = 0; cmdListIndex < commands->CmdListsCount; cmdListIndex++) {
         const ImDrawList* cmds = commands->CmdLists[cmdListIndex];
         nPrims += cmds->CmdBuffer.size();
@@ -319,9 +315,9 @@ void ImGuiHelper::createVertexBuffer(size_t bufferIndex, size_t capacity) {
             .attribute(VertexAttribute::POSITION, 0, VertexBuffer::AttributeType::FLOAT2, 0,
                     sizeof(ImDrawVert))
             .attribute(VertexAttribute::UV0, 0, VertexBuffer::AttributeType::FLOAT2,
-                    sizeof(filament::math::float2), sizeof(ImDrawVert))
+                    sizeof(dante::math::float2), sizeof(ImDrawVert))
             .attribute(VertexAttribute::COLOR, 0, VertexBuffer::AttributeType::UBYTE4,
-                    2 * sizeof(filament::math::float2), sizeof(ImDrawVert))
+                    2 * sizeof(dante::math::float2), sizeof(ImDrawVert))
             .normalized(VertexAttribute::COLOR)
             .build(*mEngine);
 }
@@ -358,33 +354,33 @@ void ImGuiHelper::populateVertexData(size_t bufferIndex, size_t vbSizeInBytes, v
         size_t ibSizeInBytes, void* ibImguiData)
 {
     // Create a new vertex buffer if the size isn't large enough, then copy the ImGui data into
-    // a staging area since Filament's render thread might consume the data at any time.
+    // a staging area since Dante's render thread might consume the data at any time.
     size_t requiredVertCount = vbSizeInBytes / sizeof(ImDrawVert);
     size_t capacityVertCount = mVertexBuffers[bufferIndex]->getVertexCount();
     if (requiredVertCount > capacityVertCount) {
         createVertexBuffer(bufferIndex, requiredVertCount);
     }
     size_t nVbBytes = requiredVertCount * sizeof(ImDrawVert);
-    void* vbFilamentData = malloc(nVbBytes);
-    memcpy(vbFilamentData, vbImguiData, nVbBytes);
+    void* vbDanteData = malloc(nVbBytes);
+    memcpy(vbDanteData, vbImguiData, nVbBytes);
     mVertexBuffers[bufferIndex]->setBufferAt(*mEngine, 0,
-            VertexBuffer::BufferDescriptor(vbFilamentData, nVbBytes,
+            VertexBuffer::BufferDescriptor(vbDanteData, nVbBytes,
                 [](void* buffer, size_t size, void* user) {
                     free(buffer);
                 }, /* user = */ nullptr));
 
     // Create a new index buffer if the size isn't large enough, then copy the ImGui data into
-    // a staging area since Filament's render thread might consume the data at any time.
+    // a staging area since Dante's render thread might consume the data at any time.
     size_t requiredIndexCount = ibSizeInBytes / 2;
     size_t capacityIndexCount = mIndexBuffers[bufferIndex]->getIndexCount();
     if (requiredIndexCount > capacityIndexCount) {
         createIndexBuffer(bufferIndex, requiredIndexCount);
     }
     size_t nIbBytes = requiredIndexCount * 2;
-    void* ibFilamentData = malloc(nIbBytes);
-    memcpy(ibFilamentData, ibImguiData, nIbBytes);
+    void* ibDanteData = malloc(nIbBytes);
+    memcpy(ibDanteData, ibImguiData, nIbBytes);
     mIndexBuffers[bufferIndex]->setBuffer(*mEngine,
-            IndexBuffer::BufferDescriptor(ibFilamentData, nIbBytes,
+            IndexBuffer::BufferDescriptor(ibDanteData, nIbBytes,
                 [](void* buffer, size_t size, void* user) {
                     free(buffer);
                 }, /* user = */ nullptr));

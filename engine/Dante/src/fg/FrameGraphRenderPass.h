@@ -1,21 +1,17 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_FRAMEGRAPHRENDERPASS_H
-#define TNT_FILAMENT_FG_FRAMEGRAPHRENDERPASS_H
+#ifndef TNT_DANTE_FG_FRAMEGRAPHRENDERPASS_H
+#define TNT_DANTE_FG_FRAMEGRAPHRENDERPASS_H
 
 #include "fg/FrameGraphTexture.h"
 
-#include <filament/Viewport.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/TargetBufferInfo.h>
 
 #include <utils/debug.h>
 
-namespace filament {
+namespace dante {
 
 /**
  * FrameGraphRenderPass is used to draw into a set of FrameGraphTexture resources.
@@ -67,6 +63,6 @@ struct FrameGraphRenderPass {
     uint32_t id = 0;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FG_FRAMEGRAPHRENDERPASS_H
+#endif // TNT_DANTE_FG_FRAMEGRAPHRENDERPASS_H

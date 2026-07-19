@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_FRAMEPACER_H
-#define TNT_FILAMENT_DETAILS_FRAMEPACER_H
+#ifndef TNT_DANTE_DETAILS_FRAMEPACER_H
+#define TNT_DANTE_DETAILS_FRAMEPACER_H
 
 #include "downcast.h"
 
-#include <filament/FramePacer.h>
+#include <dante/FramePacer.h>
 
 #include <chrono>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FRenderer;
@@ -72,8 +68,8 @@ private:
     static HardwareTimelineResult matchHardwareTimeline(VsyncTick const& tick, time_point_t projectedPresentation,
             time_point_t idealPresentation, duration_t hardwarePeriod);
 };
-FILAMENT_DOWNCAST(FramePacer)
+DANTE_DOWNCAST(FramePacer)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_FRAMEPACER_H
+#endif // TNT_DANTE_DETAILS_FRAMEPACER_H

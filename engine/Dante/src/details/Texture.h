@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_TEXTURE_H
-#define TNT_FILAMENT_DETAILS_TEXTURE_H
+#ifndef TNT_DANTE_DETAILS_TEXTURE_H
+#define TNT_DANTE_DETAILS_TEXTURE_H
 
 #include "downcast.h"
 
-#include <filament/Texture.h>
+#include <dante/Texture.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -24,7 +20,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FStream;
@@ -127,7 +123,7 @@ public:
     bool textureHandleCanMutate() const noexcept;
     void updateLodRange(uint8_t level) noexcept;
 
-    // TODO: remove in a future filament release.  See below for description.
+    // TODO: remove in a future dante release.  See below for description.
     bool hasBlitSrcUsage() const noexcept {
         return mHasBlitSrc;
     }
@@ -181,7 +177,7 @@ private:
     Usage mUsage = Usage::DEFAULT;
     backend::TextureType mTextureType;
 
-    // TODO: remove in a future filament release.
+    // TODO: remove in a future dante release.
     // Indicates whether the user has set the TextureUsage::BLIT_SRC usage. This will be used to
     // temporarily validate whether this texture can be used for readPixels.
     bool mHasBlitSrc        : 1;
@@ -196,8 +192,8 @@ private:
     std::atomic_bool mCreationComplete{ false };
 };
 
-FILAMENT_DOWNCAST(Texture)
+DANTE_DOWNCAST(Texture)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_TEXTURE_H
+#endif // TNT_DANTE_DETAILS_TEXTURE_H

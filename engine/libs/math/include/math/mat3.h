@@ -1,7 +1,3 @@
-/*
- * Copyright 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_MAT3_H
 #define TNT_MATH_MAT3_H
@@ -21,7 +17,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 namespace math {
 // -------------------------------------------------------------------------------------
 namespace details {
@@ -478,16 +474,16 @@ typedef details::TMat33<float> mat3f;
 
 // ----------------------------------------------------------------------------------------
 }  // namespace math
-}  // namespace filament
+}  // namespace dante
 
 namespace std {
 template<typename T>
-constexpr void swap(filament::math::details::TMat33<T>& lhs,
-        filament::math::details::TMat33<T>& rhs) noexcept {
+constexpr void swap(dante::math::details::TMat33<T>& lhs,
+        dante::math::details::TMat33<T>& rhs) noexcept {
     // This generates much better code than the default implementation
     // It's unclear why, I believe this is due to an optimization bug in the clang.
     //
-    //     filament::math::details::TMat33<T> t(lhs);
+    //     dante::math::details::TMat33<T> t(lhs);
     //    lhs = rhs;
     //    rhs = t;
     //

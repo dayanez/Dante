@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 //! \file
 
 #ifndef TNT_FILAMAT_MATERIAL_PACKAGE_BUILDER_H
 #define TNT_FILAMAT_MATERIAL_PACKAGE_BUILDER_H
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <filamat/Package.h>
 
@@ -36,7 +32,7 @@ namespace utils {
 class JobSystem;
 }
 
-namespace filament {
+namespace dante {
 class BufferInterfaceBlock;
 }
 
@@ -69,7 +65,7 @@ public:
         VULKAN      = 0x02u,
         METAL       = 0x04u,
         WEBGPU        = 0x08u,
-#ifdef FILAMENT_SUPPORTS_WEBGPU
+#ifdef DANTE_SUPPORTS_WEBGPU
         ALL         = OPENGL | VULKAN | METAL | WEBGPU
 #else
         ALL         = OPENGL | VULKAN | METAL
@@ -125,9 +121,9 @@ public:
 
 protected:
     // Looks at platform and target API, then decides on shader models and output formats.
-    void prepare(bool vulkanSemantics, filament::backend::FeatureLevel featureLevel);
+    void prepare(bool vulkanSemantics, dante::backend::FeatureLevel featureLevel);
 
-    using ShaderModel = filament::backend::ShaderModel;
+    using ShaderModel = dante::backend::ShaderModel;
     Platform mPlatform = Platform::DESKTOP;
     TargetApi mTargetApi = (TargetApi) 0;
     Optimization mOptimization = Optimization::PERFORMANCE;
@@ -141,7 +137,7 @@ protected:
         ShaderModel shaderModel;
         TargetApi targetApi;
         TargetLanguage targetLanguage;
-        filament::backend::FeatureLevel featureLevel;
+        dante::backend::FeatureLevel featureLevel;
     };
     std::vector<CodeGenParams> mCodeGenPermutations;
 
@@ -154,8 +150,8 @@ protected:
 
 // Utility function that looks at an Engine backend to determine TargetApi
 inline constexpr MaterialBuilderBase::TargetApi targetApiFromBackend(
-        filament::backend::Backend backend) noexcept {
-    using filament::backend::Backend;
+        dante::backend::Backend backend) noexcept {
+    using dante::backend::Backend;
     using TargetApi = MaterialBuilderBase::TargetApi;
     switch (backend) {
         case Backend::DEFAULT: return TargetApi::ALL;
@@ -168,7 +164,7 @@ inline constexpr MaterialBuilderBase::TargetApi targetApiFromBackend(
 }
 
 /**
- * MaterialBuilder builds Filament materials from shader code.
+ * MaterialBuilder builds Dante materials from shader code.
  *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * #include <filamat/MaterialBuilder.h>
@@ -198,7 +194,7 @@ inline constexpr MaterialBuilderBase::TargetApi targetApiFromBackend(
  * MaterialBuilder::shutdown();
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
- * @see filament::Material
+ * @see dante::Material
  */
 class UTILS_PUBLIC MaterialBuilder : public MaterialBuilderBase {
 public:
@@ -221,35 +217,35 @@ public:
         // when adding more variables, make sure to update MATERIAL_VARIABLES_COUNT
     };
 
-    using MaterialDomain = filament::MaterialDomain;
-    using RefractionMode = filament::RefractionMode;
-    using RefractionType = filament::RefractionType;
-    using ReflectionMode = filament::ReflectionMode;
-    using VertexAttribute = filament::VertexAttribute;
+    using MaterialDomain = dante::MaterialDomain;
+    using RefractionMode = dante::RefractionMode;
+    using RefractionType = dante::RefractionType;
+    using ReflectionMode = dante::ReflectionMode;
+    using VertexAttribute = dante::VertexAttribute;
 
-    using ShaderQuality = filament::ShaderQuality;
-    using BlendingMode = filament::BlendingMode;
-    using BlendFunction = filament::backend::BlendFunction;
-    using Shading = filament::Shading;
-    using Interpolation = filament::Interpolation;
-    using VertexDomain = filament::VertexDomain;
-    using TransparencyMode = filament::TransparencyMode;
-    using SpecularAmbientOcclusion = filament::SpecularAmbientOcclusion;
+    using ShaderQuality = dante::ShaderQuality;
+    using BlendingMode = dante::BlendingMode;
+    using BlendFunction = dante::backend::BlendFunction;
+    using Shading = dante::Shading;
+    using Interpolation = dante::Interpolation;
+    using VertexDomain = dante::VertexDomain;
+    using TransparencyMode = dante::TransparencyMode;
+    using SpecularAmbientOcclusion = dante::SpecularAmbientOcclusion;
 
-    using AttributeType = filament::backend::UniformType;
-    using UniformType = filament::backend::UniformType;
-    using ConstantType = filament::backend::ConstantType;
-    using ConstantValue = filament::backend::ConstantValue;
-    using SamplerType = filament::backend::SamplerType;
-    using SubpassType = filament::backend::SubpassType;
-    using SamplerFormat = filament::backend::SamplerFormat;
-    using ParameterPrecision = filament::backend::Precision;
-    using Precision = filament::backend::Precision;
-    using CullingMode = filament::backend::CullingMode;
-    using FeatureLevel = filament::backend::FeatureLevel;
-    using StereoscopicType = filament::backend::StereoscopicType;
-    using ShaderStage = filament::backend::ShaderStage;
-    using ShaderStageFlags = filament::backend::ShaderStageFlags;
+    using AttributeType = dante::backend::UniformType;
+    using UniformType = dante::backend::UniformType;
+    using ConstantType = dante::backend::ConstantType;
+    using ConstantValue = dante::backend::ConstantValue;
+    using SamplerType = dante::backend::SamplerType;
+    using SubpassType = dante::backend::SubpassType;
+    using SamplerFormat = dante::backend::SamplerFormat;
+    using ParameterPrecision = dante::backend::Precision;
+    using Precision = dante::backend::Precision;
+    using CullingMode = dante::backend::CullingMode;
+    using FeatureLevel = dante::backend::FeatureLevel;
+    using StereoscopicType = dante::backend::StereoscopicType;
+    using ShaderStage = dante::backend::ShaderStage;
+    using ShaderStageFlags = dante::backend::ShaderStageFlags;
 
     enum class VariableQualifier : uint8_t {
         OUT
@@ -330,7 +326,7 @@ public:
             bool multisample = false, const char* transformName = "",
             std::optional<ShaderStageFlags> stages = {});
 
-    MaterialBuilder& buffer(filament::BufferInterfaceBlock bib);
+    MaterialBuilder& buffer(dante::BufferInterfaceBlock bib);
 
     //! Custom variables (all float4).
     MaterialBuilder& variable(Variable v, const char* name) noexcept;
@@ -470,7 +466,7 @@ public:
      * Any fragment with an alpha below this threshold is clipped (MASKED blending mode only).
      * The mask threshold can also be controlled by using the float material parameter called
      * `_maskThreshold`, or by calling
-     * @ref filament::MaterialInstance::setMaskThreshold "MaterialInstance::setMaskThreshold".
+     * @ref dante::MaterialInstance::setMaskThreshold "MaterialInstance::setMaskThreshold".
      */
     MaterialBuilder& maskThreshold(float threshold) noexcept;
 
@@ -500,9 +496,9 @@ public:
      * helps preserve the shapes of specular highlights as an object moves away from the camera.
      * When turned on, two float material parameters are added to control the effect:
      * `_specularAAScreenSpaceVariance` and `_specularAAThreshold`. You can also use
-     * @ref filament::MaterialInstance::setSpecularAntiAliasingVariance
+     * @ref dante::MaterialInstance::setSpecularAntiAliasingVariance
      * "MaterialInstance::setSpecularAntiAliasingVariance" and
-     * @ref filament::MaterialInstance::setSpecularAntiAliasingThreshold
+     * @ref dante::MaterialInstance::setSpecularAntiAliasingThreshold
      * "setSpecularAntiAliasingThreshold"
      *
      * Disabled by default.
@@ -629,7 +625,7 @@ public:
     MaterialBuilder& generateDebugInfo(bool generateDebugInfo) noexcept;
 
     //! Specifies a list of variants that should be filtered out during code generation.
-    MaterialBuilder& variantFilter(filament::UserVariantFilterMask variantFilter) noexcept;
+    MaterialBuilder& variantFilter(dante::UserVariantFilterMask variantFilter) noexcept;
 
     //! Adds a new preprocessor macro definition to the shader code. Can be called repeatedly.
     MaterialBuilder& shaderDefine(const char* name, const char* value) noexcept;
@@ -644,15 +640,15 @@ public:
 
     /**
      * Legacy morphing uses the data in the VertexAttribute slots (\c MORPH_POSITION_0, etc) and is
-     * limited to 4 morph targets. See filament::RenderableManager::Builder::morphing().
+     * limited to 4 morph targets. See dante::RenderableManager::Builder::morphing().
      */
     MaterialBuilder& useLegacyMorphing() noexcept;
 
     //! specify compute kernel group size
-    MaterialBuilder& groupSize(filament::math::uint3 groupSize) noexcept;
+    MaterialBuilder& groupSize(dante::math::uint3 groupSize) noexcept;
 
     /**
-     * Force Filament to use its default variant for depth passes. Useful if a material provides a
+     * Force Dante to use its default variant for depth passes. Useful if a material provides a
      * custom vertex shader which can be skipped during depth-only passes.
      */
     MaterialBuilder& useDefaultDepthVariant() noexcept;
@@ -667,7 +663,7 @@ public:
     MaterialBuilder& setApiLevel(uint32_t apiLevel) noexcept;
 
     /**
-     * Build the material. If you are using the Filament engine with this library, you should use
+     * Build the material. If you are using the Dante engine with this library, you should use
      * the job system provided by Engine.
      */
     Package build(utils::JobSystem& jobSystem);
@@ -782,14 +778,14 @@ public:
         bool hasPrecision = false;
     };
 
-    static constexpr size_t MATERIAL_PROPERTIES_COUNT = filament::MATERIAL_PROPERTIES_COUNT;
-    using Property = filament::Property;
+    static constexpr size_t MATERIAL_PROPERTIES_COUNT = dante::MATERIAL_PROPERTIES_COUNT;
+    using Property = dante::Property;
 
     using PropertyList = bool[MATERIAL_PROPERTIES_COUNT];
     using VariableList = CustomVariable[MATERIAL_VARIABLES_COUNT];
     using OutputList = std::vector<Output>;
 
-    static constexpr size_t MAX_COLOR_OUTPUT = filament::backend::MRT::MAX_SUPPORTED_RENDER_TARGET_COUNT;
+    static constexpr size_t MAX_COLOR_OUTPUT = dante::backend::MRT::MAX_SUPPORTED_RENDER_TARGET_COUNT;
     static constexpr size_t MAX_DEPTH_OUTPUT = 1;
     static_assert(MAX_COLOR_OUTPUT == 8,
             "When updating MRT::MAX_SUPPORTED_RENDER_TARGET_COUNT, manually update post_process_inputs.fs"
@@ -797,7 +793,7 @@ public:
 
     // Preview the first shader generated by the given CodeGenParams.
     // This is used to run Static Code Analysis before generating a package.
-    std::string peek(filament::backend::ShaderStage stage,
+    std::string peek(dante::backend::ShaderStage stage,
             const CodeGenParams& params, const PropertyList& properties) noexcept;
 
     // Returns true if any of the parameter samplers matches the specified type.
@@ -807,7 +803,7 @@ public:
     static constexpr size_t MAX_BUFFERS_COUNT = 4;
     using ParameterList = std::vector<Parameter>;
     using SubpassList = Parameter[MAX_SUBPASS_COUNT];
-    using BufferList = std::vector<std::unique_ptr<filament::BufferInterfaceBlock>>;
+    using BufferList = std::vector<std::unique_ptr<dante::BufferInterfaceBlock>>;
     using ConstantList = std::vector<Constant>;
     using PushConstantList = std::vector<PushConstant>;
 
@@ -823,7 +819,7 @@ public:
     // returns a list of at least getParameterCount() parameters
     const SubpassList& getSubPasses() const noexcept { return mSubpasses; }
 
-    filament::UserVariantFilterMask getVariantFilter() const { return mVariantFilter; }
+    dante::UserVariantFilterMask getVariantFilter() const { return mVariantFilter; }
 
     FeatureLevel getFeatureLevel() const noexcept { return mFeatureLevel; }
     /// @endcond
@@ -842,7 +838,7 @@ public:
         }
     };
 
-    using AttributeDatabase = std::array<Attribute, filament::backend::MAX_VERTEX_ATTRIBUTE_COUNT>;
+    using AttributeDatabase = std::array<Attribute, dante::backend::MAX_VERTEX_ATTRIBUTE_COUNT>;
 
     static AttributeDatabase const& getAttributeDatabase() noexcept {
         return sAttributeDatabase;
@@ -864,7 +860,7 @@ private:
 
     // Multiple calls to findProperties accumulate the property sets across fragment
     // and vertex shaders in mProperties.
-    bool findProperties(filament::backend::ShaderStage type,
+    bool findProperties(dante::backend::ShaderStage type,
             PropertyList const& allProperties,
             CodeGenParams const& semanticCodeGenParams) noexcept;
 
@@ -937,13 +933,13 @@ private:
     StereoscopicType mStereoscopicType = StereoscopicType::INSTANCED;
     uint8_t mStereoscopicEyeCount = 2;
 
-    filament::AttributeBitset mRequiredAttributes;
+    dante::AttributeBitset mRequiredAttributes;
 
     float mMaskThreshold = 0.4f;
     float mSpecularAntiAliasingVariance = 0.15f;
     float mSpecularAntiAliasingThreshold = 0.2f;
 
-    filament::math::uint3 mGroupSize = { 1, 1, 1 };
+    dante::math::uint3 mGroupSize = { 1, 1, 1 };
 
     bool mShadowMultiplier = false;
     bool mTransparentShadow = false;
@@ -984,7 +980,7 @@ private:
 
     PreprocessorDefineList mDefines;
 
-    filament::UserVariantFilterMask mVariantFilter = {};
+    dante::UserVariantFilterMask mVariantFilter = {};
 
     bool mNoSamplerValidation = false;
 

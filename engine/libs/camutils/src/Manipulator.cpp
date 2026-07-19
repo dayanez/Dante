@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <camutils/Manipulator.h>
 
@@ -11,9 +7,9 @@
 #include "MapManipulator.h"
 #include "OrbitManipulator.h"
 
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 namespace camutils {
 
 template <typename FLOAT> typename
@@ -201,10 +197,10 @@ void Manipulator<FLOAT>::getLookAt(vec3* eyePosition, vec3* targetPosition, vec3
 }
 
 template<typename FLOAT>
-static bool raycastPlane(const filament::math::vec3<FLOAT>& origin,
-        const filament::math::vec3<FLOAT>& dir, FLOAT* t, void* userdata) {
-    using vec3 = filament::math::vec3<FLOAT>;
-    using vec4 = filament::math::vec4<FLOAT>;
+static bool raycastPlane(const dante::math::vec3<FLOAT>& origin,
+        const dante::math::vec3<FLOAT>& dir, FLOAT* t, void* userdata) {
+    using vec3 = dante::math::vec3<FLOAT>;
+    using vec4 = dante::math::vec4<FLOAT>;
     auto props = (const typename Manipulator<FLOAT>::Config*) userdata;
     const vec4 plane = props->groundPlane;
     const vec3 n = vec3(plane[0], plane[1], plane[2]);
@@ -277,8 +273,8 @@ bool Manipulator<FLOAT>::raycast(int x, int y, vec3* result) const {
 }
 
 template <typename FLOAT>
-filament::math::vec3<FLOAT> Manipulator<FLOAT>::raycastFarPlane(int x, int y) const {
-    const filament::math::vec3<FLOAT> gaze = normalize(mTarget - mEye);
+dante::math::vec3<FLOAT> Manipulator<FLOAT>::raycastFarPlane(int x, int y) const {
+    const dante::math::vec3<FLOAT> gaze = normalize(mTarget - mEye);
     const vec3 right = cross(gaze, mProps.upVector);
     const vec3 upward = cross(right, gaze);
     const FLOAT width = mProps.viewport[0];
@@ -317,4 +313,4 @@ void Manipulator<FLOAT>::update(FLOAT deltaTime) { }
 template class Manipulator<float>;
 
 } // namespace camutils
-} // namespace filament
+} // namespace dante

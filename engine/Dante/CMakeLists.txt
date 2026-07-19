@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
-project(filament C ASM)
+project(dante C ASM)
 
-set(TARGET filament)
+set(TARGET dante)
 set(PUBLIC_HDR_DIR include)
 set(GENERATION_ROOT ${CMAKE_CURRENT_BINARY_DIR})
 set(RESOURCE_DIR "${GENERATION_ROOT}/generated/resources")
@@ -12,44 +12,44 @@ set(MATERIAL_DIR "${GENERATION_ROOT}/generated/material")
 # ==================================================================================================
 
 set(PUBLIC_HDRS
-        include/filament/Box.h
-        include/filament/BufferObject.h
-        include/filament/Camera.h
-        include/filament/Color.h
-        include/filament/ColorGrading.h
-        include/filament/ColorSpace.h
-        include/filament/DebugRegistry.h
-        include/filament/Engine.h
-        include/filament/Exposure.h
-        include/filament/Fence.h
-        include/filament/FilamentAPI.h
-        include/filament/FramePacer.h
-        include/filament/Frustum.h
-        include/filament/IndexBuffer.h
-        include/filament/IndirectLight.h
-        include/filament/InstanceBuffer.h
-        include/filament/LightManager.h
-        include/filament/Material.h
-        include/filament/MaterialInstance.h
-        include/filament/MorphTargetBuffer.h
-        include/filament/Options.h
-        include/filament/RenderTarget.h
-        include/filament/RenderableManager.h
-        include/filament/Renderer.h
-        include/filament/FrameHistoryStream.h
-        include/filament/Scene.h
-        include/filament/SkinningBuffer.h
-        include/filament/Skybox.h
-        include/filament/Stream.h
-        include/filament/SwapChain.h
-        include/filament/Sync.h
-        include/filament/Texture.h
-        include/filament/TextureSampler.h
-        include/filament/ToneMapper.h
-        include/filament/TransformManager.h
-        include/filament/VertexBuffer.h
-        include/filament/View.h
-        include/filament/Viewport.h
+        include/dante/Box.h
+        include/dante/BufferObject.h
+        include/dante/Camera.h
+        include/dante/Color.h
+        include/dante/ColorGrading.h
+        include/dante/ColorSpace.h
+        include/dante/DebugRegistry.h
+        include/dante/Engine.h
+        include/dante/Exposure.h
+        include/dante/Fence.h
+        include/dante/DanteAPI.h
+        include/dante/FramePacer.h
+        include/dante/Frustum.h
+        include/dante/IndexBuffer.h
+        include/dante/IndirectLight.h
+        include/dante/InstanceBuffer.h
+        include/dante/LightManager.h
+        include/dante/Material.h
+        include/dante/MaterialInstance.h
+        include/dante/MorphTargetBuffer.h
+        include/dante/Options.h
+        include/dante/RenderTarget.h
+        include/dante/RenderableManager.h
+        include/dante/Renderer.h
+        include/dante/FrameHistoryStream.h
+        include/dante/Scene.h
+        include/dante/SkinningBuffer.h
+        include/dante/Skybox.h
+        include/dante/Stream.h
+        include/dante/SwapChain.h
+        include/dante/Sync.h
+        include/dante/Texture.h
+        include/dante/TextureSampler.h
+        include/dante/ToneMapper.h
+        include/dante/TransformManager.h
+        include/dante/VertexBuffer.h
+        include/dante/View.h
+        include/dante/Viewport.h
 )
 
 set(SRCS
@@ -75,7 +75,7 @@ set(SRCS
         src/Engine.cpp
         src/Exposure.cpp
         src/Fence.cpp
-        src/FilamentBuilder.cpp
+        src/DanteBuilder.cpp
         src/FrameInfo.cpp
         src/FramePacer.cpp
         src/FramePipelineEstimator.cpp
@@ -184,7 +184,7 @@ set(PRIVATE_HDRS
         src/Culler.h
         src/DFG.h
         src/DynamicSpecConstKey.h
-        src/FilamentAPI-impl.h
+        src/DanteAPI-impl.h
         src/FrameHistory.h
         src/FrameInfo.h
         src/FrameSkipper.h
@@ -315,7 +315,7 @@ set(MATERIAL_SRCS
         src/materials/ssao/saoBentNormals.mat
 )
 
-if (NOT FILAMENT_DISABLE_GTAO)
+if (NOT DANTE_DISABLE_GTAO)
     list(APPEND MATERIAL_SRCS
         src/materials/ssao/gtao.mat
         src/materials/ssao/gtaoBentNormals.mat
@@ -340,7 +340,7 @@ set(MATERIAL_VULKAN_METAL_SRCS
 
 # whether we're building for mobile -- this can affect some default quality settings
 if (IS_MOBILE_TARGET)
-    add_definitions(-DFILAMENT_TARGET_MOBILE=1)
+    add_definitions(-DDANTE_TARGET_MOBILE=1)
 endif()
 
 # Size of the DFG lookup table
@@ -354,37 +354,37 @@ endif()
 message(STATUS "DFG LUT size set to ${DFG_LUT_SIZE}x${DFG_LUT_SIZE}")
 
 # Whether to include MULTIVIEW materials.
-if (FILAMENT_ENABLE_MULTIVIEW)
-    add_definitions(-DFILAMENT_ENABLE_MULTIVIEW)
+if (DANTE_ENABLE_MULTIVIEW)
+    add_definitions(-DDANTE_ENABLE_MULTIVIEW)
 endif()
 
 # Whether to force the profiling mode.
-if (FILAMENT_FORCE_PROFILING_MODE)
-    add_definitions(-DFILAMENT_FORCE_PROFILING_MODE)
+if (DANTE_FORCE_PROFILING_MODE)
+    add_definitions(-DDANTE_FORCE_PROFILING_MODE)
 endif()
 
-if (FILAMENT_DISABLE_GTAO)
-    add_definitions(-DFILAMENT_DISABLE_GTAO)
+if (DANTE_DISABLE_GTAO)
+    add_definitions(-DDANTE_DISABLE_GTAO)
 endif()
 
 # ==================================================================================================
 # Definitions
 # ==================================================================================================
 
-add_definitions(-DFILAMENT_DFG_LUT_SIZE=${DFG_LUT_SIZE})
+add_definitions(-DDANTE_DFG_LUT_SIZE=${DFG_LUT_SIZE})
 add_definitions(
-    -DFILAMENT_PER_RENDER_PASS_ARENA_SIZE_IN_MB=${FILAMENT_PER_RENDER_PASS_ARENA_SIZE_IN_MB}
-    -DFILAMENT_PER_FRAME_COMMANDS_SIZE_IN_MB=${FILAMENT_PER_FRAME_COMMANDS_SIZE_IN_MB}
-    -DFILAMENT_MIN_COMMAND_BUFFERS_SIZE_IN_MB=${FILAMENT_MIN_COMMAND_BUFFERS_SIZE_IN_MB}
-    -DFILAMENT_OPENGL_HANDLE_ARENA_SIZE_IN_MB=${FILAMENT_OPENGL_HANDLE_ARENA_SIZE_IN_MB}
-    -DFILAMENT_METAL_HANDLE_ARENA_SIZE_IN_MB=${FILAMENT_METAL_HANDLE_ARENA_SIZE_IN_MB}
+    -DDANTE_PER_RENDER_PASS_ARENA_SIZE_IN_MB=${DANTE_PER_RENDER_PASS_ARENA_SIZE_IN_MB}
+    -DDANTE_PER_FRAME_COMMANDS_SIZE_IN_MB=${DANTE_PER_FRAME_COMMANDS_SIZE_IN_MB}
+    -DDANTE_MIN_COMMAND_BUFFERS_SIZE_IN_MB=${DANTE_MIN_COMMAND_BUFFERS_SIZE_IN_MB}
+    -DDANTE_OPENGL_HANDLE_ARENA_SIZE_IN_MB=${DANTE_OPENGL_HANDLE_ARENA_SIZE_IN_MB}
+    -DDANTE_METAL_HANDLE_ARENA_SIZE_IN_MB=${DANTE_METAL_HANDLE_ARENA_SIZE_IN_MB}
 )
 
 # ==================================================================================================
 # Generate all .filamat: default material, skyboxes, and post-process
 # ==================================================================================================
 
-if (CMAKE_CROSSCOMPILING OR FILAMENT_IMPORT_PREBUILT_EXECUTABLES)
+if (CMAKE_CROSSCOMPILING OR DANTE_IMPORT_PREBUILT_EXECUTABLES)
     include(${IMPORT_EXECUTABLES})
 endif()
 
@@ -467,7 +467,7 @@ foreach(mat_dir ${MATERIAL_DIRS})
 
         # --- Multiview variant ---
         check_in_list(MATERIAL_MULTIVIEW_SRCS ${mat_src} is_multiview)
-        if (is_multiview AND FILAMENT_ENABLE_MULTIVIEW)
+        if (is_multiview AND DANTE_ENABLE_MULTIVIEW)
             string(REGEX REPLACE "[.]filamat$" "_multiview.filamat" output_path_multiview ${output_path})
             set(MATC_MULTIVIEW_FLAGS "${MATC_BASE_FLAGS}" "-PstereoscopicType=multiview")
             set(COMMENT_STR "Compiling material ${fullname} (Multiview)")
@@ -577,7 +577,7 @@ add_custom_command(
         APPEND
 )
 
-if (NOT FILAMENT_DISABLE_GTAO)
+if (NOT DANTE_DISABLE_GTAO)
     add_custom_command(
             OUTPUT "${MATERIAL_DIR}/gtao.filamat"
             DEPENDS src/materials/ssao/ssaoUtils.fs
@@ -707,8 +707,8 @@ add_library(${TARGET} STATIC ${PRIVATE_HDRS} ${PUBLIC_HDRS} ${SRCS})
 # specify where the public headers of this library are
 target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
 
-# add this subproject to the Filament folder
-set_target_properties(${TARGET} PROPERTIES FOLDER Filament)
+# add this subproject to the Dante folder
+set_target_properties(${TARGET} PROPERTIES FOLDER Dante)
 
 # ==================================================================================================
 # Dependencies
@@ -721,22 +721,22 @@ target_link_libraries(${TARGET} PUBLIC filaflat)
 target_link_libraries(${TARGET} PUBLIC filabridge)
 target_link_libraries(${TARGET} PRIVATE zstd)
 
-if (FILAMENT_USE_ABSEIL_LOGGING)
+if (DANTE_USE_ABSEIL_LOGGING)
     target_link_libraries(${TARGET} PUBLIC absl::log)
 endif()
 
-if (FILAMENT_ENABLE_FGVIEWER)
+if (DANTE_ENABLE_FGVIEWER)
     target_link_libraries(${TARGET} PUBLIC fgviewer)
-    add_definitions(-DFILAMENT_ENABLE_FGVIEWER=1)
+    add_definitions(-DDANTE_ENABLE_FGVIEWER=1)
 else()
-    add_definitions(-DFILAMENT_ENABLE_FGVIEWER=0)
+    add_definitions(-DDANTE_ENABLE_FGVIEWER=0)
 endif()
 
-if (FILAMENT_ENABLE_MATDBG)
+if (DANTE_ENABLE_MATDBG)
     target_link_libraries(${TARGET} PUBLIC matdbg)
-    add_definitions(-DFILAMENT_ENABLE_MATDBG=1)
+    add_definitions(-DDANTE_ENABLE_MATDBG=1)
 else()
-    add_definitions(-DFILAMENT_ENABLE_MATDBG=0)
+    add_definitions(-DDANTE_ENABLE_MATDBG=0)
 endif()
 
 if (LINUX)
@@ -753,7 +753,7 @@ if (MSVC)
 elseif (WASM)
     # Avoid strict-vtable-pointers here, it is broken in WebAssembly.
     set(OPTIMIZATION_FLAGS -fvisibility-inlines-hidden)
-elseif (FILAMENT_USING_GCC)
+elseif (DANTE_USING_GCC)
     set(OPTIMIZATION_FLAGS
         -ffast-math
         -fno-finite-math-only
@@ -780,10 +780,10 @@ set(LINUX_COMPILER_FLAGS
 )
 
 if (MSVC)
-    set(FILAMENT_WARNINGS /W3)
-elseif (FILAMENT_USING_GCC)
+    set(DANTE_WARNINGS /W3)
+elseif (DANTE_USING_GCC)
     # GCC is not officially supported, so use a weaker set of warnings (incl. not using -Werror).
-    set(FILAMENT_WARNINGS
+    set(DANTE_WARNINGS
             -Wall -Wextra-semi -Wundef
             -Wno-unused-parameter -Wno-missing-field-initializers
             -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unused-function
@@ -794,7 +794,7 @@ elseif (FILAMENT_USING_GCC)
             -Wno-sign-compare -Wno-deprecated-declarations
     )
 else()
-    set(FILAMENT_WARNINGS
+    set(DANTE_WARNINGS
             -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
             -Wextra-semi -Wnewline-eof -Wdeprecated -Wundef
             -Wgnu-conditional-omitted-operand
@@ -805,7 +805,7 @@ else()
 endif()
 
 target_compile_options(${TARGET} PRIVATE
-        ${FILAMENT_WARNINGS}
+        ${DANTE_WARNINGS}
         $<$<CONFIG:Release>:${OPTIMIZATION_FLAGS}>
         $<$<AND:$<PLATFORM_ID:Darwin>,$<CONFIG:Release>>:${DARWIN_OPTIMIZATION_FLAGS}>
         $<$<PLATFORM_ID:Linux>:${LINUX_COMPILER_FLAGS}>
@@ -824,7 +824,7 @@ target_link_libraries(${TARGET} PRIVATE
 # ==================================================================================================
 set(INSTALL_TYPE ARCHIVE)
 install(TARGETS ${TARGET} ${INSTALL_TYPE} DESTINATION lib/${DIST_DIR})
-install(DIRECTORY ${PUBLIC_HDR_DIR}/filament DESTINATION include)
+install(DIRECTORY ${PUBLIC_HDR_DIR}/dante DESTINATION include)
 install(FILES "README.md" DESTINATION .)
 install(FILES "../LICENSE" DESTINATION .)
 

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "RenderPass.h"
 
@@ -15,11 +11,11 @@
 #include "details/MaterialInstance.h"
 #include "details/View.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <private/backend/CircularBuffer.h>
 #include <private/backend/CommandStream.h>
@@ -53,9 +49,9 @@
 #include <string.h>
 
 using namespace utils;
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -124,7 +120,7 @@ RenderPass::RenderPass(FEngine const& engine, backend::DriverApi& driver,
         if (UTILS_UNLIKELY(sLogOnce)) {
             sLogOnce = false;
             PANIC_LOG("RenderPass arena is full, using slower system heap. Please increase "
-                      "the appropriate constant (e.g. FILAMENT_PER_RENDER_PASS_ARENA_SIZE_IN_MB).");
+                      "the appropriate constant (e.g. DANTE_PER_RENDER_PASS_ARENA_SIZE_IN_MB).");
         }
     }
 
@@ -182,11 +178,11 @@ void RenderPass::appendCommands(FEngine const& engine, backend::DriverApi& drive
         DynamicSpecConstKey const specKey,
         float3 const cameraPosition,
         float3 const cameraForwardVector) const noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
 
     // trace the number of visible renderables
-    FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "visibleRenderables", visibleRenderables.size());
+    DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "visibleRenderables", visibleRenderables.size());
     if (UTILS_UNLIKELY(visibleRenderables.empty())) {
         // no renderables, we still need the sentinel and the command buffer size should be
         // exactly 1.
@@ -262,7 +258,7 @@ void RenderPass::appendCustomCommand(Command* commands,
 
 RenderPass::Command* RenderPass::sortCommands(
         Command* const begin, Command* const end) noexcept {
-    FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "sort commands");
+    DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "sort commands");
 
     std::sort(begin, end);
 
@@ -278,7 +274,7 @@ RenderPass::Command* RenderPass::sortCommands(
 RenderPass::Command* RenderPass::instanceify(
         Command* curr, Command* const last,
         int32_t const eyeCount) const noexcept {
-    FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "instanceify");
+    DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "instanceify");
 
     // instanceify works by scanning the **sorted** command stream, looking for repeat draw
     // commands. When one is found, it is replaced by an instanced command.
@@ -455,7 +451,7 @@ void RenderPass::generateCommands(CommandTypeFlags commandTypeFlags, Command* co
         float3 const cameraPosition, float3 const cameraForward,
         uint8_t instancedStereoEyeCount) noexcept {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     // generateCommands() writes both the draw and depth commands simultaneously such that
     // we go throw the list of renderables just once.
@@ -892,8 +888,8 @@ UTILS_NOINLINE // no need to be inlined
 void RenderPass::Executor::execute(FEngine const& engine, DriverApi& driver,
         Command const* first, Command const* last) const noexcept {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
 
     size_t const capacity = engine.getMinCommandBufferSize();
     CircularBuffer const& circularBuffer = driver.getCircularBuffer();
@@ -901,11 +897,11 @@ void RenderPass::Executor::execute(FEngine const& engine, DriverApi& driver,
     // b/479079631: Log the number of commands in this render pass.
     size_t const commandCount = last - first;
     if (Platform* platform = engine.getPlatform(); platform->hasDebugUpdateStatFunc()) {
-        platform->debugUpdateStat("filament.renderer.render_pass.command_count", commandCount);
+        platform->debugUpdateStat("dante.renderer.render_pass.command_count", commandCount);
     }
 
     if (first != last) {
-        FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "commandCount", last - first);
+        DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "commandCount", last - first);
 
         // The scissor rectangle is associated to a render pass, so the tracking can be local.
         backend::Viewport currentScissor{ 0, 0, INT32_MAX, INT32_MAX };
@@ -1160,4 +1156,4 @@ RenderPass::Executor& RenderPass::Executor::operator=(Executor&& rhs) noexcept =
 // this destructor is actually heavy because it inlines ~vector<>
 RenderPass::Executor::~Executor() noexcept = default;
 
-} // namespace filament
+} // namespace dante

@@ -1,18 +1,18 @@
-#include <filamentapp/FilamentApp.h>
-#include <filament/Camera.h>
-#include <filament/ColorGrading.h>
-#include <filament/Engine.h>
-#include <filament/LightManager.h>
-#include <filament/RenderableManager.h>
-#include <filament/Scene.h>
-#include <filament/ToneMapper.h>
-#include <filament/TransformManager.h>
-#include <filament/View.h>
+#include <danteapp/DanteApp.h>
+#include <dante/Camera.h>
+#include <dante/ColorGrading.h>
+#include <dante/Engine.h>
+#include <dante/LightManager.h>
+#include <dante/RenderableManager.h>
+#include <dante/Scene.h>
+#include <dante/ToneMapper.h>
+#include <dante/TransformManager.h>
+#include <dante/View.h>
 #include <backend/BufferDescriptor.h>
 #include <gltfio/Animator.h>
 #include <gltfio/AssetLoader.h>
-#include <gltfio/FilamentAsset.h>
-#include <gltfio/FilamentInstance.h>
+#include <gltfio/DanteAsset.h>
+#include <gltfio/DanteInstance.h>
 #include <gltfio/MaterialProvider.h>
 #include <gltfio/ResourceLoader.h>
 #include <gltfio/TextureProvider.h>
@@ -29,8 +29,8 @@
 //TODO DONT FORGET TO FIX Y AXIS FOR NIBBA 
 //ALSO CHANGE LIGHTING || MAKE NEG LIGHTING -100
 
-using namespace filament;
-using namespace filament::math;
+using namespace dante;
+using namespace dante::math;
 
 namespace {
 
@@ -62,7 +62,7 @@ struct GltfModel {
     gltfio::MaterialProvider* materials = nullptr;
     gltfio::TextureProvider* textureDecoder = nullptr;
     gltfio::ResourceLoader* resourceLoader = nullptr;
-    gltfio::FilamentAsset* asset = nullptr;
+    gltfio::DanteAsset* asset = nullptr;
     gltfio::Animator* animator = nullptr;
 
     // scale is uniform and applied around the model's own origin, before translation -
@@ -148,11 +148,6 @@ GltfModel g_character;
 GltfModel g_bathroom;
 GltfModel g_smileyMonster;
 
-// DANTE_ASSETS_DIR is baked in at compile time as this machine's source tree path, which
-// only exists on the machine that built it - convenient in dev (edit assets, relaunch, no
-// rebuild) but useless for a binary handed to someone else. If an "assets" folder sits next
-// to the executable instead (i.e. Dante.exe was shipped alongside one, see README), prefer
-// that; otherwise fall back to the baked dev path.
 utils::Path resolveAssetsDir() {
     utils::Path portable = utils::Path::getCurrentExecutable().getParent() + "assets";
     return portable.exists() ? portable : utils::Path(DANTE_ASSETS_DIR);
@@ -175,7 +170,7 @@ int main() {
     config.iblDirectory = (assetsDir + "environments/qwantani_night_puresky_4k.exr").getAbsolutePath();
     config.cameraMode = camutils::Mode::FREE_FLIGHT;
 
-    FilamentApp::get().run(
+    DanteApp::get().run(
         config,
         [assetsDir](Engine* engine, View* view, Scene* scene) {
             // FXAA (View's default) softens the whole frame, not just jagged edges - noticeable
@@ -239,16 +234,16 @@ int main() {
             vignetteOptions.enabled = false; //Disabling because right now, it looks ugly no point in having it. 
             view->setVignetteOptions(vignetteOptions);
 
-            // Skybox and indirect light both come from config.iblDirectory - FilamentApp
+            // Skybox and indirect light both come from config.iblDirectory - DanteApp
             // loads and sets them on the scene before this callback runs (see
-            // FilamentApp::loadIBL), so the night-sky EXR is already visible here.
+            // DanteApp::loadIBL), so the night-sky EXR is already visible here.
 
-            // Note: FilamentApp::doFrame() re-derives Camera::lookAt() from the camera
+            // Note: DanteApp::doFrame() re-derives Camera::lookAt() from the camera
             // manipulator every frame, so a one-time Camera::lookAt() call here would be
             // overwritten on the next frame - the manipulator's own state is what actually
             // needs to change, which Config doesn't expose.
             g_character.create(*engine, *scene, assetsDir + "models/character/ch15_firing.glb",
-                    float3{0, -1.0f, -2});
+                    float3{0, -2.0f, -4});                                                              //im assuming that xy might be in "g_character" ill try adjusting float3
             // Bathroom's local bbox (from its own load log) is roughly x:[-4.25,7.27]
             // y:[-0.08,4.18] z:[-3.78,18.67], floor near y=-0.08 - same y/z translation as
             // the character lines its floor up with the character's feet.
@@ -263,7 +258,7 @@ int main() {
 
             // Advance every model's animation each frame (a model with no animations is a
             // no-op via the animationCount() == 0 check).
-            FilamentApp::get().animate([](Engine*, View*, double now) {
+            DanteApp::get().animate([](Engine*, View*, double now) {
                 static double startTime = now;
                 for (GltfModel* model : { &g_character, &g_bathroom, &g_smileyMonster }) {
                     if (!model->animator || model->animator->getAnimationCount() == 0) {

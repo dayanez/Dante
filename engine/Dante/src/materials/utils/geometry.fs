@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef FILAMENT_MATERIALS_GEOMETRY
-#define FILAMENT_MATERIALS_GEOMETRY
+#ifndef DANTE_MATERIALS_GEOMETRY
+#define DANTE_MATERIALS_GEOMETRY
 
 #include "depthUtils.fs"
 
@@ -118,7 +114,7 @@ highp vec3 computeViewSpaceNormal(
         const highp float depth, const highp vec3 position,
         highp vec2 texel, highp vec2 positionParams) {
     // todo: maybe make this a quality parameter
-#if FILAMENT_QUALITY == FILAMENT_QUALITY_HIGH
+#if DANTE_QUALITY == DANTE_QUALITY_HIGH
     vec3 normal = computeViewSpaceNormalHighQ(depthTexture, uv, depth, position,
             texel, positionParams);
 #else
@@ -128,4 +124,4 @@ highp vec3 computeViewSpaceNormal(
     return normal;
 }
 
-#endif // FILAMENT_MATERIALS_GEOMETRY
+#endif // DANTE_MATERIALS_GEOMETRY

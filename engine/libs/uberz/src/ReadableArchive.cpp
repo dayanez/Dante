@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <uberz/ReadableArchive.h>
 
@@ -10,10 +6,10 @@
 #include <cstring>
 #include <limits>
 
-using namespace filament;
+using namespace dante;
 using namespace utils;
 
-namespace filament::uberz {
+namespace dante::uberz {
 
 static_assert(sizeof(ReadableArchive) == 4 + 4 + 8 + 8);
 static_assert(sizeof(ArchiveSpec) == 1 + 1 + 2 + 4 + 8 + 8);
@@ -129,4 +125,4 @@ bool convertOffsetsToPointers(ReadableArchive* archive, size_t archiveSize) {
     return true;
 }
 
-} // namespace filament::uberz
+} // namespace dante::uberz

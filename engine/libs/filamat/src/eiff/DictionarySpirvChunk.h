@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_FILAMAT_DIC_SPIRV_CHUNK_H
 #define TNT_FILAMAT_DIC_SPIRV_CHUNK_H

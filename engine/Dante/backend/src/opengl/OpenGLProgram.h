@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_OPENGLPROGRAM_H
-#define TNT_FILAMENT_BACKEND_OPENGL_OPENGLPROGRAM_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_OPENGLPROGRAM_H
+#define TNT_DANTE_BACKEND_OPENGL_OPENGLPROGRAM_H
 
 #include "BindingMap.h"
 #include "DriverBase.h"
@@ -26,7 +22,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class OpenGLDriver;
 
@@ -128,6 +124,6 @@ public:
 // if OpenGLProgram is larger than 96 bytes, it'll fall in a larger Handle bucket.
 static_assert(sizeof(OpenGLProgram) <= 96); // currently 96 bytes
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_OPENGLPROGRAM_H
+#endif // TNT_DANTE_BACKEND_OPENGL_OPENGLPROGRAM_H

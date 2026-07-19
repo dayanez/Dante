@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/RenderTarget.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 #include "details/Texture.h"
 
-#include <filament/RenderTarget.h>
+#include <dante/RenderTarget.h>
 
 #include <utils/BitmaskEnum.h>
 #include <utils/compiler.h>
@@ -24,7 +20,7 @@
 #include <stdint.h>
 
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -85,18 +81,18 @@ RenderTarget* RenderTarget::Builder::build(Engine& engine) {
     const FRenderTarget::Attachment& depth = mImpl->mAttachments[(size_t)AttachmentPoint::DEPTH];
 
     if (color.texture) {
-        FILAMENT_CHECK_PRECONDITION(color.texture->getUsage() & TextureUsage::COLOR_ATTACHMENT)
+        DANTE_CHECK_PRECONDITION(color.texture->getUsage() & TextureUsage::COLOR_ATTACHMENT)
                 << "Texture usage must contain COLOR_ATTACHMENT";
     }
 
     if (depth.texture) {
-        FILAMENT_CHECK_PRECONDITION(depth.texture->getUsage() & TextureUsage::DEPTH_ATTACHMENT)
+        DANTE_CHECK_PRECONDITION(depth.texture->getUsage() & TextureUsage::DEPTH_ATTACHMENT)
                 << "Texture usage must contain DEPTH_ATTACHMENT";
     }
 
     const size_t maxDrawBuffers = downcast(engine).getDriverApi().getMaxDrawBuffers();
     for (size_t i = maxDrawBuffers; i < MAX_SUPPORTED_COLOR_ATTACHMENTS_COUNT; i++) {
-        FILAMENT_CHECK_PRECONDITION(!mImpl->mAttachments[i].texture)
+        DANTE_CHECK_PRECONDITION(!mImpl->mAttachments[i].texture)
                 << "Only " << maxDrawBuffers << " color attachments are supported, but COLOR" << i
                 << " attachment is set";
     }
@@ -114,11 +110,11 @@ RenderTarget* RenderTarget::Builder::build(Engine& engine) {
             const uint32_t d = attachment.texture->getDepth(attachment.mipLevel);
             const uint32_t l = attachment.layerCount;
             if (l > 0) {
-                FILAMENT_CHECK_PRECONDITION(
+                DANTE_CHECK_PRECONDITION(
                         attachment.texture->getTarget() == Texture::Sampler::SAMPLER_2D_ARRAY)
                         << "Texture sampler must be of 2d array for multiview";
             }
-            FILAMENT_CHECK_PRECONDITION(attachment.layer + l <= d)
+            DANTE_CHECK_PRECONDITION(attachment.layer + l <= d)
                     << "layer + layerCount cannot exceed the number of depth";
             minWidth  = std::min(minWidth, w);
             minHeight = std::min(minHeight, h);
@@ -129,7 +125,7 @@ RenderTarget* RenderTarget::Builder::build(Engine& engine) {
         }
     }
 
-    FILAMENT_CHECK_PRECONDITION(minWidth == maxWidth && minHeight == maxHeight
+    DANTE_CHECK_PRECONDITION(minWidth == maxWidth && minHeight == maxHeight
             && minLayerCount == maxLayerCount) << "All attachments dimensions must match";
 
     mImpl->mWidth  = minWidth;
@@ -185,7 +181,7 @@ FRenderTarget::FRenderTarget(FEngine& engine, const Builder& builder)
                 // TODO: the following will be changed to
                 //    mSupportsReadPixels =
                 //            any(attachment.texture->getUsage() & TextureUsage::BLIT_SRC);
-                //    in a later filament version when clients have properly added the right usage.
+                //    in a later dante version when clients have properly added the right usage.
                 mSupportsReadPixels = attachment.texture->hasBlitSrcUsage();
             }
         }
@@ -220,4 +216,4 @@ bool FRenderTarget::hasSampleableDepth() const noexcept {
     return depth && (depth->getUsage() & TextureUsage::SAMPLEABLE) == TextureUsage::SAMPLEABLE;
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ShaderCompilerService.h"
 
@@ -51,7 +47,7 @@
 #include <stdint.h>
 #include <string.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace utils;
 
@@ -271,7 +267,7 @@ void ShaderCompilerService::init() noexcept {
                 [&platform = mDriver.mPlatform, priority] {
                     // give the thread a name
                     JobSystem::setThreadName("CompilerThreadPool");
-                    // run at a slightly lower priority than other filament threads
+                    // run at a slightly lower priority than other dante threads
                     JobSystem::setThreadPriority(priority);
                     // create a gl context current to this thread
                     platform.createContext(true);
@@ -344,7 +340,7 @@ void ShaderCompilerService::compileProgram(
         case Mode::THREAD_POOL: {
             mCompilerThreadPool.queue(priority, token,
                     [this, &gl, program = std::move(program), token]() mutable {
-                        FILAMENT_TRACING_EVENT(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                        DANTE_TRACING_EVENT(DANTE_TRACING_CATEGORY_DANTE,
                                 "compileProgram", "name", token->name.c_str_safe(),
                                 "program", token->programString.c_str_safe(),
                                 "priority", static_cast<uint32_t>(program.getPriorityQueue()));
@@ -376,7 +372,7 @@ void ShaderCompilerService::compileProgram(
                             // Check status of program linking. If it failed, errors will be logged.
                             bool const linked = checkLinkStatusAndCleanupShaders(token);
                             // We panic if it failed to create the program.
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
                             if (UTILS_UNLIKELY(!linked)) {
                                 LOG(ERROR) << "OpenGL program " << token->name.c_str_safe()
                                            << " failed to link or compile";
@@ -384,7 +380,7 @@ void ShaderCompilerService::compileProgram(
                                 token->gl.program = 0;
                             }
 #else
-                            FILAMENT_CHECK_POSTCONDITION(linked)
+                            DANTE_CHECK_POSTCONDITION(linked)
                                     << "OpenGL program " << token->name.c_str_safe()
                                     << " failed to link or compile";
 #endif
@@ -451,7 +447,7 @@ void ShaderCompilerService::compileProgram(
 GLuint ShaderCompilerService::getProgram(program_token_t& token) {
     GLuint const program = initialize(token);
     assert_invariant(token == nullptr);
-#if !FILAMENT_ENABLE_MATDBG
+#if !DANTE_ENABLE_MATDBG
     assert_invariant(program);
 #endif
     return program;
@@ -515,13 +511,13 @@ void ShaderCompilerService::notifyWhenAllProgramsAreReady(
 
 GLuint ShaderCompilerService::initialize(program_token_t& token) {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     assert_invariant(token);// This function should be called when the token is still alive.
 
     ensureTokenIsReady(token);
 
-#if !FILAMENT_ENABLE_MATDBG
+#if !DANTE_ENABLE_MATDBG
     assert_invariant(token->gl.program);
 #endif
 
@@ -530,7 +526,7 @@ GLuint ShaderCompilerService::initialize(program_token_t& token) {
     if (mMode != Mode::THREAD_POOL) {
         // Check status of program linking. If it failed, errors will be logged.
         bool const linked = checkLinkStatusAndCleanupShaders(token);
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
         if (UTILS_UNLIKELY(!linked)) {
             LOG(ERROR)
                 << "OpenGL program " << token->name.c_str_safe() << " failed to link or compile";
@@ -538,7 +534,7 @@ GLuint ShaderCompilerService::initialize(program_token_t& token) {
         }
 #else
         // We panic if it failed to create the program.
-        FILAMENT_CHECK_POSTCONDITION(linked)
+        DANTE_CHECK_POSTCONDITION(linked)
                 << "OpenGL program " << token->name.c_str_safe() << " failed to link or compile";
 #endif
         // The program has been successfully created. Try caching the program blob for
@@ -570,7 +566,7 @@ void ShaderCompilerService::ensureTokenIsReady(program_token_t const& token) {
         case Mode::THREAD_POOL: {
             // We need this program right now, make sure the job is finished.
             if (auto job = mCompilerThreadPool.dequeue(token)) {
-                FILAMENT_TRACING_EVENT(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                DANTE_TRACING_EVENT(DANTE_TRACING_CATEGORY_DANTE,
                         "compile(Waiting)", "name", token->name.c_str_safe(),
                         "program", token->programString.c_str_safe());
                 job();// The job hasn't started yet, so execute it now.
@@ -655,8 +651,8 @@ void ShaderCompilerService::runAtNextTick(CompilerPriorityQueue priority,
             });
     ops.emplace(pos, priority, token, std::move(job));
 
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "ShaderCompilerService Jobs", mRunAtNextTickOps.size());
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "ShaderCompilerService Jobs", mRunAtNextTickOps.size());
 }
 
 bool ShaderCompilerService::cancelTickOp(program_token_t const& token) noexcept {
@@ -669,8 +665,8 @@ bool ShaderCompilerService::cancelTickOp(program_token_t const& token) noexcept 
         ops.erase(pos);
         return true;
     }
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "ShaderCompilerService Jobs", ops.size());
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "ShaderCompilerService Jobs", ops.size());
     return false;
 }
 
@@ -686,8 +682,8 @@ void ShaderCompilerService::executeTickOps() {
             ++it;
         }
     }
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "ShaderCompilerService Jobs", ops.size());
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "ShaderCompilerService Jobs", ops.size());
 }
 
 bool ShaderCompilerService::shouldCompileSynchronousProgramThisTick() const noexcept {
@@ -744,8 +740,8 @@ void ShaderCompilerService::cancelPendingSynchronousProgram(program_token_t cons
         mPendingSynchronousPrograms.erase(pos);
         return;
     }
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT,
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE,
             "ShaderCompilerService Pending Programs", mPendingSynchronousPrograms.size());
 }
 
@@ -753,7 +749,7 @@ void ShaderCompilerService::cancelPendingSynchronousProgram(program_token_t cons
         Program::ShaderSource shadersSource,
         FixedCapacityVector<Program::SpecializationConstant> const& specializationConstants,
         bool multiview, program_token_t const& token) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     auto const appendSpecConstantString =
             +[](CString& s, size_t id, Program::SpecializationConstant const& sc) {
@@ -913,7 +909,7 @@ void ShaderCompilerService::cancelPendingSynchronousProgram(program_token_t cons
 }
 
 /* static */ void ShaderCompilerService::checkCompileStatus(program_token_t const& token) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     UTILS_NOUNROLL
     for (size_t i = 0; i < Program::SHADER_TYPE_COUNT; i++) {
@@ -935,7 +931,7 @@ void ShaderCompilerService::cancelPendingSynchronousProgram(program_token_t cons
 
 /* static */ void ShaderCompilerService::linkProgram(OpenGLContext const& context,
         program_token_t const& token) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     // Shader compilation should be completed by now. Check the status and log errors on failure.
     checkCompileStatus(token);
@@ -972,7 +968,7 @@ void ShaderCompilerService::cancelPendingSynchronousProgram(program_token_t cons
 
 /* static */ bool ShaderCompilerService::checkLinkStatusAndCleanupShaders(
         program_token_t const& token) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     assert_invariant(token->gl.program);
 
     bool linked = true;
@@ -1320,4 +1316,4 @@ mediump vec4 unpackSnorm4x8(highp uint v) {
     return { version, prolog, body };
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

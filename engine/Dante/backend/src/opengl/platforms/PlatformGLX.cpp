@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <backend/platforms/PlatformGLX.h>
 
@@ -119,7 +115,7 @@ static bool loadLibraries() {
     return true;
 }
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace backend;
 
@@ -214,7 +210,7 @@ Driver* PlatformGLX::createDriver(void* sharedGLContext,
     g_glx.setCurrentContext(mGLXDisplay, mDummySurface, mDummySurface, mGLXContext);
 
     int result = bluegl::bind();
-    FILAMENT_CHECK_POSTCONDITION(!result) << "Unable to load OpenGL entry points.";
+    DANTE_CHECK_POSTCONDITION(!result) << "Unable to load OpenGL entry points.";
 
     return OpenGLPlatform::createDefaultDriver(this, sharedGLContext, driverConfig);
 }
@@ -323,4 +319,4 @@ void PlatformGLX::commit(Platform::SwapChain* swapChain) noexcept {
     g_glx.swapBuffers(mGLXDisplay, (GLXDrawable)swapChain);
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

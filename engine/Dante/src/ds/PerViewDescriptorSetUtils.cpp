@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "PerViewDescriptorSetUtils.h"
 
 #include "details/Camera.h"
 #include "details/Engine.h"
 
-#include <private/filament/UibStructs.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/Engine.h>
-#include <filament/Viewport.h>
+#include <dante/Engine.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverEnums.h>
 
@@ -22,7 +18,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -97,4 +93,4 @@ void PerViewDescriptorSetUtils::prepareMaterialGlobals(PerViewUib& s,
     s.custom[3] = materialGlobals[3];
 }
 
-} // namespace filament
+} // namespace dante

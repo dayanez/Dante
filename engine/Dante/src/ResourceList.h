@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_RESOURCELIST_H
-#define TNT_FILAMENT_RESOURCELIST_H
+#ifndef TNT_DANTE_RESOURCELIST_H
+#define TNT_DANTE_RESOURCELIST_H
 
 #include <utils/compiler.h>
 
@@ -12,7 +8,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class ResourceListBase {
 public:
@@ -98,6 +94,6 @@ public:
     }
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_RESOURCELIST_H
+#endif // TNT_DANTE_RESOURCELIST_H

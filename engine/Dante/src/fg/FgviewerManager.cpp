@@ -1,9 +1,5 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 
 #include "fg/FgviewerManager.h"
 
@@ -25,7 +21,7 @@
 #include <utils/CString.h>
 #include <utils/Log.h>
 
-namespace filament {
+namespace dante {
 
 FgviewerManager::FgviewerManager(FEngine& engine, utils::CString const& serverPort)
         : mServer(std::make_unique<fgviewer::DebugServer>(atoi(serverPort.c_str()),
@@ -264,6 +260,6 @@ void FgviewerManager::requestTextureReadback(fgviewer::ViewHandle viewId, uint32
     mReadbackRequests.emplace_back(Request{ viewId, id, name, std::move(callback) });
 }
 
-} // namespace filament
+} // namespace dante
 
-#endif // FILAMENT_ENABLE_FGVIEWER
+#endif // DANTE_ENABLE_FGVIEWER

@@ -1,7 +1,7 @@
 
 
-#ifndef TNT_FILAMENT_DETAILS_RENDERER_H
-#define TNT_FILAMENT_DETAILS_RENDERER_H
+#ifndef TNT_DANTE_DETAILS_RENDERER_H
+#define TNT_DANTE_DETAILS_RENDERER_H
 
 #include "Allocators.h"
 #include "BufferStuffingDetector.h"
@@ -13,9 +13,9 @@
 
 #include "details/SwapChain.h"
 
-#include <filament/FrameHistoryStream.h>
-#include <filament/Renderer.h>
-#include <filament/Viewport.h>
+#include <dante/FrameHistoryStream.h>
+#include <dante/Renderer.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -38,11 +38,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef FILAMENT_LOG_FRAME_INFO
-#define FILAMENT_LOG_FRAME_INFO 0
+#ifndef DANTE_LOG_FRAME_INFO
+#define DANTE_LOG_FRAME_INFO 0
 #endif
 
-namespace filament {
+namespace dante {
 
 class TextureCache;
 
@@ -224,7 +224,7 @@ private:
     uint32_t mFrameId = 1; // id 0 is reserved for standalone views
     uint32_t mLastSubmittedFrameId = 1;
     FrameInfoManager mFrameInfoManager;
-#if FILAMENT_LOG_FRAME_INFO
+#if DANTE_LOG_FRAME_INFO
     FrameHistoryStream mFrameHistoryStream;
 #endif
     backend::TextureFormat mHdrTranslucent;
@@ -253,8 +253,8 @@ private:
     mutable BufferStuffingDetector mBufferStuffingDetector;
 };
 
-FILAMENT_DOWNCAST(Renderer)
+DANTE_DOWNCAST(Renderer)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_RENDERER_H
+#endif // TNT_DANTE_DETAILS_RENDERER_H

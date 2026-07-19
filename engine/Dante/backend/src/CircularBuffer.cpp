@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "private/backend/CircularBuffer.h"
 
@@ -34,7 +30,7 @@
 
 using namespace utils;
 
-namespace filament::backend {
+namespace dante::backend {
 
 size_t CircularBuffer::sPageSize = arch::getPageSize();
 
@@ -66,7 +62,7 @@ void* CircularBuffer::alloc(size_t size) {
     void* vaddr_shadow = MAP_FAILED;
     void* vaddr_guard = MAP_FAILED;
     size_t const BLOCK_SIZE = getBlockSize();
-    int const fd = ashmem_create_region("filament::CircularBuffer", size + BLOCK_SIZE);
+    int const fd = ashmem_create_region("dante::CircularBuffer", size + BLOCK_SIZE);
     if (fd >= 0) {
         // reserve/find enough address space
         void* reserve_vaddr = mmap(nullptr, size * 2 + BLOCK_SIZE,
@@ -117,7 +113,7 @@ void* CircularBuffer::alloc(size_t size) {
         data = mmap(nullptr, size * 2 + BLOCK_SIZE,
                 PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 
-        FILAMENT_CHECK_POSTCONDITION(data != MAP_FAILED) <<
+        DANTE_CHECK_POSTCONDITION(data != MAP_FAILED) <<
                 "couldn't allocate " << (size * 2 / 1024) <<
                 " KiB of virtual address space for the command buffer";
 
@@ -133,7 +129,7 @@ void* CircularBuffer::alloc(size_t size) {
     // On Windows, use VirtualAlloc instead of malloc to allocate virtual memory.
     // This allows us to set page protection by VirtualProtect.
     void* data = VirtualAlloc(nullptr, size * 2 + BLOCK_SIZE, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
-    FILAMENT_CHECK_POSTCONDITION(data != nullptr)
+    DANTE_CHECK_POSTCONDITION(data != nullptr)
             << "couldn't allocate " << (size * 2 / 1024)
             << " KiB of virtual address space for the command buffer";
 
@@ -141,7 +137,7 @@ void* CircularBuffer::alloc(size_t size) {
     void* guard = (void*)(uintptr_t(data) + size * 2);
     DWORD oldProtect = 0;
     BOOL ok = VirtualProtect(guard, BLOCK_SIZE, PAGE_NOACCESS, &oldProtect);
-    FILAMENT_CHECK_POSTCONDITION(ok) << "VirtualProtect failed to set guard page";
+    DANTE_CHECK_POSTCONDITION(ok) << "VirtualProtect failed to set guard page";
     return data;
 #else
     return ::malloc(2 * size);
@@ -203,4 +199,4 @@ CircularBuffer::Range CircularBuffer::getBuffer() noexcept {
     return range;
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

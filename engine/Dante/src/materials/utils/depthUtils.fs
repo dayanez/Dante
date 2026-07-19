@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef FILAMENT_MATERIALS_DEPTH_UTILS
-#define FILAMENT_MATERIALS_DEPTH_UTILS
+#ifndef DANTE_MATERIALS_DEPTH_UTILS
+#define DANTE_MATERIALS_DEPTH_UTILS
 
 highp float linearizeDepth(highp float depth) {
     // Our far plane is at infinity, which causes a division by zero below, which in turn
@@ -26,5 +22,5 @@ highp float sampleDepthLinear(const highp sampler2D depthTexture,
     return linearizeDepth(sampleDepth(depthTexture, uv, lod));
 }
 
-#endif // #define FILAMENT_MATERIALS_DEPTH_UTILS
+#endif // #define DANTE_MATERIALS_DEPTH_UTILS
 

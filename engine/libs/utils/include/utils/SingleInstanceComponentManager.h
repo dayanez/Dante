@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_SINGLEINSTANCECOMPONENTMANAGER_H
 #define TNT_UTILS_SINGLEINSTANCECOMPONENTMANAGER_H
@@ -381,6 +377,6 @@ SingleInstanceComponentManager<Elements ... >::removeComponent(Entity const e) {
 }
 
 
-} // namespace filament
+} // namespace dante
 
 #endif // TNT_UTILS_SINGLEINSTANCECOMPONENTMANAGER_H

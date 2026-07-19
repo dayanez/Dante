@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_TRSTRANSFORMMANAGER_H
 #define GLTFIO_TRSTRANSFORMMANAGER_H
 
-#include <filament/FilamentAPI.h>
+#include <dante/DanteAPI.h>
 
 #include <utils/compiler.h>
 #include <utils/EntityInstance.h>
@@ -15,13 +11,13 @@
 #include <math/quat.h>
 #include <math/vec3.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
 namespace utils {
 class Entity;
 } // namespace utils
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 class FTrsTransformManager;
 
@@ -99,6 +95,6 @@ public:
     TrsTransformManager& operator=(TrsTransformManager&&) = delete;
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_TRSTRANSFORMMANAGER_H

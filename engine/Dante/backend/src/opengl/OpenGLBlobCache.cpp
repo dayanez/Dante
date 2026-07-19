@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "OpenGLBlobCache.h"
 
@@ -15,7 +11,7 @@
 #include <utils/FixedCapacityVector.h>
 #include <utils/Logger.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 struct OpenGLBlobCache::Blob {
     GLenum format;
@@ -28,7 +24,7 @@ OpenGLBlobCache::OpenGLBlobCache(OpenGLContext& gl) noexcept
 
 GLuint OpenGLBlobCache::retrieve(BlobCacheKey* outKey, Platform& platform,
         Program const& program) const noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     if (!mCachingSupported || !platform.hasRetrieveBlobFunc()) {
         // the key is never updated in that case
         return 0;
@@ -36,7 +32,7 @@ GLuint OpenGLBlobCache::retrieve(BlobCacheKey* outKey, Platform& platform,
 
     GLuint programId = 0;
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     // TODO(exv): Don't copy these spec constants!
     BlobCacheKey::SpecializationConstants constants(program.getSpecializationConstants());
     BlobCacheKey key{ program.getCacheId(), std::move(constants) };
@@ -62,7 +58,7 @@ GLuint OpenGLBlobCache::retrieve(BlobCacheKey* outKey, Platform& platform,
         programId = glCreateProgram();
 
         { // scope for systrace
-            FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "glProgramBinary");
+            DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "glProgramBinary");
             glProgramBinary(programId, blob->format, blob->data, programBinarySize);
         }
 
@@ -96,17 +92,17 @@ GLuint OpenGLBlobCache::retrieve(BlobCacheKey* outKey, Platform& platform,
 
 void OpenGLBlobCache::insert(Platform& platform,
         BlobCacheKey const& key, GLuint program) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     if (!mCachingSupported || !platform.hasInsertBlobFunc()) {
         // the key is never updated in that case
         return;
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     GLenum format;
     GLint programBinarySize = 0;
     { // scope for systrace
-        FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "glGetProgramiv");
+        DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "glGetProgramiv");
         glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH, &programBinarySize);
     }
     if (programBinarySize) {
@@ -114,7 +110,7 @@ void OpenGLBlobCache::insert(Platform& platform,
         std::unique_ptr<Blob, decltype(&::free)> blob{ (Blob*)malloc(size), &::free };
         if (UTILS_LIKELY(blob)) {
             { // scope for systrace
-                FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "glGetProgramBinary");
+                DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "glGetProgramBinary");
                 glGetProgramBinary(program, programBinarySize,
                         &programBinarySize, &format, blob->data);
             }
@@ -128,4 +124,4 @@ void OpenGLBlobCache::insert(Platform& platform,
 #endif
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

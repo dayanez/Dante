@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "MetalArgumentBuffer.h"
 
 #include <gtest/gtest.h>
 
 using namespace filamat;
-using namespace filament::backend;
+using namespace dante::backend;
 
 // -------------------------------------------------------------------------------------------------
 

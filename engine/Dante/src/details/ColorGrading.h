@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_COLORGRADING_H
-#define TNT_FILAMENT_DETAILS_COLORGRADING_H
+#ifndef TNT_DANTE_DETAILS_COLORGRADING_H
+#define TNT_DANTE_DETAILS_COLORGRADING_H
 
 #include "downcast.h"
 
-#include <filament/ColorGrading.h>
+#include <dante/ColorGrading.h>
 
 #include <backend/Handle.h>
 
@@ -21,7 +17,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -61,8 +57,8 @@ private:
 
 };
 
-FILAMENT_DOWNCAST(ColorGrading)
+DANTE_DOWNCAST(ColorGrading)
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_DETAILS_COLORGRADING_H
+#endif //TNT_DANTE_DETAILS_COLORGRADING_H

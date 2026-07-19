@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <gtest/gtest.h>
 
@@ -9,7 +5,7 @@
 #include <filaflat/DictionaryReader.h>
 #include <filaflat/MaterialChunk.h>
 #include <filaflat/Unflattener.h>
-#include <filament/MaterialChunkType.h>
+#include <dante/MaterialChunkType.h>
 
 #include <vector>
 #include <cstdint>
@@ -121,7 +117,7 @@ TEST_F(FilaflatSecurityTest, MaterialChunkHeapOverflow) {
     ShaderContent output;
     // THIS LINE EXPLOITS THE VULNERABILITY (Heap buffer overflow, memcpy overwrite)
     // The patched `getShader` routine securely rejects it by evaluating `content.size() > shaderSize` returning false.
-    bool valid = chunk.getShader(output, dict, MaterialChunk::ShaderModel(1), filament::Variant{0}, MaterialChunk::ShaderStage(0));
+    bool valid = chunk.getShader(output, dict, MaterialChunk::ShaderModel(1), dante::Variant{0}, MaterialChunk::ShaderStage(0));
     EXPECT_FALSE(valid) << "VULNERABILITY: Heap overflow validation bypassed!";
 }
 
@@ -158,7 +154,7 @@ TEST_F(FilaflatSecurityTest, MaterialChunkOOBReadText) {
     BlobDictionary dict; // Empty dictionary
     ShaderContent output;
     // THIS LINE EXPLOITS THE VULNERABILITY (OOB Memory Access dict[9999])
-    chunk.getShader(output, dict, MaterialChunk::ShaderModel(1), filament::Variant{0}, MaterialChunk::ShaderStage(0));
+    chunk.getShader(output, dict, MaterialChunk::ShaderModel(1), dante::Variant{0}, MaterialChunk::ShaderStage(0));
 }
 
 // 4. Out of Bounds Read via index mapping evasion (Binary mode)
@@ -187,7 +183,7 @@ TEST_F(FilaflatSecurityTest, MaterialChunkOOBReadBinary) {
     BlobDictionary dict; // Empty dictionary
     ShaderContent output;
     // THIS LINE EXPLOITS THE VULNERABILITY (OOB Memory Access dict[9999])
-    chunk.getShader(output, dict, MaterialChunk::ShaderModel(1), filament::Variant{0}, MaterialChunk::ShaderStage(0));
+    chunk.getShader(output, dict, MaterialChunk::ShaderModel(1), dante::Variant{0}, MaterialChunk::ShaderStage(0));
 }
 
 // 5. Integer overflow / Pointer wrap-around evasion 

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 /*
  * This is our implementation of SAO -- it's not standalone because it uses materialParams

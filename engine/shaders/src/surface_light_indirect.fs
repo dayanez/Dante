@@ -82,7 +82,7 @@ vec3 diffuseIrradiance(const vec3 n) {
     }
 
     if (frameUniforms.iblSH[0].x == 65504.0) {
-#if FILAMENT_QUALITY < FILAMENT_QUALITY_HIGH
+#if DANTE_QUALITY < DANTE_QUALITY_HIGH
         if (CONFIG_STATIC_TEXTURE_TARGET_WORKAROUND) {
             return irradianceRoughnessOne;
         } else {

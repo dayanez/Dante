@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "CompilerThreadPool.h"
 
@@ -16,7 +12,7 @@
 #include <mutex>
 #include <utility>
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace utils;
 
@@ -38,7 +34,7 @@ void CompilerThreadPool::init(uint32_t const threadCount,
 
     for (size_t i = 0; i < threadCount; i++) {
         mCompilerThreads.emplace_back([this, setup, cleanup]() {
-            FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
+            DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
 
             (*setup)();
 
@@ -55,7 +51,7 @@ void CompilerThreadPool::init(uint32_t const threadCount,
                     break;
                 }
 
-                FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "CompilerThreadPool Jobs",
+                DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "CompilerThreadPool Jobs",
                         mQueues[0].size() + mQueues[1].size() + mQueues[2].size());
 
                 Job job;
@@ -74,7 +70,7 @@ void CompilerThreadPool::init(uint32_t const threadCount,
 
                 // execute the job without holding any locks
                 lock.unlock();
-                FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE,
                         "CompilerThreadPool::Job");
                 job();
             }
@@ -145,4 +141,4 @@ void CompilerThreadPool::terminate() noexcept {
     } // lock releases automatically here!
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ResourceList.h"
 
@@ -9,7 +5,7 @@
 
 #include <algorithm>
 
-namespace filament {
+namespace dante {
 
 ResourceListBase::ResourceListBase(const char* typeName)
 #ifndef NDEBUG
@@ -49,4 +45,4 @@ void ResourceListBase::forEach(void (* f)(void*, void*), void* user) const noexc
     });
 }
 
-} // namespace filament
+} // namespace dante

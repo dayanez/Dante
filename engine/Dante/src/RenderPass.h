@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_RENDERPASS_H
-#define TNT_FILAMENT_RENDERPASS_H
+#ifndef TNT_DANTE_RENDERPASS_H
+#define TNT_DANTE_RENDERPASS_H
 
 #include "Allocators.h"
 #include "DynamicSpecConstKey.h"
@@ -13,8 +9,8 @@
 #include "details/Camera.h"
 #include "details/Scene.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -40,7 +36,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 namespace backend {
 class CommandBufferQueue;
@@ -583,9 +579,9 @@ public:
 };
 
 
-} // namespace filament
+} // namespace dante
 
-template<> struct utils::EnableBitMaskOperators<filament::RenderPass::CommandTypeFlags>
+template<> struct utils::EnableBitMaskOperators<dante::RenderPass::CommandTypeFlags>
         : public std::true_type {};
 
-#endif // TNT_FILAMENT_RENDERPASS_H
+#endif // TNT_DANTE_RENDERPASS_H

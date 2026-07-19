@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_SHADOWMAPMANAGER_H
-#define TNT_FILAMENT_DETAILS_SHADOWMAPMANAGER_H
+#ifndef TNT_DANTE_DETAILS_SHADOWMAPMANAGER_H
+#define TNT_DANTE_DETAILS_SHADOWMAPMANAGER_H
 
 #include "AtlasAllocator.h"
 #include "ShadowMap.h"
@@ -19,12 +15,12 @@
 #include "fg/FrameGraphId.h"
 #include "fg/FrameGraphTexture.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/LightManager.h>
-#include <filament/Options.h>
-#include <filament/Viewport.h>
+#include <dante/LightManager.h>
+#include <dante/Options.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -52,7 +48,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class Camera;
 class FCamera;
@@ -310,9 +306,9 @@ private:
     }
 };
 
-} // namespace filament
+} // namespace dante
 
-template<> struct utils::EnableBitMaskOperators<filament::ShadowMapManager::ShadowTechnique>
+template<> struct utils::EnableBitMaskOperators<dante::ShadowMapManager::ShadowTechnique>
         : public std::true_type {};
 
-#endif //TNT_FILAMENT_DETAILS_SHADOWMAPMANAGER_H
+#endif //TNT_DANTE_DETAILS_SHADOWMAPMANAGER_H

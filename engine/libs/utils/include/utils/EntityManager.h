@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_ENTITYMANAGER_H
 #define TNT_UTILS_ENTITYMANAGER_H
@@ -15,11 +11,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef FILAMENT_UTILS_TRACK_ENTITIES
-#define FILAMENT_UTILS_TRACK_ENTITIES false
+#ifndef DANTE_UTILS_TRACK_ENTITIES
+#define DANTE_UTILS_TRACK_ENTITIES false
 #endif
 
-#if FILAMENT_UTILS_TRACK_ENTITIES
+#if DANTE_UTILS_TRACK_ENTITIES
 #include <utils/ostream.h>
 #include <vector>
 #endif
@@ -114,7 +110,7 @@ public:
     EntityManager(const EntityManager& rhs) = delete;
     EntityManager& operator=(const EntityManager& rhs) = delete;
 
-#if FILAMENT_UTILS_TRACK_ENTITIES
+#if DANTE_UTILS_TRACK_ENTITIES
     std::vector<Entity> getActiveEntities() const;
     void dumpActiveEntities(utils::io::ostream& out) const;
 #endif

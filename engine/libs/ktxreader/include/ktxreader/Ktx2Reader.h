@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef KTXREADER_KTX2READER_H
 #define KTXREADER_KTX2READER_H
@@ -9,11 +5,11 @@
 #include <cstdint>
 #include <cstddef>
 
-#include <filament/Texture.h>
+#include <dante/Texture.h>
 
 #include <utils/FixedCapacityVector.h>
 
-namespace filament {
+namespace dante {
     class Engine;
 }
 
@@ -25,8 +21,8 @@ namespace ktxreader {
 
 class Ktx2Reader {
     public:
-        using Engine = filament::Engine;
-        using Texture = filament::Texture;
+        using Engine = dante::Engine;
+        using Texture = dante::Texture;
         enum class TransferFunction { LINEAR, sRGB };
 
         enum class Result {
@@ -41,7 +37,7 @@ class Ktx2Reader {
         ~Ktx2Reader();
 
         /**
-         * Requests that the reader constructs Filament textures with given internal format.
+         * Requests that the reader constructs Dante textures with given internal format.
          *
          * This MUST be called at least once before calling load().
          *
@@ -66,7 +62,7 @@ class Ktx2Reader {
         void unrequestFormat(Texture::InternalFormat format) noexcept;
 
         /**
-         * Attempts to create and load a Filament texture from the given KTX2 blob.
+         * Attempts to create and load a Dante texture from the given KTX2 blob.
          *
          * If none of the requested formats can be extracted from the data, this returns null.
          *
@@ -98,7 +94,7 @@ class Ktx2Reader {
          *    reader->asyncDestroy(async);
          *
          * In the documentation comments, "foreground thread" refers to the thread that the
-         * Filament Engine was created on.
+         * Dante Engine was created on.
          */
         class Async {
         public:
@@ -125,7 +121,7 @@ class Ktx2Reader {
              *
              * This can safely be called while doTranscoding() is still working in another thread.
              * Since this calls Texture::setImage(), it should be called from the foreground thread;
-             * see "Thread safety" in the documentation for filament::Engine.
+             * see "Thread safety" in the documentation for dante::Engine.
              */
             void uploadImages();
 

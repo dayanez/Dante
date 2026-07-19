@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/SkinningBuffer.h"
 
 #include "details/Engine.h"
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -26,5 +22,5 @@ size_t SkinningBuffer::getBoneCount() const noexcept {
     return downcast(this)->getBoneCount();
 }
 
-} // namespace filament
+} // namespace dante
 

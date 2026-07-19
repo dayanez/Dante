@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fsr.h"
 #include "generated/resources/fsr.h"
@@ -14,7 +10,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 static const StaticMaterialInfo sMaterialList[] = {
     { "fsr_easu",                   MATERIAL(FSR, FSR_EASU) },
@@ -27,4 +23,4 @@ utils::Slice<const StaticMaterialInfo> getFsrMaterialList() noexcept {
     return { std::begin(sMaterialList), std::end(sMaterialList) };
 }
 
-} // namespace filament
+} // namespace dante

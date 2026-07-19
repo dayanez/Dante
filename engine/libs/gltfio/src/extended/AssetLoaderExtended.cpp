@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "AssetLoaderExtended.h"
 
 #include "TangentsJobExtended.h"
 
 #include "../DracoCache.h"
-#include "../FFilamentAsset.h"
+#include "../FDanteAsset.h"
 #include "../GltfEnums.h"
 #include "../Utility.h"
 
-#include <filament/BufferObject.h>
+#include <dante/BufferObject.h>
 
 #include <utils/JobSystem.h>
 #include <utils/Log.h>
@@ -23,7 +19,7 @@
 #include <unordered_map>
 #include <variant>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 namespace {
 
@@ -31,8 +27,8 @@ constexpr uint8_t const VERTEX_JOB = 0x1;
 constexpr uint8_t const INDEX_JOB = 0x2;
 constexpr uint8_t const MORPH_TARGET_JOB = 0x4;
 
-constexpr int const GENERATED_0 = FFilamentAsset::ResourceInfoExtended::GENERATED_0_INDEX;
-constexpr int const GENERATED_1 = FFilamentAsset::ResourceInfoExtended::GENERATED_1_INDEX;
+constexpr int const GENERATED_0 = FDanteAsset::ResourceInfoExtended::GENERATED_0_INDEX;
+constexpr int const GENERATED_1 = FDanteAsset::ResourceInfoExtended::GENERATED_1_INDEX;
 
 using BufferSlot = AssetLoaderExtended::BufferSlot;
 using BufferType = std::variant<short4*, ushort4*, float2*, float3*, float4*>;
@@ -52,7 +48,7 @@ struct AttributeEqual {
 };
 
 using AttributesMap =
-        std::unordered_map<Attribute, FilamentAttribute, AttributeHash, AttributeEqual>;
+        std::unordered_map<Attribute, DanteAttribute, AttributeHash, AttributeEqual>;
 
 inline std::tuple<VertexBuffer::AttributeType, size_t, void*> getVertexBundle(
         VertexAttribute attrib, TangentsJobExtended::OutputParams& out) {
@@ -113,7 +109,7 @@ inline std::tuple<VertexBuffer::AttributeType, size_t, void*> getVertexBundle(
 // ResourceLoader.
 std::vector<BufferSlot> computeGeometries(cgltf_primitive const* prim, uint8_t const jobType,
         AttributesMap const& attributesMap, std::vector<int> const& morphTargets, UvMap const& uvmap,
-        filament::Engine* engine) {
+        dante::Engine* engine) {
 
     bool const isUnlit = prim->material ? prim->material->unlit : false;
 
@@ -181,9 +177,9 @@ std::vector<BufferSlot> computeGeometries(cgltf_primitive const* prim, uint8_t c
             std::vector<BufferSlot> vslots;
             bool slottedTangent = false;
             int maxSlot = 0;
-            for (auto [cgltfAttr, filamentAttr]: attributesMap) {
+            for (auto [cgltfAttr, danteAttr]: attributesMap) {
                 auto const [cattr, expectedIndex] = cgltfAttr;
-                auto const [vattr, slot] = filamentAttr;
+                auto const [vattr, slot] = danteAttr;
                 auto const [type, byteCount, data] = getVertexBundle(vattr, out);
 
                 vertexBufferBuilder.attribute(vattr, slot, type);
@@ -198,7 +194,7 @@ std::vector<BufferSlot> computeGeometries(cgltf_primitive const* prim, uint8_t c
                     size_t const requiredSize = byteCount * vertexCount;
                     auto gendata = (uint8_t*) malloc(requiredSize);
 
-                    if (vattr == filament::VertexAttribute::COLOR) {
+                    if (vattr == dante::VertexAttribute::COLOR) {
                         // Assume white as the default if colors need to be generated.
                         float4* dataf = (float4*) gendata;
                         for (size_t i = 0; i < vertexCount; ++i) {
@@ -215,7 +211,7 @@ std::vector<BufferSlot> computeGeometries(cgltf_primitive const* prim, uint8_t c
                     });
                 } else {
                     // Note that normalization is not necessary because we always convert the input.
-                    if (vattr == filament::VertexAttribute::TANGENTS) {
+                    if (vattr == dante::VertexAttribute::TANGENTS) {
                         vertexBufferBuilder.normalized(vattr);
                         slottedTangent = true;
                     }
@@ -231,7 +227,7 @@ std::vector<BufferSlot> computeGeometries(cgltf_primitive const* prim, uint8_t c
             // Tangent is always computed for lit.
             if (!slottedTangent && !isUnlit) {
                 auto const slot = maxSlot + 1;
-                auto const vattr = filament::VertexAttribute::TANGENTS;
+                auto const vattr = dante::VertexAttribute::TANGENTS;
                 auto const [type, byteCount, data] = getVertexBundle(vattr, out);
                 vertexBufferBuilder.attribute(vattr, slot, type);
                 vertexBufferBuilder.normalized(vattr);
@@ -297,7 +293,7 @@ std::vector<BufferSlot> computeGeometries(cgltf_primitive const* prim, uint8_t c
 } // anonymous namespace
 
 // The first portion of this function prepares the computation of geometries associated with one
-// cgltf primitive by transforming types into Filament associated (or gltfio internal) types. If the
+// cgltf primitive by transforming types into Dante associated (or gltfio internal) types. If the
 // input mesh is meshopt compressed or is in the Draco format, then it will be first transformed
 // into the uncompressed version and then the geometries (tangents etc) will be computed.
 bool AssetLoaderExtended::createPrimitive(Input* input, Output* out,
@@ -339,7 +335,7 @@ bool AssetLoaderExtended::createPrimitive(Input* input, Output* out,
         if (atype == cgltf_attribute_type_normal) {
             if (isUnlit) continue;
             if (!hasNormals) {
-                FilamentAttribute const fattr { VertexAttribute::TANGENTS, slotCount++ };
+                DanteAttribute const fattr { VertexAttribute::TANGENTS, slotCount++ };
                 hasNormals = true;
                 attributesMap[cattr] = fattr;
             }
@@ -349,14 +345,14 @@ bool AssetLoaderExtended::createPrimitive(Input* input, Output* out,
         if (atype == cgltf_attribute_type_tangent) {
             if (isUnlit) continue;
             if (!hasNormals) {
-                FilamentAttribute const fattr { VertexAttribute::TANGENTS, slotCount++ };
+                DanteAttribute const fattr { VertexAttribute::TANGENTS, slotCount++ };
                 hasNormals = true;
                 attributesMap[cattr] = fattr;
             }
             continue;
         }
 
-        // Translate the cgltf attribute enum into a Filament enum.
+        // Translate the cgltf attribute enum into a Dante enum.
         VertexAttribute semantic;
         if (!getVertexAttrType(atype, &semantic)) {
             utils::slog.e << "Unrecognized vertex semantic in " << name << utils::io::endl;
@@ -552,4 +548,4 @@ bool AssetLoaderExtended::createPrimitive(Input* input, Output* out,
     return true;
 }
 
-}// namespace filament::gltfio
+}// namespace dante::gltfio

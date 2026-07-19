@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#include "private/filament/DescriptorSets.h"
+#include "private/dante/DescriptorSets.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <backend/DriverEnums.h>
 
@@ -25,7 +21,7 @@
 #include <unordered_map>
 #include <utility>
 
-namespace filament::descriptor_sets {
+namespace dante::descriptor_sets {
 
 using namespace backend;
 
@@ -279,7 +275,7 @@ DescriptorSetLayout getPerViewDescriptorSetLayoutWithVariant(
 
 DescriptorType getDescriptorType(SamplerType const type, SamplerFormat const format) {
     auto const pos = sDescriptorTypeMap.find({ type, format });
-    FILAMENT_CHECK_PRECONDITION(pos != sDescriptorTypeMap.end())
+    DANTE_CHECK_PRECONDITION(pos != sDescriptorTypeMap.end())
             << "Incompatible Sampler Format " << to_string(format)
             << " and Type " << to_string(type);
     return pos->second;
@@ -319,4 +315,4 @@ constexpr static bool checkConsistency() noexcept {
 static_assert(checkConsistency(), "ssrVariantDescriptorSetLayout is not compatible with "
         "perViewDescriptorSetLayout");
 
-} // namespace filament::descriptor_sets
+} // namespace dante::descriptor_sets

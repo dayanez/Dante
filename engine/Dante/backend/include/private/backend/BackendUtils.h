@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_BACKENDUTILS_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_BACKENDUTILS_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_BACKENDUTILS_H
+#define TNT_DANTE_BACKEND_PRIVATE_BACKENDUTILS_H
 
 #include <backend/DriverEnums.h>
 #include <backend/PixelBufferDescriptor.h>
@@ -13,7 +9,7 @@
 
 #include <stddef.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * Returns true if the shader string requests the Google-style line directive extension.
@@ -59,6 +55,6 @@ size_t getBlockHeight(TextureFormat format) noexcept;
  */
 bool reshape(const PixelBufferDescriptor& data, PixelBufferDescriptor& reshaped);
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_BACKENDUTILS_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_BACKENDUTILS_H

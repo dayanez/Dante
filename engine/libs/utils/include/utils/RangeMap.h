@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_RANGEMAP_H
 #define TNT_UTILS_RANGEMAP_H
@@ -108,7 +104,7 @@ public:
      */
     const ValueType& get(KeyType key) const {
         ConstIterator iter = findRange(key);
-        FILAMENT_CHECK_PRECONDITION(iter != end())
+        DANTE_CHECK_PRECONDITION(iter != end())
                 << "RangeMap: No element exists at the given key.";
         return getValue(iter);
     }

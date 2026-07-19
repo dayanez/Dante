@@ -1,21 +1,17 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "materials/uberarchive.h"
 
 #include <gltfio/AssetLoader.h>
-#include <gltfio/FilamentAsset.h>
-#include <gltfio/FilamentInstance.h>
+#include <gltfio/DanteAsset.h>
+#include <gltfio/DanteInstance.h>
 #include <gltfio/math.h>
 #include <gltfio/ResourceLoader.h>
 #include <gltfio/TextureProvider.h>
 
-#include <filament/Engine.h>
-#include <filament/MaterialEnums.h>
-#include <filament/RenderableManager.h>
-#include <filament/TransformManager.h>
+#include <dante/Engine.h>
+#include <dante/MaterialEnums.h>
+#include <dante/RenderableManager.h>
+#include <dante/TransformManager.h>
 
 #include <backend/PixelBufferDescriptor.h>
 
@@ -40,7 +36,7 @@
 
 #include <unistd.h>
 
-using namespace filament;
+using namespace dante;
 using namespace backend;
 using namespace gltfio;
 using namespace utils;
@@ -175,7 +171,7 @@ public:
             exit(1);
         }
 
-        // Parse the glTF file and create Filament entities.
+        // Parse the glTF file and create Dante entities.
         mAsset = mAssetLoader->createAsset(buffer.data(), buffer.size());
         buffer.clear();
         buffer.shrink_to_fit();
@@ -203,14 +199,14 @@ public:
         AssetLoader::destroy(&mAssetLoader);
     }
 
-    FilamentAsset* getAsset() const { return mAsset; }
+    DanteAsset* getAsset() const { return mAsset; }
 
     AssetLoader* mAssetLoader;
     ResourceLoader* mResourceLoader = nullptr;
     TextureProvider* mStbDecoder = nullptr;
     TextureProvider* mKtxDecoder = nullptr;
     TextureProvider* mWebpDecoder = nullptr;
-    FilamentAsset* mAsset = nullptr;
+    DanteAsset* mAsset = nullptr;
 };
 
 class glTFIOTest : public testing::Test {
@@ -247,7 +243,7 @@ protected:
 };
 
 TEST_F(glTFIOTest, AnimatedMorphCubeMaterials) {
-    FilamentAsset const& morphCubeAsset = *mData[ANIMATED_MORPH_CUBE_GLB]->getAsset();
+    DanteAsset const& morphCubeAsset = *mData[ANIMATED_MORPH_CUBE_GLB]->getAsset();
     Entity const* renderables = morphCubeAsset.getRenderableEntities();
     auto& renderableManager = mEngine->getRenderableManager();
 
@@ -288,7 +284,7 @@ do {                                                            \
 
 
 TEST_F(glTFIOTest, AnimatedMorphCubeTransforms) {
-    FilamentAsset const& morphCubeAsset = *mData[ANIMATED_MORPH_CUBE_GLB]->getAsset();
+    DanteAsset const& morphCubeAsset = *mData[ANIMATED_MORPH_CUBE_GLB]->getAsset();
     auto const& transformManager = mEngine->getTransformManager();
     Entity const* renderables = morphCubeAsset.getRenderableEntities();
 
@@ -310,7 +306,7 @@ TEST_F(glTFIOTest, AnimatedMorphCubeTransforms) {
 }
 
 TEST_F(glTFIOTest, AnimatedMorphCubeRenderables) {
-    FilamentAsset const& morphCubeAsset = *mData[ANIMATED_MORPH_CUBE_GLB]->getAsset();
+    DanteAsset const& morphCubeAsset = *mData[ANIMATED_MORPH_CUBE_GLB]->getAsset();
     Entity const* renderables = morphCubeAsset.getRenderableEntities();
     auto const& renderableManager = mEngine->getRenderableManager();
 
@@ -352,7 +348,7 @@ TEST_F(glTFIOTest, AnimatedMorphCubeRenderables) {
 }
 
 TEST_F(glTFIOTest, DamagedHelmetWebpMaterials) {
-    FilamentAsset const& damagedHelmetAsset = *mData[DAMAGED_HELMET_WEBP_GLB]->getAsset();
+    DanteAsset const& damagedHelmetAsset = *mData[DAMAGED_HELMET_WEBP_GLB]->getAsset();
     Entity const* renderables = damagedHelmetAsset.getRenderableEntities();
     auto& renderableManager = mEngine->getRenderableManager();
 
@@ -360,7 +356,7 @@ TEST_F(glTFIOTest, DamagedHelmetWebpMaterials) {
     auto materialInst = renderableManager.getMaterialInstanceAt(inst, 0);
     std::string_view name{materialInst->getName()};
     EXPECT_EQ(name, "Material_MR");
-#if defined(FILAMENT_SUPPORTS_WEBP_TEXTURES)
+#if defined(DANTE_SUPPORTS_WEBP_TEXTURES)
     EXPECT_TRUE(isWebpSupported());
     EXPECT_FALSE(mData[DAMAGED_HELMET_WEBP_GLB]->mWebpDecoder == nullptr);
     EXPECT_EQ(mEngine->getTextureCount(), 8);
@@ -380,7 +376,7 @@ TEST_F(glTFIOTest, MeshoptAllocationFailureRejectsGracefully) {
     AssetLoader* assetLoader = AssetLoader::create({mEngine, mMaterialProvider, mNameManager});
     ASSERT_NE(assetLoader, nullptr);
 
-    FilamentAsset* asset = assetLoader->createAsset(glb.data(), uint32_t(glb.size()));
+    DanteAsset* asset = assetLoader->createAsset(glb.data(), uint32_t(glb.size()));
     ASSERT_NE(asset, nullptr);
 
     ResourceLoader resourceLoader({mEngine, ".", false});
@@ -403,7 +399,7 @@ TEST_F(glTFIOTest, MalformedMeshTargetNamesWithoutPrimitives) {
             R"("meshes":[{"extras":{"targetNames":["t0","t1","t2","t3","t4","t5","t6","t7"]}}]})";
 
     AssetLoader* assetLoader = AssetLoader::create({ mEngine, mMaterialProvider, mNameManager });
-    FilamentAsset* const asset = assetLoader->createAsset(
+    DanteAsset* const asset = assetLoader->createAsset(
             reinterpret_cast<uint8_t const*>(kGltf), uint32_t(std::strlen(kGltf)));
 
     EXPECT_NE(asset, nullptr);
@@ -441,7 +437,7 @@ TEST_F(glTFIOTest, MorphTargetsExceedingMaxDoNotOverflow) {
             "\"buffers\":[{\"byteLength\":72}]}";
 
     AssetLoader* assetLoader = AssetLoader::create({ mEngine, mMaterialProvider, mNameManager });
-    FilamentAsset* const asset = assetLoader->createAsset(
+    DanteAsset* const asset = assetLoader->createAsset(
             reinterpret_cast<uint8_t const*>(gltf.data()), uint32_t(gltf.size()));
 
     EXPECT_NE(asset, nullptr);
@@ -545,7 +541,7 @@ TEST_F(glTFIOTest, RejectsOversizedEightBitIndexAccessor) {
     ASSERT_NE(loader, nullptr);
 
     std::vector<uint8_t> glb = makeMalformedEightBitIndexGlb(100000000u);
-    FilamentAsset* asset = loader->createAsset(glb.data(), uint32_t(glb.size()));
+    DanteAsset* asset = loader->createAsset(glb.data(), uint32_t(glb.size()));
     ASSERT_NE(asset, nullptr);
 
     ResourceLoader resourceLoader({ mEngine, ".", false });
@@ -605,11 +601,11 @@ TEST_F(glTFIOTest, SkipsInverseBindMatricesOutsideBufferView) {
             mEngine, gltfPath.string().c_str(), false,
     });
 
-    FilamentAsset* asset = assetLoader->createAsset(buffer.data(), buffer.size());
+    DanteAsset* asset = assetLoader->createAsset(buffer.data(), buffer.size());
     ASSERT_NE(asset, nullptr);
     EXPECT_TRUE(resourceLoader->loadResources(asset));
 
-    FilamentInstance* instance = asset->getInstance();
+    DanteInstance* instance = asset->getInstance();
     ASSERT_NE(instance, nullptr);
     EXPECT_EQ(instance->getSkinCount(), 1u);
     EXPECT_EQ(instance->getJointCountAt(0), 2u);

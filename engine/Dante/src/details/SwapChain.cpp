@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/SwapChain.h"
 
 #include "details/Engine.h"
 
-#include <filament/SwapChain.h>
+#include <dante/SwapChain.h>
 
 #include <backend/CallbackHandler.h>
 #include <backend/Platform.h>
@@ -21,7 +17,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 namespace {
 
@@ -136,5 +132,5 @@ void FSwapChain::setFrameRate(float const frameRate, FrameRateCompatibility cons
             compatibility, strategy);
 }
 
-} // namespace filament
+} // namespace dante
 

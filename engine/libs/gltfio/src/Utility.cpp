@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "Utility.h"
 
 #include "DracoCache.h"
-#include "FFilamentAsset.h"
+#include "FDanteAsset.h"
 #include "GltfEnums.h"
 
 #include <private/utils/Tracing.h>
@@ -20,7 +16,7 @@
 
 #include <limits>
 
-namespace filament::gltfio::utility {
+namespace dante::gltfio::utility {
 
 using namespace utils;
 
@@ -92,7 +88,7 @@ bool decodeMeshoptCompression(cgltf_data* data) {
         }
 
         size_t const theoreticalMaxCount = std::numeric_limits<size_t>::max() / compression->stride;
-        FILAMENT_CHECK_PRECONDITION(compression->count <= theoreticalMaxCount)
+        DANTE_CHECK_PRECONDITION(compression->count <= theoreticalMaxCount)
                 << "gltfio: meshopt decompression exceeds maximum count of " << theoreticalMaxCount
                 << " (actual=" << compression->count << ") given stride of " << compression->stride
                 << ".";
@@ -167,7 +163,7 @@ bool primitiveHasVertexColor(cgltf_primitive* inPrim) {
 }
 
 // Sometimes a glTF bufferview includes unused data at the end (e.g. in skinning.gltf) so we need to
-// compute the correct size of the vertex buffer. Filament automatically infers the size of
+// compute the correct size of the vertex buffer. Dante automatically infers the size of
 // driver-level vertex buffers from the attribute data (stride, count, offset) and clients are
 // expected to avoid uploading data blobs that exceed this size. Since this information doesn't
 // exist in the glTF we need to compute it manually. This is a bit of a cheat, cgltf_calc_size is
@@ -205,8 +201,8 @@ bool requiresConversion(cgltf_accessor const* accessor) {
     }
     const cgltf_type type = accessor->type;
     const cgltf_component_type ctype = accessor->component_type;
-    filament::VertexBuffer::AttributeType permitted;
-    filament::VertexBuffer::AttributeType actual;
+    dante::VertexBuffer::AttributeType permitted;
+    dante::VertexBuffer::AttributeType actual;
     UTILS_UNUSED_IN_RELEASE bool supported = getElementType(type, ctype, &permitted, &actual);
     assert_invariant(supported && "Unsupported types");
     return permitted != actual;
@@ -235,8 +231,8 @@ bool requiresPacking(cgltf_accessor const* accessor) {
 
 bool loadCgltfBuffers(cgltf_data const* gltf, char const* gltfPath,
         UriDataCacheHandle uriDataCacheHandle) {
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_GLTFIO);
-    FILAMENT_TRACING_NAME_BEGIN(FILAMENT_TRACING_CATEGORY_GLTFIO, "Load buffers");
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_GLTFIO);
+    DANTE_TRACING_NAME_BEGIN(DANTE_TRACING_CATEGORY_GLTFIO, "Load buffers");
     cgltf_options options{};
 
     // For emscripten and Android builds we supply a custom file reader callback that looks inside a
@@ -279,7 +275,7 @@ bool loadCgltfBuffers(cgltf_data const* gltf, char const* gltfPath,
         return false;
     }
 
-    FILAMENT_TRACING_NAME_END(FILAMENT_TRACING_CATEGORY_GLTFIO);
+    DANTE_TRACING_NAME_END(DANTE_TRACING_CATEGORY_GLTFIO);
 
     if (cgltf_validate((cgltf_data*) gltf) != cgltf_result_success) {
         slog.e << "Failed cgltf validation." << io::endl;
@@ -288,4 +284,4 @@ bool loadCgltfBuffers(cgltf_data const* gltf, char const* gltfPath,
     return true;
 }
 
-} // namespace filament::gltfio::utility
+} // namespace dante::gltfio::utility

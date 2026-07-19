@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_DRIVERAPI_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_DRIVERAPI_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_DRIVERAPI_H
+#define TNT_DANTE_BACKEND_PRIVATE_DRIVERAPI_H
 
 #include <private/backend/CommandStream.h>
 
@@ -12,12 +8,12 @@
 
 #include <stddef.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 inline void* allocateFromCommandStream(DriverApi& driver, size_t size, size_t alignment) noexcept {
     return driver.allocate(size, alignment);
 }
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_DRIVERAPI_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_DRIVERAPI_H

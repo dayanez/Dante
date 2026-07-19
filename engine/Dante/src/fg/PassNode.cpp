@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fg/details/PassNode.h"
 
@@ -16,9 +12,9 @@
 #include <utils/CString.h>
 #include <utils/debug.h>
 
-using namespace filament::backend;
+using namespace dante::backend;
 
-namespace filament {
+namespace dante {
 
 PassNode::PassNode(FrameGraph& fg) noexcept
         : Node(fg.getGraph()),
@@ -320,7 +316,7 @@ utils::CString RenderPassNode::graphvizify() const noexcept {
 #endif
 }
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 using RenderTargetInfo = fgviewer::FrameGraphInfo::Pass::RenderTargetInfo;
 using AttachmentInfo = fgviewer::FrameGraphInfo::Pass::AttachmentInfo;
 std::vector<RenderTargetInfo> RenderPassNode::getRenderTargetInfo() const noexcept {
@@ -397,4 +393,4 @@ void PresentPassNode::execute(FrameGraphResources const&, DriverApi&) noexcept {
 void PresentPassNode::resolve() noexcept {
 }
 
-} // namespace filament
+} // namespace dante

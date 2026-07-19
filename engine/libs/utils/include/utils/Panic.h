@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_PANIC_H
 #define TNT_UTILS_PANIC_H
 
-#ifdef FILAMENT_PANIC_USES_ABSL
-#   if FILAMENT_PANIC_USES_ABSL
+#ifdef DANTE_PANIC_USES_ABSL
+#   if DANTE_PANIC_USES_ABSL
 #       include "absl/log/log.h"
-#       define  FILAMENT_CHECK_PRECONDITION      CHECK
-#       define  FILAMENT_CHECK_POSTCONDITION     CHECK
-#       define  FILAMENT_CHECK_ARITHMETIC        CHECK
+#       define  DANTE_CHECK_PRECONDITION      CHECK
+#       define  DANTE_CHECK_POSTCONDITION     CHECK
+#       define  DANTE_CHECK_ARITHMETIC        CHECK
 #   endif
 #endif
 
@@ -574,42 +570,42 @@ private:
 #endif
 
 
-#define FILAMENT_CHECK_CONDITION_IMPL(cond)                                                        \
+#define DANTE_CHECK_CONDITION_IMPL(cond)                                                        \
     switch (0)                                                                                     \
     case 0:                                                                                        \
     default:                                                                                       \
         UTILS_VERY_LIKELY(cond) ? (void)0 : ::utils::details::Voidify()&&
 
-#define FILAMENT_PANIC_IMPL(message, TYPE)                                                         \
+#define DANTE_PANIC_IMPL(message, TYPE)                                                         \
         ::utils::details::TPanicStream<::utils::TYPE>(PANIC_FUNCTION, PANIC_FILE(__FILE__), __LINE__, message)
 
-#ifndef FILAMENT_CHECK_PRECONDITION
-#define FILAMENT_CHECK_PRECONDITION(condition)                                                     \
-    FILAMENT_CHECK_CONDITION_IMPL(condition)  FILAMENT_PANIC_IMPL(#condition, PreconditionPanic)
+#ifndef DANTE_CHECK_PRECONDITION
+#define DANTE_CHECK_PRECONDITION(condition)                                                     \
+    DANTE_CHECK_CONDITION_IMPL(condition)  DANTE_PANIC_IMPL(#condition, PreconditionPanic)
 #endif
 
-#ifndef FILAMENT_CHECK_POSTCONDITION
-#define FILAMENT_CHECK_POSTCONDITION(condition)                                                    \
-    FILAMENT_CHECK_CONDITION_IMPL(condition)  FILAMENT_PANIC_IMPL(#condition, PostconditionPanic)
+#ifndef DANTE_CHECK_POSTCONDITION
+#define DANTE_CHECK_POSTCONDITION(condition)                                                    \
+    DANTE_CHECK_CONDITION_IMPL(condition)  DANTE_PANIC_IMPL(#condition, PostconditionPanic)
 #endif
 
-#ifndef FILAMENT_CHECK_ARITHMETIC
-#define FILAMENT_CHECK_ARITHMETIC(condition)                                                       \
-    FILAMENT_CHECK_CONDITION_IMPL(condition)  FILAMENT_PANIC_IMPL(#condition, ArithmeticPanic)
+#ifndef DANTE_CHECK_ARITHMETIC
+#define DANTE_CHECK_ARITHMETIC(condition)                                                       \
+    DANTE_CHECK_CONDITION_IMPL(condition)  DANTE_PANIC_IMPL(#condition, ArithmeticPanic)
 #endif
 
-#define FILAMENT_FLAG_GUARDED_PANIC_IMPL(flag, condition, TYPE)                                    \
+#define DANTE_FLAG_GUARDED_PANIC_IMPL(flag, condition, TYPE)                                    \
     ::utils::details::FlagGuardedStream<::utils::TYPE>(flag, PANIC_FUNCTION, PANIC_FILE(__FILE__), \
             __LINE__, #condition)
 
-#ifndef FILAMENT_FLAG_GUARDED_CHECK_PRECONDITION
-#define FILAMENT_FLAG_GUARDED_CHECK_PRECONDITION(condition, flag)                                  \
-    FILAMENT_CHECK_CONDITION_IMPL(condition)  FILAMENT_FLAG_GUARDED_PANIC_IMPL(flag, condition, PreconditionPanic)
+#ifndef DANTE_FLAG_GUARDED_CHECK_PRECONDITION
+#define DANTE_FLAG_GUARDED_CHECK_PRECONDITION(condition, flag)                                  \
+    DANTE_CHECK_CONDITION_IMPL(condition)  DANTE_FLAG_GUARDED_PANIC_IMPL(flag, condition, PreconditionPanic)
 #endif
 
-#ifndef FILAMENT_FLAG_GUARDED_CHECK_POSTCONDITION
-#define FILAMENT_FLAG_GUARDED_CHECK_POSTCONDITION(condition, flag)                                 \
-    FILAMENT_CHECK_CONDITION_IMPL(condition)  FILAMENT_FLAG_GUARDED_PANIC_IMPL(flag, condition, PostconditionPanic)
+#ifndef DANTE_FLAG_GUARDED_CHECK_POSTCONDITION
+#define DANTE_FLAG_GUARDED_CHECK_POSTCONDITION(condition, flag)                                 \
+    DANTE_CHECK_CONDITION_IMPL(condition)  DANTE_FLAG_GUARDED_PANIC_IMPL(flag, condition, PostconditionPanic)
 #endif
 
 #define PANIC_PRECONDITION_IMPL(cond, format, ...)                                                 \

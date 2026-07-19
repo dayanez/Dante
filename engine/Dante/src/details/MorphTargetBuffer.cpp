@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/MorphTargetBuffer.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 
-#include <private/filament/SibStructs.h>
+#include <private/dante/SibStructs.h>
 
 #include <utils/CString.h>
 #include <utils/StaticString.h>
@@ -17,7 +13,7 @@
 #include <math/mat4.h>
 #include <math/norm.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -123,7 +119,7 @@ FMorphTargetBuffer::FMorphTargetBuffer(FEngine& engine, const Builder& builder)
         : mEnableCustomMorphing(builder->mEnableCustomMorphing),
           mVertexCount(builder->mVertexCount),
           mCount(builder->mCount) {
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             builder->mEnableCustomMorphing || builder->mWithPositions || builder->mWithTangents)
             << "Requires enable at least one of the morphing type.";
 
@@ -167,17 +163,17 @@ void FMorphTargetBuffer::terminate(FEngine& engine) {
 
 void FMorphTargetBuffer::setPositionsAt(FEngine& engine, size_t const targetIndex,
         float3 const* positions, size_t const count, size_t const offset) {
-    FILAMENT_CHECK_PRECONDITION(mPbHandle)
+    DANTE_CHECK_PRECONDITION(mPbHandle)
             << "setPositionsAt() called on a MorphTargetBuffer without a position buffer. Use "
                "withPositions(true) in the Builder.";
 
-    FILAMENT_CHECK_PRECONDITION(offset + count <= mVertexCount)
+    DANTE_CHECK_PRECONDITION(offset + count <= mVertexCount)
             << "MorphTargetBuffer (size=" << (unsigned)mVertexCount
             << ") overflow (count=" << (unsigned)count << ", offset=" << (unsigned)offset << ")";
 
     auto size = getSize<POSITION>(count);
 
-    FILAMENT_CHECK_PRECONDITION(targetIndex < mCount)
+    DANTE_CHECK_PRECONDITION(targetIndex < mCount)
             << targetIndex << " target index must be < " << mCount;
 
     // We could use a pool instead of malloc() directly.
@@ -194,17 +190,17 @@ void FMorphTargetBuffer::setPositionsAt(FEngine& engine, size_t const targetInde
 
 void FMorphTargetBuffer::setPositionsAt(FEngine& engine, size_t const targetIndex,
         float4 const* positions, size_t const count, size_t const offset) {
-    FILAMENT_CHECK_PRECONDITION(mPbHandle)
+    DANTE_CHECK_PRECONDITION(mPbHandle)
             << "setPositionsAt() called on a MorphTargetBuffer without a position buffer. Use "
                "withPositions(true) in the Builder.";
 
-    FILAMENT_CHECK_PRECONDITION(offset + count <= mVertexCount)
+    DANTE_CHECK_PRECONDITION(offset + count <= mVertexCount)
             << "MorphTargetBuffer (size=" << mVertexCount
             << ") overflow (count=" << (unsigned)count << ", offset=" << (unsigned)offset << ")";
 
     auto size = getSize<POSITION>(count);
 
-    FILAMENT_CHECK_PRECONDITION(targetIndex < mCount)
+    DANTE_CHECK_PRECONDITION(targetIndex < mCount)
             << targetIndex << " target index must be < " << mCount;
 
     // We could use a pool instead of malloc() directly.
@@ -220,17 +216,17 @@ void FMorphTargetBuffer::setPositionsAt(FEngine& engine, size_t const targetInde
 
 void FMorphTargetBuffer::setTangentsAt(FEngine& engine, size_t const targetIndex,
         short4 const* tangents, size_t const count, size_t const offset) {
-    FILAMENT_CHECK_PRECONDITION(mTbHandle)
+    DANTE_CHECK_PRECONDITION(mTbHandle)
             << "setTangentsAt() called on a MorphTargetBuffer without a tangent buffer. Use "
                "withTangents(true) in the Builder.";
 
-    FILAMENT_CHECK_PRECONDITION(offset + count <= mVertexCount)
+    DANTE_CHECK_PRECONDITION(offset + count <= mVertexCount)
             << "MorphTargetBuffer (size=" << mVertexCount
             << ") overflow (count=" << (unsigned)count << ", offset=" << (unsigned)offset << ")";
 
     const auto size = getSize<TANGENTS>(count);
 
-    FILAMENT_CHECK_PRECONDITION(targetIndex < mCount)
+    DANTE_CHECK_PRECONDITION(targetIndex < mCount)
             << targetIndex << " target index must be < " << mCount;
 
     // We could use a pool instead of malloc() directly.
@@ -305,4 +301,4 @@ void FMorphTargetBuffer::updateDataAt(DriverApi& driver,
     }
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <utils/Slice.h>
 
@@ -15,7 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 Variant Variant::filterUserVariant(
         Variant variant, UserVariantFilterMask filterMask) noexcept {
@@ -233,4 +229,4 @@ utils::Slice<const Variant> getPostProcessVariants() noexcept {
 
 }; // VariantUtils
 
-} // namespace filament
+} // namespace dante

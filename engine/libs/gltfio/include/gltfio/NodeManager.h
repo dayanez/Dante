@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_NODEMANAGER_H
 #define GLTFIO_NODEMANAGER_H
 
-#include <filament/FilamentAPI.h>
+#include <dante/DanteAPI.h>
 
 #include <utils/bitset.h>
 #include <utils/compiler.h>
@@ -18,7 +14,7 @@ namespace utils {
 class Entity;
 } // namespace utils
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 class FNodeManager;
 
@@ -93,7 +89,7 @@ public:
     NodeManager& operator=(NodeManager&&) = delete;
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 
 #endif // GLTFIO_NODEMANAGER_H

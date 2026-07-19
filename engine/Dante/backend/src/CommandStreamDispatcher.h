@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DRIVER_COMMANDSTREAM_DISPATCHER_H
-#define TNT_FILAMENT_DRIVER_COMMANDSTREAM_DISPATCHER_H
+#ifndef TNT_DANTE_DRIVER_COMMANDSTREAM_DISPATCHER_H
+#define TNT_DANTE_DRIVER_COMMANDSTREAM_DISPATCHER_H
 
 #include "private/backend/Driver.h"
 #include "private/backend/CommandStream.h"
@@ -28,12 +24,12 @@
 #if DEBUG_LEVEL == DEBUG_LEVEL_NONE
 #   define SYSTRACE()
 #elif DEBUG_LEVEL == DEBUG_LEVEL_SYSTRACE
-#   define SYSTRACE() FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+#   define SYSTRACE() DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 #else
 #   error "invalid debug level"
 #endif
 
-namespace filament::backend {
+namespace dante::backend {
 
 template<typename ConcreteDriver>
 class ConcreteDispatcher {
@@ -76,6 +72,6 @@ Dispatcher ConcreteDispatcher<ConcreteDriver>::make() noexcept {
     return dispatcher;
 }
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_DRIVER_COMMANDSTREAM_DISPATCHER_H
+#endif // TNT_DANTE_DRIVER_COMMANDSTREAM_DISPATCHER_H

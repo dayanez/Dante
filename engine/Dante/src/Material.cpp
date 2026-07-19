@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Material.h"
 
-#include <filament/Material.h>
-#include <filament/MaterialEnums.h>
+#include <dante/Material.h>
+#include <dante/MaterialEnums.h>
 
 #include <backend/CallbackHandler.h>
 #include <backend/DriverEnums.h>
@@ -17,7 +13,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 class MaterialInstance;
 
@@ -165,4 +161,4 @@ UserVariantFilterMask Material::getSupportedVariants() const noexcept {
 }
 
 
-} // namespace filament
+} // namespace dante

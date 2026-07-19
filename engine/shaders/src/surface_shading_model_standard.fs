@@ -1,4 +1,4 @@
-w#if defined(MATERIAL_HAS_SHEEN_COLOR)
+#if defined(MATERIAL_HAS_SHEEN_COLOR)
 vec3 sheenLobe(const PixelParams pixel, float NoV, float NoL, float NoH) {
     float D = distributionCloth(pixel.sheenRoughness, NoH);
     float V = visibilityCloth(NoV, NoL);

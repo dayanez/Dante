@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_SWAPCHAIN_H
-#define TNT_FILAMENT_DETAILS_SWAPCHAIN_H
+#ifndef TNT_DANTE_DETAILS_SWAPCHAIN_H
+#define TNT_DANTE_DETAILS_SWAPCHAIN_H
 
 #include "downcast.h"
 
-#include <filament/SwapChain.h>
+#include <dante/SwapChain.h>
 
 #include <private/backend/DriverApi.h>
 
@@ -20,7 +16,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -102,8 +98,8 @@ private:
     static uint64_t initFlags(FEngine& engine, uint64_t flags) noexcept;
 };
 
-FILAMENT_DOWNCAST(SwapChain)
+DANTE_DOWNCAST(SwapChain)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_SWAPCHAIN_H
+#endif // TNT_DANTE_DETAILS_SWAPCHAIN_H

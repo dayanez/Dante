@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_COLORGRADINGNEON_H
-#define TNT_FILAMENT_DETAILS_COLORGRADINGNEON_H
+#ifndef TNT_DANTE_DETAILS_COLORGRADINGNEON_H
+#define TNT_DANTE_DETAILS_COLORGRADINGNEON_H
 
 #if defined(__ARM_NEON)
 
@@ -12,7 +8,7 @@
 
 #include <arm_neon.h>
 
-namespace filament {
+namespace dante {
 
 #if !defined(__aarch64__)
 /**
@@ -413,8 +409,8 @@ inline void v_scotopicAdaptation(float32x4_t& vr, float32x4_t& vg, float32x4_t& 
     vb = vmulq_n_f32(vmlaq_n_f32(vmlaq_n_f32(vmulq_n_f32(qh_L, LMS_to_RGB[0][2]), qh_M, LMS_to_RGB[1][2]), qh_S, LMS_to_RGB[2][2]), invLogExposure);
 }
 
-} // namespace filament
+} // namespace dante
 
 #endif // defined(__ARM_NEON)
 
-#endif // TNT_FILAMENT_DETAILS_COLORGRADINGNEON_H
+#endif // TNT_DANTE_DETAILS_COLORGRADINGNEON_H

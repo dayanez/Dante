@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DescriptorSetLayout.h"
 
@@ -17,7 +13,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace filament {
+namespace dante {
 
 DescriptorSetLayout::DescriptorSetLayout() noexcept = default;
 
@@ -54,4 +50,4 @@ DescriptorSetLayout::DescriptorSetLayout(DescriptorSetLayout&& rhs) noexcept = d
 
 DescriptorSetLayout& DescriptorSetLayout::operator=(DescriptorSetLayout&& rhs) noexcept = default;
 
-} // namespace filament
+} // namespace dante

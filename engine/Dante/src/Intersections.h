@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_INTERSECTIONS_H
-#define TNT_FILAMENT_INTERSECTIONS_H
+#ifndef TNT_DANTE_INTERSECTIONS_H
+#define TNT_DANTE_INTERSECTIONS_H
 
 #include <utils/compiler.h>
 
 #include <math/mat4.h>
 #include <math/vec4.h>
 
-namespace filament {
+namespace dante {
 
 // sphere radius must be squared
 // plane equation must be normalized, sphere radius must be squared
@@ -86,6 +82,6 @@ inline constexpr math::float3 planeIntersection(
     return -(p0.w * c0 + p1.w * c1 + p2.w * c2) * (1.0f / dot(p0.xyz, c0));
 }
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_INTERSECTIONS_H
+#endif // TNT_DANTE_INTERSECTIONS_H

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <uberz/ReadableArchive.h>
 
@@ -10,11 +6,11 @@
 #include <array>
 #include <string>
 
-using filament::uberz::ArchiveFeature;
-using filament::uberz::ArchiveFlag;
-using filament::uberz::ArchiveSpec;
-using filament::uberz::ReadableArchive;
-using filament::uberz::convertOffsetsToPointers;
+using dante::uberz::ArchiveFeature;
+using dante::uberz::ArchiveFlag;
+using dante::uberz::ArchiveSpec;
+using dante::uberz::ReadableArchive;
+using dante::uberz::convertOffsetsToPointers;
 
 namespace {
 

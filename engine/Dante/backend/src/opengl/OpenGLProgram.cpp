@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "OpenGLProgram.h"
 
@@ -32,9 +28,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 using namespace backend;
 
@@ -86,7 +82,7 @@ OpenGLProgram::~OpenGLProgram() noexcept {
 }
 
 void OpenGLProgram::initialize(OpenGLDriver& gld) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     assert_invariant(gl.program == 0);
     assert_invariant(mToken);
@@ -111,7 +107,7 @@ void OpenGLProgram::initialize(OpenGLDriver& gld) {
  */
 void OpenGLProgram::initializeProgramState(OpenGLState& gls, GLuint program,
         LazyInitializationData& lazyInitializationData) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     // from the pipeline layout we compute a mapping from {set, binding} to {binding}
     // for both buffers and textures
@@ -136,7 +132,7 @@ void OpenGLProgram::initializeProgramState(OpenGLState& gls, GLuint program,
                 case DescriptorType::UNIFORM_BUFFER:
                 case DescriptorType::SHADER_STORAGE_BUFFER: {
                     if (!entry.name.empty()) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
                         if (UTILS_LIKELY(!gls.isES2())) {
                             GLuint const index = glGetUniformBlockIndex(program,
                                     entry.name.c_str());
@@ -373,4 +369,4 @@ void OpenGLProgram::setRec709ColorSpace(bool rec709) const noexcept {
 }
 
 
-} // namespace filament::backend
+} // namespace dante::backend

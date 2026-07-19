@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_SHARED_HANDLE_H
-#define TNT_FILAMENT_SHARED_HANDLE_H
+#ifndef TNT_DANTE_SHARED_HANDLE_H
+#define TNT_DANTE_SHARED_HANDLE_H
 
 #include <backend/Handle.h>
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 /*
  * SharedHandle is a bit like shared_ptr<> but for Handle<>, the destruction is
@@ -110,6 +106,6 @@ private:
     ControlBlock* mControlBlockPtr = nullptr;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_SHARED_HANDLE_H
+#endif // TNT_DANTE_SHARED_HANDLE_H

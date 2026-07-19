@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_ALLOCATORS_H
-#define TNT_FILAMENT_DETAILS_ALLOCATORS_H
+#ifndef TNT_DANTE_DETAILS_ALLOCATORS_H
+#define TNT_DANTE_DETAILS_ALLOCATORS_H
 
 #include <private/backend/BackendUtils.h>
 
 #include <utils/Allocator.h>
 
-namespace filament {
+namespace dante {
 
 #ifndef NDEBUG
 
@@ -45,6 +41,6 @@ using LinearAllocatorArena = utils::Arena<
 
 using RootArenaScope = utils::ArenaScope<LinearAllocatorArena>;
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_ALLOCATORS_H
+#endif // TNT_DANTE_DETAILS_ALLOCATORS_H

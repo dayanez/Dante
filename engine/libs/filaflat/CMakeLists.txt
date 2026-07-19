@@ -26,7 +26,7 @@ set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
 
 target_link_libraries(${TARGET} filabridge utils)
 
-if (FILAMENT_SUPPORTS_VULKAN)
+if (DANTE_SUPPORTS_VULKAN)
     target_link_libraries(${TARGET} smol-v)
 endif()
 
@@ -40,7 +40,7 @@ install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})
 # ==================================================================================================
 # Tests
 # ==================================================================================================
-if (FILAMENT_BUILD_TESTING AND IS_HOST_PLATFORM)
+if (DANTE_BUILD_TESTING AND IS_HOST_PLATFORM)
     project(test_filaflat)
     set(TARGET test_filaflat)
     set(SRCS

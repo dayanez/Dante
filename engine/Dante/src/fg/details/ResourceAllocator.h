@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #pragma once
 
@@ -16,7 +12,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace filament {
+namespace dante {
 
 // Helper to check if T::create(Args...) exists
 template<typename T, typename... Args>
@@ -151,4 +147,4 @@ struct ResourceAllocator<FrameGraphDummyLink> {
     static void destroy(FrameGraphDummyLink&, ResourceCreationContext const&) {}
 };
 
-} // namespace filament
+} // namespace dante

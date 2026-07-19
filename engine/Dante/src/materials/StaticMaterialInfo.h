@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #pragma once
 
@@ -12,7 +8,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 // This is intended to be used only to hold the static material data
 struct StaticMaterialInfo {
@@ -30,4 +26,4 @@ struct StaticMaterialInfo {
 
 #define MATERIAL(p, n) p ## _ ## n ## _DATA, size_t(p ## _ ## n ## _SIZE)
 
-} // namespace filament
+} // namespace dante

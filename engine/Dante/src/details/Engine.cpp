@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Engine.h"
 
@@ -33,19 +29,19 @@
 #include "details/VertexBuffer.h"
 #include "details/View.h"
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 #include "fg/FgviewerManager.h"
 #endif
 
 #include "generated/resources/materials.h"
 
-#include <private/filament/DescriptorSets.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/DescriptorSets.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/ColorGrading.h>
-#include <filament/Engine.h>
-#include <filament/MaterialEnums.h>
+#include <dante/ColorGrading.h>
+#include <dante/Engine.h>
+#include <dante/MaterialEnums.h>
 
 #include <private/backend/PlatformFactory.h>
 
@@ -96,25 +92,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace filaflat;
 
 namespace {
 
-#if FILAMENT_ENABLE_FGVIEWER || FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_FGVIEWER || DANTE_ENABLE_MATDBG
 utils::CString getPortString(std::string_view serviceType) {
     #ifndef __ANDROID__
     char const* portString = getenv(serviceType.data());
     #else
     char const* portString = [&]() -> char const*{
-        if (serviceType == "FILAMENT_MATDBG_PORT") {
+        if (serviceType == "DANTE_MATDBG_PORT") {
             return "8081";
-        } else if (serviceType == "FILAMENT_FGVIEWER_PORT") {
+        } else if (serviceType == "DANTE_FGVIEWER_PORT") {
             return "8085";
         }
         return nullptr;
@@ -125,7 +121,7 @@ utils::CString getPortString(std::string_view serviceType) {
     }
     return {};
 }
-#endif // FILAMENT_ENABLE_FGVIEWER || FILAMENT_ENABLE_MATDBG
+#endif // DANTE_ENABLE_FGVIEWER || DANTE_ENABLE_MATDBG
 
 Platform::DriverConfig getDriverConfig(FEngine* instance) {
     Platform::DriverConfig const driverConfig {
@@ -173,8 +169,8 @@ struct Engine::BuilderDetails {
 };
 
 Engine* FEngine::create(Builder const& builder) {
-    FILAMENT_TRACING_ENABLE(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_ENABLE(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     FEngine* instance = new FEngine(builder);
 
@@ -227,8 +223,8 @@ Engine* FEngine::create(Builder const& builder) {
 #if UTILS_HAS_THREADING
 
 void FEngine::create(Builder const& builder, Invocable<void(void*)>&& callback) {
-    FILAMENT_TRACING_ENABLE(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_ENABLE(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     FEngine* instance = new FEngine(builder);
 
@@ -249,7 +245,7 @@ FEngine* FEngine::getEngine(void* token) {
 
     FEngine* instance = static_cast<FEngine*>(token);
 
-    FILAMENT_CHECK_PRECONDITION(ThreadUtils::isThisThread(instance->mMainThreadId))
+    DANTE_CHECK_PRECONDITION(ThreadUtils::isThisThread(instance->mMainThreadId))
             << "Engine::createAsync() and Engine::getEngine() must be called on the same thread.";
 
     if (!instance->mInitialized) {
@@ -361,7 +357,7 @@ uint32_t FEngine::getJobSystemThreadPoolSize(Config const& config) noexcept {
  */
 
 void FEngine::init() {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     // this must be first.
     assert_invariant( intptr_t(&mDriverApiStorage) % alignof(DriverApi) == 0 );
@@ -486,7 +482,7 @@ void FEngine::init() {
                     MATERIALS_DEFAULTMATERIAL_DATA, MATERIALS_DEFAULTMATERIAL_SIZE);
             break;
         case StereoscopicType::MULTIVIEW:
-#ifdef FILAMENT_ENABLE_MULTIVIEW
+#ifdef DANTE_ENABLE_MULTIVIEW
             defaultMaterialBuilder.package(
                     MATERIALS_DEFAULTMATERIAL_MULTIVIEW_DATA, MATERIALS_DEFAULTMATERIAL_MULTIVIEW_SIZE);
 #else
@@ -577,7 +573,7 @@ void FEngine::init() {
 }
 
 FEngine::~FEngine() noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     assert_invariant(!mResourceAllocatorDisposer);
     delete mDriver;
     if (mOwnPlatform) {
@@ -586,12 +582,12 @@ FEngine::~FEngine() noexcept {
 }
 
 void FEngine::shutdown() {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     // by construction this should never be nullptr
     assert_invariant(mResourceAllocatorDisposer);
 
-    FILAMENT_CHECK_PRECONDITION(ThreadUtils::isThisThread(mMainThreadId))
+    DANTE_CHECK_PRECONDITION(ThreadUtils::isThisThread(mMainThreadId))
             << "Engine::shutdown() called from the wrong thread!";
 
 #ifndef NDEBUG
@@ -742,7 +738,7 @@ void FEngine::shutdown() {
 }
 
 void FEngine::prepare(DriverApi& driver) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     // prepare() is called once per Renderer frame. Ideally we would upload the content of
     // UBOs that are visible only. It's not such a big issue because the actual upload() is
     // skipped if the UBO hasn't changed. Still we could have a lot of these.
@@ -777,7 +773,7 @@ void FEngine::prepare(DriverApi& driver) {
     }
 
     mMaterials.forEach([](FMaterial* material) {
-#if FILAMENT_ENABLE_MATDBG // NOLINT(*-include-cleaner)
+#if DANTE_ENABLE_MATDBG // NOLINT(*-include-cleaner)
         material->checkProgramEdits();
 #endif
     });
@@ -857,11 +853,11 @@ bool FEngine::flushAndWait(uint64_t const timeout) {
     }
     propagateBackendException();
 
-    FILAMENT_CHECK_PRECONDITION(!mCommandBufferQueue.isPaused())
+    DANTE_CHECK_PRECONDITION(!mCommandBufferQueue.isPaused())
             << "Cannot call Engine::flushAndWait() when rendering thread is paused!";
 
-    // first make sure we've not terminated filament
-    FILAMENT_CHECK_PRECONDITION(!mCommandBufferQueue.isExitRequested())
+    // first make sure we've not terminated dante
+    DANTE_CHECK_PRECONDITION(!mCommandBufferQueue.isExitRequested())
             << "Calling Engine::flushAndWait() after Engine::shutdown()!";
 
     // enqueue finish command -- this will stall in the driver until the GPU is done
@@ -912,8 +908,8 @@ int FEngine::loop() {
         return 0;
     }
 
-#if FILAMENT_ENABLE_MATDBG
-    if (auto portString = getPortString("FILAMENT_MATDBG_PORT"); !portString.empty()) {
+#if DANTE_ENABLE_MATDBG
+    if (auto portString = getPortString("DANTE_MATDBG_PORT"); !portString.empty()) {
         const int port = atoi(portString.c_str());
 
         ShaderLanguage preferredLanguage = ShaderLanguage::UNSPECIFIED;
@@ -937,8 +933,8 @@ int FEngine::loop() {
     }
 #endif
 
-#if FILAMENT_ENABLE_FGVIEWER // NOLINT(*-include-cleaner)
-    if (auto portString = getPortString("FILAMENT_FGVIEWER_PORT"); !portString.empty()) {
+#if DANTE_ENABLE_FGVIEWER // NOLINT(*-include-cleaner)
+    if (auto portString = getPortString("DANTE_FGVIEWER_PORT"); !portString.empty()) {
         debug.fgviewer = new FgviewerManager(*this, std::move(portString));
         // Sometimes the server can fail to spin up (e.g. if the above port is already in use).
         // When this occurs, carry onward, developers can look at civetweb.txt for details.
@@ -955,12 +951,12 @@ int FEngine::loop() {
         }
     }
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     if(debug.server) {
         delete debug.server;
     }
 #endif
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     if (debug.fgviewer) {
         delete debug.fgviewer;
     }
@@ -1409,7 +1405,7 @@ bool FEngine::destroy(const FMaterialInstance* p) {
                 auto const* const mi = rcm.getMaterialInstanceAt(ri, 0, j);
                 if (UTILS_VERY_UNLIKELY(mi == p)) {
                     // if we have a match, we check again with the liveness of the entity
-                    FILAMENT_CHECK_PRECONDITION(mi != p || !em.isAlive(entity))
+                    DANTE_CHECK_PRECONDITION(mi != p || !em.isAlive(entity))
                             << "destroying MaterialInstance \"" << mi->getName()
                             << "\" which is still in use by Renderable (entity=" << entity.getId()
                             << ", instance=" << ri.asValue() << ", index=" << j << ")";
@@ -1691,9 +1687,9 @@ Engine::FeatureLevel FEngine::getSupportedFeatureLevel() const noexcept {
 }
 
 Engine::FeatureLevel FEngine::setActiveFeatureLevel(FeatureLevel featureLevel) {
-    FILAMENT_CHECK_PRECONDITION(featureLevel <= getSupportedFeatureLevel())
+    DANTE_CHECK_PRECONDITION(featureLevel <= getSupportedFeatureLevel())
             << "Feature level " << unsigned(featureLevel) << " not supported";
-    FILAMENT_CHECK_PRECONDITION(mActiveFeatureLevel >= FeatureLevel::FEATURE_LEVEL_1)
+    DANTE_CHECK_PRECONDITION(mActiveFeatureLevel >= FeatureLevel::FEATURE_LEVEL_1)
             << "Cannot adjust feature level beyond 0 at runtime";
     return (mActiveFeatureLevel = std::max(mActiveFeatureLevel, featureLevel));
 }
@@ -1924,15 +1920,15 @@ Engine::Config Engine::BuilderDetails::validateConfig(Config config) noexcept {
     // Use at least the defaults set by the build system
     config.minCommandBufferSizeMB = std::max(
             config.minCommandBufferSizeMB,
-            uint32_t(FILAMENT_MIN_COMMAND_BUFFERS_SIZE_IN_MB)); // NOLINT(*-include-cleaner)
+            uint32_t(DANTE_MIN_COMMAND_BUFFERS_SIZE_IN_MB)); // NOLINT(*-include-cleaner)
 
     config.perFrameCommandsSizeMB = std::max(
             config.perFrameCommandsSizeMB,
-            uint32_t(FILAMENT_PER_FRAME_COMMANDS_SIZE_IN_MB)); // NOLINT(*-include-cleaner)
+            uint32_t(DANTE_PER_FRAME_COMMANDS_SIZE_IN_MB)); // NOLINT(*-include-cleaner)
 
     config.perRenderPassArenaSizeMB = std::max(
             config.perRenderPassArenaSizeMB,
-            uint32_t(FILAMENT_PER_RENDER_PASS_ARENA_SIZE_IN_MB)); // NOLINT(*-include-cleaner)
+            uint32_t(DANTE_PER_RENDER_PASS_ARENA_SIZE_IN_MB)); // NOLINT(*-include-cleaner)
 
     config.commandBufferSizeMB = std::max(
             config.commandBufferSizeMB,
@@ -1952,4 +1948,4 @@ Engine::Config Engine::BuilderDetails::validateConfig(Config config) noexcept {
     return config;
 }
 
-} // namespace filament
+} // namespace dante

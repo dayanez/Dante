@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "GLSLPostProcessor.h"
 
@@ -15,9 +11,9 @@
 #include "shaders/MaterialInfo.h"
 #include "shaders/SibGenerator.h"
 
-#include <private/filament/DescriptorSets.h>
+#include <private/dante/DescriptorSets.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <utils/compiler.h>
 #include <utils/debug.h>
@@ -28,7 +24,7 @@
 #include <spirv-tools/libspirv.hpp>
 #include <spirv_glsl.hpp>
 #include <spirv_msl.hpp>
-#ifdef FILAMENT_SUPPORTS_WEBGPU
+#ifdef DANTE_SUPPORTS_WEBGPU
 #include <tint/tint.h>
 #endif
 
@@ -47,8 +43,8 @@
 using namespace glslang;
 using namespace spirv_cross;
 using namespace spvtools;
-using namespace filament;
-using namespace filament::backend;
+using namespace dante;
+using namespace dante::backend;
 
 namespace filamat {
 
@@ -347,7 +343,7 @@ void GLSLPostProcessor::spirvToMsl(const SpirvBlob* spirv, std::string* outMsl,
 
     if (useFramebufferFetch) {
         mslOptions.use_framebuffer_fetch_subpasses = true;
-        // On macOS, framebuffer fetch is only available starting with MSL 2.3. Filament will only
+        // On macOS, framebuffer fetch is only available starting with MSL 2.3. Dante will only
         // use framebuffer fetch materials on devices that support it.
         if (shaderModel == ShaderModel::DESKTOP) {
             mslOptions.msl_version = CompilerMSL::Options::make_msl_version(2, 3);
@@ -552,7 +548,7 @@ void GLSLPostProcessor::rebindImageSamplerForWGSL(std::vector<uint32_t> &spirv) 
 }
 
 bool GLSLPostProcessor::spirvToWgsl(SpirvBlob *spirv, std::string *outWsl) {
-#if FILAMENT_SUPPORTS_WEBGPU
+#if DANTE_SUPPORTS_WEBGPU
     //We need to run some opt-passes at all times to transpile to WGSL
     auto optimizer = createEmptyOptimizer();
     optimizer->RegisterPass(CreateSplitCombinedImageSamplerPass());
@@ -591,9 +587,9 @@ bool GLSLPostProcessor::spirvToWgsl(SpirvBlob *spirv, std::string *outWsl) {
     tint::wgsl::writer::Options writerOptions;
     // Allow non-uniform derivatives and disable unreachable code warnings.
     // Dawn/Tint strictly validates uniform control flow (e.g. calling `textureSampleCompare`
-    // or derivatives). Filament materials often use uniform variables (e.g. from UBOs) in
+    // or derivatives). Dante materials often use uniform variables (e.g. from UBOs) in
     // conditionals that Tint's static analyzer currently perceives as potentially divergent.
-    // We bypass these specific generation-time WGSL strictness errors because Filament guarantees
+    // We bypass these specific generation-time WGSL strictness errors because Dante guarantees
     // the underlying UBO conditionals are uniform across the draw call.
     writerOptions.allow_non_uniform_derivatives = true;
     writerOptions.disable_unreachable_code_warning = true;
@@ -611,7 +607,7 @@ bool GLSLPostProcessor::spirvToWgsl(SpirvBlob *spirv, std::string *outWsl) {
     return true;
 #else
     slog.i << "Trying to emit WGSL without including WebGPU dependencies,"
-            " please set CMake arg FILAMENT_SUPPORTS_WEBGPU and FILAMENT_SUPPORTS_WEBGPU"
+            " please set CMake arg DANTE_SUPPORTS_WEBGPU and DANTE_SUPPORTS_WEBGPU"
             << io::endl;
     return false;
 #endif
@@ -661,7 +657,7 @@ bool GLSLPostProcessor::process(const std::string& inputShader, Config const& co
 
     // This allows shaders to query if they will be run through glslang.
     // OpenGL shaders without optimization, for example, won't have this define.
-    tShader.setPreamble("#define FILAMENT_GLSLANG\n");
+    tShader.setPreamble("#define DANTE_GLSLANG\n");
 
     internalConfig.langVersion = GLSLTools::getGlslDefaultVersion(config.shaderModel);
     GLSLTools::prepareShaderParser(config.targetApi, config.targetLanguage, tShader,

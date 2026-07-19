@@ -1,7 +1,7 @@
 
 #include "details/SkinningBuffer.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "components/RenderableManager.h"
 
@@ -17,7 +17,7 @@
 #include <stdint.h>
 #include <string.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -94,7 +94,7 @@ void FSkinningBuffer::terminate(FEngine& engine) {
 
 void FSkinningBuffer::setBones(FEngine& engine,
         RenderableManager::Bone const* transforms, size_t const count, size_t const offset) {
-    FILAMENT_CHECK_PRECONDITION((offset + count) <= mBoneCount)
+    DANTE_CHECK_PRECONDITION((offset + count) <= mBoneCount)
             << "SkinningBuffer (size=" << (unsigned)mBoneCount
             << ") overflow (boneCount=" << (unsigned)count << ", offset=" << (unsigned)offset
             << ")";
@@ -104,7 +104,7 @@ void FSkinningBuffer::setBones(FEngine& engine,
 
 void FSkinningBuffer::setBones(FEngine& engine,
         mat4f const* transforms, size_t const count, size_t const offset) {
-    FILAMENT_CHECK_PRECONDITION((offset + count) <= mBoneCount)
+    DANTE_CHECK_PRECONDITION((offset + count) <= mBoneCount)
             << "SkinningBuffer (size=" << (unsigned)mBoneCount
             << ") overflow (boneCount=" << (unsigned)count << ", offset=" << (unsigned)offset
             << ")";
@@ -248,5 +248,5 @@ void FSkinningBuffer::setIndicesAndWeightsData(FEngine& engine,
             pairs, count);
 }
 
-} // namespace filament
+} // namespace dante
 

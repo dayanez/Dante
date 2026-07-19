@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef UBERZ_READABLE_ARCHIVE_H
 #define UBERZ_READABLE_ARCHIVE_H
@@ -10,9 +6,9 @@
 
 #include <uberz/ArchiveEnums.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
-namespace filament::uberz {
+namespace dante::uberz {
 
 // ArchiveSpec is a parse-free binary format. The client simply casts a word-aligned content blob
 // into a ReadableArchive struct pointer, then calls the following function to convert all the
@@ -63,6 +59,6 @@ struct ArchiveFlag {
 
 UTILS_WARNING_POP
 
-} // namespace filament::uberz
+} // namespace dante::uberz
 
 #endif // UBERZ_READABLE_ARCHIVE_H

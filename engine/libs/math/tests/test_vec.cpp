@@ -1,7 +1,3 @@
-/*
- * Copyright 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <math/scalar.h>
 #include <math/vec4.h>
@@ -10,7 +6,7 @@
 
 #include <math.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
 class VecTest : public testing::Test {
 protected:

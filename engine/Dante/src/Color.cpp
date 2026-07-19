@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ColorSpaceUtils.h"
 
-#include <filament/Color.h>
+#include <dante/Color.h>
 
 #include <math/mat3.h>
 #include <math/scalar.h>
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -54,4 +50,4 @@ LinearColor Color::absorptionAtDistance(LinearColor const& color, float const di
     return -log(clamp(color, 1e-5f, 1.0f)) / max(1e-5f, distance);
 }
 
-} // namespace filament
+} // namespace dante

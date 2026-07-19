@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_ASYNCHELPERS_H
-#define TNT_FILAMENT_DETAILS_ASYNCHELPERS_H
+#ifndef TNT_DANTE_DETAILS_ASYNCHELPERS_H
+#define TNT_DANTE_DETAILS_ASYNCHELPERS_H
 
 #include <private/backend/Driver.h>
 
@@ -12,15 +8,15 @@
 
 #include <functional>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 
 // This acts as an adapter that bridges a user-provided callback with the specific requirements of
-// the Filament callback system.
+// the Dante callback system.
 // E.g.
 //   The callback that users expect => std::function<void(Texture*, void*)>
-//   Filament callback system requirement => CallbackHandler::Callback* callback, void* user
+//   Dante callback system requirement => CallbackHandler::Callback* callback, void* user
 template<typename T>
 class CallbackAdapter {
 public:
@@ -132,6 +128,6 @@ private:
     backend::Driver* mDriver = nullptr;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_ASYNCHELPERS_H
+#endif // TNT_DANTE_DETAILS_ASYNCHELPERS_H

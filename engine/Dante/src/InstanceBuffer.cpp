@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/InstanceBuffer.h"
 
-#include <filament/InstanceBuffer.h>
+#include <dante/InstanceBuffer.h>
 
 #include <math/mat4.h>
 
 #include <cstddef>
 
-namespace filament {
+namespace dante {
 
 size_t InstanceBuffer::getInstanceCount() const noexcept {
     return downcast(this)->getInstanceCount();
@@ -26,4 +22,4 @@ math::mat4f const& InstanceBuffer::getLocalTransform(size_t index) {
     return downcast(this)->getLocalTransform(index);
 }
 
-} // namespace filament
+} // namespace dante

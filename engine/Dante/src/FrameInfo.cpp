@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "FrameInfo.h"
 
 #include "details/Engine.h"
 
-#include <filament/Renderer.h>
+#include <dante/Renderer.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -31,7 +27,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 using namespace backend;
@@ -168,8 +164,8 @@ void FrameInfoManager::beginFrame(FSwapChain* swapChain, DriverApi& driver,
                     mLast = (mLast + 1) % POOL_COUNT;
                     break;
                 case TimerQueryResult::AVAILABLE: {
-                    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-                    FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "FrameInfo::elapsed", uint32_t(elapsed));
+                    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+                    DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "FrameInfo::elapsed", uint32_t(elapsed));
                     // conversion to our duration happens here
                     pFront = mQueries[mLast].pInfo;
                     pFront->gpuFrameDuration = std::chrono::duration<uint64_t, std::nano>(elapsed);
@@ -387,4 +383,4 @@ void FrameInfoManager::waitForGpu() {
     mJobQueue.drain();
 }
 
-} // namespace filament
+} // namespace dante

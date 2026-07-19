@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/View.h"
 
-#include <filament/View.h>
+#include <dante/View.h>
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 void View::setScene(Scene* scene) {
     return downcast(this)->setScene(downcast(scene));
@@ -357,4 +353,4 @@ void View::clearFrameHistory(Engine& engine) noexcept {
     downcast(this)->clearFrameHistory(downcast(engine));
 }
 
-} // namespace filament
+} // namespace dante

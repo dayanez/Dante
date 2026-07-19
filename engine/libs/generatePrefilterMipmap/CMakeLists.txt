@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
-project(filament C ASM)
+project(dante C ASM)
 
-set(TARGET filament-generatePrefilterMipmap)
+set(TARGET dante-generatePrefilterMipmap)
 set(PUBLIC_HDR_DIR include)
 set(GENERATION_ROOT ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -37,7 +37,7 @@ set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
 target_link_libraries(${TARGET} PUBLIC math)
 target_link_libraries(${TARGET} PUBLIC utils)
 target_link_libraries(${TARGET} PUBLIC ibl)
-target_link_libraries(${TARGET} PRIVATE filament)
+target_link_libraries(${TARGET} PRIVATE dante)
 
 # ==================================================================================================
 # Compiler flags
@@ -62,7 +62,7 @@ else()
 endif()
 
 target_compile_options(${TARGET} PRIVATE
-        ${FILAMENT_WARNINGS}
+        ${DANTE_WARNINGS}
         $<$<CONFIG:Release>:${OPTIMIZATION_FLAGS}>
         $<$<AND:$<PLATFORM_ID:Darwin>,$<CONFIG:Release>>:${DARWIN_OPTIMIZATION_FLAGS}>
 )

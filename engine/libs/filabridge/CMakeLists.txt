@@ -32,5 +32,5 @@ target_link_libraries(${TARGET} backend_headers)
 # ==================================================================================================
 # Installation
 # ==================================================================================================
-install(DIRECTORY ${PUBLIC_HDR_DIR}/filament DESTINATION include)
+install(DIRECTORY ${PUBLIC_HDR_DIR}/dante DESTINATION include)
 install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IBL_CUBEMAP_UTILS_H
 #define IBL_CUBEMAP_UTILS_H
@@ -17,7 +13,7 @@ namespace utils {
 class JobSystem;
 } // namespace utils
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 class CubemapIBL;
@@ -79,7 +75,7 @@ private:
     static void setFaceFromCross(Cubemap& cm, Cubemap::Face face, const Image& image);
     static Image createCubemapImage(size_t dim, bool horizontal = true);
 
-#ifndef FILAMENT_IBL_LITE
+#ifndef DANTE_IBL_LITE
 
 public:
 
@@ -108,6 +104,6 @@ public:
 
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante
 
 #endif /* IBL_CUBEMAP_UTILS_H */

@@ -1,7 +1,3 @@
-/*
- * Copyright 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_VEC4_H
 #define TNT_MATH_VEC4_H
@@ -14,7 +10,7 @@
 #include <stdint.h>
 
 
-namespace filament {
+namespace dante {
 namespace math {
 // -------------------------------------------------------------------------------------
 
@@ -118,6 +114,6 @@ using bool4 = vec4<bool>;
 
 // ----------------------------------------------------------------------------------------
 }  // namespace math
-}  // namespace filament
+}  // namespace dante
 
 #endif  // TNT_MATH_VEC4_H

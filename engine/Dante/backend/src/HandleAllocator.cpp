@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <private/backend/HandleAllocator.h>
 
@@ -26,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace utils;
 
@@ -117,7 +113,7 @@ void* HandleAllocator<P0, P1, P2>::handleCast(HandleBase::HandleId id) const {
             auto const pNode = static_cast<typename Allocator::Node*>(p);
             uint8_t const expectedAge = pNode[-1].age;
             // getHandleTag() is only called if the check fails.
-            FILAMENT_CHECK_POSTCONDITION(expectedAge == age)
+            DANTE_CHECK_POSTCONDITION(expectedAge == age)
                     << "use-after-free of Handle with id=" << id
                     << ", tag=" << getHandleTag(id).c_str_safe();
         }
@@ -128,11 +124,11 @@ void* HandleAllocator<P0, P1, P2>::handleCast(HandleBase::HandleId id) const {
             // if we've already handed out this handle index before, it's definitely a
             // use-after-free, otherwise it's probably just a corrupted handle
             if (index < mId.load(std::memory_order_relaxed)) {
-                FILAMENT_CHECK_POSTCONDITION(p != nullptr)
+                DANTE_CHECK_POSTCONDITION(p != nullptr)
                         << "use-after-free of heap Handle with id=" << id
                         << ", tag=" << getHandleTag(id).c_str_safe();
             } else {
-                FILAMENT_CHECK_POSTCONDITION(p != nullptr)
+                DANTE_CHECK_POSTCONDITION(p != nullptr)
                         << "corrupted heap Handle with id=" << id
                         << ", tag=" << getHandleTag(id).c_str_safe();
             }
@@ -146,9 +142,9 @@ HandleBase::HandleId HandleAllocator<P0, P1, P2>::allocateHandleSlow(size_t size
     void* p = ::malloc(size);
 
     auto const nextId = mId.fetch_add(1, std::memory_order_relaxed) + 1;
-    FILAMENT_CHECK_POSTCONDITION(nextId < HANDLE_HEAP_FLAG) <<
+    DANTE_CHECK_POSTCONDITION(nextId < HANDLE_HEAP_FLAG) <<
             "No more Handle ids available! This can happen if HandleAllocator arena has been full"
-            " for a while. Please increase FILAMENT_OPENGL_HANDLE_ARENA_SIZE_IN_MB";
+            " for a while. Please increase DANTE_OPENGL_HANDLE_ARENA_SIZE_IN_MB";
 
     HandleBase::HandleId id = nextId | HANDLE_HEAP_FLAG;
 
@@ -158,7 +154,7 @@ HandleBase::HandleId HandleAllocator<P0, P1, P2>::allocateHandleSlow(size_t size
 
     if (UTILS_UNLIKELY(id == (HANDLE_HEAP_FLAG | 1u))) { // meaning id was zero
         PANIC_LOG("HandleAllocator arena is full, using slower system heap. Please increase "
-                  "the appropriate constant (e.g. FILAMENT_OPENGL_HANDLE_ARENA_SIZE_IN_MB).");
+                  "the appropriate constant (e.g. DANTE_OPENGL_HANDLE_ARENA_SIZE_IN_MB).");
     }
     return id;
 }
@@ -244,20 +240,20 @@ void DebugTag::writeHeapHandleTag(HandleBase::HandleId key, ImmutableCString&& t
 }
 
 // Explicit template instantiations.
-#if defined (FILAMENT_SUPPORTS_OPENGL)
+#if defined (DANTE_SUPPORTS_OPENGL)
 template class HandleAllocatorGL;
 #endif
 
-#if defined (FILAMENT_DRIVER_SUPPORTS_VULKAN)
+#if defined (DANTE_DRIVER_SUPPORTS_VULKAN)
 template class HandleAllocatorVK;
 #endif
 
-#if defined (FILAMENT_SUPPORTS_METAL)
+#if defined (DANTE_SUPPORTS_METAL)
 template class HandleAllocatorMTL;
 #endif
 
-#if defined (FILAMENT_SUPPORTS_WEBGPU)
+#if defined (DANTE_SUPPORTS_WEBGPU)
 template class HandleAllocatorWGPU;
 #endif
 
-} // namespace filament::backend
+} // namespace dante::backend

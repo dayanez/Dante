@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IMAGE_BASISENCODER_H_
 #define IMAGE_BASISENCODER_H_

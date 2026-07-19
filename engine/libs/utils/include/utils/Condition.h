@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_CONDITION_H
 #define TNT_UTILS_CONDITION_H
 
 /**
  * @file Condition.h
- * @brief Custom low-overhead condition variable primitives for Filament.
+ * @brief Custom low-overhead condition variable primitives for Dante.
  *
- * Filament provides two types of condition variables: C++ standard std::condition_variable
+ * Dante provides two types of condition variables: C++ standard std::condition_variable
  * and custom utils::Condition.
  *
  * ARCHITECTURAL TRADEOFFS & CHOICE CRITERIA:

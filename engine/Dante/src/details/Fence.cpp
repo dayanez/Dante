@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Fence.h"
 
 #include "details/Engine.h"
 
-#include <filament/Fence.h>
+#include <dante/Fence.h>
 
 #include <backend/DriverEnums.h>
 
@@ -22,7 +18,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -59,7 +55,7 @@ FenceStatus FFence::waitAndDestroy(FFence* fence, Mode const mode) noexcept {
 
 UTILS_NOINLINE
 FenceStatus FFence::wait(Mode const mode, uint64_t const timeout) {
-    FILAMENT_CHECK_PRECONDITION(UTILS_HAS_THREADING || timeout == 0)
+    DANTE_CHECK_PRECONDITION(UTILS_HAS_THREADING || timeout == 0)
             << "Non-zero timeout requires threads.";
 
     FEngine& engine = mEngine;
@@ -101,4 +97,4 @@ FenceStatus FFence::wait(Mode const mode, uint64_t const timeout) {
 
 
 
-} // namespace filament
+} // namespace dante

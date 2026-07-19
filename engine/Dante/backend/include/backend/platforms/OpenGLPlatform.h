@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_OPENGLPLATFORM_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_OPENGLPLATFORM_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_OPENGLPLATFORM_H
+#define TNT_DANTE_BACKEND_PRIVATE_OPENGLPLATFORM_H
 
 #include <backend/AcquiredImage.h>
 #include <backend/DriverEnums.h>
@@ -19,7 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class Driver;
 
@@ -106,7 +102,7 @@ public:
      *
      * @param nativeWindow  a token representing the native window. See concrete implementation
      *                      for details.
-     * @param flags         extra flags used by the implementation, see filament::SwapChain
+     * @param flags         extra flags used by the implementation, see dante::SwapChain
      * @return              The driver's SwapChain object.
      *
      */
@@ -118,7 +114,7 @@ public:
      *
      * @param width     width of the buffer
      * @param height    height of the buffer
-     * @param flags     extra flags used by the implementation, see filament::SwapChain
+     * @param flags     extra flags used by the implementation, see dante::SwapChain
      * @return          The driver's SwapChain object.
      *
      * TODO: we need a more generic way of passing construction parameters
@@ -374,7 +370,7 @@ public:
      */
     virtual void destroyExternalImageTexture(ExternalTexture* UTILS_NONNULL texture) noexcept;
 
-    // called on the application thread to allow Filament to take ownership of the image
+    // called on the application thread to allow Dante to take ownership of the image
 
     /**
      * Takes ownership of the externalImage. The externalImage parameter depends on the Platform's
@@ -447,6 +443,6 @@ public:
     virtual void releaseContext() noexcept;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_OPENGLPLATFORM_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_OPENGLPLATFORM_H

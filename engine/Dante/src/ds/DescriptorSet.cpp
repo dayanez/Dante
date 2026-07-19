@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DescriptorSet.h"
 
@@ -9,7 +5,7 @@
 
 #include "details/Engine.h"
 
-#include <private/filament/EngineEnums.h>
+#include <private/dante/EngineEnums.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -26,7 +22,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 
@@ -149,7 +145,7 @@ void DescriptorSet::setBuffer(DescriptorSetLayout const& layout,
 
     // Validate it's the right kind of descriptor
     using DSLD = backend::DescriptorSetLayoutDescriptor;
-    FILAMENT_CHECK_PRECONDITION(DSLD::isBuffer(layout.getDescriptorType(binding)))
+    DANTE_CHECK_PRECONDITION(DSLD::isBuffer(layout.getDescriptorType(binding)))
             << "descriptor " << +binding << "is not a buffer";
 
     auto& buffer = mDescriptors[binding].buffer;
@@ -172,15 +168,15 @@ void DescriptorSet::setSampler(
 
     // Validate it's the right kind of descriptor
     auto type = layout.getDescriptorType(binding);
-    FILAMENT_CHECK_PRECONDITION(DSLD::isSampler(type))
+    DANTE_CHECK_PRECONDITION(DSLD::isSampler(type))
             << "descriptor " << +binding << " is not a sampler";
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             !(params.compareMode == SamplerCompareMode::COMPARE_TO_TEXTURE && !isDepthDescriptor(type)))
             << "descriptor " << +binding
             << " is not of type DEPTH, but sampler is in COMPARE_TO_TEXTURE mode";
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             !(params.isFiltered() &&
             isDepthDescriptor(type) &&
             params.compareMode != SamplerCompareMode::COMPARE_TO_TEXTURE))
@@ -246,7 +242,7 @@ bool DescriptorSet::isTextureCompatibleWithDescriptor(
         case DescriptorType::SAMPLER_2D_MS_FLOAT:
         case DescriptorType::SAMPLER_2D_MS_ARRAY_FLOAT:
             // DEPTH_STENCIL is treated as accessing the depth component. OpenGL 4.3
-            // allows to specify which one, but not filament.
+            // allows to specify which one, but not dante.
             // Depth textures can be used as an unfiltered float sampler
             return t == TextureType::FLOAT || t == TextureType::DEPTH || t == TextureType::DEPTH_STENCIL;
 
@@ -273,7 +269,7 @@ bool DescriptorSet::isTextureCompatibleWithDescriptor(
         case DescriptorType::SAMPLER_CUBE_DEPTH:
         case DescriptorType::SAMPLER_CUBE_ARRAY_DEPTH:
             // DEPTH_STENCIL is treated as accessing the depth component. OpenGL 4.3
-            // allows to specify which one, but not filament.
+            // allows to specify which one, but not dante.
             return t == TextureType::DEPTH || t == TextureType::DEPTH_STENCIL;
 
         case DescriptorType::SAMPLER_EXTERNAL:
@@ -290,4 +286,4 @@ bool DescriptorSet::isTextureCompatibleWithDescriptor(
 }
 
 
-} // namespace filament
+} // namespace dante

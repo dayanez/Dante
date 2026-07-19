@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/IndexBuffer.h"
 
 #include "details/Engine.h"
 
-namespace filament {
+namespace dante {
 
 void IndexBuffer::setBuffer(Engine& engine,
         BufferDescriptor&& buffer, uint32_t const byteOffset) {
@@ -29,4 +25,4 @@ bool IndexBuffer::isCreationComplete() const noexcept {
     return downcast(this)->isCreationComplete();
 }
 
-} // namespace filament
+} // namespace dante

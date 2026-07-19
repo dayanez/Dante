@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/View.h"
 
@@ -28,19 +24,19 @@
 #include "details/Scene.h"
 #include "details/Skybox.h"
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 #include "fg/FgviewerManager.h"
 #endif
 #include "fg/FrameGraphId.h"
 #include "fg/FrameGraphTexture.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/DebugRegistry.h>
-#include <filament/Exposure.h>
-#include <filament/Frustum.h>
-#include <filament/View.h>
+#include <dante/DebugRegistry.h>
+#include <dante/Exposure.h>
+#include <dante/Frustum.h>
+#include <dante/View.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -76,7 +72,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -163,7 +159,7 @@ FView::FView(FEngine& engine)
     }
 #endif
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     FgviewerManager* fgviewerManager = engine.debug.fgviewer;
     if (UTILS_LIKELY(fgviewerManager)) {
         mFrameGraphViewerViewHandle =
@@ -241,7 +237,7 @@ void FView::terminate(FEngine& engine) {
     }
 #endif
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     FgviewerManager* fgviewerManager = engine.debug.fgviewer;
     if (UTILS_LIKELY(fgviewerManager)) {
         fgviewerManager->destroyView(mFrameGraphViewerViewHandle);
@@ -249,7 +245,7 @@ void FView::terminate(FEngine& engine) {
 #endif
 }
 
-void FView::setViewport(filament::Viewport const& viewport) noexcept {
+void FView::setViewport(dante::Viewport const& viewport) noexcept {
     // catch the cases were user had an underflow and didn't catch it.
     assert(int32_t(viewport.width) > 0);
     assert(int32_t(viewport.height) > 0);
@@ -285,7 +281,7 @@ void FView::setDynamicLightingOptions(float const zLightNear, float const zLight
 }
 
 float2 FView::updateScale(FEngine& engine,
-        filament::details::FrameInfo const& info,
+        dante::details::FrameInfo const& info,
         Renderer::FrameRateOptions const& frameRateOptions,
         Renderer::DisplayInfo const& displayInfo) noexcept {
 
@@ -421,7 +417,7 @@ void FView::prepareShadowing(FEngine& engine, DriverApi& driver,
         FScene::RenderableSoa& renderableData,
         FScene::LightSoa const& lightData,
         CameraInfo const& cameraInfo) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     mHasShadowing = false;
     mNeedsShadowMap = false;
@@ -497,8 +493,8 @@ void FView::prepareShadowing(FEngine& engine, DriverApi& driver,
 }
 
 void FView::prepareLighting(FEngine& engine, CameraInfo const& cameraInfo) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
 
     FScene* const scene = mScene;
     auto const& lightData = mSceneCache->lightData;
@@ -512,7 +508,7 @@ void FView::prepareLighting(FEngine& engine, CameraInfo const& cameraInfo) noexc
     }
 
     // here the array of visible lights has been shrunk to CONFIG_MAX_LIGHT_COUNT
-    FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT,
+    DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE,
             "visibleLights", lightData.size() - FScene::DIRECTIONAL_LIGHTS_COUNT);
 
     /*
@@ -689,11 +685,11 @@ CameraInfo FView::computeCameraInfo(FEngine const& engine) const noexcept {
 }
 
 void FView::prepare(FEngine& engine, DriverApi& driver, RootArenaScope& rootArenaScope,
-        filament::Viewport const viewport, CameraInfo cameraInfo,
+        dante::Viewport const viewport, CameraInfo cameraInfo,
         float4 const& userTime, bool const needsAlphaChannel) noexcept {
 
-        FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
-        FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
+        DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
+        DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
 
     JobSystem& js = engine.getJobSystem();
 
@@ -842,7 +838,7 @@ void FView::prepare(FEngine& engine, DriverApi& driver, RootArenaScope& rootAren
         // TODO: we need to compare performance of doing this partitioning vs not doing it.
         //       and rely on checking visibility in the loops
 
-        FILAMENT_TRACING_NAME_BEGIN(FILAMENT_TRACING_CATEGORY_FILAMENT, "Partitioning");
+        DANTE_TRACING_NAME_BEGIN(DANTE_TRACING_CATEGORY_DANTE, "Partitioning");
 
         // calculate the sorting key for all elements, based on their visibility
         uint8_t const* layers = renderableData.data<FScene::LAYERS>();
@@ -885,7 +881,7 @@ void FView::prepare(FEngine& engine, DriverApi& driver, RootArenaScope& rootAren
 
         mSpotLightShadowCasters = merged;
 
-        FILAMENT_TRACING_NAME_END(FILAMENT_TRACING_CATEGORY_FILAMENT);
+        DANTE_TRACING_NAME_END(DANTE_TRACING_CATEGORY_DANTE);
 
         // TODO: when any spotlight is used, `merged` ends-up being the whole list. However,
         //       some of the items will end-up not being visible by any light. Can we do better?
@@ -1051,7 +1047,7 @@ void FView::updateUBOs(
         FEngine::DriverApi& driver,
         FScene::RenderableSoa& renderableData,
         utils::Range<uint32_t> visibleRenderables) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     FRenderableManager::InstancesInfo const* instancesData = renderableData.data<FScene::INSTANCES>();
     PerRenderableData const* const uboData = renderableData.data<FScene::UBO>();
@@ -1154,7 +1150,7 @@ UTILS_NOINLINE
 }
 
 void FView::prepareCamera(FEngine& engine, const CameraInfo& cameraInfo) const noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     getColorPassDescriptorSet().prepareCamera(engine, cameraInfo);
 }
 
@@ -1163,9 +1159,9 @@ void FView::prepareLodBias(float const bias, float2 const derivativesScale) cons
 }
 
 void FView::prepareViewport(
-        const filament::Viewport& physicalViewport,
-        const filament::Viewport& logicalViewport) const noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+        const dante::Viewport& physicalViewport,
+        const dante::Viewport& logicalViewport) const noexcept {
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     // TODO: we should pass viewport.{left|bottom} to the backend, so it can offset the
     //       scissor properly.
     getColorPassDescriptorSet().prepareViewport(physicalViewport, logicalViewport);
@@ -1317,7 +1313,7 @@ void FView::commitFroxels(DriverApi& driverApi) const noexcept {
 UTILS_NOINLINE
 void FView::prepareVisibleRenderables(JobSystem& js,
         Frustum const& frustum, FScene::RenderableSoa& renderableData) const noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     if (UTILS_LIKELY(isFrustumCullingEnabled())) {
         cullRenderables(js, renderableData, frustum, VISIBLE_RENDERABLE_BIT);
     } else {
@@ -1328,7 +1324,7 @@ void FView::prepareVisibleRenderables(JobSystem& js,
 
 void FView::cullRenderables(JobSystem&,
         FScene::RenderableSoa& renderableData, Frustum const& frustum, size_t bit) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     float3 const* worldAABBCenter = renderableData.data<FScene::WORLD_AABB_CENTER>();
     float3 const* worldAABBExtent = renderableData.data<FScene::WORLD_AABB_EXTENT>();
@@ -1356,7 +1352,7 @@ void FView::prepareVisibleLights(FLightManager const& lcm,
         Slice<float> scratch,
         mat4f const& viewMatrix, Frustum const& frustum,
         FScene::LightSoa& lightData) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     assert_invariant(lightData.size() > FScene::DIRECTIONAL_LIGHTS_COUNT);
 
     auto const* UTILS_RESTRICT sphereArray     = lightData.data<FScene::POSITION_RADIUS>();
@@ -1671,13 +1667,13 @@ View::FroxelConfigurationInfoWithAge FView::getFroxelConfigurationInfo() const n
 }
 
 void FView::setMaterialGlobal(uint32_t const index, float4 const& value) {
-    FILAMENT_CHECK_PRECONDITION(index < 4)
+    DANTE_CHECK_PRECONDITION(index < 4)
             << "material global variable index (" << +index << ") out of range";
     mMaterialGlobals[index] = value;
 }
 
 float4 FView::getMaterialGlobal(uint32_t const index) const {
-    FILAMENT_CHECK_PRECONDITION(index < 4)
+    DANTE_CHECK_PRECONDITION(index < 4)
             << "material global variable index (" << +index << ") out of range";
     return mMaterialGlobals[index];
 }
@@ -1697,4 +1693,4 @@ void FView::detachScene(FScene const* scene) noexcept {
     }
 }
 
-} // namespace filament
+} // namespace dante

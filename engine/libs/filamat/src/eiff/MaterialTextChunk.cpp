@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "MaterialTextChunk.h"
 
@@ -9,7 +5,7 @@
 #include "LineDictionary.h"
 #include "ShaderEntry.h"
 
-#include <private/filament/LineDictionaryUtils.h>
+#include <private/dante/LineDictionaryUtils.h>
 
 #include <utils/Log.h>
 #include <utils/ostream.h>
@@ -65,8 +61,8 @@ void compressShader(const std::string& src, ShaderStage const stage, Flattener& 
 
     numLines = indices.size();
     for (auto const index : indices) {
-        if (index == filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) {
-            base_stream.push_back(filament::LineDictionaryUtils::DICTIONARY_NUMERIC_ID);
+        if (index == dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) {
+            base_stream.push_back(dante::LineDictionaryUtils::DICTIONARY_NUMERIC_ID);
             continue;
         }
 
@@ -79,15 +75,15 @@ void compressShader(const std::string& src, ShaderStage const stage, Flattener& 
             local_index -= V + F;
         }
 
-        if (local_index < filament::LineDictionaryUtils::DICTIONARY_1_BYTE_ID_CAPACITY) {
+        if (local_index < dante::LineDictionaryUtils::DICTIONARY_1_BYTE_ID_CAPACITY) {
             base_stream.push_back(static_cast<uint8_t>(local_index));
-        } else if (local_index < filament::LineDictionaryUtils::DICTIONARY_2_BYTE_ID_MAX) {
-            auto const [prefix, ext] = filament::LineDictionaryUtils::pack2ByteDictionaryId(local_index);
+        } else if (local_index < dante::LineDictionaryUtils::DICTIONARY_2_BYTE_ID_MAX) {
+            auto const [prefix, ext] = dante::LineDictionaryUtils::pack2ByteDictionaryId(local_index);
             base_stream.push_back(prefix);
             ext_stream.push_back(ext);
         } else {
-            base_stream.push_back(filament::LineDictionaryUtils::DICTIONARY_3_BYTE_ID);
-            auto const [extb0, extb1] = filament::LineDictionaryUtils::pack3ByteDictionaryId(local_index);
+            base_stream.push_back(dante::LineDictionaryUtils::DICTIONARY_3_BYTE_ID);
+            auto const [extb0, extb1] = dante::LineDictionaryUtils::pack3ByteDictionaryId(local_index);
             ext_stream.push_back(extb0);
             ext_stream.push_back(extb1);
         }

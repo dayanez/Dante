@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Skybox.h"
 
 #include "details/Texture.h"
 
-namespace filament {
+namespace dante {
 
 void Skybox::setLayerMask(uint8_t const select, uint8_t const values) noexcept {
     downcast(this)->setLayerMask(select, values);
@@ -29,4 +25,4 @@ Texture const* Skybox::getTexture() const noexcept {
     return downcast(this)->getTexture();
 }
 
-} // namespace filament
+} // namespace dante

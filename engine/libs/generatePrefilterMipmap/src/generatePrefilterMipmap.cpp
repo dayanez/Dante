@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#include "filament-generatePrefilterMipmap/generatePrefilterMipmap.h"
+#include "dante-generatePrefilterMipmap/generatePrefilterMipmap.h"
 
-#include <filament/Engine.h>
-#include <filament/Texture.h>
+#include <dante/Engine.h>
+#include <dante/Texture.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/PixelBufferDescriptor.h>
@@ -27,7 +23,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace utils;
@@ -44,21 +40,21 @@ void generatePrefilterMipmap(Texture* const texture, Engine& engine,
 
     /* validate input data */
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             buffer.format == PixelDataFormat::RGB || buffer.format == PixelDataFormat::RGBA)
             << "input data format must be RGB or RGBA";
 
-    FILAMENT_CHECK_PRECONDITION(buffer.type == PixelDataType::FLOAT ||
+    DANTE_CHECK_PRECONDITION(buffer.type == PixelDataType::FLOAT ||
             buffer.type == PixelDataType::HALF ||
             buffer.type == PixelDataType::UINT_10F_11F_11F_REV)
             << "input data type must be FLOAT, HALF or UINT_10F_11F_11F_REV";
 
     /* validate texture */
 
-    FILAMENT_CHECK_PRECONDITION(!(size & (size - 1)))
+    DANTE_CHECK_PRECONDITION(!(size & (size - 1)))
             << "input data cubemap dimensions must be a power-of-two";
 
-    FILAMENT_CHECK_PRECONDITION(!Texture::isTextureFormatCompressed(texture->getFormat()))
+    DANTE_CHECK_PRECONDITION(!Texture::isTextureFormatCompressed(texture->getFormat()))
             << "reflections texture cannot be compressed";
 
     PrefilterOptions const defaultOptions;
@@ -208,4 +204,4 @@ void generatePrefilterMipmap(Texture* const texture, Engine& engine,
     // by the caller (without being move()d here).
 }
 
-} // namespace filament
+} // namespace dante

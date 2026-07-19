@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_NOOP_PLATFORM_NOOP_H
-#define TNT_FILAMENT_BACKEND_NOOP_PLATFORM_NOOP_H
+#ifndef TNT_DANTE_BACKEND_NOOP_PLATFORM_NOOP_H
+#define TNT_DANTE_BACKEND_NOOP_PLATFORM_NOOP_H
 
 #include <backend/DriverEnums.h>
 #include <backend/Platform.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class PlatformNoop final : public Platform {
 public:
@@ -24,6 +20,6 @@ protected:
     Driver* createDriver(void* sharedContext, const Platform::DriverConfig& driverConfig) override;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_BACKEND_NOOP_PLATFORM_NOOP_H
+#endif // TNT_DANTE_BACKEND_NOOP_PLATFORM_NOOP_H

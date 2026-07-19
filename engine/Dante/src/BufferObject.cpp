@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/BufferObject.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 
-namespace filament {
+namespace dante {
 
 void BufferObject::setBuffer(Engine& engine,
         BufferDescriptor&& buffer, uint32_t const byteOffset) {
@@ -20,4 +16,4 @@ size_t BufferObject::getByteCount() const noexcept {
     return downcast(this)->getByteCount();
 }
 
-} // namespace filament
+} // namespace dante

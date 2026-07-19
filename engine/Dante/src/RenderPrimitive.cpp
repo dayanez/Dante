@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "RenderPrimitive.h"
 
@@ -9,8 +5,8 @@
 #include "details/MaterialInstance.h"
 #include "details/VertexBuffer.h"
 
-#include <filament/MaterialEnums.h>
-#include <filament/RenderableManager.h>
+#include <dante/MaterialEnums.h>
+#include <dante/RenderableManager.h>
 
 #include <private/backend/CommandStream.h>
 
@@ -20,7 +16,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 void FRenderPrimitive::init(HwRenderPrimitiveFactory& factory, backend::DriverApi& driver,
         FRenderableManager::Entry const& entry) noexcept {
@@ -71,4 +67,4 @@ void FRenderPrimitive::set(HwRenderPrimitiveFactory& factory, backend::DriverApi
     mIsIndexed = (indexBuffer != nullptr);
 }
 
-} // namespace filament
+} // namespace dante

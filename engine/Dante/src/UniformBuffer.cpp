@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "UniformBuffer.h"
 
@@ -19,9 +15,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 
 UniformBuffer::UniformBuffer(size_t const size) noexcept
         : mBuffer(mStorage),
@@ -143,4 +139,4 @@ utils::io::ostream& operator<<(utils::io::ostream& out, const UniformBuffer& rhs
 }
 
 #endif
-} // namespace filament
+} // namespace dante

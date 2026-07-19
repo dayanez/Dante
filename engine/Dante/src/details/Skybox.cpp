@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Skybox.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 #include "details/IndexBuffer.h"
@@ -16,11 +12,11 @@
 
 #include "generated/resources/materials.h"
 
-#include <filament/Material.h>
-#include <filament/MaterialInstance.h>
-#include <filament/RenderableManager.h>
-#include <filament/Skybox.h>
-#include <filament/TextureSampler.h>
+#include <dante/Material.h>
+#include <dante/MaterialInstance.h>
+#include <dante/RenderableManager.h>
+#include <dante/Skybox.h>
+#include <dante/TextureSampler.h>
 
 #include <backend/DriverEnums.h>
 
@@ -32,8 +28,8 @@
 
 #include <stdint.h>
 
-using namespace filament::math;
-namespace filament {
+using namespace dante::math;
+namespace dante {
 
 struct Skybox::BuilderDetails {
     Texture* mEnvironmentMap = nullptr;
@@ -80,7 +76,7 @@ Skybox::Builder& Skybox::Builder::showSun(bool const show) noexcept {
 Skybox* Skybox::Builder::build(Engine& engine) {
     FTexture const* cubemap = downcast(mImpl->mEnvironmentMap);
 
-    FILAMENT_CHECK_PRECONDITION(!cubemap || cubemap->isCubemap())
+    DANTE_CHECK_PRECONDITION(!cubemap || cubemap->isCubemap())
             << "environment maps must be a cubemap";
 
     return downcast(engine).createSkybox(*this);
@@ -126,7 +122,7 @@ FMaterial const* FSkybox::createMaterial(FEngine& engine) {
             builder.package(MATERIALS_SKYBOX_DATA, MATERIALS_SKYBOX_SIZE);
             break;
         case Engine::StereoscopicType::MULTIVIEW:
-#ifdef FILAMENT_ENABLE_MULTIVIEW
+#ifdef DANTE_ENABLE_MULTIVIEW
             builder.package(MATERIALS_SKYBOX_MULTIVIEW_DATA, MATERIALS_SKYBOX_MULTIVIEW_SIZE);
 #else
             PANIC_POSTCONDITION("Multiview is enabled in the Engine, but this build has not "
@@ -161,4 +157,4 @@ void FSkybox::setColor(float4 const color) noexcept {
     mSkyboxMaterialInstance->setParameter("color", color);
 }
 
-} // namespace filament
+} // namespace dante

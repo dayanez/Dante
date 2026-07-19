@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_COMPILER_H
 #define TNT_UTILS_COMPILER_H
@@ -26,7 +22,7 @@
 #endif
 
 // UTILS_SHARED_LINKING marks symbols that need default visibility only when
-// Filament is consumed as a shared/dynamic library. Unlike UTILS_PUBLIC,
+// Dante is consumed as a shared/dynamic library. Unlike UTILS_PUBLIC,
 // which denotes the intentional public API surface, these symbols are
 // implementation details that must be visible across shared-library
 // boundaries.
@@ -143,10 +139,10 @@
 #   define UTILS_HAS_HYPER_THREADING 0
 #endif
 
-#if defined(FILAMENT_SINGLE_THREADED)
+#if defined(DANTE_SINGLE_THREADED)
 #   define UTILS_HAS_THREADING 0
 #elif defined(__EMSCRIPTEN__)
-#   if defined(__EMSCRIPTEN_PTHREADS__) && defined(FILAMENT_WASM_THREADS)
+#   if defined(__EMSCRIPTEN_PTHREADS__) && defined(DANTE_WASM_THREADS)
 #      define UTILS_HAS_THREADING 1
 #   else
 #      define UTILS_HAS_THREADING 0

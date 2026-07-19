@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_CALLBACKHANDLER_H
-#define TNT_FILAMENT_BACKEND_CALLBACKHANDLER_H
+#ifndef TNT_DANTE_BACKEND_CALLBACKHANDLER_H
+#define TNT_DANTE_BACKEND_CALLBACKHANDLER_H
 
 #ifdef __clang__
 #pragma clang diagnostic push
 // Disable the weak-vtables warning because we need the destructor to be inlined in the headers. It
-// is not optimal (for build), but we have clients that compile their libraries (filament) and app
+// is not optimal (for build), but we have clients that compile their libraries (dante) and app
 // in different rtti settings.
 #pragma clang diagnostic ignored "-Wweak-vtables"
 #endif
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * A generic interface to dispatch callbacks.
@@ -30,20 +26,20 @@ namespace filament::backend {
  * the platform/OS's own messaging system.
  *
  * CallbackHandler* can always be nullptr in which case the default handler is used. The
- * default handler always dispatches callbacks on filament's main thread opportunistically.
+ * default handler always dispatches callbacks on dante's main thread opportunistically.
  *
  * Life time:
  * ---------
  *
- * Filament make no attempts to manage the life time of the CallbackHandler* and never takes
+ * Dante make no attempts to manage the life time of the CallbackHandler* and never takes
  * ownership.
  * In particular, this means that the CallbackHandler instance must stay valid until all
  * pending callbacks are been dispatched.
  *
- * Similarly, when shutting down filament, care must be taken to ensure that all pending callbacks
- * that might access filament's state have been dispatched. Filament can no longer ensure this
+ * Similarly, when shutting down dante, care must be taken to ensure that all pending callbacks
+ * that might access dante's state have been dispatched. Dante can no longer ensure this
  * because callback execution is the responsibility of the CallbackHandler, which is external to
- * filament.
+ * dante.
  * Typically, the concrete CallbackHandler would have a mechanism to drain and/or wait for all
  * callbacks to be processed.
  *
@@ -64,10 +60,10 @@ protected:
     virtual ~CallbackHandler() = default;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
 
-#endif // TNT_FILAMENT_BACKEND_CALLBACKHANDLER_H
+#endif // TNT_DANTE_BACKEND_CALLBACKHANDLER_H

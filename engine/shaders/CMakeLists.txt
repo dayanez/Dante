@@ -3,7 +3,7 @@ project(shaders C ASM)
 
 set(TARGET shaders)
 
-if (CMAKE_CROSSCOMPILING OR FILAMENT_IMPORT_PREBUILT_EXECUTABLES)
+if (CMAKE_CROSSCOMPILING OR DANTE_IMPORT_PREBUILT_EXECUTABLES)
     include(${IMPORT_EXECUTABLES})
 endif()
 
@@ -56,7 +56,7 @@ set(SHADERS
 )
 
 # These files aren't part of libshaders, but are included by materials inside
-# filament/src/materials:
+# dante/src/materials:
 #
 # tone_mapping.fs
 # conversion_functions.fs
@@ -111,7 +111,7 @@ endif()
 # ==================================================================================================
 add_library(${TARGET} STATIC ${RESGEN_SOURCE})
 target_include_directories(${TARGET} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-set_target_properties(${TARGET} PROPERTIES FOLDER Filament/Shaders)
+set_target_properties(${TARGET} PROPERTIES FOLDER Dante/Shaders)
 
 # ==================================================================================================
 # Installation

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IBL_IMAGE_H
 #define IBL_IMAGE_H
@@ -14,7 +10,7 @@
 
 #include <memory>
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 class UTILS_PUBLIC Image {
@@ -61,6 +57,6 @@ inline void* Image::getPixelRef(size_t x, size_t y) const {
 }
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante
 
 #endif /* IBL_IMAGE_H */

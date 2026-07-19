@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_OPENGLDRIVER_H
-#define TNT_FILAMENT_BACKEND_OPENGL_OPENGLDRIVER_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_OPENGLDRIVER_H
+#define TNT_DANTE_BACKEND_OPENGL_OPENGLDRIVER_H
 
 #include "DriverBase.h"
 #include "OpenGLContext.h"
@@ -57,11 +53,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef FILAMENT_OPENGL_HANDLE_ARENA_SIZE_IN_MB
-#    define FILAMENT_OPENGL_HANDLE_ARENA_SIZE_IN_MB 4
+#ifndef DANTE_OPENGL_HANDLE_ARENA_SIZE_IN_MB
+#    define DANTE_OPENGL_HANDLE_ARENA_SIZE_IN_MB 4
 #endif
 
-namespace filament::backend {
+namespace dante::backend {
 
 class OpenGLPlatform;
 class OpenGLState;
@@ -135,17 +131,17 @@ public:
         Handle<HwVertexBufferInfo> vbih;
     };
 
-    using GLBufferObject = filament::backend::GLBufferObject;
+    using GLBufferObject = dante::backend::GLBufferObject;
 
-    using GLTexture = filament::backend::GLTexture;
+    using GLTexture = dante::backend::GLTexture;
 
-    using GLTimerQuery = filament::backend::GLTimerQuery;
+    using GLTimerQuery = dante::backend::GLTimerQuery;
 
-    using GLDescriptorSetLayout = filament::backend::GLDescriptorSetLayout;
+    using GLDescriptorSetLayout = dante::backend::GLDescriptorSetLayout;
 
-    using GLDescriptorSet = filament::backend::GLDescriptorSet;
+    using GLDescriptorSet = dante::backend::GLDescriptorSet;
 
-    using GLMemoryMappedBuffer = filament::backend::GLMemoryMappedBuffer;
+    using GLMemoryMappedBuffer = dante::backend::GLMemoryMappedBuffer;
 
     struct GLStream : public HwStream {
         using HwStream::HwStream;
@@ -448,7 +444,7 @@ private:
     void replaceStream(GLTexture* t, GLStream* stream) noexcept;
     math::mat3f getStreamTransformMatrix(Handle<HwStream> sh);
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     // tasks executed on the main thread after the fence signaled
     void whenGpuCommandsComplete(const std::function<void()>& fn);
     void executeGpuCommandsCompleteOps() noexcept;
@@ -477,6 +473,6 @@ private:
 // ------------------------------------------------------------------------------------------------
 
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_OPENGLDRIVER_H
+#endif // TNT_DANTE_BACKEND_OPENGL_OPENGLDRIVER_H

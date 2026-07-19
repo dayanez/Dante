@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "downcast.h"
-#include "FFilamentAsset.h"
+#include "FDanteAsset.h"
 #include "GltfEnums.h"
 #include "TangentsJob.h"
 #include "Utility.h"
@@ -16,12 +12,12 @@
 
 #include <geometry/Transcoder.h>
 
-#include <filament/BufferObject.h>
-#include <filament/Engine.h>
-#include <filament/IndexBuffer.h>
-#include <filament/MorphTargetBuffer.h>
-#include <filament/Texture.h>
-#include <filament/VertexBuffer.h>
+#include <dante/BufferObject.h>
+#include <dante/Engine.h>
+#include <dante/IndexBuffer.h>
+#include <dante/MorphTargetBuffer.h>
+#include <dante/Texture.h>
+#include <dante/VertexBuffer.h>
 
 #include <private/utils/Tracing.h>
 
@@ -44,15 +40,15 @@
 #include <string>
 #include <tuple>
 
-using namespace filament;
-using namespace filament::math;
+using namespace dante;
+using namespace dante::math;
 using namespace utils;
 
-using filament::geometry::ComponentType;
+using dante::geometry::ComponentType;
 
 static const auto FREE_CALLBACK = [](void* mem, size_t, void*) { free(mem); };
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 using BufferTextureCache = tsl::robin_map<const void*, Texture*>;
 using FilepathTextureCache = tsl::robin_map<std::string, Texture*>;
@@ -91,14 +87,14 @@ struct ResourceLoader::Impl {
     BufferTextureCache mBufferTextureCache[2];
     FilepathTextureCache mFilepathTextureCache[2];
 
-    FFilamentAsset* mAsyncAsset = nullptr;
+    FDanteAsset* mAsyncAsset = nullptr;
     size_t mRemainingTextureDownloads = 0;
 
     void addResourceData(const char* uri, BufferDescriptor&& buffer);
-    void computeTangents(FFilamentAsset* asset);
-    void createTextures(FFilamentAsset* asset, bool async);
+    void computeTangents(FDanteAsset* asset);
+    void createTextures(FDanteAsset* asset, bool async);
     void cancelTextureDecoding();
-    std::pair<Texture*, CacheResult> getOrCreateTexture(FFilamentAsset* asset, size_t textureIndex,
+    std::pair<Texture*, CacheResult> getOrCreateTexture(FDanteAsset* asset, size_t textureIndex,
             TextureProvider::TextureFlags flags);
     ~Impl();
 };
@@ -107,11 +103,11 @@ namespace {
 // This little struct holds a shared_ptr that wraps cgltf_data (and, potentially, glb data) while
 // uploading vertex buffer data to the GPU.
 struct UploadEvent {
-    FFilamentAsset::SourceHandle handle;
+    FDanteAsset::SourceHandle handle;
     UriDataCacheHandle dataCacheHandle;
 };
 
-UploadEvent* uploadUserdata(FFilamentAsset* asset, UriDataCacheHandle dataCache) {
+UploadEvent* uploadUserdata(FDanteAsset* asset, UriDataCacheHandle dataCache) {
     return new UploadEvent({ asset->mSourceAsset, dataCache });
 }
 
@@ -211,7 +207,7 @@ inline void normalizeSkinningWeights(cgltf_data const* gltf) {
 }
 
 inline void createSkins(cgltf_data const* gltf, bool normalize,
-        utils::FixedCapacityVector<FFilamentAsset::Skin>& skins) {
+        utils::FixedCapacityVector<FDanteAsset::Skin>& skins) {
     // For each skin, optionally normalize skinning weights and store a copy of the bind matrices.
     if (gltf->skins_count == 0) {
         return;
@@ -273,7 +269,7 @@ inline void createSkins(cgltf_data const* gltf, bool normalize,
 
             memcpy((uint8_t*) inverseBindMatrices.data(), (const void*) srcBuffer, requiredBytes);
         }
-        FFilamentAsset::Skin skin{
+        FDanteAsset::Skin skin{
                 .name = std::move(name),
                 .inverseBindMatrices = std::move(inverseBindMatrices),
         };
@@ -303,13 +299,13 @@ static bool indexAccessorFitsBuffer(cgltf_accessor const* accessor, uint32_t bin
     return bindingSize <= capacity - totalOffset;
 }
 
-inline bool uploadBuffers(FFilamentAsset* asset, Engine& engine,
+inline bool uploadBuffers(FDanteAsset* asset, Engine& engine,
         UriDataCacheHandle uriDataCache) {
     const cgltf_accessor* kGenerateTangents = &asset->mGenerateTangents;
     const cgltf_accessor* kGenerateNormals = &asset->mGenerateNormals;
 
     // Upload VertexBuffer and IndexBuffer data to the GPU.
-    auto& slots = std::get<FFilamentAsset::ResourceInfo>(asset->mResourceInfo).mBufferSlots;
+    auto& slots = std::get<FDanteAsset::ResourceInfo>(asset->mResourceInfo).mBufferSlots;
     for (auto const& slot: slots) {
         const cgltf_accessor* accessor = slot.accessor;
         // Morph target accessors may not have a buffer_view (data is directly in the accessor)
@@ -344,7 +340,7 @@ inline bool uploadBuffers(FFilamentAsset* asset, Engine& engine,
                 size_t elementSize = cgltf_calc_size(accessor->type, accessor->component_type);
                 if (elementSize == 0 && isSentinel) {
                     // Sentinels are used for TBN (tangent, bitangent, normal) generation.
-                    // Filament encodes this TBN frame as a quaternion in a SHORT4 attribute
+                    // Dante encodes this TBN frame as a quaternion in a SHORT4 attribute
                     // (8 bytes).
                     elementSize = 8; // SHORT4
                 }
@@ -369,7 +365,7 @@ inline bool uploadBuffers(FFilamentAsset* asset, Engine& engine,
 
                 if (slot.indexBuffer) {
                     if (accessor->component_type == cgltf_component_type_r_8u) {
-                        // glTF 8-bit indices are 1 byte, but Filament IndexBuffer requires at least
+                        // glTF 8-bit indices are 1 byte, but Dante IndexBuffer requires at least
                         // 16-bit indices. We allocate 2 bytes per index to match the expansion
                         // performed in the conversion path below.
                         const size_t size16 = count * sizeof(uint16_t);
@@ -687,8 +683,8 @@ void ResourceLoader::Impl::addResourceData(const char* uri, BufferDescriptor&& b
     // finalization begins. This marker provides a rough indicator of how long
     // the client is taking to load raw data blobs from storage.
     if (mUriDataCache->empty()) {
-        FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_GLTFIO);
-        FILAMENT_TRACING_ASYNC_BEGIN(FILAMENT_TRACING_CATEGORY_GLTFIO, "addResourceData", 1);
+        DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_GLTFIO);
+        DANTE_TRACING_ASYNC_BEGIN(DANTE_TRACING_CATEGORY_GLTFIO, "addResourceData", 1);
     }
     // NOTE: replacing an existing item in a robin map does not seem to behave as expected.
     // To work around this, we explicitly erase the old element if it already exists.
@@ -713,22 +709,22 @@ void ResourceLoader::evictResourceData() {
     pImpl->mUriDataCache->clear();
 }
 
-bool ResourceLoader::loadResources(FilamentAsset* asset) {
-    FFilamentAsset* fasset = downcast(asset);
+bool ResourceLoader::loadResources(DanteAsset* asset) {
+    FDanteAsset* fasset = downcast(asset);
 
     // This is a workaround in case of using extended algo, please see description in
-    // FFilamentAsset.h
+    // FDanteAsset.h
     if (fasset->isUsingExtendedAlgorithm()) {
         pImpl->mUriDataCache =
-                std::get<FFilamentAsset::ResourceInfoExtended>(fasset->mResourceInfo).uriDataCache;
+                std::get<FDanteAsset::ResourceInfoExtended>(fasset->mResourceInfo).uriDataCache;
     }
 
     return loadResources(fasset, false);
 }
 
-bool ResourceLoader::loadResources(FFilamentAsset* asset, bool async) {
-    FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_GLTFIO);
-    FILAMENT_TRACING_ASYNC_END(FILAMENT_TRACING_CATEGORY_GLTFIO, "addResourceData", 1);
+bool ResourceLoader::loadResources(FDanteAsset* asset, bool async) {
+    DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_GLTFIO);
+    DANTE_TRACING_ASYNC_END(DANTE_TRACING_CATEGORY_GLTFIO, "addResourceData", 1);
 
     if (asset->mResourcesLoaded) {
         return false;
@@ -759,7 +755,7 @@ bool ResourceLoader::loadResources(FFilamentAsset* asset, bool async) {
         // Decompress Draco meshes early on, which allows us to exploit subsequent processing such
         // as tangent generation.
         DracoCache* dracoCache = &asset->mSourceAsset->dracoCache;
-        auto& primitives = std::get<FFilamentAsset::ResourceInfo>(asset->mResourceInfo).mPrimitives;
+        auto& primitives = std::get<FDanteAsset::ResourceInfo>(asset->mResourceInfo).mPrimitives;
         // Go through every primitive and check if it has a Draco mesh.
         for (auto& [prim, vertexBuffer]: primitives) {
             if (!prim->has_draco_mesh_compression) {
@@ -780,7 +776,7 @@ bool ResourceLoader::loadResources(FFilamentAsset* asset, bool async) {
         // buffer(s).
         pImpl->computeTangents(asset);
     } else {
-        auto& slots = std::get<FFilamentAsset::ResourceInfoExtended>(asset->mResourceInfo).slots;
+        auto& slots = std::get<FDanteAsset::ResourceInfoExtended>(asset->mResourceInfo).slots;
         ResourceLoaderExtended::loadResources(slots, pImpl->mEngine, asset->mBufferObjects);
     }
 
@@ -792,21 +788,21 @@ bool ResourceLoader::loadResources(FFilamentAsset* asset, bool async) {
         iter.second->updateQueue();
     }
 
-    // Finally, create Filament Textures and begin loading image files.
+    // Finally, create Dante Textures and begin loading image files.
     pImpl->createTextures(asset, async);
 
     // Non-textured renderables are now considered ready, and we can guarantee that no new
     // materials or textures will be added. Notify the dependency graph.
     asset->mDependencyGraph.commitEdges();
 
-    for (FFilamentInstance* instance : asset->mInstances) {
+    for (FDanteInstance* instance : asset->mInstances) {
         instance->createAnimator();
     }
 
     return true;
 }
 
-bool ResourceLoader::asyncBeginLoad(FilamentAsset* asset) {
+bool ResourceLoader::asyncBeginLoad(DanteAsset* asset) {
     pImpl->mAsyncAsset = downcast(asset);
     return loadResources(downcast(asset), true);
 }
@@ -851,7 +847,7 @@ void ResourceLoader::asyncUpdateLoad() {
     }
 }
 
-std::pair<Texture*, CacheResult> ResourceLoader::Impl::getOrCreateTexture(FFilamentAsset* asset,
+std::pair<Texture*, CacheResult> ResourceLoader::Impl::getOrCreateTexture(FDanteAsset* asset,
         size_t textureIndex, TextureProvider::TextureFlags flags) {
     const cgltf_texture& srcTexture = asset->mSourceAsset->hierarchy->textures[textureIndex];
     const cgltf_image* image = srcTexture.webp_image ? srcTexture.webp_image : srcTexture.basisu_image ?
@@ -975,13 +971,13 @@ void ResourceLoader::Impl::cancelTextureDecoding() {
     mAsyncAsset = nullptr;
 }
 
-void ResourceLoader::Impl::createTextures(FFilamentAsset* asset, bool async) {
+void ResourceLoader::Impl::createTextures(FDanteAsset* asset, bool async) {
     mRemainingTextureDownloads = 0;
 
     // Create new texture objects if they are not cached and kick off decoding jobs.
     for (size_t assetTextureIndex = 0, n = asset->mTextures.size(); assetTextureIndex < n;
             ++assetTextureIndex) {
-        FFilamentAsset::TextureInfo& info = asset->mTextures[assetTextureIndex];
+        FDanteAsset::TextureInfo& info = asset->mTextures[assetTextureIndex];
         auto [texture, cacheResult] = getOrCreateTexture(asset, info.gltfTextureIndex, info.flags);
         if (texture == nullptr) {
             if (cacheResult == CacheResult::NOT_READY) {
@@ -1016,16 +1012,16 @@ void ResourceLoader::Impl::createTextures(FFilamentAsset* asset, bool async) {
     }
 }
 
-void ResourceLoader::Impl::computeTangents(FFilamentAsset* asset) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_GLTFIO);
+void ResourceLoader::Impl::computeTangents(FDanteAsset* asset) {
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_GLTFIO);
 
     const cgltf_accessor* kGenerateTangents = &asset->mGenerateTangents;
     const cgltf_accessor* kGenerateNormals = &asset->mGenerateNormals;
 
     // Collect all TANGENT vertex attribute slots that need to be populated.
     tsl::robin_map<VertexBuffer*, uint8_t> baseTangents;
-    auto& slots = std::get<FFilamentAsset::ResourceInfo>(asset->mResourceInfo).mBufferSlots;
-    auto& primitives = std::get<FFilamentAsset::ResourceInfo>(asset->mResourceInfo).mPrimitives;
+    auto& slots = std::get<FDanteAsset::ResourceInfo>(asset->mResourceInfo).mBufferSlots;
+    auto& primitives = std::get<FDanteAsset::ResourceInfo>(asset->mResourceInfo).mPrimitives;
     for (auto const& slot: slots) {
         if (slot.accessor != kGenerateTangents && slot.accessor != kGenerateNormals) {
             continue;
@@ -1113,4 +1109,4 @@ ResourceLoader::Impl::~Impl() {
     }
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

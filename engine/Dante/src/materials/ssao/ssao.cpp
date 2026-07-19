@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "generated/resources/ssao.h"
 #include "ssao.h"
@@ -14,7 +10,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 static const StaticMaterialInfo sMaterialList[] = {
     { "bilateralBlur",              MATERIAL(SSAO, BILATERALBLUR) },
@@ -22,7 +18,7 @@ static const StaticMaterialInfo sMaterialList[] = {
     { "mipmapDepth",                MATERIAL(SSAO, MIPMAPDEPTH) },
     { "sao",                        MATERIAL(SSAO, SAO) },
     { "saoBentNormals",             MATERIAL(SSAO, SAOBENTNORMALS) },
-#ifndef FILAMENT_DISABLE_GTAO
+#ifndef DANTE_DISABLE_GTAO
     { "gtao",                       MATERIAL(SSAO, GTAO) },
     { "gtaoBentNormals",            MATERIAL(SSAO, GTAOBENTNORMALS) },
 #endif
@@ -32,4 +28,4 @@ utils::Slice<const StaticMaterialInfo> getSsaoMaterialList() noexcept {
     return { std::begin(sMaterialList), std::end(sMaterialList) };
 }
 
-} // namespace filament
+} // namespace dante

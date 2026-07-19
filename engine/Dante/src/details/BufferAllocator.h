@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_BUFFERALLOCATOR_H
-#define TNT_FILAMENT_DETAILS_BUFFERALLOCATOR_H
+#ifndef TNT_DANTE_DETAILS_BUFFERALLOCATOR_H
+#define TNT_DANTE_DETAILS_BUFFERALLOCATOR_H
 
 #include <utils/FixedCapacityVector.h>
 
@@ -12,7 +8,7 @@
 #include <map>
 
 
-namespace filament {
+namespace dante {
 
 // This class is NOT thread-safe.
 //
@@ -108,6 +104,6 @@ private:
     std::multimap</*slot size*/ allocation_size_t, InternalSlotNode*> mFreeList;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_BUFFERALLOCATOR_H
+#endif // TNT_DANTE_DETAILS_BUFFERALLOCATOR_H

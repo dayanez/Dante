@@ -1,22 +1,18 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_CODEGENERATOR_H
-#define TNT_FILAMENT_CODEGENERATOR_H
+#ifndef TNT_DANTE_CODEGENERATOR_H
+#define TNT_DANTE_CODEGENERATOR_H
 
 
 #include "MaterialInfo.h"
 #include "UibGenerator.h"
 
-#include <private/filament/BufferInterfaceBlock.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/SubpassInfo.h>
-#include <private/filament/Variant.h>
+#include <private/dante/BufferInterfaceBlock.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/SubpassInfo.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <filamat/MaterialBuilder.h>
 
@@ -37,9 +33,9 @@
 namespace filamat {
 
 class UTILS_PRIVATE CodeGenerator {
-    using ShaderModel = filament::backend::ShaderModel;
-    using ShaderStage = filament::backend::ShaderStage;
-    using FeatureLevel = filament::backend::FeatureLevel;
+    using ShaderModel = dante::backend::ShaderModel;
+    using ShaderStage = dante::backend::ShaderStage;
+    using FeatureLevel = dante::backend::FeatureLevel;
     using TargetApi = MaterialBuilder::TargetApi;
     using TargetLanguage = MaterialBuilder::TargetLanguage;
     using ShaderQuality = MaterialBuilder::ShaderQuality;
@@ -58,14 +54,14 @@ public:
         }
     }
 
-    filament::backend::ShaderModel getShaderModel() const noexcept { return mShaderModel; }
+    dante::backend::ShaderModel getShaderModel() const noexcept { return mShaderModel; }
 
     // insert a separator (can be a new line)
     static utils::io::sstream& generateSeparator(utils::io::sstream& out);
 
     // generate prolog for the given shader
     utils::io::sstream& generateCommonProlog(utils::io::sstream& out, ShaderStage stage,
-            MaterialInfo const& material, filament::Variant v, uint32_t apiLevel) const;
+            MaterialInfo const& material, dante::Variant v, uint32_t apiLevel) const;
 
     static utils::io::sstream& generateCommonEpilog(utils::io::sstream& out);
 
@@ -84,11 +80,11 @@ public:
 
     // generate the shader's code for the lit shading model
     static utils::io::sstream& generateSurfaceLit(utils::io::sstream& out, ShaderStage stage,
-            filament::Variant variant, filament::Shading shading, bool customSurfaceShading);
+            dante::Variant variant, dante::Shading shading, bool customSurfaceShading);
 
     // generate the shader's code for the unlit shading model
     static utils::io::sstream& generateSurfaceUnlit(utils::io::sstream& out, ShaderStage stage,
-            filament::Variant variant, bool hasShadowMultiplier);
+            dante::Variant variant, bool hasShadowMultiplier);
 
     // generate the shader's code for the screen-space reflections
     static utils::io::sstream& generateSurfaceReflections(utils::io::sstream& out, ShaderStage stage);
@@ -99,7 +95,7 @@ public:
 
     // generate declarations for non-custom "in" variables
     utils::io::sstream& generateSurfaceShaderInputs(utils::io::sstream& out, ShaderStage stage,
-            const filament::AttributeBitset& attributes, filament::Interpolation interpolation,
+            const dante::AttributeBitset& attributes, dante::Interpolation interpolation,
             MaterialBuilder::PushConstantList const& pushConstants,
             uint32_t pushConstantOffset = 0) const;
     static utils::io::sstream& generatePostProcessInputs(utils::io::sstream& out, ShaderStage stage);
@@ -116,24 +112,24 @@ public:
 
     // generate samplers
     utils::io::sstream& generateCommonSamplers(utils::io::sstream& out,
-            filament::DescriptorSetBindingPoints set,
-            filament::SamplerInterfaceBlock::SamplerInfoList const& list) const;
+            dante::DescriptorSetBindingPoints set,
+            dante::SamplerInterfaceBlock::SamplerInfoList const& list) const;
 
     utils::io::sstream& generateCommonSamplers(utils::io::sstream& out,
-            filament::DescriptorSetBindingPoints set,
-            const filament::SamplerInterfaceBlock& sib) const {
+            dante::DescriptorSetBindingPoints set,
+            const dante::SamplerInterfaceBlock& sib) const {
         return generateCommonSamplers(out, set, sib.getSamplerInfoList());
     }
 
     // generate subpass
     static utils::io::sstream& generatePostProcessSubpass(utils::io::sstream& out,
-            filament::SubpassInfo subpass);
+            dante::SubpassInfo subpass);
 
     // generate uniforms
     utils::io::sstream& generateUniforms(utils::io::sstream& out, ShaderStage stage,
-            filament::DescriptorSetBindingPoints set,
-            filament::backend::descriptor_binding_t binding,
-            const filament::BufferInterfaceBlock& uib) const;
+            dante::DescriptorSetBindingPoints set,
+            dante::backend::descriptor_binding_t binding,
+            const dante::BufferInterfaceBlock& uib) const;
 
     // generate buffers
     utils::io::sstream& generateBuffers(utils::io::sstream& out,
@@ -141,9 +137,9 @@ public:
 
     // generate an interface block
     utils::io::sstream& generateBufferInterfaceBlock(utils::io::sstream& out, ShaderStage stage,
-            filament::DescriptorSetBindingPoints set,
-            filament::backend::descriptor_binding_t binding,
-            const filament::BufferInterfaceBlock& uib) const;
+            dante::DescriptorSetBindingPoints set,
+            dante::backend::descriptor_binding_t binding,
+            const dante::BufferInterfaceBlock& uib) const;
 
     // generate material properties getters
     static utils::io::sstream& generateMaterialProperty(utils::io::sstream& out,
@@ -171,7 +167,7 @@ public:
     static utils::io::sstream& generateSurfaceParameters(utils::io::sstream& out, ShaderStage stage);
 
     static void fixupExternalSamplers(
-            std::string& shader, filament::SamplerInterfaceBlock const& sib,
+            std::string& shader, dante::SamplerInterfaceBlock const& sib,
             FeatureLevel featureLevel) noexcept;
 
     // These constants must match the equivalent in MetalState.h.
@@ -194,43 +190,43 @@ public:
     }
 
 private:
-    filament::backend::Precision getDefaultPrecision(ShaderStage stage) const;
-    filament::backend::Precision getDefaultUniformPrecision() const;
+    dante::backend::Precision getDefaultPrecision(ShaderStage stage) const;
+    dante::backend::Precision getDefaultUniformPrecision() const;
 
     utils::io::sstream& generateInterfaceFields(utils::io::sstream& out,
-            utils::FixedCapacityVector<filament::BufferInterfaceBlock::FieldInfo> const& infos,
-            filament::backend::Precision defaultPrecision) const;
+            utils::FixedCapacityVector<dante::BufferInterfaceBlock::FieldInfo> const& infos,
+            dante::backend::Precision defaultPrecision) const;
 
     utils::io::sstream& generateUboAsPlainUniforms(utils::io::sstream& out, ShaderStage stage,
-            const filament::BufferInterfaceBlock& uib) const;
+            const dante::BufferInterfaceBlock& uib) const;
 
-    static const char* getUniformPrecisionQualifier(filament::backend::UniformType type,
-            filament::backend::Precision precision,
-            filament::backend::Precision uniformPrecision,
-            filament::backend::Precision defaultPrecision) noexcept;
+    static const char* getUniformPrecisionQualifier(dante::backend::UniformType type,
+            dante::backend::Precision precision,
+            dante::backend::Precision uniformPrecision,
+            dante::backend::Precision defaultPrecision) noexcept;
 
     // return type name of sampler  (e.g.: "sampler2D")
-    char const* getSamplerTypeName(filament::backend::SamplerType type,
-            filament::backend::SamplerFormat format, bool multisample) const noexcept;
+    char const* getSamplerTypeName(dante::backend::SamplerType type,
+            dante::backend::SamplerFormat format, bool multisample) const noexcept;
 
     // return name of the material property (e.g.: "ROUGHNESS")
     static char const* getConstantName(MaterialBuilder::Property property) noexcept;
 
-    static char const* getPrecisionQualifier(filament::backend::Precision precision) noexcept;
+    static char const* getPrecisionQualifier(dante::backend::Precision precision) noexcept;
 
     // return type (e.g.: "vec3", "vec4", "float")
     static char const* getTypeName(UniformType type) noexcept;
 
     // return type name of uniform Field (e.g.: "vec3", "vec4", "float")
-    static char const* getUniformTypeName(filament::BufferInterfaceBlock::FieldInfo const& info) noexcept;
+    static char const* getUniformTypeName(dante::BufferInterfaceBlock::FieldInfo const& info) noexcept;
 
     // return type name of output  (e.g.: "vec3", "vec4", "float")
     static char const* getOutputTypeName(MaterialBuilder::OutputType type) noexcept;
 
     // return qualifier for the specified interpolation mode
-    static char const* getInterpolationQualifier(filament::Interpolation interpolation) noexcept;
+    static char const* getInterpolationQualifier(dante::Interpolation interpolation) noexcept;
 
-    static bool hasPrecision(filament::BufferInterfaceBlock::Type type) noexcept;
+    static bool hasPrecision(dante::BufferInterfaceBlock::Type type) noexcept;
 
     ShaderModel mShaderModel;
     TargetApi mTargetApi;
@@ -243,4 +239,4 @@ private:
 
 } // namespace filamat
 
-#endif // TNT_FILAMENT_CODEGENERATOR_H
+#endif // TNT_DANTE_CODEGENERATOR_H

@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_OPENGL_PLATFORM_WGL_H
-#define TNT_FILAMENT_BACKEND_OPENGL_OPENGL_PLATFORM_WGL_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_OPENGL_PLATFORM_WGL_H
+#define TNT_DANTE_BACKEND_OPENGL_OPENGL_PLATFORM_WGL_H
 
 #include <utils/unwindows.h>
 
@@ -19,7 +15,7 @@
 
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * A concrete implementation of OpenGLPlatform that supports WGL.
@@ -62,6 +58,6 @@ protected:
     std::atomic<int> mNextFreeSharedContextIndex{0};
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_OPENGL_PLATFORM_GLX_H
+#endif // TNT_DANTE_BACKEND_OPENGL_OPENGL_PLATFORM_GLX_H

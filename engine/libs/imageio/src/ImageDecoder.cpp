@@ -1,9 +1,5 @@
 #include <memory>
 
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <imageio/ImageDecoder.h>
 
@@ -258,22 +254,22 @@ LinearImage PNGDecoder::decode() {
             if (getColorSpace() == ImageDecoder::ColorSpace::SRGB) {
                 return toLinearWithAlpha<uint16_t>(width, height, rowBytes, imageData,
                         [](uint16_t v) -> uint16_t { return ntohs(v); },
-                        sRGBToLinear<filament::math::float4>);
+                        sRGBToLinear<dante::math::float4>);
             } else {
                 return toLinearWithAlpha<uint16_t>(width, height, rowBytes, imageData,
                         [](uint16_t v) -> uint16_t { return ntohs(v); },
-                        [](const filament::math::float4& color) ->  filament::math::float4 { return color; });
+                        [](const dante::math::float4& color) ->  dante::math::float4 { return color; });
             }
         } else {
             // Convert to linear float (PNG 16 stores data in network order (big endian).
             if (getColorSpace() == ImageDecoder::ColorSpace::SRGB) {
                 return toLinear<uint16_t>(width, height, rowBytes, imageData,
                         [](uint16_t v) -> uint16_t { return ntohs(v); },
-                        sRGBToLinear< filament::math::float3>);
+                        sRGBToLinear< dante::math::float3>);
             } else {
                 return toLinear<uint16_t>(width, height, rowBytes, imageData,
                         [](uint16_t v) -> uint16_t { return ntohs(v); },
-                        [](const filament::math::float3& color) ->  filament::math::float3 { return color; });
+                        [](const dante::math::float3& color) ->  dante::math::float3 { return color; });
             }
         }
     } catch(std::runtime_error& e) {
@@ -398,8 +394,8 @@ LinearImage PSDDecoder::decode() {
             for (size_t i = 0; i < 3; i++) {
                 for (uint32_t y = 0; y < height; y++) {
                     for (uint32_t x = 0; x < width; x++) {
-                         filament::math::float3& pixel =
-                                *reinterpret_cast< filament::math::float3*>(image.getPixelRef(x, y));
+                         dante::math::float3& pixel =
+                                *reinterpret_cast< dante::math::float3*>(image.getPixelRef(x, y));
                         pixel[i] = read32(mStream);
                         if (!mStream.good()) {
                             throw std::runtime_error("Truncated PSD file");
@@ -411,8 +407,8 @@ LinearImage PSDDecoder::decode() {
             for (size_t i = 0; i < 3; i++) {
                 for (uint32_t y = 0; y < height; y++) {
                     for (uint32_t x = 0; x < width; x++) {
-                         filament::math::float3& pixel =
-                                *reinterpret_cast< filament::math::float3*>(image.getPixelRef(x, y));
+                         dante::math::float3& pixel =
+                                *reinterpret_cast< dante::math::float3*>(image.getPixelRef(x, y));
                         pixel[i] = read16(mStream);
                         if (!mStream.good()) {
                             throw std::runtime_error("Truncated PSD file");
@@ -482,8 +478,8 @@ LinearImage EXRDecoder::decode() {
         size_t i = 0;
         for (uint32_t y = 0; y < height; y++) {
             for (uint32_t x = 0; x < width; x++) {
-                filament::math::float3& pixel =
-                        *reinterpret_cast< filament::math::float3*>(image.getPixelRef(x, y));
+                dante::math::float3& pixel =
+                        *reinterpret_cast< dante::math::float3*>(image.getPixelRef(x, y));
                 pixel.r = rgba[i++];
                 pixel.g = rgba[i++];
                 pixel.b = rgba[i++];

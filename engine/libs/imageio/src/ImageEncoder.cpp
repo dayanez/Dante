@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <imageio/ImageEncoder.h>
 
@@ -32,7 +28,7 @@
 
 #include <image/ColorTransform.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
 namespace image {
 

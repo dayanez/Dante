@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Scene.h"
 
@@ -10,7 +6,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 void Scene::setSkybox(Skybox* skybox) noexcept {
     downcast(this)->setSkybox(downcast(skybox));
@@ -68,4 +64,4 @@ void Scene::forEach(Invocable<void(Entity)>&& functor) const noexcept {
     downcast(this)->forEach(std::move(functor));
 }
 
-} // namespace filament
+} // namespace dante

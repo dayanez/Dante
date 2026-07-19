@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "downcast.h"
-#include "FFilamentAsset.h"
+#include "FDanteAsset.h"
 #include "FNodeManager.h"
 #include "FTrsTransformManager.h"
 #include "GltfEnums.h"
@@ -17,19 +13,19 @@
 #include <gltfio/MaterialProvider.h>
 #include <gltfio/math.h>
 
-#include <filament/Box.h>
-#include <filament/BufferObject.h>
-#include <filament/Camera.h>
-#include <filament/Engine.h>
-#include <filament/IndexBuffer.h>
-#include <filament/LightManager.h>
-#include <filament/Material.h>
-#include <filament/MorphTargetBuffer.h>
-#include <filament/RenderableManager.h>
-#include <filament/Scene.h>
-#include <filament/TextureSampler.h>
-#include <filament/TransformManager.h>
-#include <filament/VertexBuffer.h>
+#include <dante/Box.h>
+#include <dante/BufferObject.h>
+#include <dante/Camera.h>
+#include <dante/Engine.h>
+#include <dante/IndexBuffer.h>
+#include <dante/LightManager.h>
+#include <dante/Material.h>
+#include <dante/MorphTargetBuffer.h>
+#include <dante/RenderableManager.h>
+#include <dante/Scene.h>
+#include <dante/TextureSampler.h>
+#include <dante/TransformManager.h>
+#include <dante/VertexBuffer.h>
 
 #include <private/utils/Tracing.h>
 
@@ -51,11 +47,11 @@
 #include <locale>
 #include <memory>
 
-using namespace filament;
-using namespace filament::math;
+using namespace dante;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 using SceneMask = NodeManager::SceneMask;
 
@@ -161,10 +157,10 @@ static LightManager::Type getLightType(const cgltf_light_type light) {
 // MaterialInstanceCache
 // ---------------------
 // Each glTF material definition corresponds to a single MaterialInstance, which are temporarily
-// cached when loading a FilamentInstance. If a given glTF material is referenced by multiple
-// glTF meshes, then their corresponding Filament primitives will share the same Filament
+// cached when loading a DanteInstance. If a given glTF material is referenced by multiple
+// glTF meshes, then their corresponding Dante primitives will share the same Dante
 // MaterialInstance and UvMap. The UvMap is a mapping from each texcoord slot in glTF to one of
-// Filament's 2 texcoord sets.
+// Dante's 2 texcoord sets.
 //
 // Notes:
 // - The Material objects (used to create instances) are cached in MaterialProvider, not here.
@@ -251,24 +247,24 @@ struct FAssetLoader : public AssetLoader {
             mEngine(*config.engine),
             mDefaultNodeName(config.defaultNodeName) {
         if (config.ext) {
-            FILAMENT_CHECK_POSTCONDITION(AssetConfigurationExtended::isSupported())
+            DANTE_CHECK_POSTCONDITION(AssetConfigurationExtended::isSupported())
                     << "Extend asset loading is not supported on this platform";
             mLoaderExtended = std::make_unique<AssetLoaderExtended>(
                     *config.ext, config.engine, mMaterials);
         }
     }
 
-    FFilamentAsset* createAsset(const uint8_t* bytes, uint32_t nbytes);
-    FFilamentAsset* createInstancedAsset(const uint8_t* bytes, uint32_t numBytes,
-            FilamentInstance** instances, size_t numInstances);
-    FilamentInstance* createInstance(FFilamentAsset* fAsset);
+    FDanteAsset* createAsset(const uint8_t* bytes, uint32_t nbytes);
+    FDanteAsset* createInstancedAsset(const uint8_t* bytes, uint32_t numBytes,
+            DanteInstance** instances, size_t numInstances);
+    DanteInstance* createInstance(FDanteAsset* fAsset);
 
     static void destroy(FAssetLoader** loader) noexcept {
         delete *loader;
         *loader = nullptr;
     }
 
-    void destroyAsset(const FFilamentAsset* asset) {
+    void destroyAsset(const FDanteAsset* asset) {
         delete asset;
     }
 
@@ -289,33 +285,33 @@ struct FAssetLoader : public AssetLoader {
     }
 
 private:
-    void importSkins(FFilamentInstance* instance, const cgltf_data* srcAsset);
+    void importSkins(FDanteInstance* instance, const cgltf_data* srcAsset);
 
     // Methods used during the first traveral (creation of VertexBuffer, IndexBuffer, etc)
-    FFilamentAsset* createRootAsset(const cgltf_data* srcAsset);
-    void recursePrimitives(const cgltf_node* rootNode, FFilamentAsset* fAsset);
-    void createPrimitives(const cgltf_node* node, const char* name, FFilamentAsset* fAsset);
+    FDanteAsset* createRootAsset(const cgltf_data* srcAsset);
+    void recursePrimitives(const cgltf_node* rootNode, FDanteAsset* fAsset);
+    void createPrimitives(const cgltf_node* node, const char* name, FDanteAsset* fAsset);
     bool createPrimitive(const cgltf_primitive& inPrim, const char* name, Primitive* outPrim,
-            FFilamentAsset* fAsset);
+            FDanteAsset* fAsset);
 
     // Methods used during subsequent traverals (creation of entities, renderables, etc)
-    void createInstances(size_t numInstances, FFilamentAsset* fAsset);
+    void createInstances(size_t numInstances, FDanteAsset* fAsset);
     void recurseEntities(const cgltf_node* node, SceneMask scenes, Entity parent,
-            FFilamentAsset* fAsset, FFilamentInstance* instance);
+            FDanteAsset* fAsset, FDanteInstance* instance);
     void createRenderable(const cgltf_node* node, Entity entity, const char* name,
-            FFilamentAsset* fAsset);
-    void createLight(const cgltf_light* light, Entity entity, FFilamentAsset* fAsset);
-    void createCamera(const cgltf_camera* camera, Entity entity, FFilamentAsset* fAsset);
+            FDanteAsset* fAsset);
+    void createLight(const cgltf_light* light, Entity entity, FDanteAsset* fAsset);
+    void createCamera(const cgltf_camera* camera, Entity entity, FDanteAsset* fAsset);
     void addTextureBinding(MaterialInstance* materialInstance, const char* parameterName,
             const cgltf_texture* srcTexture, bool srgb);
-    void createMaterialVariants(const cgltf_mesh* mesh, Entity entity, FFilamentAsset* fAsset,
-            FFilamentInstance* instance);
+    void createMaterialVariants(const cgltf_mesh* mesh, Entity entity, FDanteAsset* fAsset,
+            FDanteInstance* instance);
 
     // Utility methods that work with MaterialProvider.
     Material* getMaterial(const cgltf_data* srcAsset, const cgltf_material* inputMat, UvMap* uvmap,
             bool vertexColor);
     MaterialInstance* createMaterialInstance(const cgltf_material* inputMat, UvMap* uvmap,
-            bool vertexColor, FFilamentAsset* fAsset);
+            bool vertexColor, FDanteAsset* fAsset);
     MaterialKey getMaterialKey(const cgltf_data* srcAsset,
             const cgltf_material* inputMat, UvMap* uvmap, bool vertexColor,
             cgltf_texture_view* baseColorTexture,
@@ -344,15 +340,15 @@ public:
     std::unique_ptr<AssetLoaderExtended> mLoaderExtended;
 };
 
-FILAMENT_DOWNCAST(AssetLoader)
+DANTE_DOWNCAST(AssetLoader)
 
-FFilamentAsset* FAssetLoader::createAsset(const uint8_t* bytes, uint32_t byteCount) {
-    FilamentInstance* instances;
+FDanteAsset* FAssetLoader::createAsset(const uint8_t* bytes, uint32_t byteCount) {
+    DanteInstance* instances;
     return createInstancedAsset(bytes, byteCount, &instances, 1);
 }
 
-FFilamentAsset* FAssetLoader::createInstancedAsset(const uint8_t* bytes, uint32_t byteCount,
-        FilamentInstance** instances, size_t numInstances) {
+FDanteAsset* FAssetLoader::createInstancedAsset(const uint8_t* bytes, uint32_t byteCount,
+        DanteInstance** instances, size_t numInstances) {
     // This method can be used to load JSON or GLB. By using a default options struct, we are asking
     // cgltf to examine the magic identifier to determine which type of file is being loaded.
     cgltf_options options {};
@@ -377,7 +373,7 @@ FFilamentAsset* FAssetLoader::createInstancedAsset(const uint8_t* bytes, uint32_
     utils::FixedCapacityVector<uint8_t> glbdata(byteCount);
     std::copy_n(bytes, byteCount, glbdata.data());
 
-    // The ownership of an allocated `sourceAsset` will be moved to FFilamentAsset::mSourceAsset.
+    // The ownership of an allocated `sourceAsset` will be moved to FDanteAsset::mSourceAsset.
     cgltf_data* sourceAsset;
     cgltf_result result = cgltf_parse(&options, glbdata.data(), byteCount, &sourceAsset);
     if (result != cgltf_result_success) {
@@ -385,7 +381,7 @@ FFilamentAsset* FAssetLoader::createInstancedAsset(const uint8_t* bytes, uint32_
         return nullptr;
     }
 
-    FFilamentAsset* fAsset = createRootAsset(sourceAsset);
+    FDanteAsset* fAsset = createRootAsset(sourceAsset);
     if (mError) {
         delete fAsset;
         fAsset = nullptr;
@@ -406,7 +402,7 @@ FFilamentAsset* FAssetLoader::createInstancedAsset(const uint8_t* bytes, uint32_
     return fAsset;
 }
 
-FilamentInstance* FAssetLoader::createInstance(FFilamentAsset* fAsset) {
+DanteInstance* FAssetLoader::createInstance(FDanteAsset* fAsset) {
     if (!fAsset->mSourceAsset) {
         slog.e << "Source data has been released; asset is frozen." << io::endl;
         return nullptr;
@@ -426,7 +422,7 @@ FilamentInstance* FAssetLoader::createInstance(FFilamentAsset* fAsset) {
     // Create an instance object, which is a just a lightweight wrapper around a vector of
     // entities and an animator. The creation of animator is triggered from ResourceLoader
     // because it could require external bin data.
-    FFilamentInstance* instance = new FFilamentInstance(instanceRoot, fAsset);
+    FDanteInstance* instance = new FDanteInstance(instanceRoot, fAsset);
 
     // Check if the asset has variants.
     instance->mVariants.reserve(srcAsset->variants_count);
@@ -459,8 +455,8 @@ FilamentInstance* FAssetLoader::createInstance(FFilamentAsset* fAsset) {
     return instance;
 }
 
-FFilamentAsset* FAssetLoader::createRootAsset(const cgltf_data* srcAsset) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_GLTFIO);
+FDanteAsset* FAssetLoader::createRootAsset(const cgltf_data* srcAsset) {
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_GLTFIO);
     #if !GLTFIO_DRACO_SUPPORTED
     for (cgltf_size i = 0; i < srcAsset->extensions_required_count; i++) {
         if (!strcmp(srcAsset->extensions_required[i], "KHR_draco_mesh_compression")) {
@@ -471,7 +467,7 @@ FFilamentAsset* FAssetLoader::createRootAsset(const cgltf_data* srcAsset) {
     #endif
 
     mDummyBufferObject = nullptr;
-    FFilamentAsset* fAsset = new FFilamentAsset(&mEngine, mNameManager, &mEntityManager,
+    FDanteAsset* fAsset = new FDanteAsset(&mEngine, mNameManager, &mEntityManager,
             &mNodeManager, &mTrsTransformManager, srcAsset, (bool) mLoaderExtended);
 
     // It is not an error for a glTF file to have zero scenes.
@@ -540,7 +536,7 @@ FFilamentAsset* FAssetLoader::createRootAsset(const cgltf_data* srcAsset) {
     return fAsset;
 }
 
-void FAssetLoader::recursePrimitives(const cgltf_node* node, FFilamentAsset* fAsset) {
+void FAssetLoader::recursePrimitives(const cgltf_node* node, FDanteAsset* fAsset) {
     auto nameStr = getNodeName(node, mDefaultNodeName);
     const char* name = nameStr.c_str();
     name = name ? name : "node";
@@ -555,7 +551,7 @@ void FAssetLoader::recursePrimitives(const cgltf_node* node, FFilamentAsset* fAs
     }
 }
 
-void FAssetLoader::createInstances(size_t numInstances, FFilamentAsset* fAsset) {
+void FAssetLoader::createInstances(size_t numInstances, FDanteAsset* fAsset) {
     // Create a separate entity hierarchy for each instance. Note that MeshCache (vertex
     // buffers and index buffers) and MaterialInstanceCache (materials and textures) help avoid
     // needless duplication of resources.
@@ -575,7 +571,7 @@ void FAssetLoader::createInstances(size_t numInstances, FFilamentAsset* fAsset) 
 }
 
 void FAssetLoader::recurseEntities(const cgltf_node* node, SceneMask scenes, Entity parent,
-        FFilamentAsset* fAsset, FFilamentInstance* instance) {
+        FDanteAsset* fAsset, FDanteInstance* instance) {
     NodeManager& nm = mNodeManager;
     const cgltf_data* srcAsset = fAsset->mSourceAsset->hierarchy;
     const Entity entity = mEntityManager.create();
@@ -647,13 +643,13 @@ void FAssetLoader::recurseEntities(const cgltf_node* node, SceneMask scenes, Ent
 }
 
 void FAssetLoader::createPrimitives(const cgltf_node* node, const char* name,
-        FFilamentAsset* fAsset) {
+        FDanteAsset* fAsset) {
     cgltf_data* gltf = fAsset->mSourceAsset->hierarchy;
     const cgltf_mesh* mesh = node->mesh;
     assert_invariant(gltf != nullptr);
     assert_invariant(mesh != nullptr);
 
-    // If the mesh is already loaded, obtain the list of Filament VertexBuffer / IndexBuffer objects
+    // If the mesh is already loaded, obtain the list of Dante VertexBuffer / IndexBuffer objects
     // that were already generated (one for each primitive), otherwise allocate a new list of
     // pointers for the primitives.
     FixedCapacityVector<Primitive>& prims = fAsset->mMeshCache[mesh - gltf->meshes];
@@ -670,7 +666,7 @@ void FAssetLoader::createPrimitives(const cgltf_node* node, const char* name,
 
         if (!outputPrim.vertices) {
             if (mLoaderExtended) {
-                auto& resourceInfo = std::get<FFilamentAsset::ResourceInfoExtended>(fAsset->mResourceInfo);
+                auto& resourceInfo = std::get<FDanteAsset::ResourceInfoExtended>(fAsset->mResourceInfo);
                 resourceInfo.uriDataCache = mLoaderExtended->getUriDataCache();
                 AssetLoaderExtended::Input input{
                         .gltf = gltf,
@@ -691,7 +687,7 @@ void FAssetLoader::createPrimitives(const cgltf_node* node, const char* name,
                     }
                 }
             } else {
-                // Create a Filament VertexBuffer and IndexBuffer for this prim if we haven't
+                // Create a Dante VertexBuffer and IndexBuffer for this prim if we haven't
                 // already.
                 mError = !createPrimitive(inputPrim, name, &outputPrim, fAsset);
             }
@@ -714,12 +710,12 @@ void FAssetLoader::createPrimitives(const cgltf_node* node, const char* name,
  }
 
 void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity, const char* name,
-        FFilamentAsset* fAsset) {
+        FDanteAsset* fAsset) {
     const cgltf_data* srcAsset = fAsset->mSourceAsset->hierarchy;
     const cgltf_mesh* mesh = node->mesh;
     const cgltf_size primitiveCount = mesh->primitives_count;
 
-    // If the mesh is already loaded, obtain the list of Filament VertexBuffer / IndexBuffer objects
+    // If the mesh is already loaded, obtain the list of Dante VertexBuffer / IndexBuffer objects
     // that were already generated (one for each primitive).
     FixedCapacityVector<Primitive>& prims = fAsset->mMeshCache[mesh - srcAsset->meshes];
     assert_invariant(prims.size() == primitiveCount);
@@ -732,7 +728,7 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity, const
     const cgltf_size numMorphTargets = inputPrim ? inputPrim->targets_count : 0;
     RenderableManager::Builder builder(primitiveCount);
 
-    // For each prim, create a Filament VertexBuffer, IndexBuffer, and MaterialInstance.
+    // For each prim, create a Dante VertexBuffer, IndexBuffer, and MaterialInstance.
     // The VertexBuffer and IndexBuffer objects are cached for possible re-use, but MaterialInstance
     // is not.
     size_t morphingVertexCount = 0;
@@ -826,10 +822,10 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity, const
                         assert_invariant(!previous || previous->type == accessor->type);
                         previous = accessor;
 
-                        if (std::holds_alternative<FFilamentAsset::ResourceInfo>(
+                        if (std::holds_alternative<FDanteAsset::ResourceInfo>(
                                 fAsset->mResourceInfo)) {
-                            using BufferSlot = FFilamentAsset::ResourceInfo::BufferSlot;
-                            auto& slots = std::get<FFilamentAsset::ResourceInfo>(
+                            using BufferSlot = FDanteAsset::ResourceInfo::BufferSlot;
+                            auto& slots = std::get<FDanteAsset::ResourceInfo>(
                                     fAsset->mResourceInfo).mBufferSlots;
 
                             if (isFirstMorphSetup) {
@@ -862,11 +858,11 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity, const
                         // performed in AssetLoaderExtended::createPrimitive(). The extended
                         // path is currently limited to desktop platforms and does not support
                         // multi-instance morph targets.
-                        else if (std::holds_alternative<FFilamentAsset::ResourceInfoExtended>(
+                        else if (std::holds_alternative<FDanteAsset::ResourceInfoExtended>(
                                 fAsset->mResourceInfo))
                         {
-                            using BufferSlot = FFilamentAsset::ResourceInfoExtended::BufferSlot;
-                            auto& slots = std::get<FFilamentAsset::ResourceInfoExtended>(
+                            using BufferSlot = FDanteAsset::ResourceInfoExtended::BufferSlot;
+                            auto& slots = std::get<FDanteAsset::ResourceInfoExtended>(
                                     fAsset->mResourceInfo).slots;
 
                             if (isFirstMorphSetup) {
@@ -907,7 +903,7 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity, const
     }
 
     // Per the spec, glTF models must have valid mix / max annotations for position attributes.
-    // If desired, clients can call "recomputeBoundingBoxes()" in FilamentInstance.
+    // If desired, clients can call "recomputeBoundingBoxes()" in DanteInstance.
     Box box = Box().set(aabb.min, aabb.max);
     if (box.isEmpty()) {
         slog.w << "Missing bounding box in " << name << io::endl;
@@ -939,7 +935,7 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity, const
 }
 
 void FAssetLoader::createMaterialVariants(const cgltf_mesh* mesh, Entity entity,
-        FFilamentAsset* fAsset, FFilamentInstance* instance) {
+        FDanteAsset* fAsset, FDanteInstance* instance) {
     UvMap uvmap {};
     for (cgltf_size prim = 0, n = mesh->primitives_count; prim < n; ++prim) {
         const cgltf_primitive& srcPrim = mesh->primitives[prim];
@@ -961,9 +957,9 @@ void FAssetLoader::createMaterialVariants(const cgltf_mesh* mesh, Entity entity,
 }
 
 bool FAssetLoader::createPrimitive(const cgltf_primitive& inPrim, const char* name,
-        Primitive* outPrim, FFilamentAsset* fAsset) {
+        Primitive* outPrim, FDanteAsset* fAsset) {
 
-    using BufferSlot = FFilamentAsset::ResourceInfo::BufferSlot;
+    using BufferSlot = FDanteAsset::ResourceInfo::BufferSlot;
 
     Material* material = getMaterial(fAsset->mSourceAsset->hierarchy,
                 inPrim.material, &outPrim->uvmap, primitiveHasVertexColor(inPrim));
@@ -975,8 +971,8 @@ bool FAssetLoader::createPrimitive(const cgltf_primitive& inPrim, const char* na
     // request from Google.
 
     // Create a little lambda that appends to the asset's vertex buffer slots.
-    auto* const slots = &std::get<FFilamentAsset::ResourceInfo>(fAsset->mResourceInfo).mBufferSlots;
-    auto addBufferSlot = [slots](FFilamentAsset::ResourceInfo::BufferSlot entry) {
+    auto* const slots = &std::get<FDanteAsset::ResourceInfo>(fAsset->mResourceInfo).mBufferSlots;
+    auto addBufferSlot = [slots](FDanteAsset::ResourceInfo::BufferSlot entry) {
         slots->push_back(entry);
     };
 
@@ -995,7 +991,7 @@ bool FAssetLoader::createPrimitive(const cgltf_primitive& inPrim, const char* na
             .bufferType(indexType)
             .build(mEngine);
 
-        FFilamentAsset::ResourceInfo::BufferSlot slot = { accessor };
+        FDanteAsset::ResourceInfo::BufferSlot slot = { accessor };
         slot.indexBuffer = indices;
         addBufferSlot(slot);
     } else if (inPrim.attributes_count > 0) {
@@ -1063,7 +1059,7 @@ bool FAssetLoader::createPrimitive(const cgltf_primitive& inPrim, const char* na
             }
         }
 
-        // Translate the cgltf attribute enum into a Filament enum.
+        // Translate the cgltf attribute enum into a Dante enum.
         VertexAttribute semantic;
         if (!getCustomVertexAttrType(customIndex, &semantic) &&
                 !getVertexAttrType(atype, &semantic)) {
@@ -1250,7 +1246,7 @@ bool FAssetLoader::createPrimitive(const cgltf_primitive& inPrim, const char* na
 
     outPrim->indices = indices;
     outPrim->vertices = vertices;
-    auto& primitives = std::get<FFilamentAsset::ResourceInfo>(fAsset->mResourceInfo).mPrimitives;
+    auto& primitives = std::get<FDanteAsset::ResourceInfo>(fAsset->mResourceInfo).mPrimitives;
     primitives.push_back({&inPrim, vertices});
     fAsset->mVertexBuffers.push_back(vertices);
 
@@ -1300,7 +1296,7 @@ bool FAssetLoader::createPrimitive(const cgltf_primitive& inPrim, const char* na
     return true;
 }
 
-void FAssetLoader::createLight(const cgltf_light* light, Entity entity, FFilamentAsset* fAsset) {
+void FAssetLoader::createLight(const cgltf_light* light, Entity entity, FDanteAsset* fAsset) {
     LightManager::Type type = getLightType(light->type);
     LightManager::Builder builder(type);
 
@@ -1317,7 +1313,7 @@ void FAssetLoader::createLight(const cgltf_light* light, Entity entity, FFilamen
             break;
         case LightManager::Type::FOCUSED_SPOT:
         case LightManager::Type::SPOT:
-            // glTF specifies half angles, so does Filament
+            // glTF specifies half angles, so does Dante
             builder.spotLightCone(
                     light->spot_inner_cone_angle,
                     light->spot_outer_cone_angle);
@@ -1336,8 +1332,8 @@ void FAssetLoader::createLight(const cgltf_light* light, Entity entity, FFilamen
     fAsset->mLightEntities.push_back(entity);
 }
 
-void FAssetLoader::createCamera(const cgltf_camera* camera, Entity entity, FFilamentAsset* fAsset) {
-    Camera* filamentCamera = mEngine.createCamera(entity);
+void FAssetLoader::createCamera(const cgltf_camera* camera, Entity entity, FDanteAsset* fAsset) {
+    Camera* danteCamera = mEngine.createCamera(entity);
 
     if (camera->type == cgltf_camera_type_perspective) {
         auto& projection = camera->data.perspective;
@@ -1347,15 +1343,15 @@ void FAssetLoader::createCamera(const cgltf_camera* camera, Entity entity, FFila
         // Use an "infinite" zfar plane if the provided one is missing (set to 0.0).
         const double far = projection.zfar > 0.0 ? projection.zfar : 100000000;
 
-        filamentCamera->setProjection(yfovDegrees, 1.0,
+        danteCamera->setProjection(yfovDegrees, 1.0,
                 projection.znear, far,
-                filament::Camera::Fov::VERTICAL);
+                dante::Camera::Fov::VERTICAL);
 
         // Use a default aspect ratio of 1.0 if the provided one is missing.
         const double aspect = projection.aspect_ratio > 0.0 ? projection.aspect_ratio : 1.0;
 
         // Use the scaling matrix to set the aspect ratio, so clients can easily change it.
-        filamentCamera->setScaling({1.0 / aspect, 1.0 });
+        danteCamera->setScaling({1.0 / aspect, 1.0 });
     } else if (camera->type == cgltf_camera_type_orthographic) {
         auto& projection = camera->data.orthographic;
 
@@ -1364,7 +1360,7 @@ void FAssetLoader::createCamera(const cgltf_camera* camera, Entity entity, FFila
         const double bottom = -projection.ymag * 0.5;
         const double top    =  projection.ymag * 0.5;
 
-        filamentCamera->setProjection(Camera::Projection::ORTHO,
+        danteCamera->setProjection(Camera::Projection::ORTHO,
                 left, right, bottom, top, projection.znear, projection.zfar);
     } else {
         slog.e << "Invalid GLTF camera type." << io::endl;
@@ -1495,7 +1491,7 @@ Material* FAssetLoader::getMaterial(const cgltf_data* srcAsset,
 }
 
 MaterialInstance* FAssetLoader::createMaterialInstance(const cgltf_material* inputMat, UvMap* uvmap,
-    bool vertexColor, FFilamentAsset* fAsset) {
+    bool vertexColor, FDanteAsset* fAsset) {
     const cgltf_data* srcAsset = fAsset->mSourceAsset->hierarchy;
     MaterialInstanceCache::Entry* const cacheEntry =
             mMaterialInstanceCache.getEntry(&inputMat, vertexColor);
@@ -1517,7 +1513,7 @@ MaterialInstance* FAssetLoader::createMaterialInstance(const cgltf_material* inp
     }
 
     // This not only creates a material instance, it modifies the material key according to our
-    // rendering constraints. For example, Filament only supports 2 sets of texture coordinates.
+    // rendering constraints. For example, Dante only supports 2 sets of texture coordinates.
     MaterialInstance* mi = mMaterials.createMaterialInstance(&matkey, uvmap, inputMat->name,
             extras.c_str());
     if (!mi) {
@@ -1536,7 +1532,7 @@ MaterialInstance* FAssetLoader::createMaterialInstance(const cgltf_material* inp
 
     // Check the material blending mode, not the cgltf blending mode, because the provider
     // might have selected an alternative blend mode (e.g. to support transmission).
-    if (mi->getMaterial()->getBlendingMode() == filament::BlendingMode::MASKED) {
+    if (mi->getMaterial()->getBlendingMode() == dante::BlendingMode::MASKED) {
         mi->setMaskThreshold(inputMat->alpha_cutoff);
     }
 
@@ -1764,7 +1760,7 @@ MaterialInstance* FAssetLoader::createMaterialInstance(const cgltf_material* inp
     return mi;
 }
 
-void FAssetLoader::importSkins(FFilamentInstance* instance, const cgltf_data* gltf) {
+void FAssetLoader::importSkins(FDanteInstance* instance, const cgltf_data* gltf) {
     instance->mSkins.reserve(gltf->skins_count);
     instance->mSkins.resize(gltf->skins_count);
     const auto& nodeMap = instance->mNodeMap;
@@ -1777,7 +1773,7 @@ void FAssetLoader::importSkins(FFilamentInstance* instance, const cgltf_data* gl
         }
     }
     for (cgltf_size i = 0, len = gltf->skins_count; i < len; ++i) {
-        FFilamentInstance::Skin& dstSkin = instance->mSkins[i];
+        FDanteInstance::Skin& dstSkin = instance->mSkins[i];
         const cgltf_skin& srcSkin = gltf->skins[i];
 
         // Build a list of transformables for this skin, one for each joint.
@@ -1789,7 +1785,7 @@ void FAssetLoader::importSkins(FFilamentInstance* instance, const cgltf_data* gl
 }
 
 bool AssetConfigurationExtended::isSupported() {
-#if defined(__ANDROID__) || defined(FILAMENT_IOS) || defined(__EMSCRIPTEN__)
+#if defined(__ANDROID__) || defined(DANTE_IOS) || defined(__EMSCRIPTEN__)
     return false;
 #else
     return true;
@@ -1806,16 +1802,16 @@ void AssetLoader::destroy(AssetLoader** loader) {
     *loader = temp;
 }
 
-FilamentAsset* AssetLoader::createAsset(uint8_t const* bytes, uint32_t nbytes) {
+DanteAsset* AssetLoader::createAsset(uint8_t const* bytes, uint32_t nbytes) {
     return downcast(this)->createAsset(bytes, nbytes);
 }
 
-FilamentAsset* AssetLoader::createInstancedAsset(const uint8_t* bytes, uint32_t numBytes,
-        FilamentInstance** instances, size_t numInstances) {
+DanteAsset* AssetLoader::createInstancedAsset(const uint8_t* bytes, uint32_t numBytes,
+        DanteInstance** instances, size_t numInstances) {
     return downcast(this)->createInstancedAsset(bytes, numBytes, instances, numInstances);
 }
 
-FilamentInstance* AssetLoader::createInstance(FilamentAsset* asset) {
+DanteInstance* AssetLoader::createInstance(DanteAsset* asset) {
     return downcast(this)->createInstance(downcast(asset));
 }
 
@@ -1823,7 +1819,7 @@ void AssetLoader::enableDiagnostics(bool enable) {
     downcast(this)->mDiagnosticsEnabled = enable;
 }
 
-void AssetLoader::destroyAsset(const FilamentAsset* asset) {
+void AssetLoader::destroyAsset(const DanteAsset* asset) {
     downcast(this)->destroyAsset(downcast(asset));
 }
 
@@ -1843,4 +1839,4 @@ MaterialProvider& AssetLoader::getMaterialProvider() noexcept {
     return downcast(this)->mMaterials;
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

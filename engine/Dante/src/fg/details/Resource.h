@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_DETAILS_RESOURCE_H
-#define TNT_FILAMENT_FG_DETAILS_RESOURCE_H
+#ifndef TNT_DANTE_FG_DETAILS_RESOURCE_H
+#define TNT_DANTE_FG_DETAILS_RESOURCE_H
 
 #include "fg/details/DependencyGraph.h"
 #include "fg/details/ResourceAllocator.h"
@@ -24,7 +20,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 class PassNode;
 class ResourceNode;
@@ -294,7 +290,7 @@ protected:
 private:
     UTILS_NOINLINE
     void assertConnect(FrameGraphTexture::Usage u) const {
-        FILAMENT_CHECK_PRECONDITION((u & this->usage) == u)
+        DANTE_CHECK_PRECONDITION((u & this->usage) == u)
                 << "Requested usage " << utils::to_string(u).c_str()
                 << " not available on imported resource \"" << this->name.c_str() << "\" with usage "
                 << utils::to_string(this->usage).c_str();
@@ -339,6 +335,6 @@ private:
 extern template class Resource<FrameGraphTexture>;
 extern template class ImportedResource<FrameGraphTexture>;
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FG_DETAILS_RESOURCE_H
+#endif // TNT_DANTE_FG_DETAILS_RESOURCE_H

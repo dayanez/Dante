@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <ibl/Cubemap.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 
@@ -205,4 +201,4 @@ Cubemap::Texel Cubemap::trilinearFilterAt(const Cubemap& l0, const Cubemap& l1, 
 }
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante

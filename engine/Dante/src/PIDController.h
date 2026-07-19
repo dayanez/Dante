@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_PIDCONTROLLER_H
-#define TNT_FILAMENT_PIDCONTROLLER_H
+#ifndef TNT_DANTE_PIDCONTROLLER_H
+#define TNT_DANTE_PIDCONTROLLER_H
 
 #include <math/scalar.h>
 
 #include <limits>
 
-namespace filament {
+namespace dante {
 
 class PIDController {
 public:
@@ -112,6 +108,6 @@ private:
     mutable float mDerivative = 0.0f;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_PIDCONTROLLER_H
+#endif // TNT_DANTE_PIDCONTROLLER_H

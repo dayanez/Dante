@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_PROGRAM_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_PROGRAM_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_PROGRAM_H
+#define TNT_DANTE_BACKEND_PRIVATE_PROGRAM_H
 
 #include <backend/DriverEnums.h>
 
@@ -25,7 +21,7 @@ namespace utils::io {
 class ostream;
 } // namespace utils::io
 
-namespace filament::backend {
+namespace dante::backend {
 
 class Program {
 public:
@@ -197,6 +193,6 @@ private:
     bool mMultiview = false;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_PROGRAM_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_PROGRAM_H

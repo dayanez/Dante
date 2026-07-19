@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ArchiveCache.h"
 
 #include <uberz/ArchiveEnums.h>
 #include <uberz/ReadableArchive.h>
 
-#include <filament/Material.h>
+#include <dante/Material.h>
 
 #include <utils/compiler.h>
 #include <utils/CString.h>
@@ -26,9 +22,9 @@
 #include <string.h>
 
 using namespace utils;
-using namespace filament::uberz;
+using namespace dante::uberz;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 // Set this to a certain spec index to find out why it was deemed unsuitable.
 // To find the spec index of interest, try invoking uberz with the verbose flag.
@@ -194,4 +190,4 @@ ArchiveCache::~ArchiveCache() {
     utils::aligned_free(mArchive);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

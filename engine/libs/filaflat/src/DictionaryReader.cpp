@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <filaflat/DictionaryReader.h>
 
 #include <filaflat/ChunkContainer.h>
 #include <filaflat/Unflattener.h>
 
-#if defined (FILAMENT_DRIVER_SUPPORTS_VULKAN)
+#if defined (DANTE_DRIVER_SUPPORTS_VULKAN)
 #include <utils/Log.h>
 #include <smolv.h>
 #endif
@@ -51,7 +47,7 @@ bool DictionaryReader::unflatten(ChunkContainer const& container,
 
             assert_invariant((intptr_t(compressed) % 8) == 0);
 
-#if defined (FILAMENT_DRIVER_SUPPORTS_VULKAN)
+#if defined (DANTE_DRIVER_SUPPORTS_VULKAN)
             size_t spirvSize = smolv::GetDecodedBufferSize(compressed, compressedSize);
             if (spirvSize == 0) {
                 return false;

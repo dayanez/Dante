@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <ibl/CubemapSH.h>
 
@@ -20,10 +16,10 @@
 #include <limits>
 #include <iomanip>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 // -----------------------------------------------------------------------------------------------
@@ -603,7 +599,7 @@ void CubemapSH::renderSH(JobSystem& js, Cubemap& cm,
  * truncated cos(theta) (i.e.: saturate(s.z)), pre-scaled by the reconstruction
  * factors.
  */
-void CubemapSH::preprocessSHForShader(std::unique_ptr<filament::math::float3[]>& SH) {
+void CubemapSH::preprocessSHForShader(std::unique_ptr<dante::math::float3[]>& SH) {
     constexpr size_t numBands = 3;
     constexpr size_t numCoefs = numBands * numBands;
 
@@ -647,7 +643,7 @@ void CubemapSH::preprocessSHForShader(std::unique_ptr<filament::math::float3[]>&
 }
 
 void CubemapSH::renderPreScaledSH3Bands(JobSystem& js,
-        Cubemap& cm, const std::unique_ptr<filament::math::float3[]>& sh) {
+        Cubemap& cm, const std::unique_ptr<dante::math::float3[]>& sh) {
     CubemapUtils::process<CubemapUtils::EmptyState>(cm, js,
             [&](CubemapUtils::EmptyState&, size_t y, Cubemap::Face f, Cubemap::Texel* data,
                     size_t dim) {
@@ -762,4 +758,4 @@ void UTILS_UNUSED CubemapSH::printShBase(std::ostream& out, int l, int m) {
 }
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante

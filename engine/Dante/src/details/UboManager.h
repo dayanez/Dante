@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_UBOMANAGER_H
-#define TNT_FILAMENT_DETAILS_UBOMANAGER_H
+#ifndef TNT_DANTE_DETAILS_UBOMANAGER_H
+#define TNT_DANTE_DETAILS_UBOMANAGER_H
 
 #include "details/BufferAllocator.h"
 
@@ -18,7 +14,7 @@
 
 class UboManagerTest;
 
-namespace filament {
+namespace dante {
 
 class FMaterial;
 class FMaterialInstance;
@@ -150,6 +146,6 @@ private:
     std::vector<BufferAllocator::AllocationId> mFreedAllocations;
 };
 
-} // namespace filament
+} // namespace dante
 
 #endif

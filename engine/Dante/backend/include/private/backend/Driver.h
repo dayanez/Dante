@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_DRIVER_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_DRIVER_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_DRIVER_H
+#define TNT_DANTE_BACKEND_PRIVATE_DRIVER_H
 
 #include <backend/CallbackHandler.h>
 #include <backend/DescriptorSetOffsetArray.h>
@@ -28,17 +24,17 @@
 
 // Command debugging off. debugging virtuals are not called.
 // This is automatically enabled in DEBUG builds.
-#define FILAMENT_DEBUG_COMMANDS_NONE         0x0
+#define DANTE_DEBUG_COMMANDS_NONE         0x0
 // Command debugging enabled. No logging by default.
-#define FILAMENT_DEBUG_COMMANDS_ENABLE       0x1
+#define DANTE_DEBUG_COMMANDS_ENABLE       0x1
 // Command debugging enabled. Every command logged to DLOG(INFO)
-#define FILAMENT_DEBUG_COMMANDS_LOG          0x2
+#define DANTE_DEBUG_COMMANDS_LOG          0x2
 // Command debugging enabled. Every command logged to systrace
-#define FILAMENT_DEBUG_COMMANDS_SYSTRACE     0x4
+#define DANTE_DEBUG_COMMANDS_SYSTRACE     0x4
 
-#define FILAMENT_DEBUG_COMMANDS              FILAMENT_DEBUG_COMMANDS_NONE
+#define DANTE_DEBUG_COMMANDS              DANTE_DEBUG_COMMANDS_NONE
 
-namespace filament::backend {
+namespace dante::backend {
 
 class BufferDescriptor;
 class CallbackHandler;
@@ -125,6 +121,6 @@ public:
 #include "private/backend/DriverAPI.inc"
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_DRIVER_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_DRIVER_H

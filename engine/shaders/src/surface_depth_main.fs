@@ -19,7 +19,7 @@ layout(location = 0) out highp uvec2 outPicking;
 highp vec4 computeDepthMomentsVSM(const highp float depth);
 
 void main() {
-    filament_lodBias = frameUniforms.lodBias;
+    dante_lodBias = frameUniforms.lodBias;
 
     initObjectUniforms();
 

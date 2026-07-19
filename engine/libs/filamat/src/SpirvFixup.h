@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_SPIRVFIXUP_H
 #define TNT_SPIRVFIXUP_H
@@ -11,25 +7,25 @@
 namespace filamat {
 
 /**
- * Performs a "fixup" operation on SPIR-V disassembly text, decorating the filament_gl_ClipDistance
+ * Performs a "fixup" operation on SPIR-V disassembly text, decorating the dante_gl_ClipDistance
  * output as the canonical gl_ClipDistance built-in.
  *
  * glslang does not support the EXT_clip_cull_distance extension. Writing directly to
  * gl_ClipDistance results in an error.
  *
- * To get around this, an ES shader should write instead to filament_gl_ClipDistance. After
+ * To get around this, an ES shader should write instead to dante_gl_ClipDistance. After
  * compiling to SPIR-V, this function will modify the SPIR_V disassembly and decorate
- * filament_gl_ClipDistance as if it were gl_ClipDistance.
+ * dante_gl_ClipDistance as if it were gl_ClipDistance.
  *
  * For example, the source GLSL:
  * ~~~~~~~~~~
  * #version 310 es
  *
  * // The location is required but does not matter and will be replaced.
- * layout(location = 100) out float filament_gl_ClipDistance[1];
+ * layout(location = 100) out float dante_gl_ClipDistance[1];
  *
  * void main() {
- *     filament_gl_ClipDistance[0] = 0.0f;
+ *     dante_gl_ClipDistance[0] = 0.0f;
  * }
  * ~~~~~~~~~~
  *

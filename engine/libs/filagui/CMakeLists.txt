@@ -26,7 +26,7 @@ set(SRCS
 # Compile material files (mat) into headers (inc)
 # ==================================================================================================
 
-if (CMAKE_CROSSCOMPILING OR FILAMENT_IMPORT_PREBUILT_EXECUTABLES)
+if (CMAKE_CROSSCOMPILING OR DANTE_IMPORT_PREBUILT_EXECUTABLES)
     include(${IMPORT_EXECUTABLES})
 endif()
 
@@ -41,9 +41,9 @@ endif()
 file(MAKE_DIRECTORY ${MATERIAL_DIR})
 
 set (MATC_FLAGS ${MATC_BASE_FLAGS})
-if (FILAMENT_SAMPLES_STEREO_TYPE STREQUAL "instanced")
+if (DANTE_SAMPLES_STEREO_TYPE STREQUAL "instanced")
     set (MATC_FLAGS ${MATC_FLAGS} -PstereoscopicType=instanced)
-elseif (FILAMENT_SAMPLES_STEREO_TYPE STREQUAL "multiview")
+elseif (DANTE_SAMPLES_STEREO_TYPE STREQUAL "multiview")
     set (MATC_FLAGS ${MATC_FLAGS} -PstereoscopicType=multiview)
 endif ()
 
@@ -92,7 +92,7 @@ include_directories(${GENERATION_ROOT})
 
 add_library(${TARGET} STATIC ${PUBLIC_HDRS} ${SRCS} ${RESGEN_SOURCE})
 
-target_link_libraries(${TARGET} PUBLIC imgui filament)
+target_link_libraries(${TARGET} PUBLIC imgui dante)
 
 target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
 set_target_properties(${TARGET} PROPERTIES FOLDER Libs)

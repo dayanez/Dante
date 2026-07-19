@@ -17,7 +17,7 @@
 #ifndef TNT_COMPILERPARAMETERS_H
 #define TNT_COMPILERPARAMETERS_H
 
-#include <filament-matp/Config.h>
+#include <dante-matp/Config.h>
 #include <fstream>
 #include <iostream>
 #include <string>

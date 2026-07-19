@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <gltfio/MaterialProvider.h>
 
 #include <string>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 bool operator==(const MaterialKey& k1, const MaterialKey& k2) {
     return
@@ -54,7 +50,7 @@ bool operator==(const MaterialKey& k1, const MaterialKey& k2) {
         ;
 }
 
-// Filament supports up to 2 UV sets. glTF has arbitrary texcoord set indices, but it allows
+// Dante supports up to 2 UV sets. glTF has arbitrary texcoord set indices, but it allows
 // implementations to support only 2 simultaneous sets. Here we build a mapping table with 1-based
 // indices where 0 means unused. Note that the order in which we drop textures can affect the look
 // of certain assets. This "order of degradation" is stipulated by the glTF 2.0 specification.
@@ -196,4 +192,4 @@ void processShaderString(std::string* shader, const UvMap& uvmap, const Material
     replaceAll("${specularColor}", specularColorUV);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

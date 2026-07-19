@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #pragma once
 
@@ -9,8 +5,8 @@
 
 #include <utils/Slice.h>
 
-namespace filament {
+namespace dante {
 
 utils::Slice<const StaticMaterialInfo> getSgsrMaterialList() noexcept;
 
-} // namespace filament
+} // namespace dante

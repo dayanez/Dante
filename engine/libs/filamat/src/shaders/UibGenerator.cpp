@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "UibGenerator.h"
 
-#include <private/filament/BufferInterfaceBlock.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/BufferInterfaceBlock.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
 #include <backend/DriverEnums.h>
 
@@ -15,7 +11,7 @@
 
 #include <stdlib.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -286,4 +282,4 @@ BufferInterfaceBlock const& UibGenerator::getFroxelsUib() noexcept {
     return uib;
 }
 
-} // namespace filament
+} // namespace dante

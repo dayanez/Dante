@@ -1,21 +1,17 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/ColorGrading.h"
 #include "details/Engine.h"
 #include "details/Texture.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "ColorSpaceUtils.h"
 
 #include <private/utils/Tracing.h>
 
-#include <filament/ColorGrading.h>
-#include <filament/ColorSpace.h>
-#include <filament/ToneMapper.h>
+#include <dante/ColorGrading.h>
+#include <dante/ColorSpace.h>
+#include <dante/ToneMapper.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -47,7 +43,7 @@
 #include <arm_neon.h>
 #endif
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 using namespace math;
@@ -321,7 +317,7 @@ ColorGrading* ColorGrading::Builder::build(Engine& engine) {
         mImpl->customLutData.clear();
         mImpl->customLutDimension = 0;
     } else {
-        FILAMENT_CHECK_PRECONDITION(mImpl->customLutData.size() == 
+        DANTE_CHECK_PRECONDITION(mImpl->customLutData.size() == 
                 size_t(mImpl->customLutDimension) * mImpl->customLutDimension * mImpl->customLutDimension)
                 << "Custom LUT data size does not match dimension^3";
     }
@@ -784,11 +780,11 @@ struct FColorGrading::Config {
 };
 
 // Inside the FColorGrading constructor, TSAN sporadically detects a data race on the config struct;
-// the Filament thread writes and the Job thread reads. In practice there should be no data race, so
+// the Dante thread writes and the Job thread reads. In practice there should be no data race, so
 // we force TSAN off to silence the warning.
 UTILS_NO_SANITIZE_THREAD
 FColorGrading::FColorGrading(FEngine& engine, const Builder& builder) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     DriverApi& driver = engine.getDriverApi();
 
@@ -925,7 +921,7 @@ FColorGrading::FColorGrading(FEngine& engine, const Builder& builder) {
             // TOOD: The type=type is due to a c++17 limitation. Can be cleaned up when our
             // clients fully support c++20.
             auto work = [data, b, type = type, &config, &builder](JobSystem&, JobSystem::Job*) {
-                FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "ColorGrading::job");
+                DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "ColorGrading::job");
                 uint32_t const dim = config.lutDimension;
                 uint32_t const sliceCount = dim * dim;
 
@@ -1089,7 +1085,7 @@ float4 FColorGrading::hdrColorAt(Builder const& builder, Config const& config,
 UTILS_NOINLINE
 void FColorGrading::generateDefaultLUTNeon(FEngine const& engine, void* data,
         Config const& config, Builder const& builder) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     uint32_t const dim = config.lutDimension;
     assert_invariant((dim & (dim - 1)) == 0); // dim is power of 2
@@ -1100,7 +1096,7 @@ void FColorGrading::generateDefaultLUTNeon(FEngine const& engine, void* data,
     auto const toneMapper = static_cast<const ACESLegacyToneMapper*>(builder->toneMapper);
     for (uint32_t b = 0; b < dim; b++) {
         auto work = [data, b, &config, toneMapper](JobSystem&, JobSystem::Job*) {
-            FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "ColorGrading::jobDefaultNeon");
+            DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "ColorGrading::jobDefaultNeon");
             uint32_t const dim = config.lutDimension;
             uint32_t const mask = dim - 1;
             uint32_t const shift = __builtin_ctz(dim);
@@ -1171,7 +1167,7 @@ void FColorGrading::generateDefaultLUTNeon(FEngine const& engine, void* data,
 
 UTILS_NOINLINE
 void FColorGrading::generateMediumLUTNeon(FEngine const& engine, void* data, Config const& config, Builder const& builder) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     uint32_t const dim = config.lutDimension;
     assert_invariant((dim & (dim - 1)) == 0); // dim is power of 2
@@ -1181,7 +1177,7 @@ void FColorGrading::generateMediumLUTNeon(FEngine const& engine, void* data, Con
 
     for (uint32_t b = 0; b < dim; b++) {
         auto work = [data, b, &config, &builder](JobSystem&, JobSystem::Job*) {
-            FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "ColorGrading::jobNeon");
+            DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "ColorGrading::jobNeon");
             uint32_t const dim = config.lutDimension;
             uint32_t const mask = dim - 1;
             uint32_t const shift = __builtin_ctz(dim);
@@ -1405,4 +1401,4 @@ inline void FColorGrading::colorGradingAdjustmentsNeon(float32x4_t& vr, float32x
 
 #endif
 
-} //namespace filament
+} //namespace dante

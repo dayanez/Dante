@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/MaterialInstance.h"
 
@@ -15,11 +11,11 @@
 
 #include "ds/DescriptorSetLayout.h"
 
-#include <private/filament/EngineEnums.h>
+#include <private/dante/EngineEnums.h>
 
-#include <filament/MaterialEnums.h>
-#include <filament/MaterialInstance.h>
-#include <filament/TextureSampler.h>
+#include <dante/MaterialEnums.h>
+#include <dante/MaterialInstance.h>
+#include <dante/TextureSampler.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -44,10 +40,10 @@
 
 #include <stddef.h>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -218,7 +214,7 @@ void FMaterialInstance::commit(FEngine::DriverApi& driver, UboManager* uboManage
         // First pass: check preconditions
         for (auto const& [binding, p]: mTextureParameters) {
             assert_invariant(p.texture);
-            FILAMENT_CHECK_PRECONDITION(engine.isValid(p.texture))
+            DANTE_CHECK_PRECONDITION(engine.isValid(p.texture))
                     << "Invalid texture still bound to MaterialInstance: '" << getName() << "'\n";
         }
         // Second pass: update state
@@ -265,7 +261,7 @@ template<typename T>
 void FMaterialInstance::setConstantImpl(std::string_view name, T value) {
     auto const& constants = mMaterial->getDefinition().specializationConstantsNameToIndex;
     auto it = constants.find(name);
-    FILAMENT_CHECK_PRECONDITION(it != constants.end()) << "Constant " << name << " does not exist";
+    DANTE_CHECK_PRECONDITION(it != constants.end()) << "Constant " << name << " does not exist";
 
     if (UTILS_UNLIKELY(mPendingSpecializationConstants.empty())) {
         mPendingSpecializationConstants =
@@ -281,7 +277,7 @@ template<typename T>
 T FMaterialInstance::getConstantImpl(std::string_view name) const {
     auto const& constants = mMaterial->getDefinition().specializationConstantsNameToIndex;
     auto it = constants.find(name);
-    FILAMENT_CHECK_PRECONDITION(it != constants.end()) << "Constant " << name << " does not exist";
+    DANTE_CHECK_PRECONDITION(it != constants.end()) << "Constant " << name << " does not exist";
 
     uint32_t id = it->second + CONFIG_MAX_INTERNAL_SPEC_CONSTANTS;
 
@@ -334,10 +330,10 @@ void FMaterialInstance::setParameterImpl(std::string_view const name,
         SamplerType const samplerType = texture->getTarget();
         auto const& featureFlags = mMaterial->getEngine().features.engine.debug;
 
-        FILAMENT_CHECK_PRECONDITION(texture->getUsage() & TextureUsage::SAMPLEABLE)
+        DANTE_CHECK_PRECONDITION(texture->getUsage() & TextureUsage::SAMPLEABLE)
                 << "Texture for parameter \"" << name << "\"" << " is not SAMPLEABLE";
 
-        FILAMENT_FLAG_GUARDED_CHECK_PRECONDITION(
+        DANTE_FLAG_GUARDED_CHECK_PRECONDITION(
                 DescriptorSet::isTextureCompatibleWithDescriptor(
                         textureType, samplerType, descriptorType),
                 featureFlags.assert_material_instance_texture_descriptor_set_compatible)
@@ -481,7 +477,7 @@ void FMaterialInstance::compile(CompilerPriorityQueue const priority,
 
                 if (definition.isValidProgram(variant, specKey, shaderModel, isStereoSupported)) {
 #ifndef NDEBUG
-                    FILAMENT_TRACING_EVENT(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                    DANTE_TRACING_EVENT(DANTE_TRACING_CATEGORY_DANTE,
                             "prepareProgram(variant found)", "name",
                             getMaterial()->getName().c_str_safe(), "variantKey",
                             static_cast<uint32_t>(variant.key), "specKey",
@@ -491,7 +487,7 @@ void FMaterialInstance::compile(CompilerPriorityQueue const priority,
                     prepareProgram(driver, variant, specKey, priority);
 #ifndef NDEBUG
                 } else {
-                    FILAMENT_TRACING_EVENT(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                    DANTE_TRACING_EVENT(DANTE_TRACING_CATEGORY_DANTE,
                             "requested variant missing", "name",
                             getMaterial()->getName().c_str_safe(), "variantKey",
                             static_cast<uint32_t>(variant.key), "specKey",
@@ -513,7 +509,7 @@ void FMaterialInstance::compile(CompilerPriorityQueue const priority,
                         specKey != DynamicSpecConstKey::filterUserVariant(specKey, variantFilter))
                     continue;
 
-                FILAMENT_TRACING_EVENT(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                DANTE_TRACING_EVENT(DANTE_TRACING_CATEGORY_DANTE,
                         "parallel compilation disabled", "name",
                         getMaterial()->getName().c_str_safe(), "variantKey",
                         static_cast<uint32_t>(variant.key), "specKey",
@@ -618,7 +614,7 @@ void FMaterialInstance::fixMissingSamplers() const {
             // just safety-check, should never fail
             if (UTILS_LIKELY(pos != list.end())) {
                 FEngine const& engine = mMaterial->getEngine();
-                filament::DescriptorSetLayout const& layout = mMaterial->getDescriptorSetLayout();
+                dante::DescriptorSetLayout const& layout = mMaterial->getDescriptorSetLayout();
 
                 if (pos->format == SamplerFormat::FLOAT) {
                     // TODO: we only handle missing samplers that are FLOAT
@@ -661,13 +657,13 @@ void FMaterialInstance::flushSpecializationConstants() const noexcept {
     mPendingSpecializationConstants.clear();
 }
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
 
 void FMaterialInstance::updateActiveProgramsForMatdbg(Variant const variant) const noexcept {
     mMaterial->updateActiveProgramsForMatdbg(variant);
 }
 
-#endif // FILAMENT_ENABLE_MATDBG
+#endif // DANTE_ENABLE_MATDBG
 
 template void FMaterialInstance::setConstantImpl<int32_t>(std::string_view name, int32_t value);
 template void FMaterialInstance::setConstantImpl<float>(std::string_view name, float value);
@@ -677,4 +673,4 @@ template int32_t FMaterialInstance::getConstantImpl<int32_t>(std::string_view na
 template float FMaterialInstance::getConstantImpl<float>(std::string_view name) const;
 template bool FMaterialInstance::getConstantImpl<bool>(std::string_view name) const;
 
-} // namespace filament
+} // namespace dante

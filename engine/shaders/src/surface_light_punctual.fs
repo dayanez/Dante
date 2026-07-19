@@ -229,7 +229,7 @@ void evaluatePunctualLights(const MaterialInputs material,
 #endif
             }
             if (light.contactShadows && visibility > 0.0) {
-                if ((object_uniforms_flagsChannels & FILAMENT_OBJECT_CONTACT_SHADOWS_BIT) != 0) {
+                if ((object_uniforms_flagsChannels & DANTE_OBJECT_CONTACT_SHADOWS_BIT) != 0) {
                     visibility *= 1.0 - screenSpaceContactShadow(light.l);
                 }
             }

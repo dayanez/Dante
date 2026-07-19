@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Stream.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 #include "details/Fence.h"
 
-#include <filament/Stream.h>
+#include <dante/Stream.h>
 
 #include <backend/PixelBufferDescriptor.h>
 
@@ -18,7 +14,7 @@
 #include <utils/Panic.h>
 #include <utils/StaticString.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -112,4 +108,4 @@ int64_t FStream::getTimestamp() const noexcept {
     return driver.getStreamTimestamp(mStreamHandle);
 }
 
-} // namespace filament
+} // namespace dante

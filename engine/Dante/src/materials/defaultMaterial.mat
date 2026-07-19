@@ -1,5 +1,5 @@
 material {
-    name : "Filament Default Material",
+    name : "Dante Default Material",
     shadingModel : unlit,
     featureLevel: 0
 }

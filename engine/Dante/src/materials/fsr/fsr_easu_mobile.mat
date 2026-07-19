@@ -69,10 +69,10 @@ fragment {
     #define FSR_EASU_F 1
     #include "ffx_fsr1.h"
 
-    #define FILAMENT_FSR_DERINGING
+    #define DANTE_FSR_DERINGING
     #include "ffx_fsr1_mobile.fs"
 
-#if defined(FILAMENT_HAS_FEATURE_TEXTURE_GATHER)
+#if defined(DANTE_HAS_FEATURE_TEXTURE_GATHER)
     #define gather textureGather
 #else
     vec4 gather(const mediump sampler2D color, highp vec2 p, const int comp) {

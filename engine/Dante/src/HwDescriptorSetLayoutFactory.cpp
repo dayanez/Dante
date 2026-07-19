@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "HwDescriptorSetLayoutFactory.h"
 
@@ -22,7 +18,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 using namespace backend;
@@ -89,4 +85,4 @@ void HwDescriptorSetLayoutFactory::destroy(DriverApi& driver, Handle handle) noe
     }
 }
 
-} // namespace filament
+} // namespace dante

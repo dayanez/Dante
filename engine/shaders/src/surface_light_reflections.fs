@@ -55,7 +55,7 @@ highp float distanceSquared(highp vec2 a, highp vec2 b) {
     return dot(a, a);
 }
 
-// Note: McGuire and Mara use the "cs" prefix to stand for "camera space", equivalent to Filament's
+// Note: McGuire and Mara use the "cs" prefix to stand for "camera space", equivalent to Dante's
 // "view space". "cs" has been replaced with "vs" to avoid confusion.
 bool traceScreenSpaceRay(const highp vec3 vsOrigin, const highp vec3 vsDirection,
         highp_mat4 uvFromViewMatrix, const highp sampler2D vsZBuffer,

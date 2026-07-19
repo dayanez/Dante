@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_ASSETLOADER_H
 #define GLTFIO_ASSETLOADER_H
 
-#include <gltfio/FilamentAsset.h>
-#include <gltfio/FilamentInstance.h>
+#include <gltfio/DanteAsset.h>
+#include <gltfio/DanteInstance.h>
 #include <gltfio/MaterialProvider.h>
 
-#include <filament/Engine.h>
-#include <filament/Material.h>
+#include <dante/Engine.h>
+#include <dante/Material.h>
 
 #include <utils/compiler.h>
 
@@ -23,7 +19,7 @@ namespace utils {
 /**
  * Loader and pipeline for glTF 2.0 assets.
  */
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 class NodeManager;
 
@@ -50,8 +46,8 @@ struct AssetConfigurationExtended {
  */
 struct AssetConfiguration {
     //! The engine that the loader should pass to builder objects (e.g.
-    //! filament::VertexBuffer::Builder).
-    class filament::Engine* engine;
+    //! dante::VertexBuffer::Builder).
+    class dante::Engine* engine;
 
     //! Controls whether the loader uses filamat to generate materials on the fly, or loads a small
     //! set of precompiled ubershader materials. Deleting the MaterialProvider is the client's
@@ -76,20 +72,20 @@ struct AssetConfiguration {
 
 /**
  * \class AssetLoader AssetLoader.h gltfio/AssetLoader.h
- * \brief Consumes glTF content and produces FilamentAsset objects.
+ * \brief Consumes glTF content and produces DanteAsset objects.
  *
- * AssetLoader consumes a blob of glTF 2.0 content (either JSON or GLB) and produces a FilamentAsset
- * object, which is a bundle of Filament textures, vertex buffers, index buffers, etc. An asset is
- * composed of 1 or more FilamentInstance objects which contain entities and components.
+ * AssetLoader consumes a blob of glTF 2.0 content (either JSON or GLB) and produces a DanteAsset
+ * object, which is a bundle of Dante textures, vertex buffers, index buffers, etc. An asset is
+ * composed of 1 or more DanteInstance objects which contain entities and components.
  *
- * Clients must use AssetLoader to create and destroy FilamentAsset objects. This is similar to
- * how filament::Engine is used to create and destroy core objects like VertexBuffer.
+ * Clients must use AssetLoader to create and destroy DanteAsset objects. This is similar to
+ * how dante::Engine is used to create and destroy core objects like VertexBuffer.
  *
  * AssetLoader does not fetch external buffer data or create textures on its own. Clients can use
  * ResourceLoader for this, which obtains the URI list from the asset. This is demonstrated in the
  * code snippet below.
  *
- * AssetLoader also owns a cache of filament::Material objects that may be re-used across multiple
+ * AssetLoader also owns a cache of dante::Material objects that may be re-used across multiple
  * loads.
  *
  * Example usage:
@@ -100,9 +96,9 @@ struct AssetConfiguration {
  * auto decoder = createStbProvider(engine);
  * auto loader = AssetLoader::create({engine, materials});
  *
- * // Parse the glTF content and create Filament entities.
+ * // Parse the glTF content and create Dante entities.
  * std::vector<uint8_t> content(...);
- * FilamentAsset* asset = loader->createAsset(content.data(), content.size());
+ * DanteAsset* asset = loader->createAsset(content.data(), content.size());
  * content.clear();
  *
  * // Load buffers and textures from disk.
@@ -117,7 +113,7 @@ struct AssetConfiguration {
  * // Add renderables to the scene.
  * scene->addEntities(asset->getEntities(), asset->getEntityCount());
  *
- * // Extract the animator interface from the FilamentInstance.
+ * // Extract the animator interface from the DanteInstance.
  * auto animator = asset->getInstance()->getAnimator();
  *
  * // Execute the render loop and play the first animation.
@@ -143,9 +139,9 @@ class UTILS_PUBLIC AssetLoader {
 public:
 
     /**
-     * Creates an asset loader for the given configuration, which specifies the Filament engine.
+     * Creates an asset loader for the given configuration, which specifies the Dante engine.
      *
-     * The engine is held weakly, used only for the creation and destruction of Filament objects.
+     * The engine is held weakly, used only for the creation and destruction of Dante objects.
      * The optional name component manager can be used to assign names to renderables.
      * The material source specifies whether to use filamat to generate materials on the fly, or to
      * load a small set of precompiled ubershader materials.
@@ -164,7 +160,7 @@ public:
      * Takes a pointer to the contents of a GLB or a JSON-based glTF 2.0 file and returns an asset
      * with one instance, or null on failure.
      */
-    FilamentAsset* createAsset(const uint8_t* bytes, uint32_t nbytes);
+    DanteAsset* createAsset(const uint8_t* bytes, uint32_t nbytes);
 
     /**
      * Consumes the contents of a glTF 2.0 file and produces a primary asset with one or more
@@ -180,9 +176,9 @@ public:
      * Clients must use ResourceLoader to load resources on the primary asset.
      *
      * The entity accessor and renderable stack API in the primary asset can be used to control the
-     * union of all instances. The individual FilamentInstance objects can be used to access each
+     * union of all instances. The individual DanteInstance objects can be used to access each
      * instance's partition of entities.  Similarly, the Animator in the primary asset controls all
-     * instances. To animate instances individually, use FilamentInstance::getAnimator().
+     * instances. To animate instances individually, use DanteInstance::getAnimator().
      *
      * @param bytes the contents of a glTF 2.0 file (JSON or GLB)
      * @param numBytes the number of bytes in "bytes"
@@ -190,8 +186,8 @@ public:
      * @param numInstances requested number of instances
      * @return the primary asset that has ownership over all instances
      */
-    FilamentAsset* createInstancedAsset(const uint8_t* bytes, uint32_t numBytes,
-            FilamentInstance** instances, size_t numInstances);
+    DanteAsset* createInstancedAsset(const uint8_t* bytes, uint32_t numBytes,
+            DanteInstance** instances, size_t numInstances);
 
     /**
      * Adds a new instance to the asset.
@@ -204,10 +200,10 @@ public:
      * entity lists and instance lists, which would be slow to shift. We also wish to discourage
      * create/destroy churn, as noted above.
      *
-     * This cannot be called after FilamentAsset::releaseSourceData().
+     * This cannot be called after DanteAsset::releaseSourceData().
      * See also AssetLoader::createInstancedAsset().
      */
-    FilamentInstance* createInstance(FilamentAsset* asset);
+    DanteInstance* createInstance(DanteAsset* asset);
 
     /**
      * Allows clients to enable diagnostic shading on newly-loaded assets.
@@ -215,20 +211,20 @@ public:
     void enableDiagnostics(bool enable = true);
 
     /**
-     * Destroys the given asset, all of its associated Filament objects, and all associated
-     * FilamentInstance objects.
+     * Destroys the given asset, all of its associated Dante objects, and all associated
+     * DanteInstance objects.
      *
      * This destroys entities, components, material instances, vertex buffers, index buffers,
      * and textures. This does not necessarily immediately free all source data, since
      * texture decoding or GPU uploading might be underway.
      */
-    void destroyAsset(const FilamentAsset* asset);
+    void destroyAsset(const DanteAsset* asset);
 
     /**
      * Gets a weak reference to an array of cached materials, used internally to create material
      * instances for assets.
      */
-    const filament::Material* const* getMaterials() const noexcept;
+    const dante::Material* const* getMaterials() const noexcept;
 
     /**
      * Gets the number of cached materials.
@@ -254,6 +250,6 @@ public:
     /*! \endcond */
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_ASSETLOADER_H

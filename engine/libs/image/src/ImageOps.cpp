@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <image/ImageOps.h>
 
@@ -13,7 +9,7 @@
 #include <memory>
 #include <ratio>
 
-using namespace filament::math;
+using namespace dante::math;
 
 namespace image {
 
@@ -23,7 +19,7 @@ LinearImage horizontalStack(std::initializer_list<LinearImage> images) {
 }
 
 LinearImage horizontalStack(const LinearImage* first, size_t count) {
-    FILAMENT_CHECK_PRECONDITION(count > 0) << "Must supply one or more images for stacking.";
+    DANTE_CHECK_PRECONDITION(count > 0) << "Must supply one or more images for stacking.";
 
     // Compute the final size and allocate memory.
     uint32_t width = 0;
@@ -35,12 +31,12 @@ LinearImage horizontalStack(const LinearImage* first, size_t count) {
         if (height == 0) {
             height = img.getHeight();
         } else {
-            FILAMENT_CHECK_PRECONDITION(height == img.getHeight()) << "Inconsistent heights.";
+            DANTE_CHECK_PRECONDITION(height == img.getHeight()) << "Inconsistent heights.";
         }
         if (nchannels == 0) {
             nchannels = img.getChannels();
         } else {
-            FILAMENT_CHECK_PRECONDITION(nchannels == img.getChannels()) << "Inconsistent channels.";
+            DANTE_CHECK_PRECONDITION(nchannels == img.getChannels()) << "Inconsistent channels.";
         }
     }
     LinearImage result(width, height, nchannels);
@@ -68,7 +64,7 @@ LinearImage verticalStack(std::initializer_list<LinearImage> images) {
 // result. This is incredibly lazy, but since we use row-major ordering, copying columns would be
 // really painful.
 LinearImage verticalStack(const LinearImage* first, size_t count) {
-    FILAMENT_CHECK_PRECONDITION(count > 0) << "Must supply one or more images for stacking.";
+    DANTE_CHECK_PRECONDITION(count > 0) << "Must supply one or more images for stacking.";
     std::unique_ptr<LinearImage[]> flipped(new LinearImage[count]);
     int i = 0;
     for (size_t c = 0; c < count; ++c) {
@@ -122,7 +118,7 @@ LinearImage applyScaleOffset(const LinearImage& image,
 }
 
 LinearImage vectorsToColors(const LinearImage& image) {
-    FILAMENT_CHECK_PRECONDITION(image.getChannels() == 3 || image.getChannels() == 4)
+    DANTE_CHECK_PRECONDITION(image.getChannels() == 3 || image.getChannels() == 4)
             << "Must be a 3 or 4 channel image";
     return image.getChannels() == 3
         ? applyScaleOffset<float3>(image, 0.5f, 0.5f)
@@ -130,7 +126,7 @@ LinearImage vectorsToColors(const LinearImage& image) {
 }
 
 LinearImage colorsToVectors(const LinearImage& image) {
-    FILAMENT_CHECK_PRECONDITION(image.getChannels() == 3 || image.getChannels() == 4)
+    DANTE_CHECK_PRECONDITION(image.getChannels() == 3 || image.getChannels() == 4)
             << "Must be a 3 or 4 channel image";
     return image.getChannels() == 3
         ? applyScaleOffset<float3>(image, 2.0f, -1.0f)
@@ -140,7 +136,7 @@ LinearImage colorsToVectors(const LinearImage& image) {
 LinearImage extractChannel(const LinearImage& source, uint32_t channel) {
     const uint32_t width = source.getWidth(), height = source.getHeight();
     const uint32_t nchan = source.getChannels();
-    FILAMENT_CHECK_PRECONDITION(channel < nchan) << "Channel is out of range.";
+    DANTE_CHECK_PRECONDITION(channel < nchan) << "Channel is out of range.";
     LinearImage result(width, height, 1);
     auto src = source.getPixelRef();
     auto dst = result.getPixelRef();
@@ -156,16 +152,16 @@ LinearImage combineChannels(std::initializer_list<LinearImage> images) {
 }
 
 LinearImage combineChannels(LinearImage const* img, size_t count) {
-    FILAMENT_CHECK_PRECONDITION(count > 0) << "Must supply one or more image planes for combining.";
+    DANTE_CHECK_PRECONDITION(count > 0) << "Must supply one or more image planes for combining.";
     const uint32_t width = img[0].getWidth();
     const uint32_t height = img[0].getHeight();
     for (size_t c = 0; c < count; ++c) {
         const LinearImage& plane = img[c];
-        FILAMENT_CHECK_PRECONDITION(plane.getWidth() == width)
+        DANTE_CHECK_PRECONDITION(plane.getWidth() == width)
                 << "Planes must all have same width.";
-        FILAMENT_CHECK_PRECONDITION(plane.getHeight() == height)
+        DANTE_CHECK_PRECONDITION(plane.getHeight() == height)
                 << "Planes must all have same height.";
-        FILAMENT_CHECK_PRECONDITION(plane.getChannels() == 1) << "Planes must be single channel.";
+        DANTE_CHECK_PRECONDITION(plane.getChannels() == 1) << "Planes must be single channel.";
     }
     LinearImage result(width, height, (uint32_t) count);
     float* dst = result.getPixelRef();
@@ -405,11 +401,11 @@ LinearImage voronoiFromCoordField(const LinearImage& coordField, const LinearIma
 }
 
 void blitImage(LinearImage& target, const LinearImage& source) {
-    FILAMENT_CHECK_PRECONDITION(source.getWidth() == target.getWidth())
+    DANTE_CHECK_PRECONDITION(source.getWidth() == target.getWidth())
             << "Images must have same width.";
-    FILAMENT_CHECK_PRECONDITION(source.getHeight() == target.getHeight())
+    DANTE_CHECK_PRECONDITION(source.getHeight() == target.getHeight())
             << "Images must have same height.";
-    FILAMENT_CHECK_PRECONDITION(source.getChannels() == target.getChannels())
+    DANTE_CHECK_PRECONDITION(source.getChannels() == target.getChannels())
             << "Images must have same number of channels.";
     memcpy(target.getPixelRef(), source.getPixelRef(),
             sizeof(float) * source.getWidth() * source.getHeight() * source.getChannels());

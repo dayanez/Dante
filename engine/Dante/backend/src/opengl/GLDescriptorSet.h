@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_GLDESCRIPTORSET_H
-#define TNT_FILAMENT_BACKEND_OPENGL_GLDESCRIPTORSET_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_GLDESCRIPTORSET_H
+#define TNT_DANTE_BACKEND_OPENGL_GLDESCRIPTORSET_H
 
 #include "DriverBase.h"
 #include "gl_headers.h"
@@ -25,7 +21,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 struct GLBufferObject;
 struct GLTexture;
@@ -136,6 +132,6 @@ private:
 };
 static_assert(sizeof(GLDescriptorSet) <= 32);
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif //TNT_FILAMENT_BACKEND_OPENGL_GLDESCRIPTORSET_H
+#endif //TNT_DANTE_BACKEND_OPENGL_GLDESCRIPTORSET_H

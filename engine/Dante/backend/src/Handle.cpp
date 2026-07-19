@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <backend/Handle.h>
 
@@ -18,11 +14,11 @@
 
 using namespace utils;
 
-namespace filament::backend {
+namespace dante::backend {
 
 #ifndef NDEBUG
 
-static char const * const kOurNamespace = "filament::backend::";
+static char const * const kOurNamespace = "dante::backend::";
 
 // removes all occurrences of "what" from "str"
 UTILS_NOINLINE
@@ -67,4 +63,4 @@ template io::ostream& operator<<(io::ostream& out, const Handle<HwVertexBufferIn
 
 #endif
 
-} // namespace filament::backend
+} // namespace dante::backend

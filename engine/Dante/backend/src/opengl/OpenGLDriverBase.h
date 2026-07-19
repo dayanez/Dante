@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_OPENGLDRIVERBASE_H
-#define TNT_FILAMENT_BACKEND_OPENGL_OPENGLDRIVERBASE_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_OPENGLDRIVERBASE_H
+#define TNT_DANTE_BACKEND_OPENGL_OPENGLDRIVERBASE_H
 
 #include "DriverBase.h"
 
@@ -12,7 +8,7 @@
 
 #include <utils/CString.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class OpenGLDriverBase : public DriverBase {
 protected:
@@ -26,6 +22,6 @@ public:
     virtual utils::CString getVersionString() const noexcept = 0;
 };
 
-} // filament::backend
+} // dante::backend
 
-#endif //TNT_FILAMENT_BACKEND_OPENGL_OPENGLDRIVERBASE_H
+#endif //TNT_DANTE_BACKEND_OPENGL_OPENGLDRIVERBASE_H

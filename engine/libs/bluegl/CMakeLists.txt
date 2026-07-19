@@ -31,7 +31,7 @@ if (WIN32)
         set(SRCS ${SRCS} src/BlueGLCoreWindowsImpl.S)
     endif()
 elseif(LINUX)
-    if (FILAMENT_SUPPORTS_EGL_ON_LINUX)
+    if (DANTE_SUPPORTS_EGL_ON_LINUX)
         set(SRCS ${SRCS} src/BlueGLLinuxEGL.cpp)
     else()
         set(SRCS ${SRCS} src/BlueGLLinux.cpp)
@@ -57,7 +57,7 @@ endif()
 
 install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})
 
-if (FILAMENT_BUILD_TESTING)
+if (DANTE_BUILD_TESTING)
     # Build the tests...
     add_executable(test_${TARGET}
         tests/OpenGLSupport.cpp

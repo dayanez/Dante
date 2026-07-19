@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_TYPEDUNIFORMBUFFER_H
-#define TNT_FILAMENT_TYPEDUNIFORMBUFFER_H
+#ifndef TNT_DANTE_TYPEDUNIFORMBUFFER_H
+#define TNT_DANTE_TYPEDUNIFORMBUFFER_H
 
 #include "TypedBuffer.h"
 
@@ -19,7 +15,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 template<typename T, size_t N = 1>
 class TypedUniformBuffer {
@@ -83,7 +79,7 @@ private:
     backend::BufferObjectHandle mUboHandle;
 };
 
-} // namespace filament
+} // namespace dante
 
 
-#endif //TNT_FILAMENT_TYPEDUNIFORMBUFFER_H
+#endif //TNT_DANTE_TYPEDUNIFORMBUFFER_H

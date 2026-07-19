@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <ibl/CubemapUtils.h>
 
@@ -18,10 +14,10 @@
 #include <math.h>
 #include <string.h>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 void CubemapUtils::clamp(Image& src) {
@@ -166,7 +162,7 @@ Image CubemapUtils::createCubemapImage(size_t dim, bool horizontal) {
     return image;
 }
 
-#ifndef FILAMENT_IBL_LITE
+#ifndef DANTE_IBL_LITE
 
 void CubemapUtils::equirectangularToCubemap(JobSystem& js, Cubemap& dst, const Image& src) {
     const size_t width = src.getWidth();
@@ -386,4 +382,4 @@ void CubemapUtils::generateUVGrid(JobSystem& js, Cubemap& cml, size_t gridFreque
 #endif
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante

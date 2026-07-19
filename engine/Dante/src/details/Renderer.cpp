@@ -24,14 +24,14 @@
 #include "fg/FrameGraphResources.h"
 #include "fg/FrameGraphTexture.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/Camera.h>
-#include <filament/Fence.h>
-#include <filament/FrameHistoryStream.h>
-#include <filament/Options.h>
-#include <filament/Renderer.h>
+#include <dante/Camera.h>
+#include <dante/Fence.h>
+#include <dante/FrameHistoryStream.h>
+#include <dante/Options.h>
+#include <dante/Renderer.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -70,10 +70,10 @@
 // this helps visualize what dynamic-scaling is doing
 #define DEBUG_DYNAMIC_SCALING false
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 
@@ -82,7 +82,7 @@ FRenderer::FRenderer(FEngine& engine) :
         mFrameSkipper(),
         mRenderTargetHandle(engine.getDefaultRenderTarget()),
         mFrameInfoManager(engine, engine.getDriverApi()),
-#if FILAMENT_LOG_FRAME_INFO
+#if DANTE_LOG_FRAME_INFO
         mFrameHistoryStream(this),
 #endif
         mHdrTranslucent(TextureFormat::RGBA16F),
@@ -306,9 +306,9 @@ std::pair<float, float2> FRenderer::prepareUpscaler(float2 const scale,
 }
 
 void FRenderer::skipFrame(uint64_t const vsyncSteadyClockTimeNano) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
-    FILAMENT_CHECK_PRECONDITION(!mSwapChain) <<
+    DANTE_CHECK_PRECONDITION(!mSwapChain) <<
             "skipFrame() can't be called between beginFrame() and endFrame()";
 
     if (!vsyncSteadyClockTimeNano) {
@@ -316,7 +316,7 @@ void FRenderer::skipFrame(uint64_t const vsyncSteadyClockTimeNano) {
     }
 
     mFrameId++;
-    FILAMENT_TRACING_FRAME_ID(FILAMENT_TRACING_CATEGORY_FILAMENT, mFrameId);
+    DANTE_TRACING_FRAME_ID(DANTE_TRACING_CATEGORY_DANTE, mFrameId);
 
     FEngine& engine = mEngine;
     FEngine::DriverApi& driver = engine.getDriverApi();
@@ -365,15 +365,15 @@ bool FRenderer::shouldRenderFrame() const noexcept {
 }
 
 bool FRenderer::beginFrame(FSwapChain* swapChain, uint64_t vsyncSteadyClockTimeNano) {
-    FILAMENT_CHECK_PRECONDITION(swapChain) << "swapChain cannot be null.";
+    DANTE_CHECK_PRECONDITION(swapChain) << "swapChain cannot be null.";
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT, "frameId", (mFrameId + 1));
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE, "frameId", (mFrameId + 1));
 
     if (UTILS_VERY_UNLIKELY(mEngine.hasExceptionBeenRethrown())) {
         return false;
     }
 
-#if FILAMENT_LOG_FRAME_INFO
+#if DANTE_LOG_FRAME_INFO
     for (auto fi : mFrameHistoryStream.getNewFrames()) {
         if (fi) {
             LOG(INFO)
@@ -405,7 +405,7 @@ bool FRenderer::beginFrame(FSwapChain* swapChain, uint64_t vsyncSteadyClockTimeN
     }
 
     mFrameId++;
-    FILAMENT_TRACING_FRAME_ID(FILAMENT_TRACING_CATEGORY_FILAMENT, mFrameId);
+    DANTE_TRACING_FRAME_ID(DANTE_TRACING_CATEGORY_DANTE, mFrameId);
 
     // get the timestamp as soon as possible
     using namespace std::chrono;
@@ -514,7 +514,7 @@ bool FRenderer::beginFrame(FSwapChain* swapChain, uint64_t vsyncSteadyClockTimeN
 }
 
 void FRenderer::endFrame() {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     mEngine.propagateBackendException();
 
@@ -532,7 +532,7 @@ void FRenderer::endFrame() {
         driver.debugThreading();
     }
 
-    FILAMENT_CHECK_PRECONDITION(mSwapChain && engine.isValid(mSwapChain))
+    DANTE_CHECK_PRECONDITION(mSwapChain && engine.isValid(mSwapChain))
             << "SwapChain must remain valid until endFrame is called.";
 
     // mSwapChain cannot be null by construction
@@ -570,7 +570,7 @@ void FRenderer::readPixels(
         PixelBufferDescriptor&& buffer) {
 
     const bool withinFrame = mSwapChain != nullptr;
-    FILAMENT_CHECK_PRECONDITION(withinFrame)
+    DANTE_CHECK_PRECONDITION(withinFrame)
             << "readPixels() on a SwapChain must be called after "
                "beginFrame() and before endFrame().";
 
@@ -587,16 +587,16 @@ void FRenderer::readPixels(FRenderTarget const* renderTarget,
     if (!renderTarget->supportsReadPixels()) {
         LOG(WARNING) << "readPixels() must be called with a renderTarget with COLOR0 created with "
                         "TextureUsage::BLIT_SRC. This precondition will be asserted in a later "
-                        "release of Filament.";
+                        "release of Dante.";
     }
 
     RendererUtils::readPixels(mEngine.getDriverApi(), renderTarget->getHwHandle(),
             xoffset, yoffset, width, height, std::move(buffer));
 }
 
-void FRenderer::copyFrame(FSwapChain* dstSwapChain, filament::Viewport const& dstViewport,
-        filament::Viewport const& srcViewport, CopyFrameFlag const flags) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+void FRenderer::copyFrame(FSwapChain* dstSwapChain, dante::Viewport const& dstViewport,
+        dante::Viewport const& srcViewport, CopyFrameFlag const flags) {
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     assert_invariant(mSwapChain);
     assert_invariant(dstSwapChain);
@@ -643,14 +643,14 @@ void FRenderer::copyFrame(FSwapChain* dstSwapChain, filament::Viewport const& ds
 }
 
 void FRenderer::renderStandaloneView(FView const* view) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     using namespace std::chrono;
 
-    FILAMENT_CHECK_PRECONDITION(view->getRenderTarget())
+    DANTE_CHECK_PRECONDITION(view->getRenderTarget())
             << "View \"" << view->getName() << "\" must have a RenderTarget associated";
 
-    FILAMENT_CHECK_PRECONDITION(!mSwapChain)
+    DANTE_CHECK_PRECONDITION(!mSwapChain)
             << "renderStandaloneView() must be called outside of beginFrame() / endFrame()";
 
     if (UTILS_LIKELY(view->getScene())) {
@@ -684,7 +684,7 @@ void FRenderer::renderStandaloneView(FView const* view) {
 }
 
 void FRenderer::render(FView const* view) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     mEngine.propagateBackendException();
 
@@ -706,7 +706,7 @@ void FRenderer::render(FView const* view) {
 void FRenderer::renderInternal(DriverApi& driver, FView const* view, bool const flush) {
     FEngine& engine = mEngine;
 
-    FILAMENT_CHECK_PRECONDITION(!view->hasPostProcessPass() ||
+    DANTE_CHECK_PRECONDITION(!view->hasPostProcessPass() ||
                                 engine.hasFeatureLevel(FeatureLevel::FEATURE_LEVEL_1))
                     << "post-processing is not supported at FEATURE_LEVEL_0";
 
@@ -837,11 +837,11 @@ void FRenderer::renderJob(DriverApi& driver, RootArenaScope& rootArenaScope, FVi
     assert_invariant(colorGradingConfig.asSubpass + colorGradingConfig.customResolve < 2);
 
     // vp is the user defined viewport within the View
-    filament::Viewport const& vp = view.getViewport();
+    dante::Viewport const& vp = view.getViewport();
 
     // svp is the "rendering" viewport. That is the viewport after dynamic-resolution is applied
     // as well as other adjustment, such as the guard band.
-    filament::Viewport svp = {
+    dante::Viewport svp = {
             0, 0, // this is ignored
             uint32_t(float(vp.width ) * scale.x),
             uint32_t(float(vp.height) * scale.y)
@@ -851,7 +851,7 @@ void FRenderer::renderJob(DriverApi& driver, RootArenaScope& rootArenaScope, FVi
     }
 
     // xvp is the viewport relative to svp containing the "interesting" rendering
-    filament::Viewport xvp = svp;
+    dante::Viewport xvp = svp;
 
     CameraInfo cameraInfo = view.computeCameraInfo(engine);
 
@@ -936,7 +936,7 @@ void FRenderer::renderJob(DriverApi& driver, RootArenaScope& rootArenaScope, FVi
     FrameGraph fg(*mResourceAllocator,
         isProtectedContent ? FrameGraph::Mode::PROTECTED : FrameGraph::Mode::UNPROTECTED);
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     if (UTILS_LIKELY(engine.debug.fgviewer)) {
         fg.setFgviewerData(engine.debug.fgviewer, &view);
     }
@@ -1541,7 +1541,7 @@ void FRenderer::renderJob(DriverApi& driver, RootArenaScope& rootArenaScope, FVi
         // FIXME: I think this check is incomplete, if we're rendering into a custom rendertarget
         //        we need to check that it (not the swapchain) has a stencil buffer.
         assert_invariant(mSwapChain);
-        FILAMENT_CHECK_PRECONDITION(mSwapChain->hasStencilBuffer())
+        DANTE_CHECK_PRECONDITION(mSwapChain->hasStencilBuffer())
                 << "View has stencil buffer enabled, but SwapChain does not have "
                    "SwapChain::CONFIG_HAS_STENCIL_BUFFER flag set.";
     }
@@ -1626,4 +1626,4 @@ void FRenderer::renderJob(DriverApi& driver, RootArenaScope& rootArenaScope, FVi
     recordHighWatermark(commandArena.getListener().getHighWatermark());
 }
 
-} // namespace filament
+} // namespace dante

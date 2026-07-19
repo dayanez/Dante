@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fg/FrameGraph.h"
 
@@ -35,7 +31,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 inline FrameGraph::Builder::Builder(FrameGraph& fg, PassNode* passNode) noexcept
         : mFrameGraph(fg), mPassNode(passNode) {
@@ -84,7 +80,7 @@ FrameGraph::FrameGraph(TextureCacheInterface& resourceAllocator,
     mPassNodes.reserve(64);
 }
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 void FrameGraph::setFgviewerData(FgviewerManager* fgviewer, FView const* view) {
     mFgviewer = fgviewer;
     mView = view;
@@ -122,9 +118,9 @@ void FrameGraph::reset() noexcept {
 
 FrameGraph& FrameGraph::compile() noexcept {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     // Add passes for reading back textures
     if (UTILS_LIKELY(mFgviewer && mView)) {
         mFgviewer->addReadbacksToFramegraph(*this, mView->getRenderTargetHandle(),
@@ -202,7 +198,7 @@ FrameGraph& FrameGraph::compile() noexcept {
         pNode->resolveResourceUsage(dependencyGraph);
     }
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     if (UTILS_LIKELY(mFgviewer && mView)) {
         mFgviewer->framegraphUpdated(*this, *mView);
     }
@@ -217,7 +213,7 @@ void FrameGraph::execute(backend::DriverApi& driver) noexcept {
 
     ResourceCreationContext const context{ *this, driver, useProtectedMemory };
 
-    FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "FrameGraph");
+    DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "FrameGraph");
     driver.pushGroupMarker("FrameGraph");
 
     auto first = passNodes.begin();
@@ -227,7 +223,7 @@ void FrameGraph::execute(backend::DriverApi& driver) noexcept {
         first++;
         assert_invariant(!node->isCulled());
 
-        FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, node->getName());
+        DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, node->getName());
         driver.pushGroupMarker(node->getName());
 
         // devirtualize resourcesList
@@ -249,7 +245,7 @@ void FrameGraph::execute(backend::DriverApi& driver) noexcept {
     }
     driver.popGroupMarker();
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
     if (UTILS_LIKELY(mFgviewer)) {
         mFgviewer->framegraphExecuted();
     }
@@ -324,7 +320,7 @@ FrameGraphHandle FrameGraph::readInternal(FrameGraphHandle const handle, PassNod
 
     // Check preconditions
     bool const passAlreadyAWriter = node->hasWriteFrom(passNode);
-    FILAMENT_CHECK_PRECONDITION(!passAlreadyAWriter)
+    DANTE_CHECK_PRECONDITION(!passAlreadyAWriter)
             << "Pass \"" << passNode->getName() << "\" already writes to \"" << node->getName()
             << "\"";
 
@@ -486,7 +482,7 @@ bool FrameGraph::isValid(FrameGraphHandle const handle) const {
 }
 
 void FrameGraph::assertValid(FrameGraphHandle const handle) const {
-    FILAMENT_CHECK_PRECONDITION(isValid(handle))
+    DANTE_CHECK_PRECONDITION(isValid(handle))
             << "Resource handle is invalid or uninitialized {id=" << (int)handle.index
             << ", version=" << (int)handle.version << "}";
 }
@@ -503,7 +499,7 @@ void FrameGraph::export_graphviz(utils::io::ostream& out, char const* name) cons
     mGraph.export_graphviz(out, name);
 }
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 fgviewer::FrameGraphInfo FrameGraph::getFrameGraphInfo(const char* viewName) const {
     fgviewer::FrameGraphInfo info{utils::CString(viewName)};
     std::vector<fgviewer::FrameGraphInfo::Pass> passes;
@@ -612,7 +608,7 @@ fgviewer::FrameGraphInfo FrameGraph::getFrameGraphInfo(const char* viewName) con
 }
 #endif
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 
 FrameGraphId<FrameGraphTexture> FrameGraph::getTextureByIdName(uint32_t id,
         const char* name) const {
@@ -690,4 +686,4 @@ template FrameGraphId<FrameGraphTexture> FrameGraph::write(PassNode* passNode,
 template FrameGraphId<FrameGraphTexture> FrameGraph::forwardResource(
         FrameGraphId<FrameGraphTexture> resource, FrameGraphId<FrameGraphTexture> replacedResource);
 
-} // namespace filament
+} // namespace dante

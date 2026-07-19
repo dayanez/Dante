@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #pragma once
 
@@ -12,7 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace filament {
+namespace dante {
 
 class FMaterial;
 class FMaterialInstance;
@@ -92,4 +88,4 @@ private:
     mutable std::unordered_map<FMaterial const*, AnonymousPool> mAnonymousMaterialInstances;
 };
 
-} // namespace filament
+} // namespace dante

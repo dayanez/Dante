@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Renderer.h"
 
@@ -10,7 +6,7 @@
 #include "details/Engine.h"
 #include "details/View.h"
 
-#include <filament/Renderer.h>
+#include <dante/Renderer.h>
 
 #include <utils/FixedCapacityVector.h>
 
@@ -19,7 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 using namespace backend;
@@ -72,8 +68,8 @@ bool Renderer::beginFrame(SwapChain* swapChain, uint64_t const vsyncSteadyClockT
     return downcast(this)->beginFrame(downcast(swapChain), vsyncSteadyClockTimeNano);
 }
 
-void Renderer::copyFrame(SwapChain* dstSwapChain, filament::Viewport const& dstViewport,
-        filament::Viewport const& srcViewport, CopyFrameFlag const flags) {
+void Renderer::copyFrame(SwapChain* dstSwapChain, dante::Viewport const& dstViewport,
+        dante::Viewport const& srcViewport, CopyFrameFlag const flags) {
     downcast(this)->copyFrame(downcast(dstSwapChain), dstViewport, srcViewport, flags);
 }
 
@@ -153,4 +149,4 @@ size_t Renderer::getMaxFrameHistorySize() const noexcept {
     return downcast(this)->getMaxFrameHistorySize();
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_STREAM_H
-#define TNT_FILAMENT_DETAILS_STREAM_H
+#ifndef TNT_DANTE_DETAILS_STREAM_H
+#define TNT_DANTE_DETAILS_STREAM_H
 
 #include "downcast.h"
 
-#include <filament/Stream.h>
+#include <dante/Stream.h>
 
 #include <backend/Handle.h>
 
@@ -16,7 +12,7 @@
 
 #include <math/mat3.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -49,8 +45,8 @@ private:
     uint32_t mHeight;
 };
 
-FILAMENT_DOWNCAST(Stream)
+DANTE_DOWNCAST(Stream)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_STREAM_H
+#endif // TNT_DANTE_DETAILS_STREAM_H

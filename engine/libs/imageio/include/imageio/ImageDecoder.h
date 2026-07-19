@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IMAGE_IMAGEDECODER_H_
 #define IMAGE_IMAGEDECODER_H_

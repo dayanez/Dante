@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 
 #include "MaterialParser.h"
 
-#include <private/filament/BufferInterfaceBlock.h>
-#include <private/filament/ConstantInfo.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/PushConstantInfo.h>
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/SubpassInfo.h>
-#include <private/filament/Variant.h>
+#include <private/dante/BufferInterfaceBlock.h>
+#include <private/dante/ConstantInfo.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/PushConstantInfo.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/SubpassInfo.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialChunkType.h>
+#include <dante/MaterialChunkType.h>
 
 #include <filaflat/ChunkContainer.h>
 #include <filaflat/DictionaryReader.h>
@@ -42,11 +38,11 @@
 #include <string.h>
 
 using namespace utils;
-using namespace filament::backend;
+using namespace dante::backend;
 using namespace filaflat;
 using namespace filamat;
 
-namespace filament {
+namespace dante {
 
 constexpr std::pair<ChunkType, ChunkType> shaderLanguageToTags(ShaderLanguage const language) {
     switch (language) {
@@ -927,4 +923,4 @@ bool ChunkMaterialPushConstants::unflatten(Unflattener& unflattener,
     return true;
 }
 
-} // namespace filament
+} // namespace dante

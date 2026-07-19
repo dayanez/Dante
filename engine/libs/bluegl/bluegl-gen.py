@@ -50,7 +50,7 @@ def generateHeader(api, functions, include_dir, output_dir):
 // MSVC includes .../Windows Kits\\10\\Include\\10.0.17763.0\\um\GL/gl.h, with gl APIs conflicting with
 // bluegl\\include\\GL/glcorearb.h, causing errors for OpenGL APIs such as:
 // error C2375:  'glBindTexture': redefinition; different linkage
-#ifndef FILAMENT_PLATFORM_WGL
+#ifndef DANTE_PLATFORM_WGL
     #define GL_GLEXT_PROTOTYPES 1
 #endif
 '''
@@ -69,8 +69,8 @@ def generateHeader(api, functions, include_dir, output_dir):
  * DO NOT EDIT
  **********************************************************************************************/
 
-#ifndef TNT_FILAMENT_BLUEGL_%(suffix)s_H
-#define TNT_FILAMENT_BLUEGL_%(suffix)s_H
+#ifndef TNT_DANTE_BLUEGL_%(suffix)s_H
+#define TNT_DANTE_BLUEGL_%(suffix)s_H
 
 %(headers)s
 ''' % {
@@ -81,7 +81,7 @@ def generateHeader(api, functions, include_dir, output_dir):
 
     visibility_macro = '''
 // BLUEGL_SHARED_LINKING marks symbols that need default visibility only when
-// Filament is consumed as a shared/dynamic library. These symbols are
+// Dante is consumed as a shared/dynamic library. These symbols are
 // implementation details that must be visible across shared-library boundaries.
 #if __has_attribute(visibility)
 #    define BLUEGL_SHARED_LINKING __attribute__((visibility("default")))
@@ -155,7 +155,7 @@ BLUEGL_SHARED_LINKING int bind%(gl_suffix)s();
     footer = '''
 } // namespace bluegl
 
-#endif // TNT_FILAMENT_BLUEGL_%s_H
+#endif // TNT_DANTE_BLUEGL_%s_H
 ''' % suffix.upper()
 
     directory = os.path.dirname(src_file)
@@ -184,8 +184,8 @@ def generateDefineHeader(api, functions, include_dir):
  * DO NOT EDIT
  **********************************************************************************************/
 
-#ifndef TNT_FILAMENT_BLUEGL_%(suffix)s_DEFINES_H
-#define TNT_FILAMENT_BLUEGL_%(suffix)s_DEFINES_H
+#ifndef TNT_DANTE_BLUEGL_%(suffix)s_DEFINES_H
+#define TNT_DANTE_BLUEGL_%(suffix)s_DEFINES_H
 
 ''' % {
     'year': datetime.now().year,
@@ -193,7 +193,7 @@ def generateDefineHeader(api, functions, include_dir):
 }
 
     footer = '''
-#endif // TNT_FILAMENT_BLUEGL_%s_DEFINES_H
+#endif // TNT_DANTE_BLUEGL_%s_DEFINES_H
 ''' % suffix.upper()
 
     directory = os.path.dirname(src_file)

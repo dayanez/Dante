@@ -7,11 +7,11 @@
 
 //
 // Configuration:
-//      FILAMENT_SPLIT_EASU:
+//      DANTE_SPLIT_EASU:
 //              if defined, only do the fast path (early exit) code, and write 1.0 to the
 //              depth buffer for the slow path
 //
-//      FILAMENT_FSR_DERINGING:
+//      DANTE_FSR_DERINGING:
 //              if defined, performs deringing code
 //
 
@@ -91,12 +91,12 @@ void FsrEasuL(
     AF1 dirR=dir2.x+dir2.y;
     if (dirR<AF1_(1.0/64.0)) {
         pix = sC;
-#ifdef FILAMENT_SPLIT_EASU
+#ifdef DANTE_SPLIT_EASU
         gl_FragDepth = 0.0;
 #endif
         return;
     }
-#ifdef FILAMENT_SPLIT_EASU
+#ifdef DANTE_SPLIT_EASU
     gl_FragDepth = 1.0;
 #else
     dirR=rsqrt(dirR);
@@ -131,7 +131,7 @@ void FsrEasuL(
     //------------------------------------------------------------------------------------------------------------------------------
     // This part is different for FP16, working pairs of taps at a time.
 
-#ifdef FILAMENT_FSR_DERINGING
+#ifdef DANTE_FSR_DERINGING
     AF3 min4=min(AMin3F3(AF3(ijfeR.z,ijfeG.z,ijfeB.z),AF3(klhgR.w,klhgG.w,klhgB.w),AF3(ijfeR.y,ijfeG.y,ijfeB.y)),
     AF3(klhgR.x,klhgG.x,klhgB.x));
     AF3 max4=max(AMax3F3(AF3(ijfeR.z,ijfeG.z,ijfeB.z),AF3(klhgR.w,klhgG.w,klhgB.w),AF3(ijfeR.y,ijfeG.y,ijfeB.y)),
@@ -152,11 +152,11 @@ void FsrEasuL(
     AF1 aW=pW.x+pW.y;
     //------------------------------------------------------------------------------------------------------------------------------
 
-#ifdef FILAMENT_FSR_DERINGING
+#ifdef DANTE_FSR_DERINGING
     pix=min(max4,max(min4,aC*AF3_(ARcpF1(aW))));
 #else
     pix=aC*AF3_(ARcpF1(aW));
 #endif
 
-#endif // FILAMENT_SPLIT_EASU
+#endif // DANTE_SPLIT_EASU
 }

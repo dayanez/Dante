@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_FRAMESKIPPER_H
-#define TNT_FILAMENT_DETAILS_FRAMESKIPPER_H
+#ifndef TNT_DANTE_DETAILS_FRAMESKIPPER_H
+#define TNT_DANTE_DETAILS_FRAMESKIPPER_H
 
 #include <private/backend/DriverApi.h>
 
@@ -15,7 +11,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 /*
  * FrameSkipper is used to determine if the current frame needs to be skipped so that we don't
@@ -80,6 +76,6 @@ private:
     uint16_t mFrameToSkip{};
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_FRAMESKIPPER_H
+#endif // TNT_DANTE_DETAILS_FRAMESKIPPER_H

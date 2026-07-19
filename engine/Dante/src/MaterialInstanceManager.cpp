@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 
 #include "MaterialInstanceManager.h"
@@ -11,7 +7,7 @@
 
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 
@@ -65,4 +61,4 @@ FMaterialInstance* MaterialInstanceManager::getMaterialInstance(FMaterial const*
     return instance;
 }
 
-} // namespace filament
+} // namespace dante

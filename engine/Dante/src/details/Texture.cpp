@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Texture.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/AsyncHelpers.h"
 #include "details/Engine.h"
 #include "details/Stream.h"
 
-#include <filament/Texture.h>
+#include <dante/Texture.h>
 
 #include <private/backend/BackendUtils.h>
 
@@ -42,7 +38,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -166,18 +162,18 @@ Texture::Builder& Texture::Builder::async(
 
 Texture* Texture::Builder::build(Engine& engine) {
     if (mImpl->mTarget != SamplerType::SAMPLER_EXTERNAL) {
-        FILAMENT_CHECK_PRECONDITION(Texture::isTextureFormatSupported(engine, mImpl->mFormat))
+        DANTE_CHECK_PRECONDITION(Texture::isTextureFormatSupported(engine, mImpl->mFormat))
                 << "Texture format " << uint16_t(mImpl->mFormat)
                 << " not supported on this platform, texture name="
                 << getNameOrDefault().c_str_safe();
 
-        FILAMENT_CHECK_PRECONDITION(mImpl->mWidth > 0 && mImpl->mHeight > 0)
+        DANTE_CHECK_PRECONDITION(mImpl->mWidth > 0 && mImpl->mHeight > 0)
                 << "Texture has invalid dimensions: (" << mImpl->mWidth << ", " << mImpl->mHeight
                 << "), texture name=" << getNameOrDefault().c_str_safe();
     }
 
     if (mImpl->mSamples > 1) {
-        FILAMENT_CHECK_PRECONDITION(any(mImpl->mUsage & Texture::Usage::SAMPLEABLE))
+        DANTE_CHECK_PRECONDITION(any(mImpl->mUsage & Texture::Usage::SAMPLEABLE))
                 << "Multisample (" << unsigned(mImpl->mSamples)
                 << ") texture is not sampleable, texture name=" << getNameOrDefault().c_str_safe();
     }
@@ -186,7 +182,7 @@ Texture* Texture::Builder::build(Engine& engine) {
             downcast(engine).getDriverApi().isProtectedTexturesSupported();
     const bool useProtectedMemory = bool(mImpl->mUsage & TextureUsage::PROTECTED);
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             (isProtectedTexturesSupported && useProtectedMemory) || !useProtectedMemory)
             << "Texture is PROTECTED but protected textures are not supported";
 
@@ -196,7 +192,7 @@ Texture* Texture::Builder::build(Engine& engine) {
                                        ? getMaxArrayTextureLayers(engine)
                                        : maxTextureDimension;
 
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             mImpl->mWidth <= maxTextureDimension &&
             mImpl->mHeight <= maxTextureDimension &&
             mImpl->mDepth <= maxTextureDepth) << "Texture dimensions out of range: "
@@ -220,7 +216,7 @@ Texture* Texture::Builder::build(Engine& engine) {
     };
 
     // Validate sampler before any further interaction with it.
-    FILAMENT_CHECK_PRECONDITION(validateSamplerType(mImpl->mTarget))
+    DANTE_CHECK_PRECONDITION(validateSamplerType(mImpl->mTarget))
             << "SamplerType " << uint8_t(mImpl->mTarget) << " not support at feature level "
             << uint8_t(engine.getActiveFeatureLevel());
 
@@ -270,7 +266,7 @@ Texture* Texture::Builder::build(Engine& engine) {
         mImpl->mUsage |= TextureUsage::GEN_MIPMAPPABLE;
     }
 
-    // TODO: remove in a future filament release.
+    // TODO: remove in a future dante release.
     // Clients might not have known that textures that are read need to have BLIT_SRC as usages. For
     // now, we workaround the issue by making sure any color attachment can be the source of a copy
     // for readPixels().
@@ -286,19 +282,19 @@ Texture* Texture::Builder::build(Engine& engine) {
     const bool asynchronous = mImpl->mAsynchronous;
 
     #if defined(__EMSCRIPTEN__)
-    FILAMENT_CHECK_PRECONDITION(!swizzled) << "WebGL does not support texture swizzling.";
+    DANTE_CHECK_PRECONDITION(!swizzled) << "WebGL does not support texture swizzling.";
     #endif
 
-    FILAMENT_CHECK_PRECONDITION((swizzled && sampleable) || !swizzled)
+    DANTE_CHECK_PRECONDITION((swizzled && sampleable) || !swizzled)
             << "Swizzled texture must be SAMPLEABLE";
 
-    FILAMENT_CHECK_PRECONDITION((imported && sampleable) || !imported)
+    DANTE_CHECK_PRECONDITION((imported && sampleable) || !imported)
             << "Imported texture must be SAMPLEABLE";
 
-    FILAMENT_CHECK_PRECONDITION(!(external && asynchronous))
+    DANTE_CHECK_PRECONDITION(!(external && asynchronous))
             << "Asynchronous operation is not supported for external texture";
 
-    FILAMENT_CHECK_PRECONDITION(!asynchronous || engine.isAsynchronousModeEnabled())
+    DANTE_CHECK_PRECONDITION(!asynchronous || engine.isAsynchronousModeEnabled())
             << "Engine not configured for async operations";
 
     return downcast(engine).createTexture(*this);
@@ -424,46 +420,46 @@ void FTexture::setImageCommon(FEngine& engine, size_t const level,
         uint32_t const width, uint32_t const height, uint32_t const depth,
         const PixelBufferDescriptor& p) const {
     if (UTILS_UNLIKELY(!engine.hasFeatureLevel(FeatureLevel::FEATURE_LEVEL_1))) {
-        FILAMENT_CHECK_PRECONDITION(p.stride == 0 || p.stride == width)
+        DANTE_CHECK_PRECONDITION(p.stride == 0 || p.stride == width)
                 << "PixelBufferDescriptor stride must be 0 (or width) at FEATURE_LEVEL_0";
     }
 
     // this should have been validated already
     assert_invariant(isTextureFormatSupported(engine, mFormat));
 
-    FILAMENT_CHECK_PRECONDITION(p.type == PixelDataType::COMPRESSED ||
+    DANTE_CHECK_PRECONDITION(p.type == PixelDataType::COMPRESSED ||
             validatePixelFormatAndType(mFormat, p.format, p.type))
             << "The combination of internal format=" << unsigned(mFormat)
             << " and {format=" << unsigned(p.format) << ", type=" << unsigned(p.type)
             << "} is not supported.";
 
-    FILAMENT_CHECK_PRECONDITION(!mStream) << "setImage() called on a Stream texture.";
+    DANTE_CHECK_PRECONDITION(!mStream) << "setImage() called on a Stream texture.";
 
-    FILAMENT_CHECK_PRECONDITION(level < mLevelCount)
+    DANTE_CHECK_PRECONDITION(level < mLevelCount)
             << "level=" << unsigned(level) << " is >= to levelCount=" << unsigned(mLevelCount)
             << ".";
 
-    FILAMENT_CHECK_PRECONDITION(!mExternal)
+    DANTE_CHECK_PRECONDITION(!mExternal)
             << "External Texture not supported for this operation.";
 
-    FILAMENT_CHECK_PRECONDITION(any(mUsage & Texture::Usage::UPLOADABLE))
+    DANTE_CHECK_PRECONDITION(any(mUsage & Texture::Usage::UPLOADABLE))
             << "Texture is not uploadable.";
 
-    FILAMENT_CHECK_PRECONDITION(mSampleCount <= 1)
+    DANTE_CHECK_PRECONDITION(mSampleCount <= 1)
             << "Operation not supported with multisample ("
             << unsigned(mSampleCount) << ") texture.";
 
-    FILAMENT_CHECK_PRECONDITION(xoffset + width <= valueForLevel(level, mWidth))
+    DANTE_CHECK_PRECONDITION(xoffset + width <= valueForLevel(level, mWidth))
             << "xoffset (" << unsigned(xoffset) << ") + width (" << unsigned(width)
             << ") > texture width (" << valueForLevel(level, mWidth) << ") at level ("
             << unsigned(level) << ")";
 
-    FILAMENT_CHECK_PRECONDITION(yoffset + height <= valueForLevel(level, mHeight))
+    DANTE_CHECK_PRECONDITION(yoffset + height <= valueForLevel(level, mHeight))
             << "yoffset (" << unsigned(yoffset) << ") + height (" << unsigned(height)
             << ") > texture height (" << valueForLevel(level, mHeight) << ") at level ("
             << unsigned(level) << ")";
 
-    FILAMENT_CHECK_PRECONDITION(p.buffer) << "Data buffer is nullptr.";
+    DANTE_CHECK_PRECONDITION(p.buffer) << "Data buffer is nullptr.";
 
     uint32_t effectiveTextureDepthOrLayers = 0;
     switch (mTarget) {
@@ -487,7 +483,7 @@ void FTexture::setImageCommon(FEngine& engine, size_t const level,
             break;
     }
 
-    FILAMENT_CHECK_PRECONDITION(zoffset + depth <= effectiveTextureDepthOrLayers)
+    DANTE_CHECK_PRECONDITION(zoffset + depth <= effectiveTextureDepthOrLayers)
             << "zoffset (" << unsigned(zoffset) << ") + depth (" << unsigned(depth)
             << ") > texture depth (" << effectiveTextureDepthOrLayers << ") at level ("
             << unsigned(level) << ")";
@@ -525,7 +521,7 @@ void FTexture::setImageCommon(FEngine& engine, size_t const level,
                 p.left, p.top, 0, width, height, depth);
 
         // make sure the whole last pixel is in the buffer
-        FILAMENT_CHECK_PRECONDITION(lastPixelOffset + bpp <= p.size)
+        DANTE_CHECK_PRECONDITION(lastPixelOffset + bpp <= p.size)
                 << "buffer overflow: (size=" << size_t(p.size) << ", stride=" << size_t(p.stride)
                 << ", left=" << unsigned(p.left) << ", top=" << unsigned(p.top)
                 << ") smaller than specified region "
@@ -540,7 +536,7 @@ void FTexture::setImage(FEngine& engine, size_t const level,
         uint32_t const width, uint32_t const height, uint32_t const depth,
         PixelBufferDescriptor&& p) const {
 
-    FILAMENT_CHECK_PRECONDITION(isCreationComplete())
+    DANTE_CHECK_PRECONDITION(isCreationComplete())
             << "Texture is not created yet. It may be in the process of asynchronous loading";
 
     setImageCommon(engine, level, xoffset, yoffset, zoffset, width, height, depth, p);
@@ -576,8 +572,8 @@ AsyncCallId FTexture::setImageAsync(FEngine& engine, size_t const level,
 }
 
 void FTexture::setExternalImage(FEngine& engine, ExternalImageHandleRef image) {
-    FILAMENT_CHECK_PRECONDITION(mExternal) << "The texture must be external.";
-    FILAMENT_CHECK_PRECONDITION(isCreationComplete())
+    DANTE_CHECK_PRECONDITION(mExternal) << "The texture must be external.";
+    DANTE_CHECK_PRECONDITION(isCreationComplete())
             << "Texture is not created yet. It may be in the process of asynchronous loading";
 
     // The call to setupExternalImage2 is synchronous, and allows the driver to take ownership of the
@@ -598,8 +594,8 @@ void FTexture::setExternalImage(FEngine& engine, ExternalImageHandleRef image) {
 }
 
 void FTexture::setExternalImage(FEngine& engine, void* image) {
-    FILAMENT_CHECK_PRECONDITION(mExternal) << "The texture must be external.";
-    FILAMENT_CHECK_PRECONDITION(isCreationComplete())
+    DANTE_CHECK_PRECONDITION(mExternal) << "The texture must be external.";
+    DANTE_CHECK_PRECONDITION(isCreationComplete())
             << "Texture is not created yet. It may be in the process of asynchronous loading";
 
     // The call to setupExternalImage is synchronous, and allows the driver to take ownership of the
@@ -620,8 +616,8 @@ void FTexture::setExternalImage(FEngine& engine, void* image) {
 }
 
 void FTexture::setExternalImage(FEngine& engine, void* image, size_t const plane) {
-    FILAMENT_CHECK_PRECONDITION(mExternal) << "The texture must be external.";
-    FILAMENT_CHECK_PRECONDITION(isCreationComplete())
+    DANTE_CHECK_PRECONDITION(mExternal) << "The texture must be external.";
+    DANTE_CHECK_PRECONDITION(isCreationComplete())
             << "Texture is not created yet. It may be in the process of asynchronous loading";
 
     // The call to setupExternalImage is synchronous, and allows the driver to take ownership of
@@ -643,8 +639,8 @@ void FTexture::setExternalImage(FEngine& engine, void* image, size_t const plane
 }
 
 void FTexture::setExternalStream(FEngine& engine, FStream* stream) {
-    FILAMENT_CHECK_PRECONDITION(mExternal) << "The texture must be external.";
-    FILAMENT_CHECK_PRECONDITION(isCreationComplete())
+    DANTE_CHECK_PRECONDITION(mExternal) << "The texture must be external.";
+    DANTE_CHECK_PRECONDITION(isCreationComplete())
             << "Texture is not created yet. It may be in the process of asynchronous loading";
 
     auto& api = engine.getDriverApi();
@@ -670,19 +666,19 @@ void FTexture::setExternalStream(FEngine& engine, FStream* stream) {
 }
 
 void FTexture::generateMipmaps(FEngine& engine) const {
-    FILAMENT_CHECK_PRECONDITION(!mExternal)
+    DANTE_CHECK_PRECONDITION(!mExternal)
             << "External Textures are not mipmappable.";
-    FILAMENT_CHECK_PRECONDITION(isCreationComplete())
+    DANTE_CHECK_PRECONDITION(isCreationComplete())
             << "Texture is not created yet. It may be in the process of asynchronous loading";
-    FILAMENT_CHECK_PRECONDITION(mTarget != SamplerType::SAMPLER_3D)
+    DANTE_CHECK_PRECONDITION(mTarget != SamplerType::SAMPLER_3D)
             << "3D Textures are not mipmappable.";
 
     const bool formatMipmappable = engine.getDriverApi().isTextureFormatMipmappable(mFormat);
-    FILAMENT_CHECK_PRECONDITION(formatMipmappable)
+    DANTE_CHECK_PRECONDITION(formatMipmappable)
             << "Texture format " << (unsigned)mFormat << " is not mipmappable.";
 
     auto const& featureFlags = downcast(engine).features.engine.debug;
-    FILAMENT_FLAG_GUARDED_CHECK_PRECONDITION(any(mUsage & TextureUsage::GEN_MIPMAPPABLE),
+    DANTE_FLAG_GUARDED_CHECK_PRECONDITION(any(mUsage & TextureUsage::GEN_MIPMAPPABLE),
             featureFlags.assert_texture_can_generate_mipmap)
             << "Texture usage does not have GEN_MIPMAPPABLE set";
 
@@ -751,14 +747,14 @@ Handle<HwTexture> FTexture::createPlaceholderTexture(
 }
 
 backend::Handle<backend::HwTexture> FTexture::getHwHandle() const {
-    FILAMENT_CHECK_PRECONDITION(isCreationComplete())
+    DANTE_CHECK_PRECONDITION(isCreationComplete())
             << "Texture is not created yet. It may be in the process of asynchronous loading";
 
     return mHandle;
 }
 
 Handle<HwTexture> FTexture::getHwHandleForSampling() const {
-    FILAMENT_CHECK_PRECONDITION(isCreationComplete())
+    DANTE_CHECK_PRECONDITION(isCreationComplete())
             << "Texture is not created yet. It may be in the process of asynchronous loading";
 
     if (UTILS_UNLIKELY(mExternal && !mHandleForSampling)) {
@@ -1204,4 +1200,4 @@ bool FTexture::validatePixelFormatAndType(TextureFormat const internalFormat,
     return true;
 }
 
-} // namespace filament
+} // namespace dante

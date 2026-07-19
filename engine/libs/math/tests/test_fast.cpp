@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <math/fast.h>
 #include <math/scalar.h>
 
 #include <gtest/gtest.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
 class FastTest : public testing::Test {
 protected:

@@ -1,7 +1,3 @@
-/*
- * Copyright 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <math/mat4.h>
 #include <math/quat.h>
@@ -17,7 +13,7 @@
 
 #include <math.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
 class QuatTest : public testing::Test {
 protected:

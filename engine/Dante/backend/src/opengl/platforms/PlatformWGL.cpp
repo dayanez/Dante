@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <backend/platforms/PlatformWGL.h>
 
@@ -11,7 +7,7 @@
     // this variable is checked in BlueGL.h (included from "gl_headers.h" right after this),
     // and prevents duplicate definition of OpenGL apis when building this file.
     // However, GL_GLEXT_PROTOTYPES need to be defined in BlueGL.h when included from other files.
-    #define FILAMENT_PLATFORM_WGL
+    #define DANTE_PLATFORM_WGL
 #endif
 
 #include "../gl_headers.h"
@@ -51,7 +47,7 @@ void reportWindowsError(DWORD dwError) {
 
 } // namespace
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace backend;
 
@@ -155,7 +151,7 @@ Driver* PlatformWGL::createDriver(void* sharedGLContext,
     }
 
     result = bluegl::bind();
-    FILAMENT_CHECK_POSTCONDITION(!result) << "Unable to load OpenGL entry points.";
+    DANTE_CHECK_POSTCONDITION(!result) << "Unable to load OpenGL entry points.";
 
     return OpenGLPlatform::createDefaultDriver(this, sharedGLContext, driverConfig);
 
@@ -174,7 +170,7 @@ bool PlatformWGL::isExtraContextSupported() const noexcept {
 
 void PlatformWGL::createContext(bool shared) {
     int nextIndex = mNextFreeSharedContextIndex.fetch_add(1, std::memory_order_relaxed);
-    FILAMENT_CHECK_PRECONDITION(nextIndex < SHARED_CONTEXT_NUM)
+    DANTE_CHECK_PRECONDITION(nextIndex < SHARED_CONTEXT_NUM)
             << "Shared context index out of range. Increase SHARED_CONTEXT_NUM.";
 
     HGLRC context;
@@ -183,7 +179,7 @@ void PlatformWGL::createContext(bool shared) {
         context = mAdditionalContexts[nextIndex];
     }
     BOOL result = wglMakeCurrent(mWhdc, context);
-    FILAMENT_CHECK_POSTCONDITION(result) << "Failed to make current.";
+    DANTE_CHECK_POSTCONDITION(result) << "Failed to make current.";
 }
 
 void PlatformWGL::terminate() noexcept {
@@ -298,4 +294,4 @@ void PlatformWGL::commit(Platform::SwapChain* swapChain) noexcept {
     }
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

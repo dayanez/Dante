@@ -7,7 +7,7 @@
  */
 
 void main() {
-#if defined(FILAMENT_HAS_FEATURE_INSTANCING)
+#if defined(DANTE_HAS_FEATURE_INSTANCING)
 #   if defined(TARGET_METAL_ENVIRONMENT) || defined(TARGET_VULKAN_ENVIRONMENT) || defined(TARGET_WEBGPU_ENVIRONMENT)
     instance_index = gl_InstanceIndex;
 #   else
@@ -23,8 +23,8 @@ void main() {
     logical_instance_index = instance_index;
 #endif
 
-#if defined(VARIANT_HAS_STEREO) && defined(FILAMENT_STEREO_INSTANCED)
-#if !defined(FILAMENT_HAS_FEATURE_INSTANCING)
+#if defined(VARIANT_HAS_STEREO) && defined(DANTE_STEREO_INSTANCED)
+#if !defined(DANTE_HAS_FEATURE_INSTANCING)
 #error Instanced stereo not supported at this feature level
 #endif
     // Calculate the logical instance index, which is the instance index within a single eye.
@@ -61,7 +61,7 @@ void main() {
         toTangentFrame(mesh_tangents, material.worldNormal, vertex_worldTangent.xyz);
 
         #if defined(VARIANT_HAS_SKINNING_OR_MORPHING)
-        if ((object_uniforms_flagsChannels & FILAMENT_OBJECT_MORPHING_TANGENT_BIT) != 0) {
+        if ((object_uniforms_flagsChannels & DANTE_OBJECT_MORPHING_TANGENT_BIT) != 0) {
             #if defined(LEGACY_MORPHING)
             vec3 normal0, normal1, normal2, normal3;
             toTangentFrame(mesh_custom4, normal0);
@@ -79,7 +79,7 @@ void main() {
             #endif
         }
 
-        if ((object_uniforms_flagsChannels & FILAMENT_OBJECT_SKINNING_ENABLED_BIT) != 0) {
+        if ((object_uniforms_flagsChannels & DANTE_OBJECT_SKINNING_ENABLED_BIT) != 0) {
             skinNormalTangent(material.worldNormal, vertex_worldTangent.xyz, mesh_bone_indices, mesh_bone_weights);
         }
         #endif
@@ -96,7 +96,7 @@ void main() {
         toTangentFrame(mesh_tangents, material.worldNormal);
 
         #if defined(VARIANT_HAS_SKINNING_OR_MORPHING)
-        if ((object_uniforms_flagsChannels & FILAMENT_OBJECT_MORPHING_TANGENT_BIT) != 0) {
+        if ((object_uniforms_flagsChannels & DANTE_OBJECT_MORPHING_TANGENT_BIT) != 0) {
             #if defined(LEGACY_MORPHING)
             vec3 normal0, normal1, normal2, normal3;
             toTangentFrame(mesh_custom4, normal0);
@@ -114,7 +114,7 @@ void main() {
             #endif
         }
 
-        if ((object_uniforms_flagsChannels & FILAMENT_OBJECT_SKINNING_ENABLED_BIT) != 0) {
+        if ((object_uniforms_flagsChannels & DANTE_OBJECT_SKINNING_ENABLED_BIT) != 0) {
             skinNormal(material.worldNormal, mesh_bone_indices, mesh_bone_weights);
         }
         #endif
@@ -218,7 +218,7 @@ void main() {
     // this must happen before we compensate for vulkan below
     vertex_position = position;
 
-#if defined(VARIANT_HAS_STEREO) && defined(FILAMENT_STEREO_INSTANCED)
+#if defined(VARIANT_HAS_STEREO) && defined(DANTE_STEREO_INSTANCED)
     // We're transforming a vertex whose x coordinate is within the range (-w to w).
     // To move it to the correct portion of the viewport, we need to modify the x coordinate.
     // It's important to do this after computing vertex_position.
@@ -237,8 +237,8 @@ void main() {
             (1.0 - ndcViewportWidth * float(eyeIndex)) * position.w;
     float rightClip = position.x +
             (1.0 - ndcViewportWidth * float(eyeIndex + 1)) * position.w;
-    FILAMENT_CLIPDISTANCE[0] =  leftClip;
-    FILAMENT_CLIPDISTANCE[1] = -rightClip;
+    DANTE_CLIPDISTANCE[0] =  leftClip;
+    DANTE_CLIPDISTANCE[1] = -rightClip;
 #endif
 
 #if defined(TARGET_VULKAN_ENVIRONMENT)
@@ -256,7 +256,7 @@ void main() {
     // some PowerVR drivers crash when gl_Position is written more than once
     gl_Position = position;
 
-#if defined(VARIANT_HAS_STEREO) && defined(FILAMENT_STEREO_INSTANCED)
+#if defined(VARIANT_HAS_STEREO) && defined(DANTE_STEREO_INSTANCED)
     // Fragment shaders filter out the stereo variant, so we need to set instance_index here.
     instance_index = logical_instance_index;
 #endif

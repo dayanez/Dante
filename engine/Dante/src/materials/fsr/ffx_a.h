@@ -1839,7 +1839,7 @@
 // So these match up well with the half approximations.
 //==============================================================================================================================
 #ifdef TARGET_MOBILE
- // filament: these approximations don't work in mediump
+ // dante: these approximations don't work in mediump
  AF1 APrxLoSqrtF1(AF1 a){return sqrt(a);}
  AF1 APrxLoRcpF1(AF1 a){return 1.0/a;}
  AF1 APrxMedRcpF1(AF1 a){return 1.0/a;}

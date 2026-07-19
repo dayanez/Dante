@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGLCONTEXT_H
-#define TNT_FILAMENT_BACKEND_OPENGLCONTEXT_H
+#ifndef TNT_DANTE_BACKEND_OPENGLCONTEXT_H
+#define TNT_DANTE_BACKEND_OPENGLCONTEXT_H
 
 #include "gl_headers.h"
 
@@ -25,7 +21,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class OpenGLPlatform;
 class OpenGLState;
@@ -106,7 +102,7 @@ public:
     }
 
     inline bool isES2() const noexcept {
-#if defined(BACKEND_OPENGL_VERSION_GLES) && !defined(FILAMENT_IOS)
+#if defined(BACKEND_OPENGL_VERSION_GLES) && !defined(DANTE_IOS)
 #   ifndef BACKEND_OPENGL_LEVEL_GLES30
             return true;
 #   else
@@ -118,7 +114,7 @@ public:
     }
 
     bool hasFences() const noexcept {
-#if defined(BACKEND_OPENGL_VERSION_GLES) && !defined(FILAMENT_IOS) && !defined(__EMSCRIPTEN__)
+#if defined(BACKEND_OPENGL_VERSION_GLES) && !defined(DANTE_IOS) && !defined(__EMSCRIPTEN__)
 #   ifndef BACKEND_OPENGL_LEVEL_GLES30
         return false;
 #   else
@@ -428,6 +424,6 @@ private:
             Bugs const& bugs) noexcept;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif //TNT_FILAMENT_BACKEND_OPENGLCONTEXT_H
+#endif //TNT_DANTE_BACKEND_OPENGLCONTEXT_H

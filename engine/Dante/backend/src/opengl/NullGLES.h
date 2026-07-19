@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_NULLGLES_H
-#define TNT_FILAMENT_BACKEND_OPENGL_NULLGLES_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_NULLGLES_H
+#define TNT_DANTE_BACKEND_OPENGL_NULLGLES_H
 
 /*
  * This is used for debugging (stubbing out GLES calls)
@@ -16,7 +12,7 @@
  *
  */
 
-namespace filament::backend {
+namespace dante::backend {
 namespace nullgles {
 
 inline void glScissor(GLint, GLint, GLsizei, GLsizei) { }
@@ -70,6 +66,6 @@ inline GLenum glGetError() { return GL_NO_ERROR; }
 // turn GLES calls defined above into no-ops
 //using namespace nullgles;
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_NULLGLES_H
+#endif // TNT_DANTE_BACKEND_OPENGL_NULLGLES_H

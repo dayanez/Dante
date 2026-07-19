@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_RENDERTAGET_H
-#define TNT_FILAMENT_DETAILS_RENDERTAGET_H
+#ifndef TNT_DANTE_DETAILS_RENDERTAGET_H
+#define TNT_DANTE_DETAILS_RENDERTAGET_H
 
 #include "downcast.h"
 
-#include <filament/RenderTarget.h>
+#include <dante/RenderTarget.h>
 
 #include <backend/Handle.h>
 
 #include <utils/compiler.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FTexture;
@@ -72,8 +68,8 @@ private:
     bool mSupportsReadPixels = false;
 };
 
-FILAMENT_DOWNCAST(RenderTarget)
+DANTE_DOWNCAST(RenderTarget)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_RENDERTARGET_H
+#endif // TNT_DANTE_DETAILS_RENDERTARGET_H

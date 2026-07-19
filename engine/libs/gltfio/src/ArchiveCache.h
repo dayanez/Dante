@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_ARCHIVE_CACHE_H
 #define GLTFIO_ARCHIVE_CACHE_H
 
 #include <uberz/ReadableArchive.h>
 
-#include <filament/Engine.h>
-#include <filament/Material.h>
+#include <dante/Engine.h>
+#include <dante/Material.h>
 
 #include <utils/CString.h>
 #include <utils/FixedCapacityVector.h>
@@ -18,12 +14,12 @@
 
 #include <string_view>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
     struct ArchiveRequirements;
     using FeatureMap = tsl::robin_map<std::string_view, uberz::ArchiveFeature>;
 
-    // Stores a set of Filament materials and knows how to choose a suitable material when given a
+    // Stores a set of Dante materials and knows how to choose a suitable material when given a
     // set of requirements. Used by gltfio; users do not need to access this class directly.
     class ArchiveCache {
     public:
@@ -50,6 +46,6 @@ namespace filament::gltfio {
         tsl::robin_map<utils::CString, bool> features;
     };
 
-} // namespace filament::uberz
+} // namespace dante::uberz
 
 #endif // GLTFIO_ARCHIVE_CACHE_H

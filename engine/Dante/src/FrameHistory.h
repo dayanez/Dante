@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FRAMEHISTORY_H
-#define TNT_FILAMENT_FRAMEHISTORY_H
+#ifndef TNT_DANTE_FRAMEHISTORY_H
+#define TNT_DANTE_FRAMEHISTORY_H
 
 #include "fg/FrameGraphId.h"
 #include "fg/FrameGraphTexture.h"
@@ -14,7 +10,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 // This is where we store all the history of a frame
 // when adding things here, please update:
@@ -91,6 +87,6 @@ private:
 
 using FrameHistory = TFrameHistory<FrameHistoryEntry, 1u>;
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FRAMEHISTORY_H
+#endif // TNT_DANTE_FRAMEHISTORY_H

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fg/details/ResourceNode.h"
 
@@ -19,7 +15,7 @@
 #include <cstdint>
 #include <new>
 
-namespace filament {
+namespace dante {
 
 ResourceNode::ResourceNode(FrameGraph& fg, FrameGraphHandle const h, FrameGraphHandle const parent) noexcept
         : Node(fg.getGraph()),
@@ -171,4 +167,4 @@ utils::CString ResourceNode::graphvizifyEdgeColor() const noexcept {
     return "darkolivegreen";
 }
 
-} // namespace filament
+} // namespace dante

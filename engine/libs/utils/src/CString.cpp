@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <utils/compiler.h>
 #include <utils/CString.h>
@@ -100,7 +96,7 @@ CString& CString::replace(size_type const pos, size_type len, char const* str, s
     len = std::min(len, size() - pos);
 
     const size_type remainder = size() - len;
-    FILAMENT_CHECK_POSTCONDITION(l <= std::numeric_limits<size_type>::max() - remainder);
+    DANTE_CHECK_POSTCONDITION(l <= std::numeric_limits<size_type>::max() - remainder);
     const size_type newSize = remainder + l;
 
     // if the new string is not longer, we can do it in-place, which is much faster.

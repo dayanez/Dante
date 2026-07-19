@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef UBERZ_WRITABLE_ARCHIVE_H
 #define UBERZ_WRITABLE_ARCHIVE_H
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <uberz/ArchiveEnums.h>
 #include <utils/FixedCapacityVector.h>
@@ -16,7 +12,7 @@
 
 #include <tsl/robin_map.h>
 
-namespace filament::uberz {
+namespace dante::uberz {
 
 // Precompiled set of materials bundled with a list of features flags that each material supports.
 // This is the writeable counterpart to ReadableArchive.
@@ -51,6 +47,6 @@ private:
     utils::FixedCapacityVector<Material> mMaterials;
 };
 
-} // namespace filament::uberz
+} // namespace dante::uberz
 
 #endif // UBERZ_WRITABLE_ARCHIVE_H

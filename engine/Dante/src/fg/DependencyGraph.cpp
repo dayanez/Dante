@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fg/details/DependencyGraph.h"
 
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
 #include <fgviewer/FrameGraphInfo.h>
 #endif
 
@@ -19,7 +15,7 @@
 #include <cstdint>
 #include <iterator>
 
-namespace filament {
+namespace dante {
 
 DependencyGraph::DependencyGraph() noexcept {
     // Some reasonable defaults size for our vectors
@@ -102,7 +98,7 @@ DependencyGraph::Node* DependencyGraph::getNode(NodeID const id) noexcept {
 
 void DependencyGraph::cull() noexcept {
 
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     auto& nodes = mNodes;
     auto& edges = mEdges;
@@ -149,7 +145,7 @@ void DependencyGraph::export_graphviz(utils::io::ostream& out, char const* name)
     auto const& nodes = mNodes;
 
     auto skipNode = [](char const* name) {
-#if FILAMENT_ENABLE_FGVIEWER
+#if DANTE_ENABLE_FGVIEWER
         if (!name) {
             return false;
         }
@@ -328,4 +324,4 @@ utils::CString DependencyGraph::Node::graphvizifyEdgeColor() const noexcept {
 #endif
 }
 
-} // namespace filament
+} // namespace dante

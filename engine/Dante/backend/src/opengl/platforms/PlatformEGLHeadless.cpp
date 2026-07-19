@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <backend/platforms/PlatformEGLHeadless.h>
 
@@ -16,7 +12,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 using namespace backend;
 
 PlatformEGLHeadless::PlatformEGLHeadless() noexcept
@@ -58,4 +54,4 @@ backend::Driver* PlatformEGLHeadless::createDriver(void* sharedContext,
     return PlatformEGL::createDriver(sharedContext, driverConfig);
 }
 
-} // namespace filament
+} // namespace dante

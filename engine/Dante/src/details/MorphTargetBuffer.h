@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_MORPHTARGETBUFFER_H
-#define TNT_FILAMENT_DETAILS_MORPHTARGETBUFFER_H
+#ifndef TNT_DANTE_DETAILS_MORPHTARGETBUFFER_H
+#define TNT_DANTE_DETAILS_MORPHTARGETBUFFER_H
 
 #include "downcast.h"
 
-#include <filament/MorphTargetBuffer.h>
+#include <dante/MorphTargetBuffer.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -20,7 +16,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -80,8 +76,8 @@ private:
     uint32_t mCount;
 };
 
-FILAMENT_DOWNCAST(MorphTargetBuffer)
+DANTE_DOWNCAST(MorphTargetBuffer)
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_DETAILS_MORPHTARGETBUFFER_H
+#endif //TNT_DANTE_DETAILS_MORPHTARGETBUFFER_H

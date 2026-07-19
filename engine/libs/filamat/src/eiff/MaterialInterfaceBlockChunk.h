@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_FILAMAT_MAT_INTEFFACE_BLOCK_CHUNK_H
 #define TNT_FILAMAT_MAT_INTEFFACE_BLOCK_CHUNK_H
@@ -17,51 +13,51 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 class SamplerInterfaceBlock;
 class BufferInterfaceBlock;
 struct SubpassInfo;
 struct MaterialConstant;
 struct MaterialPushConstant;
-} // namespace filament
+} // namespace dante
 
 namespace filamat {
 
 class MaterialUniformInterfaceBlockChunk final : public Chunk {
 public:
-    explicit MaterialUniformInterfaceBlockChunk(filament::BufferInterfaceBlock const& uib);
+    explicit MaterialUniformInterfaceBlockChunk(dante::BufferInterfaceBlock const& uib);
     ~MaterialUniformInterfaceBlockChunk() override = default;
 
 private:
     void flatten(Flattener&) override;
 
-    filament::BufferInterfaceBlock const& mUib;
+    dante::BufferInterfaceBlock const& mUib;
 };
 
 // ------------------------------------------------------------------------------------------------
 
 class MaterialSamplerInterfaceBlockChunk final : public Chunk {
 public:
-    explicit MaterialSamplerInterfaceBlockChunk(filament::SamplerInterfaceBlock const& sib);
+    explicit MaterialSamplerInterfaceBlockChunk(dante::SamplerInterfaceBlock const& sib);
     ~MaterialSamplerInterfaceBlockChunk() override = default;
 
 private:
     void flatten(Flattener&) override;
 
-    filament::SamplerInterfaceBlock const& mSib;
+    dante::SamplerInterfaceBlock const& mSib;
 };
 
 // ------------------------------------------------------------------------------------------------
 
 class MaterialSubpassInterfaceBlockChunk final : public Chunk {
 public:
-    explicit MaterialSubpassInterfaceBlockChunk(filament::SubpassInfo const& subpass);
+    explicit MaterialSubpassInterfaceBlockChunk(dante::SubpassInfo const& subpass);
     ~MaterialSubpassInterfaceBlockChunk() override = default;
 
 private:
     void flatten(Flattener&) override;
 
-    filament::SubpassInfo const& mSubpass;
+    dante::SubpassInfo const& mSubpass;
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -69,13 +65,13 @@ private:
 class MaterialConstantParametersChunk final : public Chunk {
 public:
     explicit MaterialConstantParametersChunk(
-            FixedCapacityVector<filament::MaterialConstant> constants);
+            FixedCapacityVector<dante::MaterialConstant> constants);
     ~MaterialConstantParametersChunk() override = default;
 
 private:
     void flatten(Flattener&) override;
 
-    FixedCapacityVector<filament::MaterialConstant> mConstants;
+    FixedCapacityVector<dante::MaterialConstant> mConstants;
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -83,21 +79,21 @@ private:
 class MaterialPushConstantParametersChunk final : public Chunk {
 public:
     explicit MaterialPushConstantParametersChunk(CString const& structVarName,
-            FixedCapacityVector<filament::MaterialPushConstant> constants);
+            FixedCapacityVector<dante::MaterialPushConstant> constants);
     ~MaterialPushConstantParametersChunk() override = default;
 
 private:
     void flatten(Flattener&) override;
 
     CString mStructVarName;
-    FixedCapacityVector<filament::MaterialPushConstant> mConstants;
+    FixedCapacityVector<dante::MaterialPushConstant> mConstants;
 };
 
 // ------------------------------------------------------------------------------------------------
 
 class MaterialBindingUniformInfoChunk final : public Chunk {
     using Container = FixedCapacityVector<std::tuple<
-            uint8_t, CString, filament::backend::Program::UniformInfo>>;
+            uint8_t, CString, dante::backend::Program::UniformInfo>>;
 public:
     explicit MaterialBindingUniformInfoChunk(Container list) noexcept;
     ~MaterialBindingUniformInfoChunk() override = default;
@@ -125,7 +121,7 @@ private:
 // ------------------------------------------------------------------------------------------------
 
 class MaterialDescriptorBindingsChuck final : public Chunk {
-    using Container = filament::SamplerInterfaceBlock;
+    using Container = dante::SamplerInterfaceBlock;
 public:
     explicit MaterialDescriptorBindingsChuck(Container const& sib) noexcept;
     ~MaterialDescriptorBindingsChuck() override = default;
@@ -139,7 +135,7 @@ private:
 // ------------------------------------------------------------------------------------------------
 
 class MaterialDescriptorSetLayoutChunk final : public Chunk {
-    using Container = filament::SamplerInterfaceBlock;
+    using Container = dante::SamplerInterfaceBlock;
 public:
     explicit MaterialDescriptorSetLayoutChunk(Container const& sib) noexcept;
     ~MaterialDescriptorSetLayoutChunk() override = default;

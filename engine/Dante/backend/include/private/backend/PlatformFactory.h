@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 //! \file
 
-#ifndef TNT_FILAMENT_BACKEND_PLATFORM_FACTORY_H
-#define TNT_FILAMENT_BACKEND_PLATFORM_FACTORY_H
+#ifndef TNT_DANTE_BACKEND_PLATFORM_FACTORY_H
+#define TNT_DANTE_BACKEND_PLATFORM_FACTORY_H
 
 #include <backend/DriverEnums.h>
 
 #include <utils/compiler.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class Platform;
 
@@ -43,6 +39,6 @@ public:
     static void destroy(Platform** platform) noexcept;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_BACKEND_PLATFORM_FACTORY_H
+#endif // TNT_DANTE_BACKEND_PLATFORM_FACTORY_H

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_MATH_H
 #define GLTFIO_MATH_H
@@ -14,7 +10,7 @@
 #include <math/TVecHelpers.h>
 #include <math/vec3.h>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 template <typename T>
 UTILS_PUBLIC T cubicSpline(const T& vert0, const T& tang0, const T& vert1, const T& tang1, float t) {
@@ -28,9 +24,9 @@ UTILS_PUBLIC T cubicSpline(const T& vert0, const T& tang0, const T& vert1, const
     return s0 * p0 + s1 * m0 * t + s2 * p1 + s3 * m1 * t;
 }
 
-UTILS_PUBLIC inline void decomposeMatrix(const filament::math::mat4f& mat, filament::math::float3* translation,
-        filament::math::quatf* rotation, filament::math::float3* scale) {
-    using namespace filament::math;
+UTILS_PUBLIC inline void decomposeMatrix(const dante::math::mat4f& mat, dante::math::float3* translation,
+        dante::math::quatf* rotation, dante::math::float3* scale) {
+    using namespace dante::math;
 
     // Extract translation.
     *translation = mat[3].xyz;
@@ -74,8 +70,8 @@ UTILS_PUBLIC inline void decomposeMatrix(const filament::math::mat4f& mat, filam
     }
 }
 
-UTILS_PUBLIC inline filament::math::mat4f composeMatrix(const filament::math::float3& translation,
-        const filament::math::quatf& rotation, const filament::math::float3& scale) {
+UTILS_PUBLIC inline dante::math::mat4f composeMatrix(const dante::math::float3& translation,
+        const dante::math::quatf& rotation, const dante::math::float3& scale) {
     float tx = translation[0];
     float ty = translation[1];
     float tz = translation[2];
@@ -86,7 +82,7 @@ UTILS_PUBLIC inline filament::math::mat4f composeMatrix(const filament::math::fl
     float sx = scale[0];
     float sy = scale[1];
     float sz = scale[2];
-    return filament::math::mat4f(
+    return dante::math::mat4f(
         (1 - 2 * qy*qy - 2 * qz*qz) * sx,
         (2 * qx*qy + 2 * qz*qw) * sx,
         (2 * qx*qz - 2 * qy*qw) * sx,
@@ -101,7 +97,7 @@ UTILS_PUBLIC inline filament::math::mat4f composeMatrix(const filament::math::fl
         0.f, tx, ty, tz, 1.f);
 }
 
-inline filament::math::mat3f matrixFromUvTransform(const float offset[2], float rotation,
+inline dante::math::mat3f matrixFromUvTransform(const float offset[2], float rotation,
         const float scale[2]) {
     float tx = offset[0];
     float ty = offset[1];
@@ -109,9 +105,9 @@ inline filament::math::mat3f matrixFromUvTransform(const float offset[2], float 
     float sy = scale[1];
     float c = cos(rotation);
     float s = sin(rotation);
-    return filament::math::mat3f(sx * c, sx * s, tx, -sy * s, sy * c, ty, 0.0f, 0.0f, 1.0f);
+    return dante::math::mat3f(sx * c, sx * s, tx, -sy * s, sy * c, ty, 0.0f, 0.0f, 1.0f);
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_MATH_H

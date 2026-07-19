@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "TangentsJob.h"
 
@@ -10,9 +6,9 @@
 #include <cstdlib>
 #include <memory>
 
-using namespace filament::gltfio;
-using namespace filament;
-using namespace filament::math;
+using namespace dante::gltfio;
+using namespace dante;
+using namespace dante::math;
 
 // This procedure is designed to run in an isolated job.
 void TangentsJob::run(Params* params) {

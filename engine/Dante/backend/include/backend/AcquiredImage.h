@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_ACQUIREDIMAGE_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_ACQUIREDIMAGE_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_ACQUIREDIMAGE_H
+#define TNT_DANTE_BACKEND_PRIVATE_ACQUIREDIMAGE_H
 
 #include <backend/DriverEnums.h>
 
 #include <math/mat3.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class CallbackHandler;
 
@@ -25,6 +21,6 @@ struct AcquiredImage {
     CallbackHandler* handler = nullptr;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_ACQUIREDIMAGE_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_ACQUIREDIMAGE_H

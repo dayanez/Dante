@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_COMPILER_H
 #define TNT_MATH_COMPILER_H
@@ -101,10 +97,10 @@
 
 #endif // _MSC_VER
 
-namespace filament::math {
+namespace dante::math {
 
 // MSVC 2019 16.4 doesn't seem to like it when we specialize std::is_arithmetic for
-// filament::math::half, so we're forced to create our own is_arithmetic here and specialize it
+// dante::math::half, so we're forced to create our own is_arithmetic here and specialize it
 // inside of half.h.
 template<typename T>
 struct is_arithmetic : std::integral_constant<bool,
@@ -116,6 +112,6 @@ struct is_floating_point : std::integral_constant<bool,
         std::is_floating_point<T>::value> {
 };
 
-} // filament::math
+} // dante::math
 
 #endif // TNT_MATH_COMPILER_H

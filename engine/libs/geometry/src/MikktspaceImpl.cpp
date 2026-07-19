@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "MikktspaceImpl.h"
 
@@ -17,9 +13,9 @@
 
 #include <string.h>  // memcpy
 
-namespace filament::geometry {
+namespace dante::geometry {
 
-using namespace filament::math;
+using namespace dante::math;
 
 int MikktspaceImpl::getNumFaces(SMikkTSpaceContext const* context) noexcept {
     auto const wrapper = MikktspaceImpl::getThis(context);
@@ -139,7 +135,7 @@ inline const uint3 MikktspaceImpl::getTriangle(int const triangleIndex) const no
     uint3 tri = mIsTriangle16 ?
             uint3(*(ushort3*) (pointerAdd(mTriangles, triangleIndex, tstride)))
             : *(uint3*) (pointerAdd(mTriangles, triangleIndex, tstride));
-    FILAMENT_CHECK_PRECONDITION(tri.x < mVertexCount && tri.y < mVertexCount &&
+    DANTE_CHECK_PRECONDITION(tri.x < mVertexCount && tri.y < mVertexCount &&
             tri.z < mVertexCount)
             << "Triangle index out of bounds:"
             << " vertexCount=" << mVertexCount;
@@ -223,4 +219,4 @@ void MikktspaceImpl::run(TangentSpaceMeshOutput* output) noexcept {
     output->triangleCount = mFaceCount;
 }
 
-}// namespace filament::geometry
+}// namespace dante::geometry

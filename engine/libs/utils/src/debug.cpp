@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <utils/debug.h>
 #include <utils/Panic.h>
@@ -16,4 +12,4 @@ void panic(const char *func, const char * file, int line, const char *assertion)
     std::abort();
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,13 +1,9 @@
-/*
- * Copyright 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <ktxreader/Ktx1Reader.h>
 #include <ktxreader/Ktx2Reader.h>
 
-#include <filament/Engine.h>
-#include <filament/Texture.h>
+#include <dante/Engine.h>
+#include <dante/Texture.h>
 
 #include <gtest/gtest.h>
 #include <utils/Path.h>
@@ -15,7 +11,7 @@
 #include <fstream>
 #include <vector>
 
-using namespace filament;
+using namespace dante;
 using namespace std;
 
 using utils::Path;

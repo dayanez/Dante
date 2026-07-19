@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_SCENE_H
-#define TNT_FILAMENT_DETAILS_SCENE_H
+#ifndef TNT_DANTE_DETAILS_SCENE_H
+#define TNT_DANTE_DETAILS_SCENE_H
 
 #include "Allocators.h"
 #include "Culler.h"
@@ -15,7 +11,7 @@
 
 #include "ds/DescriptorSet.h"
 
-#include <filament/Scene.h>
+#include <dante/Scene.h>
 
 #include <utils/Entity.h>
 #include <utils/PagedArenaBitset.h>
@@ -28,7 +24,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 struct CameraInfo;
 class FView;
@@ -42,7 +38,7 @@ public:
     struct SceneCacheData;
 
     /*
-     * Filament-scope Public API
+     * Dante-scope Public API
      */
 
     FSkybox* getSkybox() const noexcept { return mSkybox; }
@@ -214,8 +210,8 @@ private:
     EntitySet mEntities;
 };
 
-FILAMENT_DOWNCAST(Scene)
+DANTE_DOWNCAST(Scene)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_SCENE_H
+#endif // TNT_DANTE_DETAILS_SCENE_H

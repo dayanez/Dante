@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_VERTEXBUFFER_H
-#define TNT_FILAMENT_DETAILS_VERTEXBUFFER_H
+#ifndef TNT_DANTE_DETAILS_VERTEXBUFFER_H
+#define TNT_DANTE_DETAILS_VERTEXBUFFER_H
 
 #include "downcast.h"
 
-#include <filament/MaterialEnums.h>
-#include <filament/VertexBuffer.h>
+#include <dante/MaterialEnums.h>
+#include <dante/VertexBuffer.h>
 
 #include <backend/BufferDescriptor.h>
 #include <backend/DriverEnums.h>
@@ -21,7 +17,7 @@
 #include <cstdint>
 #include <memory>
 
-namespace filament {
+namespace dante {
 
 class FBufferObject;
 class FEngine;
@@ -86,8 +82,8 @@ private:
     std::atomic_bool mCreationComplete{ false };
 };
 
-FILAMENT_DOWNCAST(VertexBuffer)
+DANTE_DOWNCAST(VertexBuffer)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_VERTEXBUFFER_H
+#endif // TNT_DANTE_DETAILS_VERTEXBUFFER_H

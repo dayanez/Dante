@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_FIXEDCAPACITYVECTOR_H
 #define TNT_UTILS_FIXEDCAPACITYVECTOR_H
@@ -23,9 +19,9 @@
 #include <stdint.h>
 
 #ifndef NDEBUG
-#define FILAMENT_FORCE_CAPACITY_CHECK true
+#define DANTE_FORCE_CAPACITY_CHECK true
 #else
-#define FILAMENT_FORCE_CAPACITY_CHECK false
+#define DANTE_FORCE_CAPACITY_CHECK false
 #endif
 
 namespace utils {
@@ -353,7 +349,7 @@ private:
     }
 
     iterator assertCapacityForSize(size_type const s) {
-        if constexpr(CapacityCheck || FILAMENT_FORCE_CAPACITY_CHECK) {
+        if constexpr(CapacityCheck || DANTE_FORCE_CAPACITY_CHECK) {
             if (UTILS_VERY_UNLIKELY(capacity() < s)) {
                 capacityCheckFailed(capacity(), s);
             }

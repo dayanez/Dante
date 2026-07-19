@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "HwRenderPrimitiveFactory.h"
 
@@ -17,7 +13,7 @@
 
 #include <stdlib.h>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 using namespace backend;
@@ -78,4 +74,4 @@ void HwRenderPrimitiveFactory::destroy(DriverApi& driver, Handle handle) noexcep
     }
 }
 
-} // namespace filament
+} // namespace dante

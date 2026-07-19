@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IBL_CUBEMAPUTILSIMPL_H
 #define IBL_CUBEMAPUTILSIMPL_H
@@ -11,7 +7,7 @@
 #include <utils/compiler.h>
 #include <utils/JobSystem.h>
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 template<typename STATE>
@@ -101,6 +97,6 @@ void CubemapUtils::processSingleThreaded(
 
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante
 
 #endif // IBL_CUBEMAPUTILSIMPL_H

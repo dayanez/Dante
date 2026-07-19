@@ -1,7 +1,3 @@
-/*
- * Copyright 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <image/ColorTransform.h>
 #include <image/Ktx1Bundle.h>
@@ -31,8 +27,8 @@ using std::string;
 using std::swap;
 using std::vector;
 
-using filament::math::float3;
-using filament::math::float4;
+using dante::math::float3;
+using dante::math::float4;
 
 using namespace image;
 
@@ -290,7 +286,7 @@ TEST_F(ImageTest, ColorTransformRGB) { // NOLINT
     memcpy(data.get(), texels, sizeof(texels));
     LinearImage img = image::toLinear<uint16_t>(w, h, bpr, data, 
         [ ](uint16_t v) -> uint16_t { return v; },
-        sRGBToLinear< filament::math::float3>);
+        sRGBToLinear< dante::math::float3>);
     auto pixels = img.get<float3>();
     ASSERT_NEAR(pixels[0].x, 0.0f, 0.001f);
     ASSERT_NEAR(pixels[0].y, 0.0f, 0.001f);
@@ -314,7 +310,7 @@ TEST_F(ImageTest, ColorTransformRGBA) { // NOLINT
     memcpy(data.get(), texels, sizeof(texels));
     LinearImage img = image::toLinearWithAlpha<uint16_t>(w, h, bpr, data, 
         [ ](uint16_t v) -> uint16_t { return v; },
-        sRGBToLinear< filament::math::float4>);
+        sRGBToLinear< dante::math::float4>);
     auto pixels = reinterpret_cast<float4*>(img.getPixelRef());
     ASSERT_NEAR(pixels[3].x, 0.04282892f, 0.001f);
     ASSERT_NEAR(pixels[3].y, 0.12025354f, 0.001f);
@@ -475,7 +471,7 @@ TEST_F(ImageTest, getSphericalHarmonics) {
 static void printUsage(const char* name) {
     string exec_name(utils::Path(name).getName());
     string usage(
-            "TEST is a unit test runner for the Filament image library\n"
+            "TEST is a unit test runner for the Dante image library\n"
             "Usages:\n"
             "    TEST compare <path-to-ref-images> [gtest options]\n"
             "    TEST update  <path-to-ref-images> [gtest options]\n"
@@ -660,7 +656,7 @@ static bool intersect(Ray ray, Sphere sphere, float* t) {
 
 static LinearImage diffImages(const LinearImage& a, const LinearImage& b) {
     const uint32_t width = a.getWidth(), height = a.getHeight(), nchan = a.getChannels();
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             width == b.getWidth() && height == b.getHeight() && nchan == b.getChannels())
             << "Images must have same shape.";
     LinearImage result(width, height, nchan);

@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DRIVER_ANDROID_VIRTUAL_MACHINE_ENV_H
-#define TNT_FILAMENT_DRIVER_ANDROID_VIRTUAL_MACHINE_ENV_H
+#ifndef TNT_DANTE_DRIVER_ANDROID_VIRTUAL_MACHINE_ENV_H
+#define TNT_DANTE_DRIVER_ANDROID_VIRTUAL_MACHINE_ENV_H
 
 #include <utils/compiler.h>
 #include <utils/Mutex.h>
 
 #include <jni.h>
 
-namespace filament {
+namespace dante {
 
 class VirtualMachineEnv {
 public:
@@ -50,6 +46,6 @@ private:
     JavaVM* mVirtualMachine = nullptr;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DRIVER_ANDROID_VIRTUAL_MACHINE_ENV_H
+#endif // TNT_DANTE_DRIVER_ANDROID_VIRTUAL_MACHINE_ENV_H

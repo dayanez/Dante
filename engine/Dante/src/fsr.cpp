@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "fsr.h"
 
@@ -11,7 +7,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -57,6 +53,6 @@ void FSR_SharpeningSetup(FSRUniforms* outUniforms, FSRSharpeningConfig config) n
     FsrRcasCon(outUniforms->RcasCon.v, config.sharpness);
 }
 
-} // namespace filament
+} // namespace dante
 
 

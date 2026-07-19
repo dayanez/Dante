@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "eiff/LineDictionary.h"
 
-#include <private/filament/LineDictionaryUtils.h>
+#include <private/dante/LineDictionaryUtils.h>
 
 #include <gtest/gtest.h>
 
 #include <string>
 
 using namespace filamat;
-using namespace ::filament::backend;
+using namespace ::dante::backend;
 
 TEST(LineDictionary, splitString) {
     LineDictionary dictionary;
@@ -138,7 +134,7 @@ TEST(LineDictionary, GetIndicesMultiple) {
     auto const [indices, numerics] = dictionary.tokenize("A _1"); // String is in dictionary
     ASSERT_EQ(indices.size(), 2);
     EXPECT_EQ(indices[0], 0); // "A "
-    EXPECT_EQ(indices[1], filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG); // 1
+    EXPECT_EQ(indices[1], dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG); // 1
     ASSERT_EQ(numerics.size(), 1);
     EXPECT_EQ(numerics[0], 1);
 }
@@ -150,10 +146,10 @@ TEST(LineDictionary, GetIndicesMultiplePatternsInARow) {
     auto const [indices, numerics] = dictionary.tokenize("hp_copy_1 hp_copy_2");
     ASSERT_EQ(indices.size(), 5);
     EXPECT_EQ(indices[0], 0); // hp_copy
-    EXPECT_EQ(indices[1], filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
+    EXPECT_EQ(indices[1], dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
     EXPECT_EQ(indices[2], 1); // " "
     EXPECT_EQ(indices[3], 0); // hp_copy
-    EXPECT_EQ(indices[4], filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
+    EXPECT_EQ(indices[4], dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
     ASSERT_EQ(numerics.size(), 2);
     EXPECT_EQ(numerics[0], 1);
     EXPECT_EQ(numerics[1], 2);
@@ -166,10 +162,10 @@ TEST(LineDictionary, GetIndicesSamePatternMultipleTimes) {
     auto const [indices, numerics] = dictionary.tokenize("hp_copy_1 hp_copy_1");
     ASSERT_EQ(indices.size(), 5);
     EXPECT_EQ(indices[0], 0); // hp_copy
-    EXPECT_EQ(indices[1], filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
+    EXPECT_EQ(indices[1], dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
     EXPECT_EQ(indices[2], 1); // " "
     EXPECT_EQ(indices[3], 0); // hp_copy
-    EXPECT_EQ(indices[4], filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
+    EXPECT_EQ(indices[4], dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
     ASSERT_EQ(numerics.size(), 2);
     EXPECT_EQ(numerics[0], 1);
     EXPECT_EQ(numerics[1], 1);

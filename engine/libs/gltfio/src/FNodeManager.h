@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_FNODEMANAGER_H
 #define GLTFIO_FNODEMANAGER_H
@@ -16,7 +12,7 @@
 #include <utils/SingleInstanceComponentManager.h>
 #include <utils/Slice.h>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 class UTILS_PRIVATE FNodeManager : public NodeManager {
 public:
@@ -124,8 +120,8 @@ private:
     Sim mManager;
 };
 
-FILAMENT_DOWNCAST(NodeManager)
+DANTE_DOWNCAST(NodeManager)
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_FNODEMANAGER_H

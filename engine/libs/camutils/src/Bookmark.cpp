@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <camutils/Bookmark.h>
 #include <camutils/Manipulator.h>
@@ -9,15 +5,15 @@
 #include <math/scalar.h>
 #include <math/vec3.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 namespace camutils {
 
 template <typename FLOAT>
 Bookmark<FLOAT> Bookmark<FLOAT>::interpolate(Bookmark<FLOAT> a, Bookmark<FLOAT> b, double t) {
     Bookmark<FLOAT> result;
-    using float3 = filament::math::vec3<FLOAT>;
+    using float3 = dante::math::vec3<FLOAT>;
 
     if (a.mode == Mode::MAP) {
         assert(b.mode == Mode::MAP);
@@ -84,4 +80,4 @@ double Bookmark<FLOAT>::duration(Bookmark<FLOAT> a, Bookmark<FLOAT> b) {
 template class Bookmark<float>;
 
 } // namespace camutils
-} // namespace filament
+} // namespace dante

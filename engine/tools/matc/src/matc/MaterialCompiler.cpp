@@ -22,7 +22,7 @@
 
 #include <filamat/MaterialBuilder.h>
 
-#include <filament-matp/Config.h>
+#include <dante-matp/Config.h>
 
 #include <utils/JobSystem.h>
 #include <utils/Log.h>
@@ -152,7 +152,7 @@ bool MaterialCompiler::checkParameters(const matp::Config& config) {
 bool MaterialCompiler::compileRawShader(const char* glsl, size_t size, bool isDebug,
         matp::Config::Output* output, const char* ext) const noexcept {
     using namespace glslang;
-    using namespace filament::backend;
+    using namespace dante::backend;
     using SpirvBlob = std::vector<uint32_t>;
 
     const EShLanguage shLang = !strcmp(ext, "vs") ? EShLangVertex : EShLangFragment;

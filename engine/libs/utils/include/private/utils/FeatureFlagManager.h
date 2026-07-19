@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_FEATUREFLAGMANAGER_H
-#define TNT_FILAMENT_DETAILS_FEATUREFLAGMANAGER_H
+#ifndef TNT_DANTE_DETAILS_FEATUREFLAGMANAGER_H
+#define TNT_DANTE_DETAILS_FEATUREFLAGMANAGER_H
 
 #include <utils/compiler.h>
 #include <utils/Slice.h>
@@ -15,7 +11,7 @@
 
 // We have added correctness assertions that breaks clients' projects. We add this define to allow
 // for the client's to address these assertions at a more gradual pace.
-#if defined(FILAMENT_RELAXED_CORRECTNESS_ASSERTIONS)
+#if defined(DANTE_RELAXED_CORRECTNESS_ASSERTIONS)
 #define CORRECTNESS_ASSERTION_DEFAULT false
 #else
 #define CORRECTNESS_ASSERTION_DEFAULT true
@@ -115,4 +111,4 @@ private:
 
 } // namespace utils
 
-#endif // TNT_FILAMENT_DETAILS_FEATUREFLAGMANAGER_H
+#endif // TNT_DANTE_DETAILS_FEATUREFLAGMANAGER_H

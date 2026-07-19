@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_GEOMETRY_TRANSCODER_H
 #define TNT_GEOMETRY_TRANSCODER_H
@@ -11,7 +7,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 namespace geometry {
 
 enum class ComponentType {
@@ -31,8 +27,8 @@ enum class ComponentType {
  *
  * Usage Example:
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * using filament::geometry::Transcoder;
- * using filament::geometry::ComponentType;
+ * using dante::geometry::Transcoder;
+ * using dante::geometry::ComponentType;
  *
  * Transcoder transcode({
  *     .componentType = ComponentType::BYTE,
@@ -89,6 +85,6 @@ private:
 };
 
 } // namespace geometry
-} // namespace filament
+} // namespace dante
 
 #endif // TNT_GEOMETRY_TRANSCODER_H

@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_ASSETLOADEREXTENDED_H
 #define GLTFIO_ASSETLOADEREXTENDED_H
 
-#include "../FFilamentAsset.h"
+#include "../FDanteAsset.h"
 #include "../Utility.h"
 
 #include <gltfio/AssetLoader.h>
@@ -17,13 +13,13 @@
 
 #include <string>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 struct Primitive;
-struct FFilamentAsset;
+struct FDanteAsset;
 class DracoCache;
 
-using BufferDescriptor = filament::backend::BufferDescriptor;
+using BufferDescriptor = dante::backend::BufferDescriptor;
 
 // The cgltf attribute is a type and the attribute index
 struct Attribute {
@@ -31,8 +27,8 @@ struct Attribute {
     int index;
 };
 
-// The Filament Attribute is defined as a type and a slot.
-struct FilamentAttribute {
+// The Dante Attribute is defined as a type and a slot.
+struct DanteAttribute {
     VertexAttribute attribute;
     int slot;
 };
@@ -44,7 +40,7 @@ struct FilamentAttribute {
 // TangentSpaceMesh will remesh the input and possibly change the indices, vertex count, and
 // triangle counts, and so those changes must be resolved before the buffers are sent to the GPU.
 struct AssetLoaderExtended {
-    using BufferSlot = FFilamentAsset::ResourceInfoExtended::BufferSlot;
+    using BufferSlot = FDanteAsset::ResourceInfoExtended::BufferSlot;
     using Output = Primitive;
 
     struct Input {
@@ -70,13 +66,13 @@ struct AssetLoaderExtended {
     UriDataCacheHandle getUriDataCache() const noexcept { return mUriDataCache; }
 
 private:
-    filament::Engine* mEngine;
+    dante::Engine* mEngine;
     std::string mGltfPath;
     MaterialProvider& mMaterials;
     UriDataCacheHandle mUriDataCache;
     bool mCgltfBuffersLoaded;
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_ASSETLOADEREXTENDED_H

@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FGVIEWERMANAGER_H
-#define TNT_FILAMENT_FGVIEWERMANAGER_H
+#ifndef TNT_DANTE_FGVIEWERMANAGER_H
+#define TNT_DANTE_FGVIEWERMANAGER_H
 
 #include "PostProcessManager.h"
 
@@ -21,7 +17,7 @@
 #include <memory>
 #include <vector>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FView;
@@ -72,6 +68,6 @@ private:
     PostProcessManager& mPostProcessManager;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FGVIEWERMANAGER_H
+#endif // TNT_DANTE_FGVIEWERMANAGER_H

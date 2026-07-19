@@ -20,8 +20,8 @@
 #include <string>
 #include <unordered_map>
 
-#include <filament-matp/Config.h>
-#include <filament-matp/MaterialParser.h>
+#include <dante-matp/Config.h>
+#include <dante-matp/MaterialParser.h>
 #include "Compiler.h"
 
 namespace filamat {

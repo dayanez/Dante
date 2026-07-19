@@ -1,7 +1,3 @@
-/*
- * Copyright 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <geometry/Transcoder.h>
 
@@ -9,9 +5,9 @@
 
 #include <gtest/gtest.h>
 
-using filament::math::half;
-using filament::geometry::Transcoder;
-using filament::geometry::ComponentType;
+using dante::math::half;
+using dante::geometry::Transcoder;
+using dante::geometry::ComponentType;
 
 class TranscoderTest : public testing::Test {};
 

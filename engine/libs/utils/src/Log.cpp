@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <utils/Log.h>
 #include <utils/Mutex.h>
@@ -13,7 +9,7 @@
 #ifdef __ANDROID__
 #   include <android/log.h>
 #   ifndef UTILS_LOG_TAG
-#       define UTILS_LOG_TAG "Filament"
+#       define UTILS_LOG_TAG "Dante"
 #   endif
 #endif
 

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_GEOMETRY_TANGENTSPACEMESHIMPL_H
 #define TNT_GEOMETRY_TANGENTSPACEMESHIMPL_H
@@ -20,9 +16,9 @@
 #include <variant>
 #include <vector>
 
-namespace filament::geometry {
+namespace dante::geometry {
 
-using namespace filament::math;
+using namespace dante::math;
 
 namespace {
 
@@ -411,6 +407,6 @@ struct TangentSpaceMeshOutput {
     std::unordered_map<AttributeImpl, ArrayType> attributeData;
 };
 
-}// namespace filament::geometry
+}// namespace dante::geometry
 
 #endif//TNT_GEOMETRY_TANGENTSPACEMESHIMPL_H

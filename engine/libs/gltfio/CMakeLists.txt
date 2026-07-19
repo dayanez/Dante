@@ -12,8 +12,8 @@ set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 set(PUBLIC_HDRS
         include/gltfio/Animator.h
         include/gltfio/AssetLoader.h
-        include/gltfio/FilamentAsset.h
-        include/gltfio/FilamentInstance.h
+        include/gltfio/DanteAsset.h
+        include/gltfio/DanteInstance.h
         include/gltfio/MaterialProvider.h
         include/gltfio/NodeManager.h
         include/gltfio/TrsTransformManager.h
@@ -31,10 +31,10 @@ set(SRCS
         src/DependencyGraph.h
         src/DracoCache.cpp
         src/DracoCache.h
-        src/FFilamentAsset.h
-        src/FFilamentInstance.h
-        src/FilamentAsset.cpp
-        src/FilamentInstance.cpp
+        src/FDanteAsset.h
+        src/FDanteInstance.h
+        src/DanteAsset.cpp
+        src/DanteInstance.cpp
         src/FNodeManager.h
         src/FTrsTransformManager.h
         src/GltfEnums.h
@@ -70,7 +70,7 @@ set(SRCS
 
 set(RESOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
-if (CMAKE_CROSSCOMPILING OR FILAMENT_IMPORT_PREBUILT_EXECUTABLES)
+if (CMAKE_CROSSCOMPILING OR DANTE_IMPORT_PREBUILT_EXECUTABLES)
     include(${IMPORT_EXECUTABLES})
 endif()
 
@@ -80,9 +80,9 @@ set(TRANSPARENCY default)
 set(UBERZ_OUTPUT_PATH "${RESOURCE_DIR}/default.uberz")
 
 set (MATC_FLAGS ${MATC_BASE_FLAGS})
-if (FILAMENT_SAMPLES_STEREO_TYPE STREQUAL "instanced")
+if (DANTE_SAMPLES_STEREO_TYPE STREQUAL "instanced")
     set (MATC_FLAGS ${MATC_FLAGS} -PstereoscopicType=instanced)
-elseif (FILAMENT_SAMPLES_STEREO_TYPE STREQUAL "multiview")
+elseif (DANTE_SAMPLES_STEREO_TYPE STREQUAL "multiview")
     set (MATC_FLAGS ${MATC_FLAGS} -PstereoscopicType=multiview)
 endif ()
 
@@ -183,12 +183,12 @@ set_target_properties(uberarchive PROPERTIES FOLDER Libs)
 # Build the "core" library (no filamat)
 # ==================================================================================================
 
-if(FILAMENT_SUPPORTS_WEBP_TEXTURES)
+if(DANTE_SUPPORTS_WEBP_TEXTURES)
     set(WEBP_DECODER_LIB_TARGET webpdecoder)
 endif()
 
 include_directories(${PUBLIC_HDR_DIR} ${RESOURCE_DIR})
-link_libraries(math utils filament cgltf stb ktxreader geometry tsl uberzlib)
+link_libraries(math utils dante cgltf stb ktxreader geometry tsl uberzlib)
 
 add_library(gltfio_core STATIC ${PUBLIC_HDRS} ${SRCS})
 
@@ -198,7 +198,7 @@ set_target_properties(gltfio_core PROPERTIES FOLDER Libs)
 target_compile_definitions(gltfio_core PUBLIC -DGLTFIO_DRACO_SUPPORTED=1)
 target_link_libraries(gltfio_core PUBLIC dracodec meshoptimizer ${WEBP_DECODER_LIB_TARGET})
 
-target_compile_options(gltfio_core PRIVATE ${FILAMENT_WARNINGS})
+target_compile_options(gltfio_core PRIVATE ${DANTE_WARNINGS})
 
 # ==================================================================================================
 # Link the core library with additional dependencies to create the "full" library
@@ -217,7 +217,7 @@ install(TARGETS ${TARGET} ARCHIVE DESTINATION lib/${DIST_DIR})
 # Tests
 # ==================================================================================================
 
-if (FILAMENT_BUILD_TESTING)
+if (DANTE_BUILD_TESTING)
     set(GLTF_TEST_FILES)
     function(add_test_gltf SOURCE TARGET)
         set(source_path "${ROOT_DIR}/${SOURCE}")

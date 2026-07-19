@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_DESCRIPTORSET_H
-#define TNT_FILAMENT_DETAILS_DESCRIPTORSET_H
+#ifndef TNT_DANTE_DETAILS_DESCRIPTORSET_H
+#define TNT_DANTE_DETAILS_DESCRIPTORSET_H
 
 #include "DescriptorSetLayout.h"
 
-#include <private/filament/EngineEnums.h>
+#include <private/dante/EngineEnums.h>
 
 #include <backend/DescriptorSetOffsetArray.h>
 #include <backend/DriverApiForward.h>
@@ -22,7 +18,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class DescriptorSet {
 public:
@@ -107,6 +103,6 @@ private:
     utils::StaticString mName;                              // 16
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_DETAILS_DESCRIPTORSET_H
+#endif //TNT_DANTE_DETAILS_DESCRIPTORSET_H

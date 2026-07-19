@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <utils/CString.h>
 
@@ -690,19 +686,19 @@ TEST(CString, HeterogeneousLookupForContainer) {
     std::unordered_set<CString> us;
 
     const char* world("world");
-    const std::string_view filament("filament");
+    const std::string_view dante("dante");
     const CString unittest("unittest");
 
     EXPECT_TRUE(us.insert("hello").second);
     EXPECT_TRUE(us.insert(CString(world)).second); // or emplace(world)
-    EXPECT_TRUE(us.insert(CString(filament)).second); // or emplace(filament)
+    EXPECT_TRUE(us.insert(CString(dante)).second); // or emplace(dante)
     EXPECT_TRUE(us.insert(unittest).second);
 
     auto it = us.find("hello");
     EXPECT_NE(it, us.end());
     it = us.find(world);
     EXPECT_NE(it, us.end());
-    it = us.find(filament);
+    it = us.find(dante);
     EXPECT_NE(it, us.end());
     it = us.find(unittest);
     EXPECT_NE(it, us.end());

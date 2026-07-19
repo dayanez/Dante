@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_SKINNINGBUFFER_H
-#define TNT_FILAMENT_DETAILS_SKINNINGBUFFER_H
+#ifndef TNT_DANTE_DETAILS_SKINNINGBUFFER_H
+#define TNT_DANTE_DETAILS_SKINNINGBUFFER_H
 
 #include "downcast.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/SkinningBuffer.h>
+#include <dante/SkinningBuffer.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/Handle.h>
@@ -25,9 +21,9 @@
 #include <stdint.h>
 
 // for gtest
-class FilamentTest_Bones_Test;
+class DanteTest_Bones_Test;
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FRenderableManager;
@@ -50,7 +46,7 @@ public:
     }
 
 private:
-    friend class FilamentTest_Bones_Test;
+    friend class DanteTest_Bones_Test;
     friend class SkinningBuffer;
     friend class FRenderableManager;
 
@@ -77,8 +73,8 @@ private:
     uint32_t mBoneCount;
 };
 
-FILAMENT_DOWNCAST(SkinningBuffer)
+DANTE_DOWNCAST(SkinningBuffer)
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_DETAILS_SKINNINGBUFFER_H
+#endif //TNT_DANTE_DETAILS_SKINNINGBUFFER_H

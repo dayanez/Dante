@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <private/utils/FeatureFlagManager.h>
 
@@ -174,4 +170,4 @@ bool* FeatureFlagManager::getFeatureFlagPtr(std::string_view name, bool const al
            const_cast<bool*>(pos->value) : nullptr;
 }
 
-} // namespace filament
+} // namespace dante

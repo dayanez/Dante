@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(filament C ASM)
+project(dante C ASM)
 
 set(TARGET backend)
 set(PUBLIC_HDR_DIR include)
@@ -67,7 +67,7 @@ set(PRIVATE_HDRS
 # OpenGL Sources (Windows / Linux only)
 # ==================================================================================================
 
-if (FILAMENT_SUPPORTS_OPENGL)
+if (DANTE_SUPPORTS_OPENGL)
     list(APPEND SRCS
             include/backend/platforms/OpenGLPlatform.h
             src/opengl/BindingMap.h
@@ -103,9 +103,9 @@ if (FILAMENT_SUPPORTS_OPENGL)
         list(APPEND SRCS src/opengl/platforms/PlatformEGL.cpp)
     endif()
     if (LINUX)
-        if (FILAMENT_SUPPORTS_X11)
+        if (DANTE_SUPPORTS_X11)
             list(APPEND SRCS src/opengl/platforms/PlatformGLX.cpp)
-        elseif (FILAMENT_SUPPORTS_EGL_ON_LINUX)
+        elseif (DANTE_SUPPORTS_EGL_ON_LINUX)
             list(APPEND SRCS src/opengl/platforms/PlatformEGLHeadless.cpp)
         endif()
     elseif (WIN32)
@@ -127,8 +127,8 @@ add_library(${TARGET} STATIC ${PRIVATE_HDRS} ${PUBLIC_HDRS} ${SRCS})
 # specify where the public headers of this library are
 target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
 
-# add this subproject to the Filament folder
-set_target_properties(${TARGET} PROPERTIES FOLDER Filament)
+# add this subproject to the Dante folder
+set_target_properties(${TARGET} PROPERTIES FOLDER Dante)
 
 # ==================================================================================================
 # Expose a header-only target to minimize dependencies.
@@ -144,17 +144,17 @@ target_include_directories(${TARGET}_headers INTERFACE ${PUBLIC_HDR_DIR})
 target_link_libraries(${TARGET} PUBLIC math)
 target_link_libraries(${TARGET} PUBLIC utils)
 
-if (FILAMENT_USE_ABSEIL_LOGGING)
+if (DANTE_USE_ABSEIL_LOGGING)
     target_link_libraries(${TARGET} PRIVATE absl::log)
 endif()
 
-if (FILAMENT_SUPPORTS_OPENGL)
+if (DANTE_SUPPORTS_OPENGL)
     target_link_libraries(${TARGET} PRIVATE bluegl)
 endif()
 
 if (LINUX)
     target_link_libraries(${TARGET} PRIVATE dl)
-    if(FILAMENT_SUPPORTS_EGL_ON_LINUX)
+    if(DANTE_SUPPORTS_EGL_ON_LINUX)
        target_link_libraries(${TARGET} PUBLIC EGL)
     endif()
 endif()
@@ -166,7 +166,7 @@ if (MSVC)
     set(OPTIMIZATION_FLAGS
         /fp:fast
     )
-elseif(FILAMENT_USING_GCC)
+elseif(DANTE_USING_GCC)
     set(OPTIMIZATION_FLAGS
         -ffast-math
         -fno-finite-math-only
@@ -188,16 +188,16 @@ set(LINUX_LINKER_OPTIMIZATION_FLAGS
 )
 
 if (MSVC)
-    set(FILAMENT_WARNINGS /W3)
-elseif (FILAMENT_USING_GCC)
+    set(DANTE_WARNINGS /W3)
+elseif (DANTE_USING_GCC)
     # GCC is not officially supported, so use a weaker set of warnings (incl. not using -Werror)
-    set(FILAMENT_WARNINGS
+    set(DANTE_WARNINGS
             -Wall -Wno-unused-parameter -Wno-missing-field-initializers
             -Wdeprecated -Wnon-virtual-dtor -Wno-strict-aliasing
             -Wno-invalid-constexpr -Wno-parentheses -Wno-unused-variable
     )
 else()
-    set(FILAMENT_WARNINGS
+    set(DANTE_WARNINGS
             -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
             -Wextra-semi -Wnewline-eof -Wdeprecated -Wundef
             -Wgnu-conditional-omitted-operand
@@ -208,7 +208,7 @@ else()
 endif()
 
 target_compile_options(${TARGET} PRIVATE
-        ${FILAMENT_WARNINGS}
+        ${DANTE_WARNINGS}
         $<$<CONFIG:Release>:${OPTIMIZATION_FLAGS}>
 )
 

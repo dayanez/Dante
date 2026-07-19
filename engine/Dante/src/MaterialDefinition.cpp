@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "MaterialDefinition.h"
 
@@ -13,10 +9,10 @@
 
 #include "ds/ColorPassDescriptorSet.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/PushConstantInfo.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/PushConstantInfo.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <utils/Hash.h>
 #include <utils/Logger.h>
@@ -30,7 +26,7 @@
 #include <memory>
 #include <utility>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace utils;
@@ -201,7 +197,7 @@ std::unique_ptr<MaterialParser> MaterialDefinition::createParser(Backend const b
             }
         }
 
-        FILAMENT_CHECK_POSTCONDITION(
+        DANTE_CHECK_POSTCONDITION(
                 materialResult != MaterialParser::ParseResult::ERROR_MISSING_BACKEND)
                 << "the material " << name.c_str_safe() << " was not built for any of the " << to_string(backend)
                 << " backend's supported shader languages (" << languageNames.c_str() << ")\n";
@@ -211,12 +207,12 @@ std::unique_ptr<MaterialParser> MaterialDefinition::createParser(Backend const b
         return materialParser;
     }
 
-    FILAMENT_CHECK_POSTCONDITION(materialResult == MaterialParser::ParseResult::SUCCESS)
+    DANTE_CHECK_POSTCONDITION(materialResult == MaterialParser::ParseResult::SUCCESS)
             << "could not parse the material package for material " << name.c_str_safe();
 
     uint32_t version = 0;
     materialParser->getMaterialVersion(&version);
-    FILAMENT_CHECK_POSTCONDITION(version == MATERIAL_VERSION)
+    DANTE_CHECK_POSTCONDITION(version == MATERIAL_VERSION)
             << "Material version mismatch. Expected " << MATERIAL_VERSION << " but received "
             << version << " for material " << name.c_str_safe();
 
@@ -791,7 +787,7 @@ Program MaterialDefinition::getProgramWithVariants(FEngine const& engine,
     UTILS_UNUSED_IN_RELEASE bool const vsOK = parser.getShader(vsBuilder, sm,
             vertexVariant, ShaderStage::VERTEX);
 
-    FILAMENT_CHECK_POSTCONDITION(isNoop || (vsOK && !vsBuilder.empty()))
+    DANTE_CHECK_POSTCONDITION(isNoop || (vsOK && !vsBuilder.empty()))
             << "The material '" << name.c_str()
             << "' has not been compiled to include the required GLSL or SPIR-V chunks for the "
                "vertex shader (variant="
@@ -806,7 +802,7 @@ Program MaterialDefinition::getProgramWithVariants(FEngine const& engine,
     UTILS_UNUSED_IN_RELEASE bool const fsOK = parser.getShader(fsBuilder, sm,
             fragmentVariant, ShaderStage::FRAGMENT);
 
-    FILAMENT_CHECK_POSTCONDITION(isNoop || (fsOK && !fsBuilder.empty()))
+    DANTE_CHECK_POSTCONDITION(isNoop || (fsOK && !fsBuilder.empty()))
             << "The material '" << name.c_str()
             << "' has not been compiled to include the required GLSL or SPIR-V chunks for the "
                "fragment shader (variant="
@@ -962,4 +958,4 @@ Slice<const Variant> MaterialDefinition::getDepthVariants() const noexcept {
     }
 }
 
-} // namespace filament
+} // namespace dante

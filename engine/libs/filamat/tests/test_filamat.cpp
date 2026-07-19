@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "sca/ASTHelpers.h"
 #include "sca/GLSLTools.h"
@@ -21,7 +17,7 @@
 using namespace utils;
 using namespace ASTHelpers;
 using namespace filamat;
-using namespace filament::backend;
+using namespace dante::backend;
 
 static ::testing::AssertionResult PropertyListsMatch(const MaterialBuilder::PropertyList& expected,
         const MaterialBuilder::PropertyList& actual) {
@@ -42,7 +38,7 @@ std::string shaderWithAllProperties(const ShaderStage type,
         const MaterialBuilder::Shading shadingModel = MaterialBuilder::Shading::LIT,
         const MaterialBuilder::RefractionMode refractionMode = MaterialBuilder::RefractionMode::NONE,
         const MaterialBuilder::VertexDomain vertexDomain = MaterialBuilder::VertexDomain::OBJECT,
-        const uint32_t targetApiLevel = filament::UNSTABLE_MATERIAL_API_LEVEL) {
+        const uint32_t targetApiLevel = dante::UNSTABLE_MATERIAL_API_LEVEL) {
 
     MaterialBuilder builder;
     builder.material(fragmentCode.c_str());
@@ -211,7 +207,7 @@ TEST_F(MaterialCompiler, StaticCodeAnalyzerClipSpacePosition) {
 
     const std::string shaderCode = shaderWithAllProperties(ShaderStage::VERTEX, fragmentCode,
             vertexCode, MaterialBuilder::Shading::LIT, MaterialBuilder::RefractionMode::NONE,
-            MaterialBuilder::VertexDomain::DEVICE, filament::UNSTABLE_MATERIAL_API_LEVEL);
+            MaterialBuilder::VertexDomain::DEVICE, dante::UNSTABLE_MATERIAL_API_LEVEL);
 
     GLSLTools glslTools;
     MaterialBuilder::PropertyList properties{ false };
@@ -757,8 +753,8 @@ TEST_F(MaterialCompiler, EmptyName) {
 TEST_F(MaterialCompiler, Uv0AndUv1) {
     MaterialBuilder builder;
     // Requiring both sets of UV coordinates should not fail.
-    builder.require(filament::VertexAttribute::UV0);
-    builder.require(filament::VertexAttribute::UV1);
+    builder.require(dante::VertexAttribute::UV0);
+    builder.require(dante::VertexAttribute::UV1);
     const Package result = builder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
 }
@@ -776,7 +772,7 @@ TEST_F(MaterialCompiler, FiveCustomVariables) {
 
 TEST_F(MaterialCompiler, FourCustomVariablesAndColorAttribute) {
     MaterialBuilder builder;
-    builder.require(filament::VertexAttribute::COLOR);
+    builder.require(dante::VertexAttribute::COLOR);
     builder.variable(MaterialBuilder::Variable::CUSTOM0, "custom0");
     builder.variable(MaterialBuilder::Variable::CUSTOM1, "custom1");
     builder.variable(MaterialBuilder::Variable::CUSTOM2, "custom2");
@@ -787,7 +783,7 @@ TEST_F(MaterialCompiler, FourCustomVariablesAndColorAttribute) {
 
 TEST_F(MaterialCompiler, FiveCustomVariablesAndColorAttributeFails) {
     MaterialBuilder builder;
-    builder.require(filament::VertexAttribute::COLOR);
+    builder.require(dante::VertexAttribute::COLOR);
     builder.variable(MaterialBuilder::Variable::CUSTOM0, "custom0");
     builder.variable(MaterialBuilder::Variable::CUSTOM1, "custom1");
     builder.variable(MaterialBuilder::Variable::CUSTOM2, "custom2");
@@ -799,7 +795,7 @@ TEST_F(MaterialCompiler, FiveCustomVariablesAndColorAttributeFails) {
 
 TEST_F(MaterialCompiler, CustomVariable4AndColorAttributeFails) {
     MaterialBuilder builder;
-    builder.require(filament::VertexAttribute::COLOR);
+    builder.require(dante::VertexAttribute::COLOR);
     builder.variable(MaterialBuilder::Variable::CUSTOM4, "custom4");
     const Package result = builder.build(*jobSystem);
     EXPECT_FALSE(result.isValid());
@@ -818,7 +814,7 @@ TEST_F(MaterialCompiler, Arrays) {
 TEST_F(MaterialCompiler, CustomSurfaceShadingRequiresLit) {
     MaterialBuilder builder;
     builder.customSurfaceShading(true);
-    builder.shading(filament::Shading::UNLIT);
+    builder.shading(dante::Shading::UNLIT);
     const Package result = builder.build(*jobSystem);
     EXPECT_FALSE(result.isValid());
 }
@@ -826,7 +822,7 @@ TEST_F(MaterialCompiler, CustomSurfaceShadingRequiresLit) {
 TEST_F(MaterialCompiler, CustomSurfaceShadingRequiresFunction) {
     MaterialBuilder builder;
     builder.customSurfaceShading(true);
-    builder.shading(filament::Shading::LIT);
+    builder.shading(dante::Shading::LIT);
     const Package result = builder.build(*jobSystem);
     EXPECT_FALSE(result.isValid());
 }
@@ -848,7 +844,7 @@ TEST_F(MaterialCompiler, CustomSurfaceShadingHasFunction) {
 
     MaterialBuilder builder;
     builder.customSurfaceShading(true);
-    builder.shading(filament::Shading::LIT);
+    builder.shading(dante::Shading::LIT);
     builder.material(shaderCode.c_str());
     const Package result = builder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
@@ -877,7 +873,7 @@ TEST_F(MaterialCompiler, ConstantParameter) {
   builder.constant("myBoolConstant", ConstantType::BOOL, true);
   builder.constant<bool>("myOtherBoolConstant", ConstantType::BOOL);
 
-  builder.shading(filament::Shading::LIT);
+  builder.shading(dante::Shading::LIT);
   builder.material(shaderCode.c_str());
   builder.materialVertex(vertexCode.c_str());
   const Package result = builder.build(*jobSystem);
@@ -914,7 +910,7 @@ TEST_F(MaterialCompiler, FeatureLevel0Sampler2D) {
   builder.parameter("sampler", SamplerType::SAMPLER_2D);
 
   builder.featureLevel(FeatureLevel::FEATURE_LEVEL_0);
-  builder.shading(filament::Shading::UNLIT);
+  builder.shading(dante::Shading::UNLIT);
   builder.material(shaderCode.c_str());
   const Package result = builder.build(*jobSystem);
   EXPECT_TRUE(result.isValid());
@@ -933,7 +929,7 @@ TEST_F(MaterialCompiler, SamplerTransformName) {
           ParameterPrecision::DEFAULT, true, false, "sampler_transform");
 
   builder.featureLevel(FeatureLevel::FEATURE_LEVEL_0);
-  builder.shading(filament::Shading::UNLIT);
+  builder.shading(dante::Shading::UNLIT);
   builder.material(shaderCode.c_str());
   const Package result = builder.build(*jobSystem);
   EXPECT_TRUE(result.isValid());
@@ -951,7 +947,7 @@ TEST_F(MaterialCompiler, SamplerMissingTransformName) {
   builder.parameter("sampler", SamplerType::SAMPLER_2D);
 
   builder.featureLevel(FeatureLevel::FEATURE_LEVEL_0);
-  builder.shading(filament::Shading::UNLIT);
+  builder.shading(dante::Shading::UNLIT);
   builder.material(shaderCode.c_str());
   const Package result = builder.build(*jobSystem);
   EXPECT_FALSE(result.isValid());
@@ -968,7 +964,7 @@ TEST_F(MaterialCompiler, FeatureLevel0Ess3CallFails) {
   builder.parameter("sampler", SamplerType::SAMPLER_2D);
 
   builder.featureLevel(FeatureLevel::FEATURE_LEVEL_0);
-  builder.shading(filament::Shading::UNLIT);
+  builder.shading(dante::Shading::UNLIT);
   builder.material(shaderCode.c_str());
   const Package result = builder.build(*jobSystem);
   EXPECT_FALSE(result.isValid());
@@ -997,7 +993,7 @@ TEST_F(MaterialCompiler, ClientApiLevelUnstableNoUseOfUnstableApiSucceeds) {
     )");
     MaterialBuilder builder;
     builder.material(shaderCode.c_str());
-    builder.setApiLevel(filament::UNSTABLE_MATERIAL_API_LEVEL);
+    builder.setApiLevel(dante::UNSTABLE_MATERIAL_API_LEVEL);
 
     const Package result = builder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
@@ -1018,7 +1014,7 @@ TEST_F(MaterialCompiler, ClientApiLevelUnstableUseOfUnstableApiSucceeds) {
     )");
     MaterialBuilder builder;
     builder.material(shaderCode.c_str());
-    builder.setApiLevel(filament::UNSTABLE_MATERIAL_API_LEVEL);
+    builder.setApiLevel(dante::UNSTABLE_MATERIAL_API_LEVEL);
 
     const Package result = builder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
@@ -1039,7 +1035,7 @@ TEST_F(MaterialCompiler, ClientApiLevelReleasedUseOfUnstableApiFails) {
     )");
     MaterialBuilder builder;
     builder.material(shaderCode.c_str());
-    builder.setApiLevel(filament::RELEASED_MATERIAL_API_LEVEL);
+    builder.setApiLevel(dante::RELEASED_MATERIAL_API_LEVEL);
 
     const Package result = builder.build(*jobSystem);
     EXPECT_FALSE(result.isValid());
@@ -1055,8 +1051,8 @@ TEST_F(MaterialCompiler, CustomOutputSuccess) {
 
     MaterialBuilder builder;
     builder.material(shaderCode.c_str());
-    builder.shading(filament::Shading::UNLIT);
-    builder.blending(filament::BlendingMode::OPAQUE);
+    builder.shading(dante::Shading::UNLIT);
+    builder.blending(dante::BlendingMode::OPAQUE);
     builder.featureLevel(FeatureLevel::FEATURE_LEVEL_1);
     builder.output(MaterialBuilder::VariableQualifier::OUT,
                    MaterialBuilder::OutputTarget::COLOR,
@@ -1100,7 +1096,7 @@ TEST_F(MaterialCompiler, CustomOutputMoreThanOneFails) {
 TEST_F(MaterialCompiler, CustomOutputLitFails) {
     MaterialBuilder builder;
     builder.featureLevel(FeatureLevel::FEATURE_LEVEL_1);
-    builder.shading(filament::Shading::LIT);
+    builder.shading(dante::Shading::LIT);
     builder.output(MaterialBuilder::VariableQualifier::OUT,
                    MaterialBuilder::OutputTarget::COLOR,
                    MaterialBuilder::Precision::DEFAULT,
@@ -1113,8 +1109,8 @@ TEST_F(MaterialCompiler, CustomOutputLitFails) {
 TEST_F(MaterialCompiler, CustomOutputTransparentFails) {
     MaterialBuilder builder;
     builder.featureLevel(FeatureLevel::FEATURE_LEVEL_1);
-    builder.shading(filament::Shading::UNLIT);
-    builder.blending(filament::BlendingMode::TRANSPARENT);
+    builder.shading(dante::Shading::UNLIT);
+    builder.blending(dante::BlendingMode::TRANSPARENT);
     builder.output(MaterialBuilder::VariableQualifier::OUT,
                    MaterialBuilder::OutputTarget::COLOR,
                    MaterialBuilder::Precision::DEFAULT,
@@ -1124,7 +1120,7 @@ TEST_F(MaterialCompiler, CustomOutputTransparentFails) {
     EXPECT_FALSE(result.isValid());
 }
 
-#if FILAMENT_SUPPORTS_WEBGPU
+#if DANTE_SUPPORTS_WEBGPU
 TEST_F(MaterialCompiler, WgslConversionBakedColor) {
     std::string bakedColorCodeFrag(R"(
         void material(inout MaterialInputs material) {
@@ -1139,9 +1135,9 @@ TEST_F(MaterialCompiler, WgslConversionBakedColor) {
     builder.name("BakedColor");
     builder.culling(CullingMode::NONE);
     builder.featureLevel(FeatureLevel::FEATURE_LEVEL_0);
-    builder.require(filament::VertexAttribute::COLOR);
-    builder.variantFilter(static_cast<filament::UserVariantFilterMask>(
-            filament::UserVariantFilterBit::SKINNING | filament::UserVariantFilterBit::STE));
+    builder.require(dante::VertexAttribute::COLOR);
+    builder.variantFilter(static_cast<dante::UserVariantFilterMask>(
+            dante::UserVariantFilterBit::SKINNING | dante::UserVariantFilterBit::STE));
     const Package result = builder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
 }
@@ -1168,7 +1164,7 @@ TEST_F(MaterialCompiler, WgslConversionSandboxLitTransparent) {
     builder.material(litTransparentCodeFrag.c_str());
     builder.shading(MaterialBuilder::Shading::LIT);
     builder.name("LitTransparent");
-    builder.blending(filament::BlendingMode::TRANSPARENT);
+    builder.blending(dante::BlendingMode::TRANSPARENT);
     builder.specularAntiAliasing(true);
 
     builder.parameter("alpha", 1, UniformType::FLOAT);
@@ -1183,8 +1179,8 @@ TEST_F(MaterialCompiler, WgslConversionSandboxLitTransparent) {
     builder.parameter("anisotropy", 1, UniformType::FLOAT);
     builder.parameter("emissive", 1, UniformType::FLOAT4);
 
-    builder.variantFilter(static_cast<filament::UserVariantFilterMask>(
-            filament::UserVariantFilterBit::SKINNING | filament::UserVariantFilterBit::STE));
+    builder.variantFilter(static_cast<dante::UserVariantFilterMask>(
+            dante::UserVariantFilterBit::SKINNING | dante::UserVariantFilterBit::STE));
     const Package result = builder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
 }

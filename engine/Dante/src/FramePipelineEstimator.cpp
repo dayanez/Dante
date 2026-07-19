@@ -1,19 +1,15 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#include <filament/FramePipelineEstimator.h>
+#include <dante/FramePipelineEstimator.h>
 
 #include <utils/Log.h>
 
 #include <time.h>
 
-#ifndef FILAMENT_LOG_PIPELINE_ESTIMATOR
-#define FILAMENT_LOG_PIPELINE_ESTIMATOR 0
+#ifndef DANTE_LOG_PIPELINE_ESTIMATOR
+#define DANTE_LOG_PIPELINE_ESTIMATOR 0
 #endif
 
-namespace filament {
+namespace dante {
 
 namespace {
 struct PipelineLogger {
@@ -23,7 +19,7 @@ struct PipelineLogger {
             double standardDeviationMain, double standardDeviationRender, double standardDeviationBackend, double standardDeviationGpu,
             double effectiveMain, double effectiveBackend, double effectiveGpu,
             float idealFrameRate, uint32_t idealLatency, double safeDelayNs) noexcept {
-#if FILAMENT_LOG_PIPELINE_ESTIMATOR
+#if DANTE_LOG_PIPELINE_ESTIMATOR
         LOG(INFO) << "FramePipelineEstimator: "
                 << "history=" << count << " (gpu=" << countGpu << "), "
                 << "Z=" << zScore << "\n"
@@ -168,4 +164,4 @@ FramePipelineEstimator::Estimation FramePipelineEstimator::estimate(FrameInfoHis
     return estimation;
 }
 
-} // namespace filament
+} // namespace dante

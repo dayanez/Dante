@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef CAMUTILS_MANIPULATOR_H
 #define CAMUTILS_MANIPULATOR_H
@@ -15,7 +11,7 @@
 
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 namespace camutils {
 
 enum class Fov { VERTICAL, HORIZONTAL };
@@ -53,7 +49,7 @@ enum class Fov { VERTICAL, HORIZONTAL };
  *
  *     void gameLoop() {
  *         while (true) {
- *             filament::math::float3 eye, center, up;
+ *             dante::math::float3 eye, center, up;
  *             manip->getLookAt(&eye, &center, &up);
  *             camera->lookAt(eye, center, up);
  *             render();
@@ -65,12 +61,12 @@ enum class Fov { VERTICAL, HORIZONTAL };
 template <typename FLOAT>
 class CAMUTILS_PUBLIC Manipulator {
 public:
-    using vec2 = filament::math::vec2<FLOAT>;
-    using vec3 = filament::math::vec3<FLOAT>;
-    using vec4 = filament::math::vec4<FLOAT>;
+    using vec2 = dante::math::vec2<FLOAT>;
+    using vec3 = dante::math::vec3<FLOAT>;
+    using vec4 = dante::math::vec4<FLOAT>;
 
     /** Opaque handle to a viewing position and orientation to facilitate camera animation. */
-    using Bookmark = filament::camutils::Bookmark<FLOAT>;
+    using Bookmark = dante::camutils::Bookmark<FLOAT>;
 
     /** Optional raycasting function to enable perspective-correct panning. */
     typedef bool (*RayCallback)(const vec3& origin, const vec3& dir, FLOAT* t, void* userdata);
@@ -285,6 +281,6 @@ protected:
 };
 
 } // namespace camutils
-} // namespace filament
+} // namespace dante
 
 #endif /* CAMUTILS_MANIPULATOR_H */

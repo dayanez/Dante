@@ -1,24 +1,20 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ArchiveCache.h"
 
 #include <gltfio/MaterialProvider.h>
 
-#include <filament/MaterialInstance.h>
-#include <filament/Texture.h>
-#include <filament/TextureSampler.h>
+#include <dante/MaterialInstance.h>
+#include <dante/Texture.h>
+#include <dante/TextureSampler.h>
 
 #include <utils/Log.h>
 
 #include <math/mat4.h>
 
-using namespace filament;
-using namespace filament::math;
-using namespace filament::uberz;
-using namespace filament::gltfio;
+using namespace dante;
+using namespace dante::math;
+using namespace dante::uberz;
+using namespace dante::gltfio;
 using namespace utils;
 
 #if !defined(NDEBUG)
@@ -380,14 +376,14 @@ MaterialInstance* UbershaderProvider::createMaterialInstance(MaterialKey* config
 
 } // anonymous namespace
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 MaterialProvider* createUbershaderProvider(Engine* engine, const void* archive,
         size_t archiveByteCount) {
     return new UbershaderProvider(engine, archive, archiveByteCount);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 
 #if !defined(NDEBUG)

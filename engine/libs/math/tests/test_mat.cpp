@@ -1,7 +1,3 @@
-/*
- * Copyright 2013 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <math/mat2.h>
 #include <math/mat3.h>
@@ -15,7 +11,7 @@
 #include <limits>
 #include <random>
 
-using namespace filament::math;
+using namespace dante::math;
 
 class MatTest : public testing::Test {
 protected:
@@ -513,7 +509,7 @@ TYPED_TEST_SUITE(MatTestT, TestMatrixValueTypes);
 }
 
 TYPED_TEST(MatTestT, Inverse4) {
-    typedef filament::math::details::TMat44<TypeParam> M44T;
+    typedef dante::math::details::TMat44<TypeParam> M44T;
 
     M44T m1(1,  0,  0,  0,
             0,  1,  0,  0,
@@ -551,7 +547,7 @@ TYPED_TEST(MatTestT, Inverse4) {
 
 //------------------------------------------------------------------------------
 TYPED_TEST(MatTestT, Inverse3) {
-    typedef filament::math::details::TMat33<TypeParam> M33T;
+    typedef dante::math::details::TMat33<TypeParam> M33T;
 
     M33T m1(1,  0,  0,
             0,  1,  0,
@@ -584,7 +580,7 @@ TYPED_TEST(MatTestT, Inverse3) {
 
 //------------------------------------------------------------------------------
 TYPED_TEST(MatTestT, Inverse2) {
-    typedef filament::math::details::TMat22<TypeParam> M22T;
+    typedef dante::math::details::TMat22<TypeParam> M22T;
 
     M22T m1(1,  0,
             0,  1);
@@ -608,8 +604,8 @@ TYPED_TEST(MatTestT, Inverse2) {
 
 
 TYPED_TEST(MatTestT, NormalsNegativeScale) {
-    typedef filament::math::details::TMat33<TypeParam> M33T;
-    typedef filament::math::details::TVec3<TypeParam> V3T;
+    typedef dante::math::details::TMat33<TypeParam> M33T;
+    typedef dante::math::details::TVec3<TypeParam> V3T;
 
     M33T m(-1,  0,  0,
             0,  1,  0,
@@ -638,9 +634,9 @@ TYPED_TEST(MatTestT, NormalsNegativeScale) {
 //------------------------------------------------------------------------------
 // Test some translation stuff.
 TYPED_TEST(MatTestT, Translation4) {
-    typedef filament::math::details::TMat44<TypeParam> M44T;
-    typedef filament::math::details::TVec4<TypeParam> V4T;
-    typedef filament::math::details::TVec3<TypeParam> V3T;
+    typedef dante::math::details::TMat44<TypeParam> M44T;
+    typedef dante::math::details::TVec4<TypeParam> V4T;
+    typedef dante::math::details::TVec3<TypeParam> V3T;
 
     V3T translateBy(-7.3, 1.1, 14.4);
     V3T translation(translateBy[0], translateBy[1], translateBy[2]);
@@ -663,9 +659,9 @@ TYPED_TEST(MatTestT, Translation4) {
 //------------------------------------------------------------------------------
 // Test some scale stuff.
 TYPED_TEST(MatTestT, Scale4) {
-    typedef filament::math::details::TMat44<TypeParam> M44T;
-    typedef filament::math::details::TVec4<TypeParam> V4T;
-    typedef filament::math::details::TVec3<TypeParam> V3T;
+    typedef dante::math::details::TMat44<TypeParam> M44T;
+    typedef dante::math::details::TVec4<TypeParam> V4T;
+    typedef dante::math::details::TVec3<TypeParam> V3T;
 
     V3T scaleBy(2.0, 3.0, 4.0);
     V3T scale(scaleBy[0], scaleBy[1], scaleBy[2]);
@@ -707,7 +703,7 @@ static void verifyOrthonormal(const MATRIX& A) {
 //------------------------------------------------------------------------------
 // Test euler code.
 TYPED_TEST(MatTestT, EulerZYX_44) {
-    typedef filament::math::details::TMat44<TypeParam> M44T;
+    typedef dante::math::details::TMat44<TypeParam> M44T;
 
     std::default_random_engine generator(82828); // NOLINT
     std::uniform_real_distribution<TypeParam> distribution(-6.0 * 2.0*F_PI, 6.0 * 2.0*F_PI);
@@ -726,7 +722,7 @@ TYPED_TEST(MatTestT, EulerZYX_44) {
 // Test euler code.
 TYPED_TEST(MatTestT, EulerZYX_33) {
 
-    typedef filament::math::details::TMat33<TypeParam> M33T;
+    typedef dante::math::details::TMat33<TypeParam> M33T;
 
     std::default_random_engine generator(112233); // NOLINT
     std::uniform_real_distribution<TypeParam> distribution(-6.0 * 2.0*F_PI, 6.0 * 2.0*F_PI);
@@ -745,9 +741,9 @@ TYPED_TEST(MatTestT, EulerZYX_33) {
 // Test to quaternion with post translation.
 TYPED_TEST(MatTestT, ToQuaternionPostTranslation) {
 
-    typedef filament::math::details::TMat44<TypeParam> M44T;
-    typedef filament::math::details::TVec3<TypeParam> V3T;
-    typedef filament::math::details::TQuaternion<TypeParam> QuatT;
+    typedef dante::math::details::TMat44<TypeParam> M44T;
+    typedef dante::math::details::TVec3<TypeParam> V3T;
+    typedef dante::math::details::TQuaternion<TypeParam> QuatT;
 
     std::default_random_engine generator(112233); // NOLINT
     std::uniform_real_distribution<TypeParam> distribution(-6.0 * 2.0*F_PI, 6.0 * 2.0*F_PI);
@@ -784,9 +780,9 @@ TYPED_TEST(MatTestT, ToQuaternionPointTransformation33) {
     static constexpr TypeParam value_eps =
             TypeParam(1000) * std::numeric_limits<TypeParam>::epsilon();
 
-    typedef filament::math::details::TMat33<TypeParam> M33T;
-    typedef filament::math::details::TVec3<TypeParam> V3T;
-    typedef filament::math::details::TQuaternion<TypeParam> QuatT;
+    typedef dante::math::details::TMat33<TypeParam> M33T;
+    typedef dante::math::details::TVec3<TypeParam> V3T;
+    typedef dante::math::details::TQuaternion<TypeParam> QuatT;
 
     std::default_random_engine generator(112233); // NOLINT
     std::uniform_real_distribution<TypeParam> distribution(-100.0, 100.0);
@@ -812,10 +808,10 @@ TYPED_TEST(MatTestT, ToQuaternionPointTransformation44) {
     static constexpr TypeParam value_eps =
             TypeParam(1000) * std::numeric_limits<TypeParam>::epsilon();
 
-    typedef filament::math::details::TMat44<TypeParam> M44T;
-    typedef filament::math::details::TVec4<TypeParam> V4T;
-    typedef filament::math::details::TVec3<TypeParam> V3T;
-    typedef filament::math::details::TQuaternion<TypeParam> QuatT;
+    typedef dante::math::details::TMat44<TypeParam> M44T;
+    typedef dante::math::details::TVec4<TypeParam> V4T;
+    typedef dante::math::details::TVec3<TypeParam> V3T;
+    typedef dante::math::details::TQuaternion<TypeParam> QuatT;
 
     std::default_random_engine generator(992626); // NOLINT
     std::uniform_real_distribution<TypeParam> distribution(-100.0, 100.0);
@@ -843,7 +839,7 @@ TYPED_TEST(MatTestT, cofactor) {
     static constexpr TypeParam value_eps =
             TypeParam(1000) * std::numeric_limits<TypeParam>::epsilon();
 
-    typedef filament::math::details::TMat33<TypeParam> M33T;
+    typedef dante::math::details::TMat33<TypeParam> M33T;
 
     std::default_random_engine generator(992626); // NOLINT
     std::uniform_real_distribution<TypeParam> distribution(-100.0, 100.0);

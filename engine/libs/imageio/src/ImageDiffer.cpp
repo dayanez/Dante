@@ -1,7 +1,3 @@
-/*
- * Copyright 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <imageio/ImageDiffer.h>
 
@@ -40,13 +36,13 @@ void updateOrCompare(LinearImage limgResult, const utils::Path& fnameGolden,
 
     // Load the PNG file at the given path.
     std::ifstream in(fnameGolden, std::ios::binary);
-    FILAMENT_CHECK_PRECONDITION(in) << "Unable to open: " << fnameGolden.c_str();
+    DANTE_CHECK_PRECONDITION(in) << "Unable to open: " << fnameGolden.c_str();
     LinearImage limgGolden = ImageDecoder::decode(in, fnameGolden);
 
     // Convert 4-channel RGBM into proper RGB.
     if (fnameGolden.getExtension() == "rgbm" && limgGolden.getChannels() == 4) {
         limgGolden = toLinearFromRGBM(
-                reinterpret_cast< filament::math::float4 const*>(limgGolden.getPixelRef()),
+                reinterpret_cast< dante::math::float4 const*>(limgGolden.getPixelRef()),
                 limgGolden.getWidth(), limgGolden.getHeight());
     }
 
@@ -56,7 +52,7 @@ void updateOrCompare(LinearImage limgResult, const utils::Path& fnameGolden,
     }
 
     // Perform a simple comparison of the two images.
-    FILAMENT_CHECK_PRECONDITION(compare(limgResult, limgGolden, epsilon) == 0) << "Image mismatch.";
+    DANTE_CHECK_PRECONDITION(compare(limgResult, limgGolden, epsilon) == 0) << "Image mismatch.";
 }
 
 }

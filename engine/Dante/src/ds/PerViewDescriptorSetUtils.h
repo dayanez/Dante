@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #pragma once
 
-#include <private/filament/UibStructs.h>
+#include <private/dante/UibStructs.h>
 
 #include <math/vec2.h>
 #include <math/vec4.h>
 
 #include <array>
 
-namespace filament {
+namespace dante {
 namespace backend {
 struct Viewport;
 } // namespace backend
@@ -39,4 +35,4 @@ public:
             std::array<math::float4, 4> const& materialGlobals) noexcept;
 };
 
-} //namespace filament
+} //namespace dante

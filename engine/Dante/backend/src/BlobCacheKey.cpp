@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "BlobCacheKey.h"
 
 #include <memory>
 
-namespace filament::backend {
+namespace dante::backend {
 
 struct BlobCacheKey::Key {
     uint64_t id;
@@ -44,4 +40,4 @@ BlobCacheKey& BlobCacheKey::operator=(BlobCacheKey&& rhs) noexcept {
     return *this;
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

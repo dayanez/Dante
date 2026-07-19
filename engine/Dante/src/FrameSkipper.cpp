@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "FrameSkipper.h"
 
@@ -17,7 +13,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 using namespace backend;
@@ -84,4 +80,4 @@ size_t FrameSkipper::getFrameToSkipCount() const noexcept {
 }
 
 
-} // namespace filament
+} // namespace dante

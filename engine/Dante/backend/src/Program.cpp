@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <backend/DriverEnums.h>
 #include <backend/Program.h>
@@ -17,7 +13,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace utils;
 
@@ -104,4 +100,4 @@ io::ostream& operator<<(io::ostream& out, const Program& builder) {
     return out;
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

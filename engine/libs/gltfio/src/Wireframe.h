@@ -1,27 +1,23 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_WIREFRAME_H
 #define GLTFIO_WIREFRAME_H
 
-#include <filament/IndexBuffer.h>
-#include <filament/VertexBuffer.h>
+#include <dante/IndexBuffer.h>
+#include <dante/VertexBuffer.h>
 
 #include <utils/Entity.h>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
-struct FFilamentAsset;
+struct FDanteAsset;
 
 struct Wireframe {
-    Wireframe(FFilamentAsset* asset);
+    Wireframe(FDanteAsset* asset);
     ~Wireframe();
-    const FFilamentAsset* mAsset;
+    const FDanteAsset* mAsset;
     utils::Entity mEntity;
-    filament::VertexBuffer* mVertexBuffer;
-    filament::IndexBuffer* mIndexBuffer;
+    dante::VertexBuffer* mVertexBuffer;
+    dante::IndexBuffer* mIndexBuffer;
 };
 
 } // namsepace gltfio

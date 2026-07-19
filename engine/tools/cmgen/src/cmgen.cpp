@@ -47,8 +47,8 @@
 #include <utils/getopt.h>
 
 
-using namespace filament::math;
-using namespace filament::ibl;
+using namespace dante::math;
+using namespace dante::ibl;
 using namespace image;
 
 // -----------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ static float g_sh_window = 0.0f; // <0 none, 0=auto, or cutoff
 static bool g_noclamp = true;
 static ShFile g_sh_file = ShFile::SH_NONE;
 static utils::Path g_sh_filename;
-static std::unique_ptr<filament::math::float3[]> g_sh_coefficients;
+static std::unique_ptr<dante::math::float3[]> g_sh_coefficients;
 
 static bool g_is_mipmap = false;
 static utils::Path g_is_mipmap_dir;
@@ -127,12 +127,12 @@ static void iblLutDfg(utils::JobSystem& js, const utils::Path& filename, size_t 
         bool cloth);
 static void extractCubemapFaces(utils::JobSystem& js, const utils::Path& iname, const Cubemap& cm,
         const utils::Path& dir);
-static void outputSh(std::ostream& out, const std::unique_ptr<filament::math::float3[]>& sh,
+static void outputSh(std::ostream& out, const std::unique_ptr<dante::math::float3[]>& sh,
         size_t numBands);
-static void outputBinarySh(std::ostream& out, const std::unique_ptr<filament::math::float3[]>& sh,
+static void outputBinarySh(std::ostream& out, const std::unique_ptr<dante::math::float3[]>& sh,
         size_t numBands);
 static void UTILS_UNUSED outputSpectrum(std::ostream& out,
-        const std::unique_ptr<filament::math::float3[]>& sh, size_t numBands);
+        const std::unique_ptr<dante::math::float3[]>& sh, size_t numBands);
 static void saveImage(const std::string& path, ImageEncoder::Format format, const Image& image,
         const std::string& compression);
 static LinearImage toLinearImage(const Image& image);
@@ -722,7 +722,7 @@ void generateMipmaps(utils::JobSystem& js, std::vector<Cubemap>& levels,
 }
 
 void sphericalHarmonics(utils::JobSystem& js, const utils::Path& iname, const Cubemap& inputCubemap) {
-    std::unique_ptr<filament::math::float3[]> sh;
+    std::unique_ptr<dante::math::float3[]> sh;
     if (g_sh_shader) {
         sh = CubemapSH::computeSH(js, inputCubemap, 3, true);
     } else {
@@ -798,7 +798,7 @@ void sphericalHarmonics(utils::JobSystem& js, const utils::Path& iname, const Cu
             }
 
             { // save a file with the "other one" (irradiance or radiance)
-                std::unique_ptr<filament::math::float3[]> renderSh
+                std::unique_ptr<dante::math::float3[]> renderSh
                     = CubemapSH::computeSH(js, inputCubemap, g_sh_compute, !g_sh_irradiance);
                 CubemapSH::renderSH(js, cm, renderSh, g_sh_compute);
                 std::string basename = iname.getNameWithoutExtension();
@@ -814,7 +814,7 @@ void sphericalHarmonics(utils::JobSystem& js, const utils::Path& iname, const Cu
 }
 
 void outputSh(std::ostream& out,
-        const std::unique_ptr<filament::math::float3[]>& sh, size_t numBands) {
+        const std::unique_ptr<dante::math::float3[]>& sh, size_t numBands) {
     for (ssize_t l = 0; l < numBands; l++) {
         for (ssize_t m = -l; m <= l; m++) {
             size_t i = CubemapSH::getShIndex(m, (size_t) l);
@@ -836,7 +836,7 @@ void outputSh(std::ostream& out,
 }
 
 void outputBinarySh(std::ostream& out,
-        const std::unique_ptr<filament::math::float3[]>& sh, size_t numBands) {
+        const std::unique_ptr<dante::math::float3[]>& sh, size_t numBands) {
     for (ssize_t l = 0; l < numBands; l++) {
         for (ssize_t m = -l; m <= l; m++) {
             size_t i = CubemapSH::getShIndex(m, (size_t) l);
@@ -847,7 +847,7 @@ void outputBinarySh(std::ostream& out,
 
 
 void UTILS_UNUSED outputSpectrum(std::ostream& out,
-        const std::unique_ptr<filament::math::float3[]>& sh, size_t numBands) {
+        const std::unique_ptr<dante::math::float3[]>& sh, size_t numBands) {
     // We assume a symetrical function (i.e. m!=0 terms are zero)
     for (ssize_t l = 0; l < numBands; l++) {
         size_t i = CubemapSH::getShIndex(0, (size_t) l);

@@ -1,28 +1,24 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <ktxreader/Ktx2Reader.h>
 
 #include <gltfio/TextureProvider.h>
 
-#include <filament/Engine.h>
-#include <filament/Texture.h>
+#include <dante/Engine.h>
+#include <dante/Texture.h>
 
 #include <utils/JobSystem.h>
 
 #include <string>
 #include <vector>
 
-using namespace filament;
+using namespace dante;
 using namespace utils;
 
 using std::atomic;
 using std::vector;
 using std::unique_ptr;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 class Ktx2Provider final : public TextureProvider {
 public:
@@ -249,4 +245,4 @@ TextureProvider* createKtx2Provider(Engine* engine) {
     return new Ktx2Provider(engine);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

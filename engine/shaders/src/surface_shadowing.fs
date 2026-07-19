@@ -234,7 +234,7 @@ float filterPCSS(const mediump sampler2DArray map,
         highp vec2 st = tc.xy * size - 0.5;
         highp vec2 grad = fract(st);
 
-#if defined(FILAMENT_HAS_FEATURE_TEXTURE_GATHER)
+#if defined(DANTE_HAS_FEATURE_TEXTURE_GATHER)
         d = textureGather(map, vec3(tc, layer), 0); // 01, 11, 10, 00
 #else
         // we must use texelFetchOffset before texelLodOffset filters

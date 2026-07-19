@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_GEOMETRY_TANGENTSPACEMESH_H
 #define TNT_GEOMETRY_TANGENTSPACEMESH_H
@@ -12,14 +8,14 @@
 
 #include <variant>
 
-namespace filament {
+namespace dante {
 namespace geometry {
 
 struct TangentSpaceMeshInput;
 struct TangentSpaceMeshOutput;
 
  /**
- * This class builds Filament-style TANGENTS buffers given an input mesh.
+ * This class builds Dante-style TANGENTS buffers given an input mesh.
  *
  * This class enables the client to chose between several algorithms. The client can retrieve the
  * result through the `get` methods on the class. If the chosen algorithm did not remesh the input,
@@ -111,9 +107,9 @@ public:
         WEIGHTS = 0x3,
     };
 
-    using InData = std::variant<filament::math::float2 const*, filament::math::float3 const*,
-            filament::math::float4 const*, filament::math::ushort3 const*,
-            filament::math::ushort4 const*>;
+    using InData = std::variant<dante::math::float2 const*, dante::math::float3 const*,
+            dante::math::float4 const*, dante::math::ushort3 const*,
+            dante::math::ushort4 const*>;
 
     /**
      * Use this class to provide input to the TangentSpaceMesh computation. **Important**:
@@ -152,7 +148,7 @@ public:
          * @param stride The stride for iterating through `normals`
          * @return Builder
          */
-        Builder& normals(filament::math::float3 const* normals, size_t stride = 0) noexcept;
+        Builder& normals(dante::math::float3 const* normals, size_t stride = 0) noexcept;
 
         /**
          * @param tangents The input tangents. The `w` component is for use with
@@ -160,14 +156,14 @@ public:
          * @param stride The stride for iterating through `tangents`
          * @return Builder
          */
-        Builder& tangents(filament::math::float4 const* tangents, size_t stride = 0) noexcept;
+        Builder& tangents(dante::math::float4 const* tangents, size_t stride = 0) noexcept;
 
         /**
          * @param uvs The input uvs
          * @param stride The stride for iterating through `uvs`
          * @return Builder
          */
-        Builder& uvs(filament::math::float2 const* uvs, size_t stride = 0) noexcept;
+        Builder& uvs(dante::math::float2 const* uvs, size_t stride = 0) noexcept;
 
         /**
          * Sets "auxiliary" attributes that will be properly mapped when remeshed.
@@ -184,7 +180,7 @@ public:
          * @param stride The stride for iterating through `positions`
          * @return Builder
          */
-        Builder& positions(filament::math::float3 const* positions, size_t stride = 0) noexcept;
+        Builder& positions(dante::math::float3 const* positions, size_t stride = 0) noexcept;
 
         /**
          * @param triangleCount The input number of triangles
@@ -196,13 +192,13 @@ public:
          * @param triangles The triangles in 32-bit indices
          * @return Builder
          */
-        Builder& triangles(filament::math::uint3 const* triangles) noexcept;
+        Builder& triangles(dante::math::uint3 const* triangles) noexcept;
 
         /**
          * @param triangles The triangles in 16-bit indices
          * @return Builder
          */
-        Builder& triangles(filament::math::ushort3 const* triangles) noexcept;
+        Builder& triangles(dante::math::ushort3 const* triangles) noexcept;
 
         /**
          * The Client can provide an algorithm hint to produce the tangents.
@@ -266,7 +262,7 @@ public:
      * @param  out    Client-allocated array that will be used for copying out positions.
      * @param  stride Stride for iterating through `out`
      */
-    void getPositions(filament::math::float3* out, size_t stride = 0) const;
+    void getPositions(dante::math::float3* out, size_t stride = 0) const;
 
     /**
      * Get output UVs.
@@ -278,7 +274,7 @@ public:
      * @param  out    Client-allocated array that will be used for copying out UVs.
      * @param  stride Stride for iterating through `out`
      */
-    void getUVs(filament::math::float2* out, size_t stride = 0) const;
+    void getUVs(dante::math::float2* out, size_t stride = 0) const;
 
     /**
      * Get output tangent space.
@@ -289,7 +285,7 @@ public:
      *                32-bit floating points.
      * @param  stride Stride for iterating through `out`
      */
-    void getQuats(filament::math::quatf* out, size_t stride = 0) const noexcept;
+    void getQuats(dante::math::quatf* out, size_t stride = 0) const noexcept;
 
     /**
      * Get output tangent space.
@@ -300,7 +296,7 @@ public:
      *                16-bit signed integers.
      * @param  stride Stride for iterating through `out`
      */
-    void getQuats(filament::math::short4* out, size_t stride = 0) const noexcept;
+    void getQuats(dante::math::short4* out, size_t stride = 0) const noexcept;
 
     /**
      * Get output tangent space.
@@ -311,7 +307,7 @@ public:
      *                16-bit floating points.
      * @param  stride Stride for iterating through `out`
      */
-    void getQuats(filament::math::quath* out, size_t stride = 0) const noexcept;
+    void getQuats(dante::math::quath* out, size_t stride = 0) const noexcept;
 
     /**
      * Get output auxiliary attributes.
@@ -323,11 +319,11 @@ public:
      */
     template<typename T>
     using is_supported_aux_t =
-            typename std::enable_if<std::is_same<filament::math::float2, T>::value ||
-                                    std::is_same<filament::math::float3, T>::value ||
-                                    std::is_same<filament::math::float4, T>::value ||
-                                    std::is_same<filament::math::ushort3, T>::value ||
-                                    std::is_same<filament::math::ushort4, T>::value>::type;
+            typename std::enable_if<std::is_same<dante::math::float2, T>::value ||
+                                    std::is_same<dante::math::float3, T>::value ||
+                                    std::is_same<dante::math::float4, T>::value ||
+                                    std::is_same<dante::math::ushort3, T>::value ||
+                                    std::is_same<dante::math::ushort4, T>::value>::type;
     template<typename T, typename = is_supported_aux_t<T>>
     void getAux(AuxAttribute attribute, T* out, size_t stride = 0) const;
 
@@ -349,7 +345,7 @@ public:
      *
      * @param out Client's array for the output triangles in unsigned 32-bit indices.
      */
-    void getTriangles(filament::math::uint3* out) const;
+    void getTriangles(dante::math::uint3* out) const;
 
     /**
      * Get output triangles.
@@ -359,7 +355,7 @@ public:
      *
      * @param out Client's array for the output triangles in unsigned 16-bit indices.
      */
-    void getTriangles(filament::math::ushort3* out) const;
+    void getTriangles(dante::math::ushort3* out) const;
 
     /**
      * @return Whether the TBN algorithm remeshed the input.
@@ -376,6 +372,6 @@ private:
 };
 
 } // namespace geometry
-} // namespace filament
+} // namespace dante
 
 #endif //TNT_GEOMETRY_TANGENTSPACEMESH_H

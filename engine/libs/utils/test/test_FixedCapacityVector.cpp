@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <utils/FixedCapacityVector.h>
 #include <utils/Panic.h>
@@ -140,12 +136,12 @@ TEST(FixedCapacityVectorTest, Assignments) {
 TEST(FixedCapacityVectorTest, Access) {
     FixedCapacityVector<std::string> v(4);
     v[0] = "Hello";
-    v[1] = "Filament";
+    v[1] = "Dante";
     v[2] = "World";
     v[3] = "!";
 
     EXPECT_EQ(v[0], "Hello");
-    EXPECT_EQ(v[1], "Filament");
+    EXPECT_EQ(v[1], "Dante");
     EXPECT_EQ(v[2], "World");
     EXPECT_EQ(v[3], "!");
 
@@ -162,14 +158,14 @@ TEST(FixedCapacityVectorTest, Access) {
 TEST(FixedCapacityVectorTest, Insertions) {
     FixedCapacityVector<std::string> v(4);
     v[0] = "Hello";
-    v[1] = "Filament";
+    v[1] = "Dante";
     v[2] = "World";
     v[3] = "!";
 
     v.reserve(8);
 
     EXPECT_EQ(v[0], "Hello");
-    EXPECT_EQ(v[1], "Filament");
+    EXPECT_EQ(v[1], "Dante");
     EXPECT_EQ(v[2], "World");
     EXPECT_EQ(v[3], "!");
 
@@ -203,7 +199,7 @@ TEST(FixedCapacityVectorTest, Insertions) {
     EXPECT_EQ(v.size(), 6);
     EXPECT_EQ(v[0], "header:");
     EXPECT_EQ(v[1], "Hello");
-    EXPECT_EQ(v[2], "Filament");
+    EXPECT_EQ(v[2], "Dante");
     EXPECT_EQ(v[3], "World");
     EXPECT_EQ(v[4], "!");
     EXPECT_EQ(v[5], "Guten Tag");
@@ -214,7 +210,7 @@ TEST(FixedCapacityVectorTest, Insertions) {
     EXPECT_EQ(v[0], "Guten Tag");
     EXPECT_EQ(v[1], "header:");
     EXPECT_EQ(v[2], "Hello");
-    EXPECT_EQ(v[3], "Filament");
+    EXPECT_EQ(v[3], "Dante");
     EXPECT_EQ(v[4], "World");
     EXPECT_EQ(v[5], "!");
     EXPECT_EQ(v[6], "Guten Tag");
@@ -226,7 +222,7 @@ TEST(FixedCapacityVectorTest, Insertions) {
     EXPECT_EQ(v[1], "Guten Tag");
     EXPECT_EQ(v[2], "header:");
     EXPECT_EQ(v[3], "Hello");
-    EXPECT_EQ(v[4], "Filament");
+    EXPECT_EQ(v[4], "Dante");
     EXPECT_EQ(v[5], "World");
     EXPECT_EQ(v[6], "!");
     EXPECT_EQ(v[7], "Guten Tag");
@@ -236,7 +232,7 @@ TEST(FixedCapacityVectorTest, Insertions) {
 
     EXPECT_EQ(v.size(), 4);
     EXPECT_EQ(v[0], "Hello");
-    EXPECT_EQ(v[1], "Filament");
+    EXPECT_EQ(v[1], "Dante");
     EXPECT_EQ(v[2], "World");
     EXPECT_EQ(v[3], "!");
 

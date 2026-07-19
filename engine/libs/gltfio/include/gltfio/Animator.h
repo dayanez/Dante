@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_ANIMATOR_H
 #define GLTFIO_ANIMATOR_H
 
-#include <gltfio/FilamentAsset.h>
-#include <gltfio/FilamentInstance.h>
+#include <gltfio/DanteAsset.h>
+#include <gltfio/DanteInstance.h>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
-struct FFilamentAsset;
-struct FFilamentInstance;
+struct FDanteAsset;
+struct FDanteInstance;
 struct AnimatorImpl;
 
 /**
@@ -20,8 +16,8 @@ struct AnimatorImpl;
  * \brief Updates matrices according to glTF \c animation and \c skin definitions.
  *
  * Animator can be used for two things:
- * - Updating matrices in filament::TransformManager components according to glTF \c animation definitions.
- * - Updating bone matrices in filament::RenderableManager components according to glTF \c skin definitions.
+ * - Updating matrices in dante::TransformManager components according to glTF \c animation definitions.
+ * - Updating bone matrices in dante::RenderableManager components according to glTF \c skin definitions.
  *
  * For a usage example, see the documentation for AssetLoader.
  */
@@ -29,7 +25,7 @@ class UTILS_PUBLIC Animator {
 public:
     /**
      * Applies rotation, translation, and scale to entities that have been targeted by the given
-     * animation definition. Uses filament::TransformManager.
+     * animation definition. Uses dante::TransformManager.
      *
      * @param animationIndex Zero-based index for the \c animation of interest.
      * @param time Elapsed time of interest in seconds.
@@ -38,8 +34,8 @@ public:
 
     /**
      * Computes root-to-node transforms for all bone nodes, then passes
-     * the results into filament::RenderableManager::setBones.
-     * Uses filament::TransformManager and filament::RenderableManager.
+     * the results into dante::RenderableManager::setBones.
+     * Uses dante::TransformManager and dante::RenderableManager.
      *
      * NOTE: this operation is independent of \c animation.
      */
@@ -84,17 +80,17 @@ public:
     const char* getAnimationName(size_t animationIndex) const;
 
     // For internal use only.
-    void addInstance(FFilamentInstance* instance);
+    void addInstance(FDanteInstance* instance);
 
 private:
 
     /*! \cond PRIVATE */
-    friend struct FFilamentAsset;
-    friend struct FFilamentInstance;
+    friend struct FDanteAsset;
+    friend struct FDanteInstance;
     /*! \endcond */
 
     // If "instance" is null, then this is the primary animator.
-    Animator(FFilamentAsset const* asset, FFilamentInstance* instance);
+    Animator(FDanteAsset const* asset, FDanteInstance* instance);
     ~Animator();
 
     Animator(const Animator& animator) = delete;
@@ -104,6 +100,6 @@ private:
     AnimatorImpl* mImpl;
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_ANIMATOR_H

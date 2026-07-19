@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_OPENGL_PLATFORM_GLX_H
-#define TNT_FILAMENT_BACKEND_OPENGL_OPENGL_PLATFORM_GLX_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_OPENGL_PLATFORM_GLX_H
+#define TNT_DANTE_BACKEND_OPENGL_OPENGL_PLATFORM_GLX_H
 
 #include <backend/DriverEnums.h>
 #include <backend/platforms/OpenGLPlatform.h>
@@ -20,7 +16,7 @@
 
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * A concrete implementation of OpenGLPlatform that supports GLX.
@@ -62,6 +58,6 @@ private:
     std::shared_mutex mAdditionalContextsLock;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_OPENGL_PLATFORM_GLX_H
+#endif // TNT_DANTE_BACKEND_OPENGL_OPENGL_PLATFORM_GLX_H

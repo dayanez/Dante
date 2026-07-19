@@ -38,7 +38,7 @@ float evaluateSSAO(inout SSAOInterpolationCache cache) {
         highp vec2 size = vec2(textureSize(sampler0_ssao, 0));
 
         // Read four AO samples and their depths values
-#if defined(FILAMENT_HAS_FEATURE_TEXTURE_GATHER)
+#if defined(DANTE_HAS_FEATURE_TEXTURE_GATHER)
         vec4 ao = textureGather(sampler0_ssao, vec3(cache.uv, 0.0), 0);
         vec4 dg = textureGather(sampler0_ssao, vec3(cache.uv, 0.0), 1);
         vec4 db = textureGather(sampler0_ssao, vec3(cache.uv, 0.0), 2);
@@ -159,7 +159,7 @@ float specularAO(float NoV, float visibility, float roughness, const in SSAOInte
     if (frameUniforms.aoBentNormals > 0.0) {
         vec3 bn;
         if (frameUniforms.aoSamplingQualityAndEdgeDistance > 0.0) {
-#if defined(FILAMENT_HAS_FEATURE_TEXTURE_GATHER)
+#if defined(DANTE_HAS_FEATURE_TEXTURE_GATHER)
             vec4 bnr = textureGather(sampler0_ssao, vec3(cache.uv, 1.0), 0);
             vec4 bng = textureGather(sampler0_ssao, vec3(cache.uv, 1.0), 1);
             vec4 bnb = textureGather(sampler0_ssao, vec3(cache.uv, 1.0), 2);

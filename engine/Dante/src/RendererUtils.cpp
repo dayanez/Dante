@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "RendererUtils.h"
 
@@ -17,11 +13,11 @@
 #include "fg/FrameGraphResources.h"
 #include "fg/FrameGraphTexture.h"
 
-#include <private/filament/EngineEnums.h>
+#include <private/dante/EngineEnums.h>
 
-#include <filament/Options.h>
-#include <filament/RenderableManager.h>
-#include <filament/Viewport.h>
+#include <dante/Options.h>
+#include <dante/RenderableManager.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -38,7 +34,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -253,13 +249,13 @@ RendererUtils::ColorPassOutput RendererUtils::colorPass(
                 // render pass.
                 if (platform->hasDebugUpdateStatFunc()) {
                     platform->debugUpdateStat(
-                            "filament.renderer.color_pass.command_buffer_used_start",
+                            "dante.renderer.color_pass.command_buffer_used_start",
                             circularBuffer.getUsed());
                 }
                 passExecutor.execute(engine, driver);
                 if (platform->hasDebugUpdateStatFunc()) {
                     platform->debugUpdateStat(
-                            "filament.renderer.color_pass.command_buffer_used_end",
+                            "dante.renderer.color_pass.command_buffer_used_end",
                             circularBuffer.getUsed());
                 }
                 driver.endRenderPass();
@@ -372,10 +368,10 @@ UTILS_NOINLINE
 void RendererUtils::readPixels(DriverApi& driver, Handle<HwRenderTarget> renderTargetHandle,
         uint32_t const xoffset, uint32_t const yoffset, uint32_t const width, uint32_t const height,
         PixelBufferDescriptor&& buffer) {
-    FILAMENT_CHECK_PRECONDITION(buffer.type != PixelDataType::COMPRESSED)
+    DANTE_CHECK_PRECONDITION(buffer.type != PixelDataType::COMPRESSED)
             << "buffer.format cannot be COMPRESSED";
 
-    FILAMENT_CHECK_PRECONDITION(buffer.alignment > 0 && buffer.alignment <= 8 &&
+    DANTE_CHECK_PRECONDITION(buffer.alignment > 0 && buffer.alignment <= 8 &&
             !(buffer.alignment & (buffer.alignment - 1u)))
             << "buffer.alignment must be 1, 2, 4 or 8";
 
@@ -390,11 +386,11 @@ void RendererUtils::readPixels(DriverApi& driver, Handle<HwRenderTarget> renderT
             buffer.top + height,
             buffer.alignment);
 
-    FILAMENT_CHECK_PRECONDITION(buffer.size >= sizeNeeded)
+    DANTE_CHECK_PRECONDITION(buffer.size >= sizeNeeded)
             << "Pixel buffer too small: has " << buffer.size << " bytes, needs " << sizeNeeded
             << " bytes";
 
     driver.readPixels(renderTargetHandle, xoffset, yoffset, width, height, std::move(buffer));
 }
 
-} // namespace filament
+} // namespace dante

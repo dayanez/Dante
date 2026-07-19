@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_POSTPROCESSMANAGER_H
-#define TNT_FILAMENT_POSTPROCESSMANAGER_H
+#ifndef TNT_DANTE_POSTPROCESSMANAGER_H
+#define TNT_DANTE_POSTPROCESSMANAGER_H
 
 #include "FrameHistory.h"
 #include "MaterialInstanceManager.h"
@@ -20,11 +16,11 @@
 
 #include "materials/StaticMaterialInfo.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/Options.h>
-#include <filament/Viewport.h>
+#include <dante/Options.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -46,7 +42,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class FColorGrading;
 class FEngine;
@@ -62,7 +58,7 @@ struct CameraInfo;
 class PostProcessManager {
 public:
 
-    using StaticMaterialInfo = filament::StaticMaterialInfo;
+    using StaticMaterialInfo = dante::StaticMaterialInfo;
 
     struct ColorGradingConfig {
         bool asSubpass{};
@@ -258,11 +254,11 @@ public:
 
     FrameGraphId<FrameGraphTexture> upscaleFSR1(FrameGraph& fg,
             DynamicResolutionOptions dsrOptions, FrameGraphId<FrameGraphTexture> input,
-            filament::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc) noexcept;
+            dante::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc) noexcept;
 
     FrameGraphId<FrameGraphTexture> upscaleSGSR1(FrameGraph& fg, bool sourceHasLuminance,
             DynamicResolutionOptions dsrOptions, FrameGraphId<FrameGraphTexture> input,
-            filament::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc) noexcept;
+            dante::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc) noexcept;
 
     enum class RcasMode {
         OPAQUE,
@@ -510,6 +506,6 @@ private:
     bool mWorkaroundAllowReadOnlyAncillaryFeedbackLoop : 1;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_POSTPROCESSMANAGER_H
+#endif // TNT_DANTE_POSTPROCESSMANAGER_H

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ShadowMap.h"
 
@@ -11,9 +7,9 @@
 #include "details/Engine.h"
 #include "details/Scene.h"
 
-#include <filament/Box.h>
-#include <filament/Frustum.h>
-#include <filament/LightManager.h>
+#include <dante/Box.h>
+#include <dante/Frustum.h>
+#include <dante/LightManager.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -42,7 +38,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 using namespace backend;
@@ -1177,7 +1173,7 @@ float2 ShadowMap::texelSizeWorldSpace(mat4f const& S, uint16_t const shadowDimen
 
 template<typename Visitor>
 void ShadowMap::visitScene(FScene::RenderableSoa const& soa, uint32_t const visibleLayers, Visitor visitor) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 
     using State = FRenderableManager::Visibility;
     float3 const* const worldAABBCenter = soa.data<FScene::WORLD_AABB_CENTER>();
@@ -1202,7 +1198,7 @@ ShadowMap::SceneInfo::SceneInfo(
         : visibleLayers(visibleLayers) {
 
     // the code below only works with affine transforms
-    // Filament's API requires viewMatrix to be rigid (and thus affine).
+    // Dante's API requires viewMatrix to be rigid (and thus affine).
 
     // We assume the light is at the origin to compute the SceneInfo. This is consumed later by
     // computeShadowCameraDirectional() which takes this into account.
@@ -1389,4 +1385,4 @@ void ShadowMap::bind(DriverApi& driver) const noexcept {
     mPerShadowMapUniforms.bind(driver);
 }
 
-} // namespace filament
+} // namespace dante

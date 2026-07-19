@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_HWDESCRIPTORSETLAYOUTFACTORY_H
-#define TNT_FILAMENT_HWDESCRIPTORSETLAYOUTFACTORY_H
+#ifndef TNT_DANTE_HWDESCRIPTORSETLAYOUTFACTORY_H
+#define TNT_DANTE_HWDESCRIPTORSETLAYOUTFACTORY_H
 
 #include "Bimap.h"
 
@@ -19,7 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -103,6 +99,6 @@ private:
             utils::STLAllocator<Key, PoolAllocatorArena>> mBimap;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_HWDESCRIPTORSETLAYOUTFACTORY_H
+#endif // TNT_DANTE_HWDESCRIPTORSETLAYOUTFACTORY_H

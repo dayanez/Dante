@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_COMMANDSTREAMVECTOR_H
-#define TNT_FILAMENT_BACKEND_COMMANDSTREAMVECTOR_H
+#ifndef TNT_DANTE_BACKEND_COMMANDSTREAMVECTOR_H
+#define TNT_DANTE_BACKEND_COMMANDSTREAMVECTOR_H
 
 #include <backend/DriverApiForward.h>
 
@@ -19,7 +15,7 @@ namespace utils::io {
 class ostream;
 } // namespace utils::io
 
-namespace filament::backend {
+namespace dante::backend {
 
 void* allocateFromCommandStream(DriverApi& driver, size_t size, size_t alignment) noexcept;
 
@@ -89,10 +85,10 @@ private:
     value_type *mOffsets = nullptr;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
 #if !defined(NDEBUG)
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::DescriptorSetOffsetArray& rhs);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::DescriptorSetOffsetArray& rhs);
 #endif
 
-#endif //TNT_FILAMENT_BACKEND_COMMANDSTREAMVECTOR_H
+#endif //TNT_DANTE_BACKEND_COMMANDSTREAMVECTOR_H

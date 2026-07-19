@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ShadowMapManager.h"
 
@@ -24,11 +20,11 @@
 #include "fg/FrameGraphRenderPass.h"
 #include "fg/FrameGraphTexture.h"
 
-#include <private/filament/EngineEnums.h>
+#include <private/dante/EngineEnums.h>
 
-#include <filament/Frustum.h>
-#include <filament/LightManager.h>
-#include <filament/Options.h>
+#include <dante/Frustum.h>
+#include <dante/LightManager.h>
+#include <dante/Options.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -61,7 +57,7 @@
 #include <stdint.h>
 
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -1344,4 +1340,4 @@ ShadowMapManager::getDirectionalShadowCameras() const noexcept {
     return result;
 }
 
-} // namespace filament
+} // namespace dante

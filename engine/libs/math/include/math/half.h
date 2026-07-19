@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_HALF_H
 #define TNT_MATH_HALF_H
@@ -14,7 +10,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 namespace math {
 
 template<unsigned S, unsigned E, unsigned M>
@@ -158,19 +154,19 @@ template<> struct is_arithmetic<half> : public std::true_type {};
 template<> struct is_floating_point<half> : public std::true_type {};
 
 } // namespace math
-} // namespace filament
+} // namespace dante
 
 namespace std {
 
-// Remove the standard template specializations for filament::math::half
+// Remove the standard template specializations for dante::math::half
 // Clang 20 explicitly blocks customizing standard type traits
 // Instead, use the traits defined in the math:: namespace
 // This avoids compatibility issues with Clang 20 and MSVC 2019 16.4+
-// the math::filament namespace (see above).
+// the math::dante namespace (see above).
 template<>
-class numeric_limits<filament::math::half> {
+class numeric_limits<dante::math::half> {
 public:
-    typedef filament::math::half type;
+    typedef dante::math::half type;
 
     static constexpr const bool is_specialized = true;
     static constexpr const bool is_signed = true;
@@ -197,15 +193,15 @@ public:
     static constexpr const int max_exponent = 16;
     static constexpr const int max_exponent10 = 4;
 
-    inline static constexpr type round_error() noexcept { return filament::math::makeHalf(0x3800); }
-    inline static constexpr type min() noexcept { return filament::math::makeHalf(0x0400); }
-    inline static constexpr type max() noexcept { return filament::math::makeHalf(0x7bff); }
-    inline static constexpr type lowest() noexcept { return filament::math::makeHalf(0xfbff); }
-    inline static constexpr type epsilon() noexcept { return filament::math::makeHalf(0x1400); }
-    inline static constexpr type infinity() noexcept { return filament::math::makeHalf(0x7c00); }
-    inline static constexpr type quiet_NaN() noexcept { return filament::math::makeHalf(0x7fff); }
-    inline static constexpr type denorm_min() noexcept { return filament::math::makeHalf(0x0001); }
-    inline static constexpr type signaling_NaN() noexcept { return filament::math::makeHalf(0x7dff); }
+    inline static constexpr type round_error() noexcept { return dante::math::makeHalf(0x3800); }
+    inline static constexpr type min() noexcept { return dante::math::makeHalf(0x0400); }
+    inline static constexpr type max() noexcept { return dante::math::makeHalf(0x7bff); }
+    inline static constexpr type lowest() noexcept { return dante::math::makeHalf(0xfbff); }
+    inline static constexpr type epsilon() noexcept { return dante::math::makeHalf(0x1400); }
+    inline static constexpr type infinity() noexcept { return dante::math::makeHalf(0x7c00); }
+    inline static constexpr type quiet_NaN() noexcept { return dante::math::makeHalf(0x7fff); }
+    inline static constexpr type denorm_min() noexcept { return dante::math::makeHalf(0x0001); }
+    inline static constexpr type signaling_NaN() noexcept { return dante::math::makeHalf(0x7dff); }
 };
 
 } // namespace std

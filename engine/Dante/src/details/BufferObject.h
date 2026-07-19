@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_BUFFEROBJECT_H
-#define TNT_FILAMENT_DETAILS_BUFFEROBJECT_H
+#ifndef TNT_DANTE_DETAILS_BUFFEROBJECT_H
+#define TNT_DANTE_DETAILS_BUFFEROBJECT_H
 
 #include "downcast.h"
 
-#include <filament/BufferObject.h>
+#include <dante/BufferObject.h>
 
 #include <backend/Handle.h>
 
 #include <utils/compiler.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -39,8 +35,8 @@ private:
     BindingType mBindingType;
 };
 
-FILAMENT_DOWNCAST(BufferObject)
+DANTE_DOWNCAST(BufferObject)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_BUFFEROBJECT_H
+#endif // TNT_DANTE_DETAILS_BUFFEROBJECT_H

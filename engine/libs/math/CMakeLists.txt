@@ -52,7 +52,7 @@ install(DIRECTORY ${PUBLIC_HDR_DIR}/math DESTINATION include)
 # ==================================================================================================
 # Tests
 # ==================================================================================================
-if (FILAMENT_BUILD_TESTING)
+if (DANTE_BUILD_TESTING)
     add_executable(test_${TARGET}
             tests/test_fast.cpp
             tests/test_half.cpp

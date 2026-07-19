@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_SYNC_H
-#define TNT_FILAMENT_DETAILS_SYNC_H
+#ifndef TNT_DANTE_DETAILS_SYNC_H
+#define TNT_DANTE_DETAILS_SYNC_H
 
 #include "downcast.h"
 
-#include <filament/Sync.h>
+#include <dante/Sync.h>
 
 #include <backend/CallbackHandler.h>
 #include <backend/Handle.h>
 #include <backend/Platform.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -45,8 +41,8 @@ private:
     backend::SyncHandle mHwSync;
 };
 
-FILAMENT_DOWNCAST(Sync)
+DANTE_DOWNCAST(Sync)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_SYNC_H
+#endif // TNT_DANTE_DETAILS_SYNC_H

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "PostProcessDescriptorSet.h"
 
@@ -10,13 +6,13 @@
 
 #include "details/Engine.h"
 
-#include <private/filament/DescriptorSets.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/DescriptorSets.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
 #include <backend/DriverEnums.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -26,7 +22,7 @@ PostProcessDescriptorSet::PostProcessDescriptorSet() noexcept = default;
 void PostProcessDescriptorSet::init(FEngine& engine) noexcept {
 
     // create the descriptor-set layout
-    mDescriptorSetLayout = filament::DescriptorSetLayout{
+    mDescriptorSetLayout = dante::DescriptorSetLayout{
             engine.getDescriptorSetLayoutFactory(),
             engine.getDriverApi(), descriptor_sets::getDepthVariantLayout() };
 
@@ -53,5 +49,5 @@ void PostProcessDescriptorSet::bind(DriverApi& driver) noexcept {
     mDescriptorSet.bind(driver, DescriptorSetBindingPoints::PER_VIEW);
 }
 
-} // namespace filament
+} // namespace dante
 

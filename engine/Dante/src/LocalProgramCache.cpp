@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "LocalProgramCache.h"
 
@@ -12,7 +8,7 @@
 
 #include <backend/DriverApiForward.h>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace utils;
@@ -59,13 +55,13 @@ void LocalProgramCache::initializeForMaterial(FEngine& engine, FMaterial const& 
 
     size_t cachedProgramsSize;
     switch (material.getMaterialDomain()) {
-        case filament::MaterialDomain::SURFACE:
+        case dante::MaterialDomain::SURFACE:
             cachedProgramsSize = 1 << (VARIANT_BITS + DYNAMIC_SPEC_CONST_KEY_BITS);
             break;
-        case filament::MaterialDomain::POST_PROCESS:
+        case dante::MaterialDomain::POST_PROCESS:
             cachedProgramsSize = 1 << (POST_PROCESS_VARIANT_BITS + DYNAMIC_SPEC_CONST_KEY_BITS);
             break;
-        case filament::MaterialDomain::COMPUTE:
+        case dante::MaterialDomain::COMPUTE:
             cachedProgramsSize = 1;
             break;
     }
@@ -113,7 +109,7 @@ Handle<HwProgram> LocalProgramCache::prepareProgramSlow(DriverApi& driver, Varia
                 priorityQueue);
     }
 
-    FILAMENT_CHECK_POSTCONDITION(result)
+    DANTE_CHECK_POSTCONDITION(result)
             << "Requested variant " << variant << " with specKey "
             << (uint32_t) specKey.key << " does not exist for material " << mMaterial->getName();
 
@@ -179,7 +175,7 @@ Program::SpecializationConstant LocalProgramCache::getConstantImpl(
 
     auto const& constants = mMaterial->getDefinition().specializationConstantsNameToIndex;
     auto it = constants.find(name);
-    FILAMENT_CHECK_PRECONDITION(it != constants.end()) << "Constant " << name << " does not exist";
+    DANTE_CHECK_PRECONDITION(it != constants.end()) << "Constant " << name << " does not exist";
 
     return getConstantImpl(it->second + CONFIG_MAX_INTERNAL_SPEC_CONSTANTS);
 }
@@ -266,4 +262,4 @@ template int32_t LocalProgramCache::getConstant<int32_t>(std::string_view name) 
 template float LocalProgramCache::getConstant<float>(std::string_view name) const noexcept;
 template bool LocalProgramCache::getConstant<bool>(std::string_view name) const noexcept;
 
-} // namespace filament
+} // namespace dante

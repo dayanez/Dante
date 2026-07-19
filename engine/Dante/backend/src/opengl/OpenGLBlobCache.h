@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGLBLOBCACHE_H
-#define TNT_FILAMENT_BACKEND_OPENGLBLOBCACHE_H
+#ifndef TNT_DANTE_BACKEND_OPENGLBLOBCACHE_H
+#define TNT_DANTE_BACKEND_OPENGLBLOBCACHE_H
 
 #include "BlobCacheKey.h"
 #include "gl_headers.h"
 
-namespace filament::backend {
+namespace dante::backend {
 
 class Platform;
 class Program;
@@ -30,6 +26,6 @@ private:
     bool mCachingSupported = false;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_OPENGLBLOBCACHE_H
+#endif // TNT_DANTE_BACKEND_OPENGLBLOBCACHE_H

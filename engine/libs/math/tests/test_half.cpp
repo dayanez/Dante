@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <math/half.h>
 #include <math/vec4.h>
@@ -10,7 +6,7 @@
 
 #include <math.h>
 
-using namespace filament::math;
+using namespace dante::math;
 
 class HalfTest : public testing::Test {
 protected:

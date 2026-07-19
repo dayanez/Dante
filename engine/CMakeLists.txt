@@ -11,11 +11,11 @@ cmake_minimum_required(VERSION 3.22.1)
 # Unsupported environment
 # ==================================================================================================
 
-# Filament does not support MSYS2-based environment on Windows. See issue #9968.
+# Dante does not support MSYS2-based environment on Windows. See issue #9968.
 if(DEFINED ENV{MSYSTEM})
     message(FATAL_ERROR
         "MSYS2 Subsystem detected($ENV{MSYSTEM}). "
-        "Filament does not support MSYS2-based environment on Windows.")
+        "Dante does not support MSYS2-based environment on Windows.")
 endif()
 
 # ==================================================================================================
@@ -42,107 +42,107 @@ project(TNT C CXX ${EXTRA_LANGS})
 # ==================================================================================================
 # Options
 # ==================================================================================================
-option(FILAMENT_USE_EXTERNAL_GLES3 "Experimental: Compile Filament against OpenGL ES 3" OFF)
+option(DANTE_USE_EXTERNAL_GLES3 "Experimental: Compile Dante against OpenGL ES 3" OFF)
 
 # Note: If you intend to use the JNI library (Android/Java build), you need to have
-# exceptions enabled (the default). If you are using Filament on Android as a pure
+# exceptions enabled (the default). If you are using Dante on Android as a pure
 # native library and want to save space, you can disable them.
 # We disable exceptions on iOS by default. This fixes an availability error we see when using
 # std::visit and std::get, which are not supported on iOS 11.0 when exceptions are enabled.
 if (IOS)
-    set(FILAMENT_ENABLE_EXCEPTIONS_DEFAULT OFF)
+    set(DANTE_ENABLE_EXCEPTIONS_DEFAULT OFF)
 else()
-    set(FILAMENT_ENABLE_EXCEPTIONS_DEFAULT ON)
+    set(DANTE_ENABLE_EXCEPTIONS_DEFAULT ON)
 endif()
-option(FILAMENT_ENABLE_EXCEPTIONS "Enable C++ exceptions" ${FILAMENT_ENABLE_EXCEPTIONS_DEFAULT})
+option(DANTE_ENABLE_EXCEPTIONS "Enable C++ exceptions" ${DANTE_ENABLE_EXCEPTIONS_DEFAULT})
 
-option(FILAMENT_ENABLE_RTTI "Enable C++ RTTI" OFF)
+option(DANTE_ENABLE_RTTI "Enable C++ RTTI" OFF)
 
-option(FILAMENT_ENABLE_LTO "Enable link-time optimizations if supported by the compiler" OFF)
-option(FILAMENT_SKIP_SAMPLES "Don't build samples" OFF)
+option(DANTE_ENABLE_LTO "Enable link-time optimizations if supported by the compiler" OFF)
+option(DANTE_SKIP_SAMPLES "Don't build samples" OFF)
 
-option(FILAMENT_SUPPORTS_XCB "Include XCB support in Linux builds" ON)
+option(DANTE_SUPPORTS_XCB "Include XCB support in Linux builds" ON)
 
-option(FILAMENT_SUPPORTS_XLIB "Include XLIB support in Linux builds" ON)
+option(DANTE_SUPPORTS_XLIB "Include XLIB support in Linux builds" ON)
 
-option(FILAMENT_SUPPORTS_EGL_ON_LINUX "Use EGL for OpenGL in Linux builds" OFF)
+option(DANTE_SUPPORTS_EGL_ON_LINUX "Use EGL for OpenGL in Linux builds" OFF)
 
-option(FILAMENT_SUPPORTS_WAYLAND "Include Wayland support in Linux builds" OFF)
+option(DANTE_SUPPORTS_WAYLAND "Include Wayland support in Linux builds" OFF)
 
-option(FILAMENT_SKIP_SDL2 "Skip dependencies of SDL2, and SDL2" OFF)
+option(DANTE_SKIP_SDL2 "Skip dependencies of SDL2, and SDL2" OFF)
 
-option(FILAMENT_LINUX_IS_MOBILE "Treat Linux as Mobile" OFF)
+option(DANTE_LINUX_IS_MOBILE "Treat Linux as Mobile" OFF)
 
-option(FILAMENT_ENABLE_ASAN_UBSAN "Enable Address and Undefined Behavior Sanitizers" OFF)
+option(DANTE_ENABLE_ASAN_UBSAN "Enable Address and Undefined Behavior Sanitizers" OFF)
 
-option(FILAMENT_ENABLE_TSAN "Enable Thread Sanitizer" OFF)
+option(DANTE_ENABLE_TSAN "Enable Thread Sanitizer" OFF)
 
-option(FILAMENT_ENABLE_COVERAGE "Enable LLVM code coverage" OFF)
+option(DANTE_ENABLE_COVERAGE "Enable LLVM code coverage" OFF)
 
-option(FILAMENT_ENABLE_MULTIVIEW "Enable multiview for Filament" OFF)
+option(DANTE_ENABLE_MULTIVIEW "Enable multiview for Dante" OFF)
 
-option(FILAMENT_SUPPORTS_OSMESA "Enable OSMesa (headless GL context) for Filament" OFF)
+option(DANTE_SUPPORTS_OSMESA "Enable OSMesa (headless GL context) for Dante" OFF)
 
-option(FILAMENT_USE_ABSEIL_LOGGING "Use Abseil to log, may increase binary size" OFF)
+option(DANTE_USE_ABSEIL_LOGGING "Use Abseil to log, may increase binary size" OFF)
 
-option(FILAMENT_ENABLE_EXPERIMENTAL_GCC_SUPPORT "Enable GCC support (unsupported)" OFF)
+option(DANTE_ENABLE_EXPERIMENTAL_GCC_SUPPORT "Enable GCC support (unsupported)" OFF)
 
-option(FILAMENT_SUPPORTS_WEBP_TEXTURES "Enable webp texture support for Filament (builds libwebp when ON)" OFF)
+option(DANTE_SUPPORTS_WEBP_TEXTURES "Enable webp texture support for Dante (builds libwebp when ON)" OFF)
 
 # This is to disable GTAO for the short-term while we investigate a way to better manage size increases.
-# On the regular filament build (where size is of less concern), we enable GTAO by default.
-option(FILAMENT_DISABLE_GTAO "Disable GTAO" OFF)
+# On the regular dante build (where size is of less concern), we enable GTAO by default.
+option(DANTE_DISABLE_GTAO "Disable GTAO" OFF)
 
-option(FILAMENT_BUILD_TESTING "Build tests" ON)
+option(DANTE_BUILD_TESTING "Build tests" ON)
 
-option(FILAMENT_DEBUG_MUTEX "Enable utils::Mutex lock order and deadlock debugging" OFF)
+option(DANTE_DEBUG_MUTEX "Enable utils::Mutex lock order and deadlock debugging" OFF)
 
-set(FILAMENT_NDK_VERSION "" CACHE STRING
+set(DANTE_NDK_VERSION "" CACHE STRING
     "Android NDK version or version prefix to be used when building for Android."
 )
 
-set(FILAMENT_PER_RENDER_PASS_ARENA_SIZE_IN_MB "3" CACHE STRING
-    "Per render pass arena size. Must be roughly 1 MB larger than FILAMENT_PER_FRAME_COMMANDS_SIZE_IN_MB, default 3."
+set(DANTE_PER_RENDER_PASS_ARENA_SIZE_IN_MB "3" CACHE STRING
+    "Per render pass arena size. Must be roughly 1 MB larger than DANTE_PER_FRAME_COMMANDS_SIZE_IN_MB, default 3."
 )
 
-set(FILAMENT_PER_FRAME_COMMANDS_SIZE_IN_MB "2" CACHE STRING
-    "Size of the high-level draw commands buffer. Rule of thumb, 1 MB less than FILAMENT_PER_RENDER_PASS_ARENA_SIZE_IN_MB, default 2."
+set(DANTE_PER_FRAME_COMMANDS_SIZE_IN_MB "2" CACHE STRING
+    "Size of the high-level draw commands buffer. Rule of thumb, 1 MB less than DANTE_PER_RENDER_PASS_ARENA_SIZE_IN_MB, default 2."
 )
 
-set(FILAMENT_MIN_COMMAND_BUFFERS_SIZE_IN_MB "2" CACHE STRING
-    "Size of the command-stream buffer. As a rule of thumb use the same value as FILAMENT_PER_FRRAME_COMMANDS_SIZE_IN_MB, default 2."
+set(DANTE_MIN_COMMAND_BUFFERS_SIZE_IN_MB "2" CACHE STRING
+    "Size of the command-stream buffer. As a rule of thumb use the same value as DANTE_PER_FRRAME_COMMANDS_SIZE_IN_MB, default 2."
 )
 
-set(FILAMENT_OPENGL_HANDLE_ARENA_SIZE_IN_MB "4" CACHE STRING
+set(DANTE_OPENGL_HANDLE_ARENA_SIZE_IN_MB "4" CACHE STRING
     "Size of the OpenGL handle arena, default 4."
 )
 
-set(FILAMENT_METAL_HANDLE_ARENA_SIZE_IN_MB "8" CACHE STRING
+set(DANTE_METAL_HANDLE_ARENA_SIZE_IN_MB "8" CACHE STRING
     "Size of the Metal handle arena, default 8."
 )
 
-set(FILAMENT_BACKEND_DEBUG_FLAG "" CACHE STRING
+set(DANTE_BACKEND_DEBUG_FLAG "" CACHE STRING
     "A debug flag meant for enabling/disabling backend debugging paths"
 )
 
-set(FILAMENT_OSMESA_PATH "" CACHE STRING
+set(DANTE_OSMESA_PATH "" CACHE STRING
     "Path to the OSMesa header and lib"
 )
 
 # Enable exceptions by default in spirv-cross.
 set(SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS OFF)
 
-if (NOT FILAMENT_ENABLE_EXCEPTIONS)
+if (NOT DANTE_ENABLE_EXCEPTIONS)
     add_compile_options(-fno-exceptions)
     set(SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS ON)
 endif()
 
-if (NOT FILAMENT_ENABLE_RTTI)
+if (NOT DANTE_ENABLE_RTTI)
     add_compile_options(-fno-rtti)
 endif()
 
-if (FILAMENT_DEBUG_MUTEX)
-    add_compile_definitions(FILAMENT_DEBUG_MUTEX)
+if (DANTE_DEBUG_MUTEX)
+    add_compile_definitions(DANTE_DEBUG_MUTEX)
 endif()
 
 # ==================================================================================================
@@ -200,40 +200,40 @@ else()
     set(LINUX FALSE)
 endif()
 
-if (NOT FILAMENT_OSMESA_PATH STREQUAL "")
-    if (NOT EXISTS ${FILAMENT_OSMESA_PATH}/)
-        message(FATAL_ERROR "Cannot find specified OSMesa build directory: ${FILAMENT_OSMESA_PATH}")
+if (NOT DANTE_OSMESA_PATH STREQUAL "")
+    if (NOT EXISTS ${DANTE_OSMESA_PATH}/)
+        message(FATAL_ERROR "Cannot find specified OSMesa build directory: ${DANTE_OSMESA_PATH}")
     endif()
-    set(FILAMENT_SUPPORTS_OSMESA TRUE)
+    set(DANTE_SUPPORTS_OSMESA TRUE)
 endif()
 
 if (LINUX)
-    if (FILAMENT_SUPPORTS_WAYLAND)
-        add_definitions(-DFILAMENT_SUPPORTS_WAYLAND)
-        set(FILAMENT_SUPPORTS_X11 FALSE)
-    elseif (FILAMENT_SUPPORTS_EGL_ON_LINUX)
-        add_definitions(-DFILAMENT_SUPPORTS_EGL_ON_LINUX)
-        set(FILAMENT_SUPPORTS_X11 FALSE)
-    elseif (FILAMENT_SUPPORTS_OSMESA)
-        set(FILAMENT_SUPPORTS_X11 FALSE)
-        add_definitions(-DFILAMENT_SUPPORTS_OSMESA)
+    if (DANTE_SUPPORTS_WAYLAND)
+        add_definitions(-DDANTE_SUPPORTS_WAYLAND)
+        set(DANTE_SUPPORTS_X11 FALSE)
+    elseif (DANTE_SUPPORTS_EGL_ON_LINUX)
+        add_definitions(-DDANTE_SUPPORTS_EGL_ON_LINUX)
+        set(DANTE_SUPPORTS_X11 FALSE)
+    elseif (DANTE_SUPPORTS_OSMESA)
+        set(DANTE_SUPPORTS_X11 FALSE)
+        add_definitions(-DDANTE_SUPPORTS_OSMESA)
     else ()
-        if (FILAMENT_SUPPORTS_XCB)
-            add_definitions(-DFILAMENT_SUPPORTS_XCB)
+        if (DANTE_SUPPORTS_XCB)
+            add_definitions(-DDANTE_SUPPORTS_XCB)
         endif()
 
-        if (FILAMENT_SUPPORTS_XLIB)
-            add_definitions(-DFILAMENT_SUPPORTS_XLIB)
+        if (DANTE_SUPPORTS_XLIB)
+            add_definitions(-DDANTE_SUPPORTS_XLIB)
         endif()
 
-        if (FILAMENT_SUPPORTS_XCB OR FILAMENT_SUPPORTS_XLIB)
-            add_definitions(-DFILAMENT_SUPPORTS_X11)
-            set(FILAMENT_SUPPORTS_X11 TRUE)
+        if (DANTE_SUPPORTS_XCB OR DANTE_SUPPORTS_XLIB)
+            add_definitions(-DDANTE_SUPPORTS_X11)
+            set(DANTE_SUPPORTS_X11 TRUE)
         endif()
     endif()
 endif()
 
-if (ANDROID OR WASM OR IOS OR FILAMENT_LINUX_IS_MOBILE)
+if (ANDROID OR WASM OR IOS OR DANTE_LINUX_IS_MOBILE)
     set(IS_MOBILE_TARGET TRUE)
 endif()
 
@@ -241,13 +241,13 @@ if (ANDROID)
     add_definitions(-D__ANDROID_UNAVAILABLE_SYMBOLS_ARE_WEAK__)
 endif()
 
-if (NOT ANDROID AND NOT WASM AND NOT IOS AND NOT FILAMENT_LINUX_IS_MOBILE)
+if (NOT ANDROID AND NOT WASM AND NOT IOS AND NOT DANTE_LINUX_IS_MOBILE)
     set(IS_HOST_PLATFORM TRUE)
 endif()
 
 if (APPLE)
-    if (FILAMENT_SUPPORTS_OSMESA)
-        add_definitions(-DFILAMENT_SUPPORTS_OSMESA)
+    if (DANTE_SUPPORTS_OSMESA)
+        add_definitions(-DDANTE_SUPPORTS_OSMESA)
     endif()
 endif()
 
@@ -293,7 +293,7 @@ if (WIN32)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
 
     # Special settings when building on CI.
-    if (${FILAMENT_WINDOWS_CI_BUILD})
+    if (${DANTE_WINDOWS_CI_BUILD})
         set(LinkerFlags
             CMAKE_SHARED_LINKER_FLAGS_DEBUG
             CMAKE_EXE_LINKER_FLAGS_DEBUG
@@ -310,13 +310,13 @@ if (WIN32)
 
         # We turn off compile-time optimizations for CI, as options that speed up the compile-time
         # (e.g. /MP) might increase memory usage, leading to instabilities on limited CI machines.
-        option(FILAMENT_SHORTEN_MSVC_COMPILATION "Shorten compile-time in Visual Studio" OFF)
+        option(DANTE_SHORTEN_MSVC_COMPILATION "Shorten compile-time in Visual Studio" OFF)
     else()
-        option(FILAMENT_SHORTEN_MSVC_COMPILATION "Shorten compile-time in Visual Studio" ON)
+        option(DANTE_SHORTEN_MSVC_COMPILATION "Shorten compile-time in Visual Studio" ON)
     endif()
 
     if (MSVC)
-        if (FILAMENT_SHORTEN_MSVC_COMPILATION)
+        if (DANTE_SHORTEN_MSVC_COMPILATION)
             # enable multi-processor compilation
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
             # disable run-time STL checks to improve tools (e.g. matc) performance
@@ -334,8 +334,8 @@ set(EXTERNAL ${CMAKE_CURRENT_SOURCE_DIR}/third_party)
 # Where our libraries are
 set(LIBRARIES ${CMAKE_CURRENT_SOURCE_DIR}/libs)
 
-# Where our filament code is
-set(FILAMENT ${CMAKE_CURRENT_SOURCE_DIR})
+# Where our dante code is
+set(DANTE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Where our tools are
 set(TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/tools)
@@ -345,9 +345,9 @@ set(TOOLS ${CMAKE_CURRENT_SOURCE_DIR}/tools)
 # ==================================================================================================
 set(MIN_CLANG_VERSION "6.0")
 
-set(FILAMENT_USING_GCC OFF)
-if (CMAKE_C_COMPILER_ID MATCHES "GNU" AND FILAMENT_ENABLE_EXPERIMENTAL_GCC_SUPPORT)
-    set(FILAMENT_USING_GCC ON)
+set(DANTE_USING_GCC OFF)
+if (CMAKE_C_COMPILER_ID MATCHES "GNU" AND DANTE_ENABLE_EXPERIMENTAL_GCC_SUPPORT)
+    set(DANTE_USING_GCC ON)
 elseif (CMAKE_C_COMPILER_ID MATCHES "Clang")
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS MIN_CLANG_VERSION)
         message(FATAL_ERROR "Detected CXX compiler Clang ${CMAKE_CXX_COMPILER_VERSION} < ${MIN_CLANG_VERSION}")
@@ -366,7 +366,7 @@ endif()
 # ==================================================================================================
 # Link time optimizations (LTO)
 # ==================================================================================================
-if (FILAMENT_ENABLE_LTO)
+if (DANTE_ENABLE_LTO)
     include(CheckIPOSupported)
 
     check_ipo_supported(RESULT IPO_SUPPORT OUTPUT IPO_ERROR)
@@ -399,7 +399,7 @@ if (MSVC)
     set(CXX_STANDARD "/std:c++latest")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} /W0 /Zc:__cplusplus")
 else()
-    if(FILAMENT_USING_GCC)
+    if(DANTE_USING_GCC)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} -Wno-changes-meaning -Wno-return-type -Wno-attributes -Wno-unknown-pragmas -Wno-class-memaccess -Wno-multichar -Wno-deprecated-declarations -Wno-subobject-linkage -Wno-invalid-constexpr")
     else()
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} -fstrict-aliasing -Wno-unknown-pragmas -Wno-unused-function -Wno-deprecated-declarations -D_LIBCPP_ENABLE_THREAD_SAFETY_ANNOTATIONS")
@@ -410,11 +410,11 @@ else()
     endif()
 endif()
 
-if (FILAMENT_USE_EXTERNAL_GLES3)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFILAMENT_USE_EXTERNAL_GLES3")
+if (DANTE_USE_EXTERNAL_GLES3)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDANTE_USE_EXTERNAL_GLES3")
 endif()
 
-if (FILAMENT_SUPPORTS_EGL_ON_LINUX)
+if (DANTE_SUPPORTS_EGL_ON_LINUX)
   set(EGL TRUE)
 endif()
 
@@ -431,7 +431,7 @@ if (LINUX)
     check_symbol_exists(__GLIBC__ "features.h" CLANG_WITH_GLIBC)
 
     if (${USE_STATIC_LIBCXX})
-        if (FILAMENT_USING_GCC)
+        if (DANTE_USING_GCC)
             link_libraries("-static-libgcc -static-libstdc++")
         elseif (CLANG_WITH_GLIBC)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
@@ -465,7 +465,7 @@ if (MSVC)
 endif()
 
 # Add colors to ninja builds (when not using gcc)
-if (UNIX AND CMAKE_GENERATOR STREQUAL "Ninja" AND NOT FILAMENT_USING_GCC)
+if (UNIX AND CMAKE_GENERATOR STREQUAL "Ninja" AND NOT DANTE_USING_GCC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
 endif()
@@ -508,10 +508,10 @@ endif()
 # ==================================================================================================
 # Debug compiler flags
 # ==================================================================================================
-if (FILAMENT_ENABLE_ASAN_UBSAN)
+if (DANTE_ENABLE_ASAN_UBSAN)
    set(EXTRA_SANITIZE_OPTIONS "-fsanitize=address -fsanitize=undefined")
 endif()
-if (FILAMENT_ENABLE_TSAN)
+if (DANTE_ENABLE_TSAN)
    set(EXTRA_SANITIZE_OPTIONS "-fsanitize=thread")
 endif()
 if (ANDROID)
@@ -523,7 +523,7 @@ if (NOT MSVC AND NOT WASM)
 endif()
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_SANITIZE_OPTIONS}")
 
-if (FILAMENT_ENABLE_COVERAGE)
+if (DANTE_ENABLE_COVERAGE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-instr-generate -fcoverage-mapping -Wno-pass-failed")
 endif()
 
@@ -585,79 +585,79 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebIn
 endif()
 
 # By default, build with support for OpenGL on all platforms.
-option(FILAMENT_SUPPORTS_OPENGL "Include the OpenGL backend" ON)
-if (FILAMENT_SUPPORTS_OPENGL)
-    add_definitions(-DFILAMENT_SUPPORTS_OPENGL)
+option(DANTE_SUPPORTS_OPENGL "Include the OpenGL backend" ON)
+if (DANTE_SUPPORTS_OPENGL)
+    add_definitions(-DDANTE_SUPPORTS_OPENGL)
 endif()
 
 # By default, build with Vulkan support on desktop platforms, although clients must request to use
 # it at run time.
 if (WIN32 OR WASM OR IOS)
-    option(FILAMENT_SUPPORTS_VULKAN "Include the Vulkan backend" OFF)
+    option(DANTE_SUPPORTS_VULKAN "Include the Vulkan backend" OFF)
 else()
-    option(FILAMENT_SUPPORTS_VULKAN "Include the Vulkan backend" ON)
+    option(DANTE_SUPPORTS_VULKAN "Include the Vulkan backend" ON)
 endif()
-if (FILAMENT_SUPPORTS_VULKAN)
-    add_definitions(-DFILAMENT_DRIVER_SUPPORTS_VULKAN)
-endif()
-
-if (FILAMENT_SUPPORTS_WEBGPU)
-    add_definitions(-DFILAMENT_SUPPORTS_WEBGPU)
+if (DANTE_SUPPORTS_VULKAN)
+    add_definitions(-DDANTE_DRIVER_SUPPORTS_VULKAN)
 endif()
 
-if (FILAMENT_SUPPORTS_WEBP_TEXTURES)
-    add_definitions(-DFILAMENT_SUPPORTS_WEBP_TEXTURES)
+if (DANTE_SUPPORTS_WEBGPU)
+    add_definitions(-DDANTE_SUPPORTS_WEBGPU)
+endif()
+
+if (DANTE_SUPPORTS_WEBP_TEXTURES)
+    add_definitions(-DDANTE_SUPPORTS_WEBP_TEXTURES)
 endif()
 
 # Build with Metal support on non-WASM Apple platforms.
 if (APPLE AND NOT WASM)
-    option(FILAMENT_SUPPORTS_METAL "Include the Metal backend" ON)
+    option(DANTE_SUPPORTS_METAL "Include the Metal backend" ON)
 else()
-    option(FILAMENT_SUPPORTS_METAL "Include the Metal backend" OFF)
+    option(DANTE_SUPPORTS_METAL "Include the Metal backend" OFF)
 endif()
-if (FILAMENT_SUPPORTS_METAL)
-    add_definitions(-DFILAMENT_SUPPORTS_METAL)
+if (DANTE_SUPPORTS_METAL)
+    add_definitions(-DDANTE_SUPPORTS_METAL)
 endif()
 
 # Building filamat increases build times and isn't required for web, so turn it off by default.
 if (NOT WASM)
-    option(FILAMENT_BUILD_FILAMAT "Build filamat and JNI buildings" ON)
+    option(DANTE_BUILD_FILAMAT "Build filamat and JNI buildings" ON)
 else()
-    option(FILAMENT_BUILD_FILAMAT "Build filamat and JNI buildings" OFF)
+    option(DANTE_BUILD_FILAMAT "Build filamat and JNI buildings" OFF)
 endif()
 
 # Only optimize materials in Release mode (so error message lines match the source code)
 if (CMAKE_BUILD_TYPE MATCHES Release)
-    option(FILAMENT_DISABLE_MATOPT "Disable material optimizations" OFF)
+    option(DANTE_DISABLE_MATOPT "Disable material optimizations" OFF)
 else()
-    option(FILAMENT_DISABLE_MATOPT "Disable material optimizations" ON)
+    option(DANTE_DISABLE_MATOPT "Disable material optimizations" ON)
 endif()
 
-# This only affects the prebuilt shader files in gltfio and samples, not filament library.
+# This only affects the prebuilt shader files in gltfio and samples, not dante library.
 # The value can be either "instanced", "multiview", or "none"
-set(FILAMENT_SAMPLES_STEREO_TYPE "none" CACHE STRING
+set(DANTE_SAMPLES_STEREO_TYPE "none" CACHE STRING
     "Stereoscopic type that shader files in gltfio and samples are built for."
 )
-string(TOLOWER "${FILAMENT_SAMPLES_STEREO_TYPE}" FILAMENT_SAMPLES_STEREO_TYPE)
-if (NOT FILAMENT_SAMPLES_STEREO_TYPE STREQUAL "instanced"
-    AND NOT FILAMENT_SAMPLES_STEREO_TYPE STREQUAL "multiview"
-    AND NOT FILAMENT_SAMPLES_STEREO_TYPE STREQUAL "none")
-    message(FATAL_ERROR "Invalid stereo type: \"${FILAMENT_SAMPLES_STEREO_TYPE}\" choose either \"instanced\",  \"multiview\", or \"none\" ")
+string(TOLOWER "${DANTE_SAMPLES_STEREO_TYPE}" DANTE_SAMPLES_STEREO_TYPE)
+if (NOT DANTE_SAMPLES_STEREO_TYPE STREQUAL "instanced"
+    AND NOT DANTE_SAMPLES_STEREO_TYPE STREQUAL "multiview"
+    AND NOT DANTE_SAMPLES_STEREO_TYPE STREQUAL "none")
+    message(FATAL_ERROR "Invalid stereo type: \"${DANTE_SAMPLES_STEREO_TYPE}\" choose either \"instanced\",  \"multiview\", or \"none\" ")
 endif ()
 
 # Compiling samples for multiview implies enabling multiview feature as well.
-if (FILAMENT_SAMPLES_STEREO_TYPE STREQUAL "multiview")
-    set(FILAMENT_ENABLE_MULTIVIEW ON)
+if (DANTE_SAMPLES_STEREO_TYPE STREQUAL "multiview")
+    set(DANTE_ENABLE_MULTIVIEW ON)
 endif ()
 
 # Define backend flag for debug only
-if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT FILAMENT_BACKEND_DEBUG_FLAG STREQUAL "")
-    add_definitions(-DFILAMENT_BACKEND_DEBUG_FLAG=${FILAMENT_BACKEND_DEBUG_FLAG})
-    unset(FILAMENT_BACKEND_DEBUG_FLAG)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT DANTE_BACKEND_DEBUG_FLAG STREQUAL "")
+    add_definitions(-DDANTE_BACKEND_DEBUG_FLAG=${DANTE_BACKEND_DEBUG_FLAG})
+    unset(DANTE_BACKEND_DEBUG_FLAG)
 endif()
 
-if (FILAMENT_USE_ABSEIL_LOGGING)
-    add_definitions(-DFILAMENT_USE_ABSEIL_LOGGING)
+if (DANTE_USE_ABSEIL_LOGGING)
+    add_definitions(-DDANTE_USE_ABSEIL_LOGGING)
 endif()
 
 # ==================================================================================================
@@ -673,21 +673,21 @@ endif()
 
 set(MATC_API_FLAGS )
 
-if (FILAMENT_SUPPORTS_OPENGL)
+if (DANTE_SUPPORTS_OPENGL)
     set(MATC_API_FLAGS ${MATC_API_FLAGS} -a opengl)
 endif()
-if (FILAMENT_SUPPORTS_VULKAN)
+if (DANTE_SUPPORTS_VULKAN)
     set(MATC_API_FLAGS ${MATC_API_FLAGS} -a vulkan)
 endif()
-if (FILAMENT_SUPPORTS_METAL)
+if (DANTE_SUPPORTS_METAL)
     set(MATC_API_FLAGS ${MATC_API_FLAGS} -a metal)
 endif()
-if (FILAMENT_SUPPORTS_WEBGPU)
+if (DANTE_SUPPORTS_WEBGPU)
     set(MATC_API_FLAGS ${MATC_API_FLAGS} -a webgpu)
 endif()
 
 # Disable optimizations
-if (FILAMENT_DISABLE_MATOPT)
+if (DANTE_DISABLE_MATOPT)
     set(MATC_OPT_FLAGS ${MATC_OPT_FLAGS} -g)
 endif()
 
@@ -728,8 +728,8 @@ endif()
 ## The MSVC compiler has a limitation on literal string length which is reached when all the
 ## licenses are concatenated together into a large string... so split them into multiple strings.
 function(list_licenses OUTPUT MODULES)
-    set(STR_OPENER "R\"FILAMENT__(")
-    set(STR_CLOSER ")FILAMENT__\"")
+    set(STR_OPENER "R\"DANTE__(")
+    set(STR_CLOSER ")DANTE__\"")
     set(CONTENT)
     set(_MODULES ${MODULES} ${ARGN})
     foreach(module ${_MODULES})
@@ -745,7 +745,7 @@ function(list_licenses OUTPUT MODULES)
             message(AUTHOR_WARNING "${license_path} not found. You can ignore this warning if you have devendored ${module}.")
         endif()
     endforeach()
-    configure_file(${FILAMENT}/build/licenses.inc.in ${OUTPUT})
+    configure_file(${DANTE}/build/licenses.inc.in ${OUTPUT})
 endfunction()
 
 set(COMBINE_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/build/linux/combine-static-libs.sh")
@@ -786,9 +786,9 @@ endfunction()
 # ==================================================================================================
 
 # In certain cases, we want the ability to separate the build type/flags (release, debug) of tools
-# (matc, resgen, etc...) from filament.  Cross compilation is one such case (e.g. building material
-# with matc running on host while building filament for Android) [1]. Another example is when client
-# wants to enable ASAN for filament but not the tool [2].
+# (matc, resgen, etc...) from dante.  Cross compilation is one such case (e.g. building material
+# with matc running on host while building dante for Android) [1]. Another example is when client
+# wants to enable ASAN for dante but not the tool [2].
 #
 # Here are the varibles that are used to determine behavior is such flows:
 #   - CMAKE_CROSSCOMPILING : Set by cmake to indicate the build's target platform is different
@@ -798,44 +798,44 @@ endfunction()
 #     prebuilt. This is set by the client in their `cmake` invocation.
 #   - IMPORT_EXECUTABLES : Path to a file to for 1) exporting the prebuilt targets or 2)
 #     importing a previously exported targets. (Used internally and should not be set by client).
-#   - FILAMENT_EXPORT_PREBUILT_EXECUTABLES_DIR : A path set by the client to indicate that
+#   - DANTE_EXPORT_PREBUILT_EXECUTABLES_DIR : A path set by the client to indicate that
 #     they wish to export the tools as prebuilts, and the corresponding targets will be recorded
 #     in a cmake file (i.e IMPORT_EXECUTABLES). IMPORT_EXECUTABLES will be set relative to the the
-#     given path. This will set FILAMENT_EXPORT_PREBUILT_EXECUTABLES=ON.
-#   - FILAMENT_IMPORT_PREBUILT_EXECUTABLES_DIR : A path set by the client to indicate that they wish
+#     given path. This will set DANTE_EXPORT_PREBUILT_EXECUTABLES=ON.
+#   - DANTE_IMPORT_PREBUILT_EXECUTABLES_DIR : A path set by the client to indicate that they wish
 #     to import the tools as prebuilts from a .cmake file. The location (IMPORT_EXECUTABLES) of the
-#     file is relative to the path given. This will set FILAMENT_IMPORT_PREBUILT_EXECUTABLES=ON.
+#     file is relative to the path given. This will set DANTE_IMPORT_PREBUILT_EXECUTABLES=ON.
 #   - IMPORT_PREBUILT_EXECUTABLES and EXPORT_PREBUILT_EXECUTABLES are internal booleans set to
-#     ON based on the prescence of FILAMENT_IMPORT_PREBUILT_EXECUTABLES_DIR and
-#     FILAMENT_EXPORT_PREBUILT_EXECUTABLES_DIR.
+#     ON based on the prescence of DANTE_IMPORT_PREBUILT_EXECUTABLES_DIR and
+#     DANTE_EXPORT_PREBUILT_EXECUTABLES_DIR.
 #
 # In conclusion, for cases
 #   - [1] (crosscompiling), the client must set IMPORT_EXECUTABLES_DIR for both when they are building
-#     the tools and when they are building the target-platform filament.
-#   - [2] (all other instances), the client must set FILAMENT_EXPORT_PREBUILT_EXECUTABLES_DIR in
-#     the prebuilt exporting step, and set FILAMENT_IMPORT_PREBUILT_EXECUTABLES_DIR in the importing
+#     the tools and when they are building the target-platform dante.
+#   - [2] (all other instances), the client must set DANTE_EXPORT_PREBUILT_EXECUTABLES_DIR in
+#     the prebuilt exporting step, and set DANTE_IMPORT_PREBUILT_EXECUTABLES_DIR in the importing
 #     step.
 
-# TODO: Fold the cross compilation case into the more general FILAMENT_IMPORT/EXPORT variables.
+# TODO: Fold the cross compilation case into the more general DANTE_IMPORT/EXPORT variables.
 
-if (FILAMENT_EXPORT_PREBUILT_EXECUTABLES_DIR)
-   set(FILAMENT_EXPORT_PREBUILT_EXECUTABLES ON)
-   set(IMPORT_EXECUTABLES_DIR ${FILAMENT_EXPORT_PREBUILT_EXECUTABLES_DIR})
+if (DANTE_EXPORT_PREBUILT_EXECUTABLES_DIR)
+   set(DANTE_EXPORT_PREBUILT_EXECUTABLES ON)
+   set(IMPORT_EXECUTABLES_DIR ${DANTE_EXPORT_PREBUILT_EXECUTABLES_DIR})
 endif()
 
-if (FILAMENT_IMPORT_PREBUILT_EXECUTABLES_DIR)
-   set(FILAMENT_IMPORT_PREBUILT_EXECUTABLES ON)
-   set(IMPORT_EXECUTABLES_DIR ${FILAMENT_IMPORT_PREBUILT_EXECUTABLES_DIR})
+if (DANTE_IMPORT_PREBUILT_EXECUTABLES_DIR)
+   set(DANTE_IMPORT_PREBUILT_EXECUTABLES ON)
+   set(IMPORT_EXECUTABLES_DIR ${DANTE_IMPORT_PREBUILT_EXECUTABLES_DIR})
 endif()
 
-if (FILAMENT_EXPORT_PREBUILT_EXECUTABLES OR FILAMENT_IMPORT_PREBUILT_EXECUTABLES)
+if (DANTE_EXPORT_PREBUILT_EXECUTABLES OR DANTE_IMPORT_PREBUILT_EXECUTABLES)
     set(IMPORT_EXECUTABLES_BUILD_TYPE Prebuilt)
 elseif (WASM)
     set(IMPORT_EXECUTABLES_BUILD_TYPE Release)
 else()
     set(IMPORT_EXECUTABLES_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 endif()
-set(IMPORT_EXECUTABLES ${FILAMENT}/${IMPORT_EXECUTABLES_DIR}/ImportExecutables-${IMPORT_EXECUTABLES_BUILD_TYPE}.cmake)
+set(IMPORT_EXECUTABLES ${DANTE}/${IMPORT_EXECUTABLES_DIR}/ImportExecutables-${IMPORT_EXECUTABLES_BUILD_TYPE}.cmake)
 
 # ==================================================================================================
 # Common Functions
@@ -884,7 +884,7 @@ if (NOT HAS_SYSTEM_GETOPT)
 endif()
 
 # Common to all platforms
-if (FILAMENT_BUILD_TESTING)
+if (DANTE_BUILD_TESTING)
     add_subdirectory(${EXTERNAL}/libgtest/tnt)
 endif()
 add_subdirectory(${LIBRARIES}/camutils)
@@ -900,7 +900,7 @@ add_subdirectory(${LIBRARIES}/ktxreader)
 add_subdirectory(${LIBRARIES}/math)
 add_subdirectory(${LIBRARIES}/uberz)
 add_subdirectory(${LIBRARIES}/utils)
-add_subdirectory(${FILAMENT}/shaders)
+add_subdirectory(${DANTE}/shaders)
 add_subdirectory(${EXTERNAL}/abseil/tnt)
 # Add zstd before basisu to force it to use the external zstd target,
 # preventing a duplicate symbol conflict with its bundled version.
@@ -908,7 +908,7 @@ add_subdirectory(${EXTERNAL}/zstd/tnt)
 add_subdirectory(${EXTERNAL}/imgui/tnt)
 add_subdirectory(${EXTERNAL}/robin-map/tnt)
 add_subdirectory(${EXTERNAL}/smol-v/tnt)
-if (FILAMENT_BUILD_TESTING)
+if (DANTE_BUILD_TESTING)
     add_subdirectory(${EXTERNAL}/benchmark/tnt)
 endif()
 add_subdirectory(${EXTERNAL}/meshoptimizer/tnt)
@@ -922,7 +922,7 @@ add_subdirectory(${EXTERNAL}/basisu/tnt)
 # Note that this has to be placed after mikktspace in order for combine_static_libs to work.
 add_subdirectory(${LIBRARIES}/geometry)
 
-if (FILAMENT_BUILD_FILAMAT OR IS_HOST_PLATFORM)
+if (DANTE_BUILD_FILAMAT OR IS_HOST_PLATFORM)
     # spirv-tools must come before filamat, as filamat relies on the presence of the
     # spirv-tools_SOURCE_DIR variable.
     set(SPIRV-Headers_SOURCE_DIR ${EXTERNAL}/spirv-headers)
@@ -932,31 +932,31 @@ if (FILAMENT_BUILD_FILAMAT OR IS_HOST_PLATFORM)
     add_subdirectory(${LIBRARIES}/filamat)
 endif()
 
-if (FILAMENT_SUPPORTS_WEBP_TEXTURES)
+if (DANTE_SUPPORTS_WEBP_TEXTURES)
     add_subdirectory(${EXTERNAL}/libwebp/tnt)
 endif()
 
-add_subdirectory(${FILAMENT}/Dante)
+add_subdirectory(${DANTE}/Dante)
 
-set(FILAMENT_SAMPLES_BINARY_DIR ${PROJECT_BINARY_DIR}/samples)
+set(DANTE_SAMPLES_BINARY_DIR ${PROJECT_BINARY_DIR}/samples)
 
 if (WASM)
-    add_subdirectory(web/filament-js)
+    add_subdirectory(web/dante-js)
     add_subdirectory(web/examples)
 endif()
 
 if (IS_HOST_PLATFORM)
-    if (FILAMENT_SUPPORTS_OPENGL)
+    if (DANTE_SUPPORTS_OPENGL)
         add_subdirectory(${LIBRARIES}/bluegl)
     endif()
-    if (NOT FILAMENT_SKIP_SDL2)
-      add_subdirectory(${LIBRARIES}/filamentapp)
+    if (NOT DANTE_SKIP_SDL2)
+      add_subdirectory(${LIBRARIES}/danteapp)
     endif()
     add_subdirectory(${LIBRARIES}/imageio)
-    add_subdirectory(${LIBRARIES}/filament-matp)
+    add_subdirectory(${LIBRARIES}/dante-matp)
 
-    if (NOT FILAMENT_SKIP_SAMPLES)
-        add_subdirectory(${FILAMENT}/samples)
+    if (NOT DANTE_SKIP_SAMPLES)
+        add_subdirectory(${DANTE}/samples)
     endif()
 
     add_subdirectory(${EXTERNAL}/libpng/tnt)

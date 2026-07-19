@@ -1,17 +1,13 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_FRAMEGRAPHID_H
-#define TNT_FILAMENT_FG_FRAMEGRAPHID_H
+#ifndef TNT_DANTE_FG_FRAMEGRAPHID_H
+#define TNT_DANTE_FG_FRAMEGRAPHID_H
 
 #include <limits>
 #include <utility>
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 template<typename T>
 class FrameGraphId;
@@ -82,6 +78,6 @@ public:
     explicit FrameGraphId(FrameGraphHandle const r) : FrameGraphHandle(r) { }
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_FG_FRAMEGRAPHID_H
+#endif //TNT_DANTE_FG_FRAMEGRAPHID_H

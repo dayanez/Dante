@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <uberz/WritableArchive.h>
 #include <uberz/ReadableArchive.h>
@@ -20,7 +16,7 @@ using namespace std::literals;
 
 using std::string_view;
 
-namespace filament::uberz {
+namespace dante::uberz {
 
 static bool isAlphaNumeric(char c) {
     return (c >= '0' && c <= '9') || c == '_'
@@ -335,4 +331,4 @@ void WritableArchive::setFeatureFlag(const char* key, ArchiveFeature value) {
     mMaterials[mMaterialIndex].flags[CString(key)] = value;
 }
 
-} // namespace filament::uberz
+} // namespace dante::uberz

@@ -151,7 +151,7 @@ install(FILES ${DIST_DEBUG_HDRS} DESTINATION include/${TARGET_DEBUG})
 # Test executables
 # ==================================================================================================
 
-if (FILAMENT_BUILD_TESTING)
+if (DANTE_BUILD_TESTING)
     set(TEST_SRCS
             test/test_algorithm.cpp
             test/test_Allocators.cpp
@@ -203,7 +203,7 @@ endif()
 # Benchmarks
 # ==================================================================================================
 
-if (FILAMENT_BUILD_TESTING)
+if (DANTE_BUILD_TESTING)
 
     add_library(benchmark_${TARGET}_callee SHARED benchmark/benchmark_callee.cpp)
     set_target_properties(benchmark_${TARGET}_callee PROPERTIES FOLDER Benchmarks)

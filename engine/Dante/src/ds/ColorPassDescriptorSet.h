@@ -1,18 +1,14 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_PERVIEWUNIFORMS_H
-#define TNT_FILAMENT_PERVIEWUNIFORMS_H
+#ifndef TNT_DANTE_PERVIEWUNIFORMS_H
+#define TNT_DANTE_PERVIEWUNIFORMS_H
 
 #include "DescriptorSet.h"
 #include "TypedUniformBuffer.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/Viewport.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -29,7 +25,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class DescriptorSetLayout;
 class HwDescriptorSetLayoutFactory;
@@ -148,6 +144,6 @@ private:
     bool const mIsVsm;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_PERVIEWUNIFORMS_H
+#endif //TNT_DANTE_PERVIEWUNIFORMS_H

@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "components/LightManager.h"
 
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 
 #include "details/Engine.h"
 
-#include <filament/LightManager.h>
+#include <dante/LightManager.h>
 
 #include <utils/compiler.h>
 #include <utils/debug.h>
@@ -27,10 +23,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 // ------------------------------------------------------------------------------------------------
 
@@ -509,4 +505,4 @@ void LightManager::ShadowCascades::computePracticalSplits(float splitPositions[3
     }
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #pragma once
 
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 struct FrameGraphDummyLink {
     struct Descriptor {};
@@ -17,4 +13,4 @@ struct FrameGraphDummyLink {
     static constexpr Usage DEFAULT_W_USAGE = 0x2;
 };
 
-} // namespace filament
+} // namespace dante

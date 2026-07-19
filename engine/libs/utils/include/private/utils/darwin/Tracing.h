@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_UTILS_DARWIN_FILAMENT_TRACING_H
-#define TNT_UTILS_DARWIN_FILAMENT_TRACING_H
+#ifndef TNT_UTILS_DARWIN_DANTE_TRACING_H
+#define TNT_UTILS_DARWIN_DANTE_TRACING_H
 
 #include <utils/compiler.h>
 
@@ -19,56 +15,56 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#if FILAMENT_TRACING_ENABLED == false
+#if DANTE_TRACING_ENABLED == false
 
-#define FILAMENT_TRACING_ENABLE(category)
-#define FILAMENT_TRACING_CONTEXT(category)
-#define FILAMENT_TRACING_NAME(category, name)
-#define FILAMENT_TRACING_FRAME_ID(category, frame)
-#define FILAMENT_TRACING_NAME_BEGIN(category, name)
-#define FILAMENT_TRACING_NAME_END(category)
-#define FILAMENT_TRACING_CALL(category)
-#define FILAMENT_TRACING_ASYNC_BEGIN(category, name, cookie)
-#define FILAMENT_TRACING_ASYNC_END(category, name, cookie)
-#define FILAMENT_TRACING_VALUE(category, name, val)
-#define FILAMENT_TRACING_EVENT(category, name, ...)
+#define DANTE_TRACING_ENABLE(category)
+#define DANTE_TRACING_CONTEXT(category)
+#define DANTE_TRACING_NAME(category, name)
+#define DANTE_TRACING_FRAME_ID(category, frame)
+#define DANTE_TRACING_NAME_BEGIN(category, name)
+#define DANTE_TRACING_NAME_END(category)
+#define DANTE_TRACING_CALL(category)
+#define DANTE_TRACING_ASYNC_BEGIN(category, name, cookie)
+#define DANTE_TRACING_ASYNC_END(category, name, cookie)
+#define DANTE_TRACING_VALUE(category, name, val)
+#define DANTE_TRACING_EVENT(category, name, ...)
 
 #else
 
 // enable tracing
-#define FILAMENT_TRACING_ENABLE(category) ::utils::details::Tracing::enable(category)
+#define DANTE_TRACING_ENABLE(category) ::utils::details::Tracing::enable(category)
 
 /**
  * Creates a Tracing context in the current scope. needed for calling all other Tracing
  * commands below.
  */
-#define FILAMENT_TRACING_CONTEXT(category) ::utils::details::Tracing ___tracer(category)
+#define DANTE_TRACING_CONTEXT(category) ::utils::details::Tracing ___tracer(category)
 
 
-// FILAMENT_TRACING_NAME traces the beginning and end of the current scope.  To trace
+// DANTE_TRACING_NAME traces the beginning and end of the current scope.  To trace
 // the correct start and end times this macro should be declared first in the
 // scope body.
 // It also automatically creates a Tracing context
-#define FILAMENT_TRACING_NAME(category, name) ::utils::details::ScopedTracing ___tracer(name)
+#define DANTE_TRACING_NAME(category, name) ::utils::details::ScopedTracing ___tracer(name)
 
-// Treat FILAMENT_TRACING_EVENT same as FILAMENT_TRACING_NAME
-#define FILAMENT_TRACING_EVENT(category, name, ...) \
-  FILAMENT_TRACING_NAME(category, name)
+// Treat DANTE_TRACING_EVENT same as DANTE_TRACING_NAME
+#define DANTE_TRACING_EVENT(category, name, ...) \
+  DANTE_TRACING_NAME(category, name)
 
 // Denotes that a new frame has started processing.
-#define FILAMENT_TRACING_FRAME_ID(category, frame) \
+#define DANTE_TRACING_FRAME_ID(category, frame) \
     ::utils::details::Tracing(category).frameId(frame)
 
 extern thread_local std::stack<const char*> ___tracerSections;
 
-// FILAMENT_TRACING_CALL is an FILAMENT_TRACING_NAME that uses the current function name.
-#define FILAMENT_TRACING_CALL(category) FILAMENT_TRACING_NAME(category, __PRETTY_FUNCTION__)
+// DANTE_TRACING_CALL is an DANTE_TRACING_NAME that uses the current function name.
+#define DANTE_TRACING_CALL(category) DANTE_TRACING_NAME(category, __PRETTY_FUNCTION__)
 
-#define FILAMENT_TRACING_NAME_BEGIN(category, name) \
+#define DANTE_TRACING_NAME_BEGIN(category, name) \
         ___tracerSections.push(name) , \
         ___tracer.traceBegin(name)
 
-#define FILAMENT_TRACING_NAME_END(category) \
+#define DANTE_TRACING_NAME_END(category) \
         ___tracer.traceEnd(___tracerSections.top()) , \
         ___tracerSections.pop()
 
@@ -79,24 +75,24 @@ extern thread_local std::stack<const char*> ___tracerSections;
  * simultaneous events. The name and cookie used to begin an event must be
  * used to end it.
  */
-#define FILAMENT_TRACING_ASYNC_BEGIN(category, name, cookie) \
+#define DANTE_TRACING_ASYNC_BEGIN(category, name, cookie) \
         ___tracer.asyncBegin(name, cookie)
 
 /**
  * Trace the end of an asynchronous event.
- * This should have a corresponding FILAMENT_TRACING_ASYNC_BEGIN.
+ * This should have a corresponding DANTE_TRACING_ASYNC_BEGIN.
  */
-#define FILAMENT_TRACING_ASYNC_END(category, name, cookie) \
+#define DANTE_TRACING_ASYNC_END(category, name, cookie) \
         ___tracer.asyncEnd(name, cookie)
 
 /**
  * Traces an integer counter value.  name is used to identify the counter.
  * This can be used to track how a value changes over time.
  */
-#define FILAMENT_TRACING_VALUE(category, name, val) \
+#define DANTE_TRACING_VALUE(category, name, val) \
         ___tracer.value(name, val)
 
-#endif // FILAMENT_TRACING_MODE != FILAMENT_TRACING_MODE_DISABLED
+#endif // DANTE_TRACING_MODE != DANTE_TRACING_MODE_DISABLED
 
 // ------------------------------------------------------------------------------------------------
 // No user serviceable code below...
@@ -233,4 +229,4 @@ private:
 } // namespace utils::details
 
 
-#endif // TNT_UTILS_DARWIN_FILAMENT_TRACING_H
+#endif // TNT_UTILS_DARWIN_DANTE_TRACING_H

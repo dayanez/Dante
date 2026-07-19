@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "opengl/GLUtils.h"
 
@@ -40,7 +36,7 @@
 
 using namespace utils;
 
-namespace filament::backend {
+namespace dante::backend {
 using namespace backend;
 
 // The Android NDK doesn't expose extensions, fake it with eglGetProcAddress
@@ -108,9 +104,9 @@ bool PlatformEGL::isOpenGL() const noexcept {
 PlatformEGL::ExternalImageEGL::~ExternalImageEGL() = default;
 
 void PlatformEGL::setEglDisplay(EGLDisplay display) noexcept {
-    FILAMENT_CHECK_PRECONDITION(mEGLDisplay == EGL_NO_DISPLAY)
+    DANTE_CHECK_PRECONDITION(mEGLDisplay == EGL_NO_DISPLAY)
         << "EGL Display has already been set.";
-    FILAMENT_CHECK_PRECONDITION(display != EGL_NO_DISPLAY)
+    DANTE_CHECK_PRECONDITION(display != EGL_NO_DISPLAY)
         << "Must specify a valid EGL Display.";
     mEGLDisplay = display;
 }
@@ -144,7 +140,7 @@ Driver* PlatformEGL::createDriver(void* sharedContext, const DriverConfig& drive
         }
     }
 
-#if defined(FILAMENT_IMPORT_ENTRY_POINTS)
+#if defined(DANTE_IMPORT_ENTRY_POINTS)
     importGLESExtensionsEntryPoints();
 #endif
 
@@ -172,7 +168,7 @@ Driver* PlatformEGL::createDriver(void* sharedContext, const DriverConfig& drive
 #ifdef __ANDROID__
     bool requestES2Context = driverConfig.forceGLES2Context;
     char property[PROP_VALUE_MAX];
-    int const length = __system_property_get("debug.filament.es2", property);
+    int const length = __system_property_get("debug.dante.es2", property);
     if (length > 0) {
         requestES2Context = bool(atoi(property));
     }
@@ -920,4 +916,4 @@ EGLBoolean PlatformEGL::EGL::makeCurrent(EGLContext const context, EGLSurface co
     return EGL_TRUE;
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

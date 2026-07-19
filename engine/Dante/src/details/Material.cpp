@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Material.h"
 
 #include "DynamicSpecConstKey.h"
-#include "FilamentAPI-impl.h"
+#include "DanteAPI-impl.h"
 #include "Froxelizer.h"
 #include "MaterialParser.h"
 
@@ -14,16 +10,16 @@
 
 #include "ds/ColorPassDescriptorSet.h"
 
-#include <private/filament/BufferInterfaceBlock.h>
-#include <private/filament/DescriptorSets.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/Variant.h>
+#include <private/dante/BufferInterfaceBlock.h>
+#include <private/dante/DescriptorSets.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/Variant.h>
 
-#include <filament/Material.h>
-#include <filament/MaterialEnums.h>
+#include <dante/Material.h>
+#include <dante/MaterialEnums.h>
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
 #include <matdbg/DebugServer.h>
 #endif
 
@@ -58,7 +54,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 namespace {
 
@@ -121,7 +117,7 @@ Material::Builder& Material::Builder::uboBatching(UboBatchingMode const mode) no
 
 template<typename T, typename>
 Material::Builder& Material::Builder::constant(const char* name, size_t nameLength, T value) {
-    FILAMENT_CHECK_PRECONDITION(name != nullptr) << "name cannot be null";
+    DANTE_CHECK_PRECONDITION(name != nullptr) << "name cannot be null";
     mImpl->mConstantSpecializations[{name, nameLength}] = value;
     return *this;
 }
@@ -157,7 +153,7 @@ FMaterial::FMaterial(FEngine& engine, const Builder& builder, MaterialDefinition
           mEngine(engine),
           mMaterialId(engine.getMaterialId()) {
 
-    FILAMENT_CHECK_PRECONDITION(!mUseUboBatching || engine.isUboBatchingEnabled())
+    DANTE_CHECK_PRECONDITION(!mUseUboBatching || engine.isUboBatchingEnabled())
             << "UBO batching is not enabled.";
 
     DriverApi& driver = engine.getDriverApi();
@@ -168,7 +164,7 @@ FMaterial::FMaterial(FEngine& engine, const Builder& builder, MaterialDefinition
 
     mPrograms.initializeForMaterial(engine, *this, processSpecializationConstants(builder));
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     // Register the material with matdbg.
     matdbg::DebugServer* server = downcast(engine).debug.server;
     if (UTILS_UNLIKELY(server)) {
@@ -192,13 +188,13 @@ void FMaterial::terminate(FEngine& engine) {
     auto pos = materialInstanceResourceList.find(this);
     if (UTILS_LIKELY(pos != materialInstanceResourceList.cend())) {
         auto const& featureFlags = engine.features.engine.debug;
-        FILAMENT_FLAG_GUARDED_CHECK_PRECONDITION(pos->second.empty(),
+        DANTE_FLAG_GUARDED_CHECK_PRECONDITION(pos->second.empty(),
                 featureFlags.assert_destroy_material_before_material_instance)
                 << "destroying material \"" << this->getName().c_str_safe() << "\" but "
                 << pos->second.size() << " instances still alive.";
     }
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     // Unregister the material with matdbg.
     matdbg::DebugServer* server = engine.debug.server;
     if (UTILS_UNLIKELY(server)) {
@@ -209,7 +205,7 @@ void FMaterial::terminate(FEngine& engine) {
     mPrograms.terminate(engine);
 }
 
-filament::DescriptorSetLayout const& FMaterial::getPerViewDescriptorSetLayout(
+dante::DescriptorSetLayout const& FMaterial::getPerViewDescriptorSetLayout(
         Variant const variant, bool const useVsmDescriptorSetLayout) const noexcept {
     if (mDefinition.materialDomain == MaterialDomain::SURFACE) {
         // `variant` is only sensical for MaterialDomain::SURFACE
@@ -231,7 +227,7 @@ void FMaterial::compile(CompilerPriorityQueue const priority,
         UserVariantFilterMask variantSpec,
         CallbackHandler* handler,
         Invocable<void(Material*)>&& callback) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT,
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE,
             "name", getName().c_str(),
             "variantKey", static_cast<uint32_t>(variantSpec),
             "priority", static_cast<uint32_t>(priority));
@@ -251,7 +247,7 @@ void FMaterial::compile(CompilerPriorityQueue const priority,
         FixedCapacityVector<DynamicSpecConstKey> const& specKeys,
         CallbackHandler* handler,
         Invocable<void(Material*)>&& callback) noexcept {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT,
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE,
             "name", getName().c_str(), "variant count", variants.size(),
             "parallel comp supported",
             mEngine.getDriverApi().isParallelShaderCompileSupported());
@@ -271,7 +267,7 @@ void FMaterial::compile(CompilerPriorityQueue const priority,
                         materialDomain, isMaterialLit);
                 if (mDefinition.isValidProgram(variant, specKey, shaderModel, isStereoSupported)) {
 #ifndef NDEBUG
-                    FILAMENT_TRACING_EVENT(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                    DANTE_TRACING_EVENT(DANTE_TRACING_CATEGORY_DANTE,
                             "prepareProgram(variant found)",
                             "name", getName().c_str(),
                             "variantKey", static_cast<uint32_t>(variant.key),
@@ -281,7 +277,7 @@ void FMaterial::compile(CompilerPriorityQueue const priority,
                     mi->prepareProgram(driver, variant, specKey, priority);
                 } else {
 #ifndef NDEBUG
-                    FILAMENT_TRACING_EVENT(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                    DANTE_TRACING_EVENT(DANTE_TRACING_CATEGORY_DANTE,
                             "requested variant missing",
                             "name", getName().c_str(),
                             "variantKey", static_cast<uint32_t>(variant.key),
@@ -297,7 +293,7 @@ void FMaterial::compile(CompilerPriorityQueue const priority,
             for (UTILS_UNUSED_WITHOUT_TRACING auto specKey: specKeys) {
                 specKey = DynamicSpecConstKey::filterProgramSpecKey(variant, specKey,
                         materialDomain, isMaterialLit);
-                FILAMENT_TRACING_EVENT(FILAMENT_TRACING_CATEGORY_FILAMENT,
+                DANTE_TRACING_EVENT(DANTE_TRACING_CATEGORY_DANTE,
                         "parallel compilation disabled", "name", getName().c_str(), "variantKey",
                         static_cast<uint32_t>(variant.key), "specKey",
                         static_cast<uint32_t>(specKey.key), "priority",
@@ -407,7 +403,7 @@ size_t FMaterial::getParameters(ParameterInfo* parameters, size_t count) const n
     return count;
 }
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
 
 void FMaterial::updateActiveProgramsForMatdbg(Variant const variant) const noexcept {
     assert_invariant((size_t)variant.key < VARIANT_COUNT);
@@ -477,7 +473,7 @@ void FMaterial::onQueryCallback(void* userdata, VariantList* pActiveVariants) {
 
 /** @}*/
 
-#endif // FILAMENT_ENABLE_MATDBG
+#endif // DANTE_ENABLE_MATDBG
 
 FixedCapacityVector<Program::SpecializationConstant> FMaterial::processSpecializationConstants(
         Builder const& builder) {
@@ -494,26 +490,26 @@ FixedCapacityVector<Program::SpecializationConstant> FMaterial::processSpecializ
     for (auto const& [name, value] : builder->mConstantSpecializations) {
         std::string_view const key{ name.data(), name.size() };
         auto pos = mDefinition.specializationConstantsNameToIndex.find(key);
-        FILAMENT_CHECK_PRECONDITION(pos != mDefinition.specializationConstantsNameToIndex.end())
+        DANTE_CHECK_PRECONDITION(pos != mDefinition.specializationConstantsNameToIndex.end())
                 << "The material " << mDefinition.name.c_str_safe()
                 << " does not have a constant parameter named " << name.c_str() << ".";
         constexpr char const* const types[3] = {"an int", "a float", "a bool"};
         auto const& constant = mDefinition.materialConstants[pos->second];
         switch (constant.type) {
             case ConstantType::INT:
-                FILAMENT_CHECK_PRECONDITION(std::holds_alternative<int32_t>(value))
+                DANTE_CHECK_PRECONDITION(std::holds_alternative<int32_t>(value))
                         << "The constant parameter " << name.c_str() << " on material "
                         << mDefinition.name.c_str_safe() << " is of type int, but "
                         << types[value.index()] << " was provided.";
                 break;
             case ConstantType::FLOAT:
-                FILAMENT_CHECK_PRECONDITION(std::holds_alternative<float>(value))
+                DANTE_CHECK_PRECONDITION(std::holds_alternative<float>(value))
                         << "The constant parameter " << name.c_str() << " on material "
                         << mDefinition.name.c_str_safe() << " is of type float, but "
                         << types[value.index()] << " was provided.";
                 break;
             case ConstantType::BOOL:
-                FILAMENT_CHECK_PRECONDITION(std::holds_alternative<bool>(value))
+                DANTE_CHECK_PRECONDITION(std::holds_alternative<bool>(value))
                         << "The constant parameter " << name.c_str() << " on material "
                         << mDefinition.name.c_str_safe() << " is of type bool, but "
                         << types[value.index()] << " was provided.";
@@ -539,4 +535,4 @@ const char* FMaterial::getParameterTransformName(std::string_view samplerName) c
     return info->transformName.c_str();
 }
 
-} // namespace filament
+} // namespace dante

@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_COMMANDBUFFERQUEUE_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_COMMANDBUFFERQUEUE_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_COMMANDBUFFERQUEUE_H
+#define TNT_DANTE_BACKEND_PRIVATE_COMMANDBUFFERQUEUE_H
 
 #include <private/backend/CircularBuffer.h>
 
@@ -19,7 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 /*
  * A producer-consumer command queue that uses a CircularBuffer as main storage
@@ -113,6 +109,6 @@ private:
 #endif
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_COMMANDBUFFERQUEUE_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_COMMANDBUFFERQUEUE_H

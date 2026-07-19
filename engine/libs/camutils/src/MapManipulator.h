@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef CAMUTILS_MAP_MANIPULATOR_H
 #define CAMUTILS_MAP_MANIPULATOR_H
@@ -10,7 +6,7 @@
 
 #include <math/vec3.h>
 
-namespace filament {
+namespace dante {
 namespace camutils {
 
 template<typename FLOAT>
@@ -19,7 +15,7 @@ public:
     using vec2 = math::vec2<FLOAT>;
     using vec3 = math::vec3<FLOAT>;
     using vec4 = math::vec4<FLOAT>;
-    using Bookmark = filament::camutils::Bookmark<FLOAT>;
+    using Bookmark = dante::camutils::Bookmark<FLOAT>;
     using Base = Manipulator<FLOAT>;
     using Config = typename Manipulator<FLOAT>::Config;
 
@@ -181,6 +177,6 @@ private:
 };
 
 } // namespace camutils
-} // namespace filament
+} // namespace dante
 
 #endif /* CAMUTILS_MAP_MANIPULATOR_H */

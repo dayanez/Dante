@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_NOOPDRIVER_H
-#define TNT_FILAMENT_BACKEND_NOOPDRIVER_H
+#ifndef TNT_DANTE_BACKEND_NOOPDRIVER_H
+#define TNT_DANTE_BACKEND_NOOPDRIVER_H
 
 #include "private/backend/Driver.h"
 #include "DriverBase.h"
@@ -12,7 +8,7 @@
 #include <utils/FixedCapacityVector.h>
 #include <utils/compiler.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class NoopDriver final : public DriverBase {
     NoopDriver(const Platform::DriverConfig& driverConfig) noexcept;
@@ -50,6 +46,6 @@ private:
 #include "private/backend/DriverAPI.inc"
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_BACKEND_NOOPDRIVER_H
+#endif // TNT_DANTE_BACKEND_NOOPDRIVER_H

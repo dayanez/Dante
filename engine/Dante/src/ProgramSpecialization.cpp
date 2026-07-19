@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 #include "ProgramSpecialization.h"
 
 #include <utils/Hash.h>
 
-namespace filament {
+namespace dante {
 
 size_t ProgramSpecialization::hash() const noexcept {
     size_t seed = 0;
@@ -30,4 +26,4 @@ bool ProgramSpecialization::operator==(ProgramSpecialization const& rhs) const n
            specializationConstants == rhs.specializationConstants;
 }
 
-} // namespace filament
+} // namespace dante

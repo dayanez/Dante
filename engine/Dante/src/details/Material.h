@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_MATERIAL_H
-#define TNT_FILAMENT_DETAILS_MATERIAL_H
+#ifndef TNT_DANTE_DETAILS_MATERIAL_H
+#define TNT_DANTE_DETAILS_MATERIAL_H
 
 #include "downcast.h"
 #include "LocalProgramCache.h"
@@ -13,17 +9,17 @@
 
 #include "ds/DescriptorSetLayout.h"
 
-#include <private/filament/BufferInterfaceBlock.h>
-#include <private/filament/ConstantInfo.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/SubpassInfo.h>
-#include <private/filament/Variant.h>
+#include <private/dante/BufferInterfaceBlock.h>
+#include <private/dante/ConstantInfo.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/SubpassInfo.h>
+#include <private/dante/Variant.h>
 
-#include <filament/Material.h>
-#include <filament/MaterialEnums.h>
+#include <dante/Material.h>
+#include <dante/MaterialEnums.h>
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
 #include <matdbg/DebugServer.h>
 #endif
 
@@ -44,7 +40,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class MaterialParser;
 
@@ -224,7 +220,7 @@ public:
     }
 
     MaterialParser const& getMaterialParser() const noexcept {
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
         if (mEditedMaterialParser) {
             return *mEditedMaterialParser;
         }
@@ -236,7 +232,7 @@ public:
 
     LocalProgramCache const& getPrograms() const noexcept { return mPrograms; }
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     void applyPendingEdits() noexcept;
 
     /**
@@ -291,7 +287,7 @@ private:
     // reserve some space to construct the default material instance
     mutable FMaterialInstance* mDefaultMaterialInstance = nullptr;
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
     matdbg::MaterialKey mDebuggerId;
     mutable utils::Mutex mActiveProgramsLock;
     mutable VariantList mActivePrograms;
@@ -311,8 +307,8 @@ private:
 };
 
 
-FILAMENT_DOWNCAST(Material)
+DANTE_DOWNCAST(Material)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_MATERIAL_H
+#endif // TNT_DANTE_DETAILS_MATERIAL_H

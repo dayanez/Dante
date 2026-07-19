@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_GLDESCRIPTORSETLAYOUT_H
-#define TNT_FILAMENT_BACKEND_OPENGL_GLDESCRIPTORSETLAYOUT_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_GLDESCRIPTORSETLAYOUT_H
+#define TNT_DANTE_BACKEND_OPENGL_GLDESCRIPTORSETLAYOUT_H
 
 #include "DriverBase.h"
 
@@ -15,7 +11,7 @@
 
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 struct GLDescriptorSetLayout : public HwDescriptorSetLayout, public DescriptorSetLayout {
     using HwDescriptorSetLayout::HwDescriptorSetLayout;
@@ -36,6 +32,6 @@ struct GLDescriptorSetLayout : public HwDescriptorSetLayout, public DescriptorSe
     uint8_t maxDescriptorBinding = 0;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif //TNT_FILAMENT_BACKEND_OPENGL_GLDESCRIPTORSETLAYOUT_H
+#endif //TNT_DANTE_BACKEND_OPENGL_GLDESCRIPTORSETLAYOUT_H

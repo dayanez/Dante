@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IMAGE_LINEARIMAGE_H
 #define IMAGE_LINEARIMAGE_H
@@ -11,7 +7,7 @@
 #include <cstdint>
 
 /**
- * Types and free functions for the Filament core imaging library, primarily used for offline tools,
+ * Types and free functions for the Dante core imaging library, primarily used for offline tools,
  * but with minimal dependencies to support potential use by the renderer.
  */
 namespace image {

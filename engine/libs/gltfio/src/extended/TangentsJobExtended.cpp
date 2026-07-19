@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "TangentsJobExtended.h"
 
 #include "AssetLoaderExtended.h"
 #include "TangentSpaceMeshWrapper.h"
 
-#include "../FFilamentAsset.h"
+#include "../FDanteAsset.h"
 #include "../GltfEnums.h"
 #include "../Utility.h"
 
@@ -22,9 +18,9 @@
 #include <memory>
 #include <unordered_map>
 
-using namespace filament;
-using namespace filament::gltfio;
-using namespace filament::math;
+using namespace dante;
+using namespace dante::gltfio;
+using namespace dante::math;
 
 namespace {
 
@@ -101,7 +97,7 @@ inline uint8_t toCode(Attribute attr, UvMap const& uvmap, bool hasUv0) {
             assert_invariant(attr.index == 0);
             return JOINTS_ID;
         default:
-            // Otherwise, this is not an attribute supported by Filament.
+            // Otherwise, this is not an attribute supported by Dante.
             return INVALID_ID;
     }
 }
@@ -341,7 +337,7 @@ void destroy(AttributeDataMap& data) {
 
 } // anonymous namespace
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 void TangentsJobExtended::run(Params* params) {
     cgltf_primitive const& prim = *params->in.prim;
@@ -539,4 +535,4 @@ void TangentsJobExtended::run(Params* params) {
     TangentSpaceMeshWrapper::destroy(mesh);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

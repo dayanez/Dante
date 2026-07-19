@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FG_DETAILS_RESOURCENODE_H
-#define TNT_FILAMENT_FG_DETAILS_RESOURCENODE_H
+#ifndef TNT_DANTE_FG_DETAILS_RESOURCENODE_H
+#define TNT_DANTE_FG_DETAILS_RESOURCENODE_H
 
 #include "fg/details/DependencyGraph.h"
 #include "fg/details/Utilities.h"
@@ -14,7 +10,7 @@ namespace utils {
 class CString;
 } // namespace utils
 
-namespace filament {
+namespace dante {
 
 class FrameGraph;
 class ResourceEdgeBase;
@@ -103,6 +99,6 @@ private:
     utils::CString graphvizifyEdgeColor() const noexcept override;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FG_DETAILS_RESOURCENODE_H
+#endif // TNT_DANTE_FG_DETAILS_RESOURCENODE_H

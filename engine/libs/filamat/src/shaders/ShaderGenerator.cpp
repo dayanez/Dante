@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ShaderGenerator.h"
 
@@ -9,11 +5,11 @@
 #include "SibGenerator.h"
 #include "UibGenerator.h"
 
-#include <private/filament/DescriptorSets.h>
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/DescriptorSets.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <filamat/MaterialBuilder.h>
 
@@ -28,30 +24,30 @@
 
 namespace filamat {
 
-using namespace filament;
-using namespace filament::backend;
+using namespace dante;
+using namespace dante::backend;
 using namespace utils;
 
 void ShaderGenerator::generateSurfaceMaterialVariantDefines(io::sstream& out,
         ShaderStage const stage, MaterialBuilder::FeatureLevel featureLevel,
-        MaterialInfo const& material, filament::Variant const variant) noexcept {
+        MaterialInfo const& material, dante::Variant const variant) noexcept {
 
     bool const litVariants = material.isLit || material.hasShadowMultiplier;
 
     if (litVariants && variant.hasDirectionalLighting()) {
         CodeGenerator::generateDefine(out, "VARIANT_HAS_DIRECTIONAL_LIGHTING");
     }
-    if (litVariants && filament::Variant::isShadowReceiverVariant(variant)) {
+    if (litVariants && dante::Variant::isShadowReceiverVariant(variant)) {
         CodeGenerator::generateDefine(out, "VARIANT_HAS_SHADOWING");
     }
-    if (filament::Variant::isShadowSampler2DVariant(variant) ||
-            filament::Variant::isDepthMomentsVariant(variant)) {
+    if (dante::Variant::isShadowSampler2DVariant(variant) ||
+            dante::Variant::isDepthMomentsVariant(variant)) {
         CodeGenerator::generateDefine(out, "VARIANT_HAS_VSM");
     }
     if (hasStereo(variant, featureLevel)) {
         CodeGenerator::generateDefine(out, "VARIANT_HAS_STEREO");
     }
-    if (filament::Variant::isValidDepthVariant(variant)) {
+    if (dante::Variant::isValidDepthVariant(variant)) {
         CodeGenerator::generateDefine(out, "VARIANT_DEPTH");
     }
 
@@ -62,13 +58,13 @@ void ShaderGenerator::generateSurfaceMaterialVariantDefines(io::sstream& out,
             }
             break;
         case ShaderStage::FRAGMENT:
-            if (filament::Variant::isFogVariant(variant)) {
+            if (dante::Variant::isFogVariant(variant)) {
                 CodeGenerator::generateDefine(out, "VARIANT_HAS_FOG");
             }
-            if (filament::Variant::isPickingVariant(variant)) {
+            if (dante::Variant::isPickingVariant(variant)) {
                 CodeGenerator::generateDefine(out, "VARIANT_HAS_PICKING");
             }
-            if (filament::Variant::isSSRVariant(variant)) {
+            if (dante::Variant::isSSRVariant(variant)) {
                 CodeGenerator::generateDefine(out, "VARIANT_HAS_SSR");
             }
             break;
@@ -300,7 +296,7 @@ void ShaderGenerator::appendShader(io::sstream& ss,
 
 void ShaderGenerator::generateUserSpecConstants(
         const CodeGenerator& cg, io::sstream& fs, MaterialBuilder::ConstantList const& constants) {
-    // Constants 0 to CONFIG_MAX_INTERNAL_SPEC_CONSTANTS - 1 are reserved by Filament.
+    // Constants 0 to CONFIG_MAX_INTERNAL_SPEC_CONSTANTS - 1 are reserved by Dante.
     size_t index = CONFIG_MAX_INTERNAL_SPEC_CONSTANTS;
     for (const auto& constant : constants) {
         std::string const fullName = std::string("materialConstants_") + constant.name.c_str();
@@ -390,10 +386,10 @@ void ShaderGenerator::fixupExternalSamplers(ShaderModel const sm, std::string& s
 std::string ShaderGenerator::createSurfaceVertexProgram(ShaderModel const shaderModel,
         MaterialBuilder::TargetApi const targetApi, MaterialBuilder::TargetLanguage const targetLanguage,
         MaterialBuilder::FeatureLevel const featureLevel,
-        MaterialInfo const& material, const filament::Variant variant, Interpolation const interpolation,
+        MaterialInfo const& material, const dante::Variant variant, Interpolation const interpolation,
         VertexDomain const vertexDomain, const uint32_t apiLevel) const noexcept {
 
-    assert_invariant(filament::Variant::isValid(variant));
+    assert_invariant(dante::Variant::isValid(variant));
     assert_invariant(mMaterialDomain != MaterialBuilder::MaterialDomain::COMPUTE);
 
     if (mMaterialDomain == MaterialBuilder::MaterialDomain::POST_PROCESS) {
@@ -414,7 +410,7 @@ std::string ShaderGenerator::createSurfaceVertexProgram(ShaderModel const shader
     // we're in masked mode because fragment shader needs the color varyings
     const bool useOptimizedDepthVertexShader =
             // must be a depth variant
-            filament::Variant::isValidDepthVariant(variant) &&
+            dante::Variant::isValidDepthVariant(variant) &&
             // must have an empty vertex shader
             mIsMaterialVertexShaderEmpty &&
             // but must not be MASKED mode
@@ -481,7 +477,7 @@ std::string ShaderGenerator::createSurfaceVertexProgram(ShaderModel const shader
             UibGenerator::getPerRenderableUib());
 
     const bool litVariants = material.isLit || material.hasShadowMultiplier;
-    if (litVariants && filament::Variant::isShadowReceiverVariant(variant)) {
+    if (litVariants && dante::Variant::isShadowReceiverVariant(variant)) {
         cg.generateUniforms(vs, ShaderStage::FRAGMENT,
                 DescriptorSetBindingPoints::PER_VIEW,
                 +PerViewBindingPoints::SHADOWS,
@@ -528,11 +524,11 @@ std::string ShaderGenerator::createSurfaceFragmentProgram(ShaderModel const shad
         MaterialBuilder::TargetApi const targetApi,
         MaterialBuilder::TargetLanguage const targetLanguage,
         MaterialBuilder::FeatureLevel const featureLevel,
-        MaterialInfo const& material, const filament::Variant variant,
+        MaterialInfo const& material, const dante::Variant variant,
         Interpolation const interpolation, UserVariantFilterMask const variantFilter,
         const uint32_t apiLevel) const noexcept {
 
-    assert_invariant(filament::Variant::isValid(variant));
+    assert_invariant(dante::Variant::isValid(variant));
     assert_invariant(mMaterialDomain != MaterialBuilder::MaterialDomain::COMPUTE);
 
     if (mMaterialDomain == MaterialBuilder::MaterialDomain::POST_PROCESS) {
@@ -609,11 +605,11 @@ std::string ShaderGenerator::createSurfaceFragmentProgram(ShaderModel const shad
             +PerRenderableBindingPoints::OBJECT_UNIFORMS,
             UibGenerator::getPerRenderableUib());
 
-    if (hasLighting(material, variant) && !filament::Variant::isValidDepthVariant(variant)) {
+    if (hasLighting(material, variant) && !dante::Variant::isValidDepthVariant(variant)) {
         cg.generateUniforms(fs, ShaderStage::FRAGMENT, DescriptorSetBindingPoints::PER_VIEW,
                 +PerViewBindingPoints::LIGHTS, UibGenerator::getLightsUib());
 
-        if (filament::Variant::isShadowReceiverVariant(variant)) {
+        if (dante::Variant::isShadowReceiverVariant(variant)) {
             cg.generateUniforms(fs, ShaderStage::FRAGMENT, DescriptorSetBindingPoints::PER_VIEW,
                     +PerViewBindingPoints::SHADOWS, UibGenerator::getShadowUib());
         }
@@ -630,7 +626,7 @@ std::string ShaderGenerator::createSurfaceFragmentProgram(ShaderModel const shad
             +PerMaterialBindingPoints::MATERIAL_PARAMS,
             material.uib);
 
-    if (!filament::Variant::isValidDepthVariant(variant)) {
+    if (!dante::Variant::isValidDepthVariant(variant)) {
         if (!mOutputs.empty()) {
             CodeGenerator::generateValueDefine(fs, "HAS_CUSTOM_OUTPUT", 1u);
             for (const auto& output: mOutputs) {
@@ -661,7 +657,7 @@ std::string ShaderGenerator::createSurfaceFragmentProgram(ShaderModel const shad
 
     cg.generateCommonSamplers(fs, DescriptorSetBindingPoints::PER_MATERIAL, material.sib);
 
-    fs << "float filament_lodBias;\n";
+    fs << "float dante_lodBias;\n";
 
     // shading code
     CodeGenerator::generateSurfaceCommon(fs, ShaderStage::FRAGMENT);
@@ -669,12 +665,12 @@ std::string ShaderGenerator::createSurfaceFragmentProgram(ShaderModel const shad
     CodeGenerator::generateSurfaceMaterial(fs, ShaderStage::FRAGMENT);
     CodeGenerator::generateSurfaceParameters(fs, ShaderStage::FRAGMENT);
 
-    if (filament::Variant::isFogVariant(variant)) {
+    if (dante::Variant::isFogVariant(variant)) {
         CodeGenerator::generateSurfaceFog(fs, ShaderStage::FRAGMENT);
     }
 
     // shading model
-    if (filament::Variant::isValidDepthVariant(variant)) {
+    if (dante::Variant::isValidDepthVariant(variant)) {
         // In MASKED mode or with transparent shadows, we need the alpha channel computed by
         // the material (user code), so we append it here.
         if (material.userMaterialHasCustomDepth ||
@@ -684,13 +680,13 @@ std::string ShaderGenerator::createSurfaceFragmentProgram(ShaderModel const shad
              && material.hasTransparentShadow)) {
             appendShader(fs, mMaterialFragmentCode, mMaterialLineOffset);
         }
-        // These variants are special and are treated as DEPTH variants. Filament will never
+        // These variants are special and are treated as DEPTH variants. Dante will never
         // request that variant for the color pass.
         CodeGenerator::generateSurfaceDepthMain(fs, ShaderStage::FRAGMENT);
     } else {
         appendShader(fs, mMaterialFragmentCode, mMaterialLineOffset);
         if (material.isLit) {
-            if (filament::Variant::isSSRVariant(variant)) {
+            if (dante::Variant::isSSRVariant(variant)) {
                 CodeGenerator::generateSurfaceReflections(fs, ShaderStage::FRAGMENT);
             } else {
                 CodeGenerator::generateSurfaceLit(fs, ShaderStage::FRAGMENT, variant,
@@ -761,7 +757,7 @@ std::string ShaderGenerator::createPostProcessVertexProgram(ShaderModel const sm
         MaterialBuilder::TargetLanguage const targetLanguage,
         MaterialBuilder::FeatureLevel const featureLevel,
         MaterialInfo const& material,
-        const filament::Variant::type_t variantKey,
+        const dante::Variant::type_t variantKey,
         const uint32_t apiLevel) const noexcept {
     const CodeGenerator cg(sm, targetApi, targetLanguage, featureLevel);
     io::sstream vs;
@@ -809,7 +805,7 @@ std::string ShaderGenerator::createPostProcessFragmentProgram(ShaderModel const 
         MaterialBuilder::TargetLanguage const targetLanguage,
         MaterialBuilder::FeatureLevel const featureLevel,
         MaterialInfo const& material,
-        filament::Variant::type_t variantKey,
+        dante::Variant::type_t variantKey,
         const uint32_t apiLevel) const noexcept {
     const CodeGenerator cg(sm, targetApi, targetLanguage, featureLevel);
     io::sstream fs;
@@ -868,7 +864,7 @@ std::string ShaderGenerator::createPostProcessFragmentProgram(ShaderModel const 
     return fs.c_str();
 }
 
-bool ShaderGenerator::hasSkinningOrMorphing(filament::Variant const variant,
+bool ShaderGenerator::hasSkinningOrMorphing(dante::Variant const variant,
         MaterialBuilder::FeatureLevel const featureLevel) noexcept {
     return variant.hasSkinningOrMorphing()
             // HACK(exv): Ignore skinning/morphing variant when targeting ESSL 1.0. We should
@@ -877,7 +873,7 @@ bool ShaderGenerator::hasSkinningOrMorphing(filament::Variant const variant,
             && featureLevel > MaterialBuilder::FeatureLevel::FEATURE_LEVEL_0;
 }
 
-bool ShaderGenerator::hasStereo(filament::Variant const variant,
+bool ShaderGenerator::hasStereo(dante::Variant const variant,
         MaterialBuilder::FeatureLevel const featureLevel) noexcept {
     return variant.hasStereo()
             // HACK(exv): Ignore stereo variant when targeting ESSL 1.0. We should properly build a
@@ -886,9 +882,9 @@ bool ShaderGenerator::hasStereo(filament::Variant const variant,
 }
 
 bool ShaderGenerator::hasLighting(MaterialInfo const& material,
-        filament::Variant const variant) noexcept {
+        dante::Variant const variant) noexcept {
     return (material.isLit || material.hasShadowMultiplier) &&
-           !filament::Variant::isSSRVariant(variant);
+           !dante::Variant::isSSRVariant(variant);
 }
 
-} // namespace filament
+} // namespace dante

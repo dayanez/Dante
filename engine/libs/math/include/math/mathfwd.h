@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_MATHFWD_H
 #define TNT_MATH_MATHFWD_H
@@ -22,7 +18,7 @@
 
 #include <stdint.h>
 
-namespace filament::math {
+namespace dante::math {
 namespace details {
 
 template<typename T> class TVec2;
@@ -79,7 +75,7 @@ using mat4f     = details::TMat44<float>;
 using quat      = details::TQuaternion<double>;
 using quatf     = details::TQuaternion<float>;
 
-}  // namespace filament::math
+}  // namespace dante::math
 
 #endif // _MSC_VER
 

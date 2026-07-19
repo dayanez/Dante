@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PIPELINESTATE_H
-#define TNT_FILAMENT_BACKEND_PIPELINESTATE_H
+#ifndef TNT_DANTE_BACKEND_PIPELINESTATE_H
+#define TNT_DANTE_BACKEND_PIPELINESTATE_H
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -17,7 +13,7 @@ namespace utils::io {
 class ostream;
 } // namespace utils::io
 
-namespace filament::backend {
+namespace dante::backend {
 
 //! \privatesection
 
@@ -37,10 +33,10 @@ struct PipelineState {
     uint8_t padding[3] = {};                                                //  3
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
 #if !defined(NDEBUG)
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::PipelineState& ps);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::PipelineState& ps);
 #endif
 
-#endif //TNT_FILAMENT_BACKEND_PIPELINESTATE_H
+#endif //TNT_DANTE_BACKEND_PIPELINESTATE_H

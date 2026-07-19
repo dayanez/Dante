@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <utils/ashmem.h>
 #include <utils/api_level.h>
@@ -124,7 +120,7 @@ error:
 
 int ashmem_create_region(const char*, size_t size) {
     char template_path[512];
-    snprintf(template_path, sizeof(template_path), "%s/filament-ashmem-%d-XXXXXXXXX",
+    snprintf(template_path, sizeof(template_path), "%s/dante-ashmem-%d-XXXXXXXXX",
             Path::getTemporaryDirectory().c_str(), getpid());
     int fd = mkstemp(template_path);
     if (fd == -1) return -1;
@@ -139,7 +135,7 @@ int ashmem_create_region(const char*, size_t size) {
 #else
 int ashmem_create_region(const char*, size_t size) {
     char template_path[512];
-    snprintf(template_path, sizeof(template_path), "%s/filament-ashmem-%lu-XXXXXXXXX",
+    snprintf(template_path, sizeof(template_path), "%s/dante-ashmem-%lu-XXXXXXXXX",
             Path::getTemporaryDirectory().c_str(), GetCurrentProcessId());
     const char* tmpPath = _mktemp(template_path);
     int fd = _open(tmpPath, _O_BINARY);

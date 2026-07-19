@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 //! \file
 
-#ifndef TNT_FILAMENT_BACKEND_BUFFERDESCRIPTOR_H
-#define TNT_FILAMENT_BACKEND_BUFFERDESCRIPTOR_H
+#ifndef TNT_DANTE_BACKEND_BUFFERDESCRIPTOR_H
+#define TNT_DANTE_BACKEND_BUFFERDESCRIPTOR_H
 
 #include <utils/compiler.h>
 
@@ -18,7 +14,7 @@ namespace utils::io {
 class ostream;
 } // namespace utils::io
 
-namespace filament::backend {
+namespace dante::backend {
 
 class CallbackHandler;
 
@@ -35,11 +31,11 @@ public:
     /**
      * Callback used to destroy the buffer data.
      * Guarantees:
-     *      Called on the main filament thread.
+     *      Called on the main dante thread.
      *
      * Limitations:
      *      Must be lightweight.
-     *      Must not call filament APIs.
+     *      Must not call dante APIs.
      */
     using Callback = void(*)(void* buffer, size_t size, void* user);
 
@@ -209,10 +205,10 @@ private:
     CallbackHandler* mHandler = nullptr;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
 #if !defined(NDEBUG)
-utils::io::ostream& operator<<(utils::io::ostream& out, const filament::backend::BufferDescriptor& b);
+utils::io::ostream& operator<<(utils::io::ostream& out, const dante::backend::BufferDescriptor& b);
 #endif
 
-#endif // TNT_FILAMENT_BACKEND_BUFFERDESCRIPTOR_H
+#endif // TNT_DANTE_BACKEND_BUFFERDESCRIPTOR_H

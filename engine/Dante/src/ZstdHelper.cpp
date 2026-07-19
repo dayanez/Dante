@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ZstdHelper.h"
 
@@ -10,7 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 bool ZstdHelper::isCompressed(const void* src, size_t src_size) noexcept {
     if (src_size < 4) {
@@ -40,4 +36,4 @@ size_t ZstdHelper::decompress(void* dst, size_t dst_size, const void* src, size_
     return ZSTD_decompress(dst, dst_size, src, src_size);
 }
 
-} // namespace filament
+} // namespace dante

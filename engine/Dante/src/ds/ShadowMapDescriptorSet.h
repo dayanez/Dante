@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_SHADOWMAPDESCRIPTORSET_H
-#define TNT_FILAMENT_SHADOWMAPDESCRIPTORSET_H
+#ifndef TNT_DANTE_SHADOWMAPDESCRIPTORSET_H
+#define TNT_DANTE_SHADOWMAPDESCRIPTORSET_H
 
 #include "DescriptorSet.h"
 #include "DescriptorSetLayout.h"
 
-#include <private/filament/UibStructs.h>
+#include <private/dante/UibStructs.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -19,7 +15,7 @@
 
 #include <array>
 
-namespace filament {
+namespace dante {
 
 struct CameraInfo;
 
@@ -79,6 +75,6 @@ private:
     DescriptorSet mDescriptorSet;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif //TNT_FILAMENT_SHADOWMAPDESCRIPTORSET_H
+#endif //TNT_DANTE_SHADOWMAPDESCRIPTORSET_H

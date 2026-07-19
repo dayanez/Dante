@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "AtlasAllocator.h"
 
@@ -16,7 +12,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 
@@ -231,4 +227,4 @@ AtlasAllocator::NodeId AtlasAllocator::allocateInLayer(size_t const maxHeight) n
     return candidate;
 }
 
-} // namespace filament
+} // namespace dante

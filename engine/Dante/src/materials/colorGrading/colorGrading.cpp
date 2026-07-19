@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "colorGrading.h"
 #include "generated/resources/colorGrading.h"
@@ -14,7 +10,7 @@
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 static const StaticMaterialInfo sMaterialList[] = {
     { "colorGrading",               MATERIAL(COLORGRADING, COLORGRADING) },
@@ -26,4 +22,4 @@ utils::Slice<const StaticMaterialInfo> getColorGradingMaterialList() noexcept {
     return { std::begin(sMaterialList), std::end(sMaterialList) };
 }
 
-} // namespace filament
+} // namespace dante

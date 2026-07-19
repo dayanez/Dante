@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_ENGINE_H
-#define TNT_FILAMENT_DETAILS_ENGINE_H
+#ifndef TNT_DANTE_DETAILS_ENGINE_H
+#define TNT_DANTE_DETAILS_ENGINE_H
 
 #include "downcast.h"
 
@@ -37,8 +33,8 @@
 #include "details/Skybox.h"
 #include "details/Sync.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
 #include <private/backend/CommandBufferQueue.h>
 #include <private/backend/CommandStream.h>
@@ -46,16 +42,16 @@
 #include <private/utils/FeatureFlagManager.h>
 
 
-#include <filament/ColorGrading.h>
-#include <filament/Engine.h>
-#include <filament/FramePacer.h>
-#include <filament/IndirectLight.h>
-#include <filament/Material.h>
-#include <filament/Skybox.h>
-#include <filament/Stream.h>
-#include <filament/Texture.h>
-#include <filament/VertexBuffer.h>
-#include <filament/IndexBuffer.h>
+#include <dante/ColorGrading.h>
+#include <dante/Engine.h>
+#include <dante/FramePacer.h>
+#include <dante/IndirectLight.h>
+#include <dante/Material.h>
+#include <dante/Skybox.h>
+#include <dante/Stream.h>
+#include <dante/Texture.h>
+#include <dante/VertexBuffer.h>
+#include <dante/IndexBuffer.h>
 
 #include <backend/CallbackHandler.h>
 #include <backend/DriverEnums.h>
@@ -89,16 +85,16 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#if FILAMENT_ENABLE_MATDBG
+#if DANTE_ENABLE_MATDBG
 #include <matdbg/DebugServer.h>
 #else
-namespace filament::matdbg {
+namespace dante::matdbg {
 class DebugServer;
 using MaterialKey = uint32_t;
-} // namespace filament::matdbg
+} // namespace dante::matdbg
 #endif
 
-namespace filament {
+namespace dante {
 class FgviewerManager;
 class Renderer;
 class MaterialParser;
@@ -797,8 +793,8 @@ public:
     } debug;
 };
 
-FILAMENT_DOWNCAST(Engine)
+DANTE_DOWNCAST(Engine)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_ENGINE_H
+#endif // TNT_DANTE_DETAILS_ENGINE_H

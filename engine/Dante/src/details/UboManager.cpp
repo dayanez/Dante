@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/UboManager.h"
 
@@ -17,7 +13,7 @@
 
 #include <vector>
 
-namespace filament {
+namespace dante {
 
 namespace {
 using namespace utils;
@@ -40,7 +36,7 @@ void UboManager::FenceManager::track(DriverApi& driver, AllocationIdContainer&& 
 
 void UboManager::FenceManager::reclaimCompletedResources(DriverApi& driver,
         std::function<void(AllocationId)> const& onReclaimed) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     uint32_t signaledCount = 0;
     bool seenSignaledFence = false;
 
@@ -109,7 +105,7 @@ UboManager::UboManager(DriverApi& driver, allocation_size_t defaultSlotSizeInByt
 }
 
 void UboManager::beginFrame(DriverApi& driver) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     // Check finished frames and decrement GPU count accordingly.
     mFenceManager.reclaimCompletedResources(driver,
             [this](AllocationId id) { mAllocator.releaseGpu(id); });
@@ -228,7 +224,7 @@ void UboManager::unmanageMaterialInstance(FMaterialInstance* materialInstance) {
 }
 
 UboManager::AllocationResult UboManager::allocateOnDemand() {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     bool reallocationNeeded = false;
 
     // Pass 1: Allocate slots for new material instances (that don't have a slot yet).
@@ -298,7 +294,7 @@ allocation_size_t UboManager::getAllocationOffset(AllocationId id) const {
 }
 
 void UboManager::reallocate(DriverApi& driver, allocation_size_t requiredSize) {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
     if (mUbHandle) {
         driver.destroyBufferObject(mUbHandle);
     }
@@ -325,4 +321,4 @@ allocation_size_t UboManager::calculateRequiredSize() {
     return mAllocator.alignUp(newBufferSize * BUFFER_SIZE_GROWTH_MULTIPLIER);
 }
 
-} // namespace filament
+} // namespace dante

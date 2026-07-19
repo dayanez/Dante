@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2020 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_DRACO_CACHE_H
 #define GLTFIO_DRACO_CACHE_H
@@ -15,7 +11,7 @@
 #define GLTFIO_DRACO_SUPPORTED 0
 #endif
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 class DracoMesh;
 
@@ -54,6 +50,6 @@ private:
     std::unique_ptr<struct DracoMeshDetails> mDetails;
 };
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_DRACO_CACHE_H

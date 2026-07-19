@@ -1,21 +1,17 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_FROXELIZER_H
-#define TNT_FILAMENT_DETAILS_FROXELIZER_H
+#ifndef TNT_DANTE_DETAILS_FROXELIZER_H
+#define TNT_DANTE_DETAILS_FROXELIZER_H
 
 #include "Allocators.h"
 
 #include "details/Engine.h"
 #include "details/Scene.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
-#include <filament/View.h>
-#include <filament/Viewport.h>
+#include <dante/View.h>
+#include <dante/Viewport.h>
 
 #include <backend/Handle.h>
 
@@ -34,7 +30,7 @@
 #include <limits>
 #include <utility>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FCamera;
@@ -303,6 +299,6 @@ private:
     View::FroxelConfigurationInfo mFroxelConfigurationInfo{};
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_FROXELIZER_H
+#endif // TNT_DANTE_DETAILS_FROXELIZER_H

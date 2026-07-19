@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_ZSTD_HELPER_H
-#define TNT_FILAMENT_ZSTD_HELPER_H
+#ifndef TNT_DANTE_ZSTD_HELPER_H
+#define TNT_DANTE_ZSTD_HELPER_H
 
 #include <stddef.h>
 
-namespace filament {
+namespace dante {
 
 class ZstdHelper {
 public:
@@ -39,6 +35,6 @@ public:
     static size_t decompress(void* dst, size_t dst_size, const void* src, size_t src_size) noexcept;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_ZSTD_HELPER_H
+#endif // TNT_DANTE_ZSTD_HELPER_H

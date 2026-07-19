@@ -1,16 +1,12 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_RESOURCEALLOCATOR_H
-#define TNT_FILAMENT_RESOURCEALLOCATOR_H
+#ifndef TNT_DANTE_RESOURCEALLOCATOR_H
+#define TNT_DANTE_RESOURCEALLOCATOR_H
 
-#ifndef FILAMENT_TEXTURE_CACHE_DEBUG
-#define FILAMENT_TEXTURE_CACHE_DEBUG 0
+#ifndef DANTE_TEXTURE_CACHE_DEBUG
+#define DANTE_TEXTURE_CACHE_DEBUG 0
 #endif
 
-#include <filament/Engine.h>
+#include <dante/Engine.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -30,7 +26,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class TextureCacheDisposer;
 class TextureCacheInterface;
@@ -254,7 +250,7 @@ private:
     friend class TextureCacheDisposer;
 
 
-#if FILAMENT_TEXTURE_CACHE_DEBUG
+#if DANTE_TEXTURE_CACHE_DEBUG
     friend class Debugger;
     std::unique_ptr<Debugger> mDebugger;
 #endif
@@ -283,7 +279,7 @@ private:
     InUseContainer mInUseTextures;
 };
 
-} // namespace filament
+} // namespace dante
 
 
-#endif //TNT_FILAMENT_RESOURCEALLOCATOR_H
+#endif //TNT_DANTE_RESOURCEALLOCATOR_H

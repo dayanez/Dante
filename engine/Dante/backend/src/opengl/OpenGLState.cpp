@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "OpenGLState.h"
 
@@ -13,7 +9,7 @@
 
 using namespace utils;
 
-namespace filament::backend {
+namespace dante::backend {
 
 OpenGLState::OpenGLState(OpenGLContext& context) noexcept
         : ext(context.ext),
@@ -35,7 +31,7 @@ OpenGLState::~OpenGLState() noexcept {
 }
 
 void OpenGLState::terminate() noexcept {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     if (!isES2()) {
         for (auto& item: mSamplerMap) {
             unbindSampler(item.second);
@@ -167,7 +163,7 @@ void OpenGLState::bindFramebufferResolved(GLenum target, GLuint buffer) noexcept
                 glBindFramebuffer(target, buffer);
             }
             break;
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         case GL_DRAW_FRAMEBUFFER:
             if (state.draw_fbo != buffer) {
                 state.draw_fbo = buffer;
@@ -223,7 +219,7 @@ void OpenGLState::pixelStore(GLenum pname, GLint param) noexcept {
         case GL_UNPACK_ALIGNMENT:
             pcur = &state.unpack.alignment;
             break;
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         case GL_UNPACK_ROW_LENGTH:
             assert_invariant(mContext.major > 2);
             pcur = &state.unpack.row_length;
@@ -291,7 +287,7 @@ void OpenGLState::deleteBuffer(GLuint buffer, GLenum target) noexcept {
         }
     }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     assert_invariant(mContext.getFeatureLevel() >= FeatureLevel::FEATURE_LEVEL_1 ||
             (target != GL_UNIFORM_BUFFER && target != GL_TRANSFORM_FEEDBACK_BUFFER));
 
@@ -319,7 +315,7 @@ void OpenGLState::deleteVertexArray(GLuint vao) noexcept {
     }
 }
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
 GLuint OpenGLState::getSamplerSlow(SamplerParams params) const noexcept {
     assert_invariant(mSamplerMap.find(params) == mSamplerMap.end());
 
@@ -351,13 +347,13 @@ GLuint OpenGLState::getSamplerSlow(SamplerParams params) const noexcept {
 
 
 void OpenGLState::syncState() noexcept {
-    // Force GL state to match the Filament state
+    // Force GL state to match the Dante state
 
     // increase the state version so other parts of the state know to reset
     state.age++;
 
     if (mContext.major > 2) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, state.draw_fbo);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, state.read_fbo);
 #endif
@@ -436,7 +432,7 @@ void OpenGLState::syncState() noexcept {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     if (mContext.major > 2) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         for (auto const target: {
                 GL_UNIFORM_BUFFER,
                 GL_TRANSFORM_FEEDBACK_BUFFER,
@@ -485,7 +481,7 @@ void OpenGLState::syncState() noexcept {
     for (GLint unit = 0; unit < gets.max_combined_texture_image_units; ++unit) {
         glActiveTexture(GL_TEXTURE0 + unit);
         if (mContext.major > 2) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
             glBindSampler(unit, 0);
 #endif
         }
@@ -500,7 +496,7 @@ void OpenGLState::syncState() noexcept {
     // state.unpack
     glPixelStorei(GL_UNPACK_ALIGNMENT, state.unpack.alignment);
     if (mContext.major > 2) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         glPixelStorei(GL_UNPACK_ROW_LENGTH, state.unpack.row_length);
 #endif
     }
@@ -508,7 +504,7 @@ void OpenGLState::syncState() noexcept {
     // state.pack
     glPixelStorei(GL_PACK_ALIGNMENT, state.pack.alignment);
     if (mContext.major > 2) {
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         glPixelStorei(GL_PACK_ROW_LENGTH, 0);
 #endif
     }
@@ -545,4 +541,4 @@ void OpenGLState::endTimeElapsedQuery(OpenGLDriver& driver, GLTimerQuery* query)
     mTimerQueryFactory->endTimeElapsedQuery(driver, query);
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

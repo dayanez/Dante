@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_RENDERERUTILS_H
-#define TNT_FILAMENT_DETAILS_RENDERERUTILS_H
+#ifndef TNT_DANTE_DETAILS_RENDERERUTILS_H
+#define TNT_DANTE_DETAILS_RENDERERUTILS_H
 
 #include "PostProcessManager.h"
 #include "RenderPass.h"
@@ -12,7 +8,7 @@
 #include "fg/FrameGraphId.h"
 #include "fg/FrameGraphTexture.h"
 
-#include <filament/Viewport.h>
+#include <dante/Viewport.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Handle.h>
@@ -22,7 +18,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 namespace backend {
 class PixelBufferDescriptor;
@@ -107,6 +103,6 @@ public:
     static RenderPass::Command const* getFirstRefractionCommand(RenderPass const& pass) noexcept;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_RENDERERUTILS_H
+#endif // TNT_DANTE_DETAILS_RENDERERUTILS_H

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/BufferAllocator.h"
 
@@ -12,7 +8,7 @@
 #include <utils/debug.h>
 #include <utils/Panic.h>
 
-namespace filament {
+namespace dante {
 namespace {
 
 #ifndef NDEBUG
@@ -269,4 +265,4 @@ BufferAllocator::allocation_size_t BufferAllocator::alignUp(
     return (size + mSlotSize - 1) & ~(mSlotSize - 1);
 }
 
-} // namespace filament
+} // namespace dante

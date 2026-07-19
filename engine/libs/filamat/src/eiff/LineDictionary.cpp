@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 /*
  * SHADER DICTIONARY ENCODING ARCHITECTURE
@@ -73,7 +69,7 @@
 
 #include "LineDictionary.h"
 
-#include <private/filament/LineDictionaryUtils.h>
+#include <private/dante/LineDictionaryUtils.h>
 
 #include <utils/ostream.h>
 
@@ -99,7 +95,7 @@ namespace filamat {
  * --------------------------------------------------
  * The array below defines heuristics to split generated variables from their trailing digits
  * (e.g. `hp_copy_1` -> `hp_copy_`, `1`). We mined the full compiled corpus of
- * gltfio/filament materials to find the most common variable prefixes ending in digits that
+ * gltfio/dante materials to find the most common variable prefixes ending in digits that
  * break otherwise identical lines in spirv-cross output. The optimal top results are:
  *
  * "SPIRV_CROSS_CONSTANT_ID_", "VARIABLE_CUSTOM", "spvDescriptorSet", "HAS_ATTRIBUTE_UV",
@@ -117,7 +113,7 @@ namespace filamat {
  */
 static constexpr std::string_view kSplittingPatterns[] = {"hp_copy_", "mp_copy_", "_"};
 
-using namespace ::filament::backend;
+using namespace ::dante::backend;
 
 namespace {
 
@@ -185,7 +181,7 @@ void LineDictionary::addLine(ShaderStage stage, std::string_view const line, std
         }
 
         if (parsedNumeric) {
-            ids.push_back(filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
+            ids.push_back(dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG);
             numerics.push_back(numValue);
             continue;
         }
@@ -382,7 +378,7 @@ std::vector<std::pair<std::string_view, LineDictionary::LineInfo>> LineDictionar
         else if (st == ShaderStage::COMPUTE) st_idx = 2;
 
         for (uint32_t const id : shader.tokens) {
-            if (id & filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) continue;
+            if (id & dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) continue;
             const auto& str = *mStrings[id];
             auto it = mLineIndices.find(str);
             if (it != mLineIndices.end()) {
@@ -484,7 +480,7 @@ void LineDictionary::finalizeDictionaryBuckets(std::vector<std::pair<std::string
         final_sequence.reserve(shader.tokens.size());
         
         for (uint32_t const init_id : shader.tokens) {
-            if (init_id & filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) {
+            if (init_id & dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) {
                 final_sequence.push_back(init_id);
             } else {
                 uint32_t const final_id = initialToFinal[init_id];

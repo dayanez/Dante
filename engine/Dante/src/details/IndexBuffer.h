@@ -1,20 +1,16 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DETAILS_INDEXBUFFER_H
-#define TNT_FILAMENT_DETAILS_INDEXBUFFER_H
+#ifndef TNT_DANTE_DETAILS_INDEXBUFFER_H
+#define TNT_DANTE_DETAILS_INDEXBUFFER_H
 
 #include "downcast.h"
 
-#include <filament/IndexBuffer.h>
+#include <dante/IndexBuffer.h>
 
 #include <backend/Handle.h>
 
 #include <utils/compiler.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 
@@ -47,8 +43,8 @@ private:
     std::atomic_bool mCreationComplete{ false };
 };
 
-FILAMENT_DOWNCAST(IndexBuffer)
+DANTE_DOWNCAST(IndexBuffer)
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DETAILS_INDEXBUFFER_H
+#endif // TNT_DANTE_DETAILS_INDEXBUFFER_H

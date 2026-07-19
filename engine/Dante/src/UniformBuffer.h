@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_UNIFORMBUFFER_H
-#define TNT_FILAMENT_UNIFORMBUFFER_H
+#ifndef TNT_DANTE_UNIFORMBUFFER_H
+#define TNT_DANTE_UNIFORMBUFFER_H
 
 #include <private/backend/DriverApi.h>
 
@@ -26,7 +22,7 @@
 #include <stdint.h>
 #include <string.h>
 
-namespace filament {
+namespace dante {
 
 class UniformBuffer { // NOLINT(cppcoreguidelines-pro-type-member-init)
 public:
@@ -120,7 +116,7 @@ public:
     // Invalidates an array of uniforms and returns a pointer to the first element.
     //
     // The offset is in bytes, and the count is the number of elements to invalidate.
-    // Note that Filament treats arrays of size 1 as being equivalent to a scalar.
+    // Note that Dante treats arrays of size 1 as being equivalent to a scalar.
     //
     // To compute the size occupied by the array, we account for std140 alignment, which specifies
     // that the start of each array element is aligned to the size of a vec4. Consider an array that
@@ -231,6 +227,6 @@ inline math::mat3f UniformBuffer::getUniform(size_t const offset) const noexcept
     return { p[0].xyz, p[1].xyz, p[2].xyz };
 }
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_UNIFORMBUFFER_H
+#endif // TNT_DANTE_UNIFORMBUFFER_H

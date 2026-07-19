@@ -23,7 +23,7 @@ LAYOUT_LOCATION(8) SHADING_INTERPOLATION VARYING mediump vec4 vertex_worldTangen
 
 LAYOUT_LOCATION(9) VARYING highp vec4 vertex_position;
 
-#if defined(FILAMENT_HAS_FEATURE_INSTANCING)
+#if defined(DANTE_HAS_FEATURE_INSTANCING)
 LAYOUT_LOCATION(10) flat VARYING highp int instance_index;
 highp int logical_instance_index;
 #endif
@@ -34,16 +34,16 @@ LAYOUT_LOCATION(11) VARYING highp vec4 vertex_lightSpacePosition;
 
 // Note that fragColor is an output and is not declared here; see surface_main.fs and surface_depth_main.fs
 
-#if defined(VARIANT_HAS_STEREO) && defined(FILAMENT_STEREO_INSTANCED)
-#if defined(GL_ES) && defined(FILAMENT_GLSLANG)
+#if defined(VARIANT_HAS_STEREO) && defined(DANTE_STEREO_INSTANCED)
+#if defined(GL_ES) && defined(DANTE_GLSLANG)
 // On ES, gl_ClipDistance is not a built-in, so we have to rely on EXT_clip_cull_distance
 // However, this extension is not supported by glslang, so we instead write to
-// filament_gl_ClipDistance, which will get decorated at the SPIR-V stage to refer to the built-in.
+// dante_gl_ClipDistance, which will get decorated at the SPIR-V stage to refer to the built-in.
 // The location here does not matter, so long as it doesn't conflict with others.
-LAYOUT_LOCATION(100) out float filament_gl_ClipDistance[2];
-#define FILAMENT_CLIPDISTANCE filament_gl_ClipDistance
+LAYOUT_LOCATION(100) out float dante_gl_ClipDistance[2];
+#define DANTE_CLIPDISTANCE dante_gl_ClipDistance
 #else
 // If we're on Desktop GL (or not running shaders through glslang), we're free to use gl_ClipDistance
-#define FILAMENT_CLIPDISTANCE gl_ClipDistance
-#endif // GL_ES && FILAMENT_GLSLANG
+#define DANTE_CLIPDISTANCE gl_ClipDistance
+#endif // GL_ES && DANTE_GLSLANG
 #endif // VARIANT_HAS_STEREO

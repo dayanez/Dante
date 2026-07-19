@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#include "private/filament/Variant.h"
+#include "private/dante/Variant.h"
 
-#include <private/filament/LineDictionaryUtils.h>
+#include <private/dante/LineDictionaryUtils.h>
 
-#include <filament/MaterialChunkType.h>
+#include <dante/MaterialChunkType.h>
 
 #include <filaflat/ChunkContainer.h>
 #include <filaflat/MaterialChunk.h>
@@ -124,26 +120,26 @@ static bool readDictionaryId(Unflattener& base, Unflattener& ext, uint32_t& outI
         return false;
     }
     
-    if (b8 < filament::LineDictionaryUtils::DICTIONARY_1_BYTE_ID_CAPACITY) {
+    if (b8 < dante::LineDictionaryUtils::DICTIONARY_1_BYTE_ID_CAPACITY) {
         outId = b8;
         outBytesRead = 1;
         return true;
     }
-    if (b8 == filament::LineDictionaryUtils::DICTIONARY_NUMERIC_ID) {
-        outId = filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG;
+    if (b8 == dante::LineDictionaryUtils::DICTIONARY_NUMERIC_ID) {
+        outId = dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG;
         outBytesRead = 1;
         return true;
     }
-    if (b8 < filament::LineDictionaryUtils::DICTIONARY_3_BYTE_ID) {
+    if (b8 < dante::LineDictionaryUtils::DICTIONARY_3_BYTE_ID) {
         uint8_t e;
         if (!ext.read(&e)) return false;
-        outId = filament::LineDictionaryUtils::unpack2ByteDictionaryId(b8, e);
+        outId = dante::LineDictionaryUtils::unpack2ByteDictionaryId(b8, e);
         outBytesRead = 2;
         return true;
     }
     uint8_t e0, e1;
     if (!ext.read(&e0) || !ext.read(&e1)) return false;
-    outId = filament::LineDictionaryUtils::unpack3ByteDictionaryId(e0, e1);
+    outId = dante::LineDictionaryUtils::unpack3ByteDictionaryId(e0, e1);
     outBytesRead = 3;
     return true;
 }
@@ -229,7 +225,7 @@ bool MaterialChunk::getTextShader(Unflattener unflattener,
             return false;
         }
 
-        if (lineIndex == filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) {
+        if (lineIndex == dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) {
             uint32_t const numericLiteral = readNumericLiteral(numericUnflattener);
             char buf[16];
             buf[0] = '_';
@@ -280,7 +276,7 @@ bool MaterialChunk::getTextShader(Unflattener unflattener,
 
 bool MaterialChunk::getBinaryShader(BlobDictionary const& dictionary,
         ShaderContent& shaderContent, ShaderModel const shaderModel,
-        filament::Variant const variant, ShaderStage const shaderStage) const {
+        dante::Variant const variant, ShaderStage const shaderStage) const {
 
     if (mBase == nullptr) {
         return false;
@@ -309,7 +305,7 @@ bool MaterialChunk::hasShader(ShaderModel const model, Variant const variant, Sh
 }
 
 bool MaterialChunk::getShader(ShaderContent& shaderContent, BlobDictionary const& dictionary,
-        ShaderModel const shaderModel, filament::Variant const variant, ShaderStage const stage) const {
+        ShaderModel const shaderModel, dante::Variant const variant, ShaderStage const stage) const {
     switch (mMaterialTag) {
         case filamat::ChunkType::MaterialGlsl:
         case filamat::ChunkType::MaterialEssl1:
@@ -346,7 +342,7 @@ void MaterialChunk::visitShaders(
     // Read all index entries.
     for (uint64_t i = 0; i < numShaders; i++) {
         uint8_t shaderModelValue;
-        filament::Variant variant;
+        dante::Variant variant;
         uint8_t pipelineStageValue;
         uint32_t offsetValue;
 
@@ -415,7 +411,7 @@ size_t MaterialChunk::getDictionaryOccurrences(std::vector<uint32_t>& outOccurre
             }
             totalIndicesSize += bytesRead;
 
-            if (lineIndex == filament::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) {
+            if (lineIndex == dante::LineDictionaryUtils::DICTIONARY_NUMERIC_FLAG) {
                 continue;
             }
 

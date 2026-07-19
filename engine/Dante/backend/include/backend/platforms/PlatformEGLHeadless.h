@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_DRIVER_OPENGL_PLATFORM_EGL_HEADLESS_H
-#define TNT_FILAMENT_DRIVER_OPENGL_PLATFORM_EGL_HEADLESS_H
+#ifndef TNT_DANTE_DRIVER_OPENGL_PLATFORM_EGL_HEADLESS_H
+#define TNT_DANTE_DRIVER_OPENGL_PLATFORM_EGL_HEADLESS_H
 
 #include "PlatformEGL.h"
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * A concrete implementation of OpenGLPlatform that supports EGL with only headless swapchains.
@@ -24,6 +20,6 @@ protected:
     bool isOpenGL() const noexcept override;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_DRIVER_OPENGL_PLATFORM_EGL_HEADLESS_H
+#endif // TNT_DANTE_DRIVER_OPENGL_PLATFORM_EGL_HEADLESS_H

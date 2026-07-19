@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_GENERIC_MUTEX_H
 #define TNT_UTILS_GENERIC_MUTEX_H
@@ -15,7 +11,7 @@ using Mutex = std::mutex;
 
 } // namespace generic
 
-#if !defined(UTILS_DEBUG_MUTEX) && !defined(FILAMENT_DEBUG_MUTEX)
+#if !defined(UTILS_DEBUG_MUTEX) && !defined(DANTE_DEBUG_MUTEX)
 using Mutex = generic::Mutex;
 #endif
 

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_COMPRESSEDSTRINGCHUNK_H
 #define TNT_COMPRESSEDSTRINGCHUNK_H

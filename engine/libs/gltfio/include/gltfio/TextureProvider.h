@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_TEXTUREPROVIDER_H
 #define GLTFIO_TEXTUREPROVIDER_H
@@ -12,26 +8,26 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
     class Engine;
     class Texture;
 }
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 /**
  * TextureProvider is an interface that allows clients to implement their own texture decoding
- * facility for JPEG, PNG, or KTX2 content. It constructs Filament Texture objects synchronously,
+ * facility for JPEG, PNG, or KTX2 content. It constructs Dante Texture objects synchronously,
  * but populates their miplevels asynchronously.
  *
- * gltfio calls all public methods from the foreground thread, i.e. the thread that the Filament
+ * gltfio calls all public methods from the foreground thread, i.e. the thread that the Dante
  * engine was created with. However the implementation may create 0 or more background threads to
  * perform decoding work.
  *
  * The following pseudocode illustrates how this interface could be used, but in practice the only
  * client is the gltfio ResourceLoader.
  *
- *     filament::Engine* engine = ...;
+ *     dante::Engine* engine = ...;
  *     TextureProvider* provider = createStbProvider(engine);
  *
  *     for (auto filename : textureFiles) {
@@ -60,7 +56,7 @@ namespace filament::gltfio {
  */
 class UTILS_PUBLIC TextureProvider {
 public:
-    using Texture = filament::Texture;
+    using Texture = dante::Texture;
 
     enum class TextureFlags : uint64_t {
         NONE = 0,
@@ -68,9 +64,9 @@ public:
     };
 
     /**
-     * Creates a Filament texture and pushes it to the asynchronous decoding queue.
+     * Creates a Dante texture and pushes it to the asynchronous decoding queue.
      *
-     * The provider synchronously determines the texture dimensions in order to create a Filament
+     * The provider synchronously determines the texture dimensions in order to create a Dante
      * texture object, then populates the miplevels asynchronously.
      *
      * If construction fails, nothing is pushed to the queue and null is returned. The failure
@@ -160,20 +156,20 @@ public:
  * Creates a simple decoder based on stb_image that can handle "image/png" and "image/jpeg".
  * This works only if your build configuration includes STB.
  */
-UTILS_PUBLIC TextureProvider* createStbProvider(filament::Engine* engine);
+UTILS_PUBLIC TextureProvider* createStbProvider(dante::Engine* engine);
 
 /**
  * Creates a decoder that can handle certain types of "image/ktx2" content as specified in
  * the KHR_texture_basisu specification.
  */
-UTILS_PUBLIC TextureProvider* createKtx2Provider(filament::Engine* engine);
+UTILS_PUBLIC TextureProvider* createKtx2Provider(dante::Engine* engine);
 
 /**
  * If webp support is enabled at build time, creates a decoder that can handle "image/webp"
  * lossless and lossy content.
  * If webp support is not enabled at build time, returns nullptr.
  */
-UTILS_PUBLIC TextureProvider* createWebpProvider(filament::Engine* engine);
+UTILS_PUBLIC TextureProvider* createWebpProvider(dante::Engine* engine);
 
 /**
  * Indicates if build-time webp support was included.
@@ -181,9 +177,9 @@ UTILS_PUBLIC TextureProvider* createWebpProvider(filament::Engine* engine);
  */
 UTILS_PUBLIC bool isWebpSupported();
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
-template<> struct utils::EnableBitMaskOperators<filament::gltfio::TextureProvider::TextureFlags>
+template<> struct utils::EnableBitMaskOperators<dante::gltfio::TextureProvider::TextureFlags>
         : public std::true_type {};
 
 #endif // GLTFIO_TEXTUREPROVIDER_H

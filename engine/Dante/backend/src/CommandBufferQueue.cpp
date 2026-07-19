@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include <private/backend/CircularBuffer.h>
 #include <private/backend/CommandBufferQueue.h>
@@ -28,7 +24,7 @@
 
 using namespace utils;
 
-namespace filament::backend {
+namespace dante::backend {
 
 CommandBufferQueue::CommandBufferQueue(size_t const requiredSize, size_t const bufferSize, bool const paused)
         : mRequiredSize((requiredSize + (CircularBuffer::getBlockSize() - 1u)) & ~(CircularBuffer::getBlockSize() -1u)),
@@ -75,7 +71,7 @@ void CommandBufferQueue::propagateBackendException() const {
         if (!mExceptionRethrown.exchange(true, std::memory_order_relaxed)) {
             std::rethrow_exception(mBackendException);
         } else {
-            FILAMENT_CHECK_POSTCONDITION(false)
+            DANTE_CHECK_POSTCONDITION(false)
                     << "Engine is in unrecoverable state due to previous backend exception";
         }
     }
@@ -83,7 +79,7 @@ void CommandBufferQueue::propagateBackendException() const {
 #endif
 
 void CommandBufferQueue::flush() {
-    FILAMENT_TRACING_CALL(FILAMENT_TRACING_CATEGORY_FILAMENT);
+    DANTE_TRACING_CALL(DANTE_TRACING_CATEGORY_DANTE);
 #ifdef __EXCEPTIONS
     if (UTILS_VERY_UNLIKELY(hasUnrecoverableError())) {
         // Drop the current buffer to avoid filling up the circular buffer
@@ -116,7 +112,7 @@ void CommandBufferQueue::flush() {
     UniqueLock lock(mLock);
 
     // circular buffer is too small, we corrupted the stream
-    FILAMENT_CHECK_POSTCONDITION(used <= mFreeSpace) <<
+    DANTE_CHECK_POSTCONDITION(used <= mFreeSpace) <<
             "Backend CommandStream overflow. Commands are corrupted and unrecoverable.\n"
             "Please increase minCommandBufferSizeMB inside the Config passed to Engine::create.\n"
             "Space used at this time: " << used <<
@@ -139,9 +135,9 @@ void CommandBufferQueue::flush() {
         mHighWatermark = std::max(mHighWatermark, totalUsed);
 #endif
 
-        FILAMENT_TRACING_NAME(FILAMENT_TRACING_CATEGORY_FILAMENT, "waiting: CircularBuffer::flush()");
+        DANTE_TRACING_NAME(DANTE_TRACING_CATEGORY_DANTE, "waiting: CircularBuffer::flush()");
 
-        FILAMENT_CHECK_POSTCONDITION(!mPaused) <<
+        DANTE_CHECK_POSTCONDITION(!mPaused) <<
                 "CommandStream is full, but since the rendering thread is paused, "
                 "the buffer cannot flush and we will deadlock. Instead, abort.";
 
@@ -171,4 +167,4 @@ void CommandBufferQueue::releaseBuffer(CommandBufferQueue::Range const& buffer) 
     mCondition.notify_one();
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

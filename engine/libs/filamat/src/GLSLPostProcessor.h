@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_GLSLPOSTPROCESSOR_H
 #define TNT_GLSLPOSTPROCESSOR_H
 
 #include "ShaderMinifier.h"
 
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/Variant.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/Variant.h>
 
 #include <filamat/MaterialBuilder.h>    // for MaterialBuilder:: enums
 
@@ -28,15 +24,15 @@
 namespace filamat {
 
 using SpirvBlob = std::vector<uint32_t>;
-using BindingPointAndSib = std::pair<uint8_t, const filament::SamplerInterfaceBlock*>;
+using BindingPointAndSib = std::pair<uint8_t, const dante::SamplerInterfaceBlock*>;
 using SibVector = utils::FixedCapacityVector<BindingPointAndSib>;
 
 using DescriptorInfo = std::tuple<
         utils::CString,
-        filament::backend::DescriptorSetLayoutDescriptor,
-        std::optional<filament::SamplerInterfaceBlock::SamplerInfo>>;
+        dante::backend::DescriptorSetLayoutDescriptor,
+        std::optional<dante::SamplerInterfaceBlock::SamplerInfo>>;
 using DescriptorSetInfo = utils::FixedCapacityVector<DescriptorInfo>;
-using DescriptorSets = std::array<DescriptorSetInfo, filament::backend::MAX_DESCRIPTOR_SET_COUNT>;
+using DescriptorSets = std::array<DescriptorSetInfo, dante::backend::MAX_DESCRIPTOR_SET_COUNT>;
 
 class GLSLPostProcessor {
 public:
@@ -53,15 +49,15 @@ public:
     ~GLSLPostProcessor();
 
     struct Config {
-        filament::Variant variant;
-        filament::UserVariantFilterMask variantFilter;
+        dante::Variant variant;
+        dante::UserVariantFilterMask variantFilter;
         MaterialBuilder::TargetApi targetApi;
         MaterialBuilder::TargetLanguage targetLanguage;
         MaterialBuilder::Workarounds workarounds;
-        filament::backend::ShaderStage shaderType;
-        filament::backend::ShaderModel shaderModel;
-        filament::backend::FeatureLevel featureLevel;
-        filament::MaterialDomain domain;
+        dante::backend::ShaderStage shaderType;
+        dante::backend::ShaderModel shaderModel;
+        dante::backend::FeatureLevel featureLevel;
+        dante::MaterialDomain domain;
         const filamat::MaterialInfo* materialInfo;
         bool hasFramebufferFetch;
         bool usesClipDistance;
@@ -78,7 +74,7 @@ public:
 
     // public so backend_test can also use it
     static void spirvToMsl(const SpirvBlob* spirv, std::string* outMsl,
-            filament::backend::ShaderStage stage, filament::backend::ShaderModel shaderModel,
+            dante::backend::ShaderStage stage, dante::backend::ShaderModel shaderModel,
             bool useFramebufferFetch, const DescriptorSets& descriptorSets,
             const ShaderMinifier* minifier);
 

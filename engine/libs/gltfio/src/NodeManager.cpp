@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "downcast.h"
 #include "FNodeManager.h"
@@ -10,7 +6,7 @@
 
 using namespace utils;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 using Instance = NodeManager::Instance;
 
@@ -68,4 +64,4 @@ bitset32 NodeManager::getSceneMembership(Instance ci) const noexcept {
     return downcast(this)->getSceneMembership(ci);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

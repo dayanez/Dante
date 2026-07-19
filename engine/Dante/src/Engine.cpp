@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/Engine.h"
 
@@ -25,7 +21,7 @@
 #include "details/VertexBuffer.h"
 #include "details/View.h"
 
-#include <filament/Engine.h>
+#include <dante/Engine.h>
 
 #include <backend/CallbackHandler.h>
 #include <backend/DriverEnums.h>
@@ -46,7 +42,7 @@
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 namespace backend {
 class Platform;
@@ -398,7 +394,7 @@ void* Engine::streamAlloc(size_t const size, size_t const alignment) noexcept {
 // The external-facing execute does a flush, and is meant only for single-threaded environments.
 // It also discards the boolean return value, which would otherwise indicate a thread exit.
 void Engine::execute() {
-    FILAMENT_CHECK_PRECONDITION(!UTILS_HAS_THREADING)
+    DANTE_CHECK_PRECONDITION(!UTILS_HAS_THREADING)
             << "Execute is meant for single-threaded platforms.";
     downcast(this)->flush();
     downcast(this)->execute();
@@ -409,13 +405,13 @@ JobSystem& Engine::getJobSystem() noexcept {
 }
 
 bool Engine::isPaused() const noexcept(UTILS_HAS_THREADING) {
-    FILAMENT_CHECK_PRECONDITION(UTILS_HAS_THREADING)
+    DANTE_CHECK_PRECONDITION(UTILS_HAS_THREADING)
             << "Pause is meant for multi-threaded platforms.";
     return downcast(this)->isPaused();
 }
 
 void Engine::setPaused(bool const paused) {
-    FILAMENT_CHECK_PRECONDITION(UTILS_HAS_THREADING)
+    DANTE_CHECK_PRECONDITION(UTILS_HAS_THREADING)
             << "Pause is meant for multi-threaded platforms.";
     downcast(this)->setPaused(paused);
 }
@@ -510,4 +506,4 @@ void Engine::resetBackendState() noexcept {
 }
 #endif
 
-} // namespace filament
+} // namespace dante

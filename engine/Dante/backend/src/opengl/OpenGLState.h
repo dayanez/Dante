@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_OPENGLSTATE_H
-#define TNT_FILAMENT_BACKEND_OPENGL_OPENGLSTATE_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_OPENGLSTATE_H
+#define TNT_DANTE_BACKEND_OPENGL_OPENGLSTATE_H
 
 #include "gl_headers.h"
 #include "OpenGLContext.h"
@@ -28,7 +24,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class OpenGLDriver;
 
@@ -152,7 +148,7 @@ public:
     void unbindEverything() noexcept;
     void synchronizeStateAndCache(size_t index);
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     GLuint getSamplerSlow(SamplerParams sp) const noexcept;
 
     inline GLuint getSampler(SamplerParams sp) const noexcept {
@@ -332,7 +328,7 @@ constexpr size_t OpenGLState::getIndexForBufferTarget(GLenum target) noexcept {
     size_t index = 0;
     switch (target) {
         // The indexed buffers MUST be first in this list (those usable with bindBufferRange)
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         case GL_UNIFORM_BUFFER:             index = 0; break;
         case GL_TRANSFORM_FEEDBACK_BUFFER:  index = 1; break;
 #if defined(BACKEND_OPENGL_LEVEL_GLES31)
@@ -341,7 +337,7 @@ constexpr size_t OpenGLState::getIndexForBufferTarget(GLenum target) noexcept {
 #endif
         case GL_ARRAY_BUFFER:               index = 3; break;
         case GL_ELEMENT_ARRAY_BUFFER:       index = 4; break;
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
         case GL_PIXEL_PACK_BUFFER:          index = 5; break;
         case GL_PIXEL_UNPACK_BUFFER:        index = 6; break;
 #endif
@@ -363,7 +359,7 @@ void OpenGLState::activeTexture(GLuint unit) noexcept {
 void OpenGLState::bindSampler(GLuint unit, GLuint sampler) noexcept {
     assert_invariant(unit < MAX_TEXTURE_UNIT_COUNT);
     assert_invariant(mContext.getFeatureLevel() >= FeatureLevel::FEATURE_LEVEL_1);
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
     update_state(state.textures.units[unit].sampler, sampler, [&]() {
         glBindSampler(unit, sampler);
     });
@@ -425,7 +421,7 @@ void OpenGLState::bindBufferRange(GLenum target, GLuint index, GLuint buffer,
         GLintptr offset, GLsizeiptr size) noexcept {
     assert_invariant(mContext.getFeatureLevel() >= FeatureLevel::FEATURE_LEVEL_1);
 
-#ifndef FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2
+#ifndef DANTE_SILENCE_NOT_SUPPORTED_BY_ES2
 #   ifdef BACKEND_OPENGL_LEVEL_GLES31
         assert_invariant(false
                  || target == GL_UNIFORM_BUFFER
@@ -598,6 +594,6 @@ void OpenGLState::polygonOffset(GLfloat factor, GLfloat units) noexcept {
     });
 }
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_OPENGLSTATE_H
+#endif // TNT_DANTE_BACKEND_OPENGL_OPENGLSTATE_H

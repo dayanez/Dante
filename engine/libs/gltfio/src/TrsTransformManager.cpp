@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "downcast.h"
 #include "FTrsTransformManager.h"
@@ -12,7 +8,7 @@
 
 using namespace utils;
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 using Instance = TrsTransformManager::Instance;
 
@@ -84,4 +80,4 @@ const mat4f TrsTransformManager::getTransform(Instance ci) const noexcept {
     return downcast(this)->getTransform(ci);
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

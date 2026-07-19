@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2019 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef GLTFIO_MATERIALPROVIDER_H
 #define GLTFIO_MATERIALPROVIDER_H
 
-#include <filament/Engine.h>
-#include <filament/Material.h>
-#include <filament/MaterialInstance.h>
+#include <dante/Engine.h>
+#include <dante/Material.h>
+#include <dante/MaterialInstance.h>
 
 #include <utils/compiler.h>
 #include <utils/FixedCapacityVector.h>
@@ -16,7 +12,7 @@
 #include <array>
 #include <string>
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 enum class AlphaMode : uint8_t {
     OPAQUE,
@@ -100,7 +96,7 @@ UTILS_WARNING_POP
 
 bool operator==(const MaterialKey& k1, const MaterialKey& k2);
 
-// Define a mapping from a uv set index in the source asset to one of Filament's uv sets.
+// Define a mapping from a uv set index in the source asset to one of Dante's uv sets.
 enum UvSet : uint8_t { UNUSED, UV0, UV1 };
 constexpr int UvMapSize = 8;
 using UvMap = std::array<UvSet, UvMapSize>;
@@ -133,11 +129,11 @@ public:
     virtual ~MaterialProvider() {}
 
     /**
-     * Creates or fetches a compiled Filament material, then creates an instance from it.
+     * Creates or fetches a compiled Dante material, then creates an instance from it.
      *
      * @param config Specifies requirements; might be mutated due to resource constraints.
      * @param uvmap Output argument that gets populated with a small table that maps from a glTF uv
-     *              index to a Filament uv index.
+     *              index to a Dante uv index.
      * @param label Optional tag that is not a part of the cache key.
      * @param extras Optional extras as stringified JSON (not a part of the cache key).
      *               Does not store the pointer.
@@ -146,7 +142,7 @@ public:
             const char* label = "material", const char* extras = nullptr) = 0;
 
     /**
-     * Creates or fetches a compiled Filament material corresponding to the given config.
+     * Creates or fetches a compiled Dante material corresponding to the given config.
      */
     virtual Material* getMaterial(MaterialKey* config, UvMap* uvmap,
             const char* label = "material") { return nullptr; }
@@ -209,6 +205,6 @@ UTILS_PUBLIC
 MaterialProvider* createUbershaderProvider(Engine* engine, const void* archive,
         size_t archiveByteCount);
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio
 
 #endif // GLTFIO_MATERIALPROVIDER_H

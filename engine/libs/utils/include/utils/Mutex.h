@@ -1,21 +1,17 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_MUTEX_H
 #define TNT_UTILS_MUTEX_H
 
 /**
  * @file Mutex.h
- * @brief Custom low-overhead mutex primitives for Filament.
+ * @brief Custom low-overhead mutex primitives for Dante.
  *
- * Filament prefers custom `utils::Mutex` over C++ standard `std::mutex` across all engine code.
+ * Dante prefers custom `utils::Mutex` over C++ standard `std::mutex` across all engine code.
  *
  * WHY `utils::Mutex` IS PREFERRED OVER `std::mutex`:
  *
- * 1. UNIFIED CONCURRENCY & DEADLOCK DEBUGGING (`-u` / `FILAMENT_DEBUG_MUTEX`):
- *    When `FILAMENT_DEBUG_MUTEX` or `UTILS_DEBUG_MUTEX` is enabled, `utils::Mutex` transparently
+ * 1. UNIFIED CONCURRENCY & DEADLOCK DEBUGGING (`-u` / `DANTE_DEBUG_MUTEX`):
+ *    When `DANTE_DEBUG_MUTEX` or `UTILS_DEBUG_MUTEX` is enabled, `utils::Mutex` transparently
  *    instruments every lock acquisition and release across the engine. It maintains a global dependency
  *    graph verified via BFS during `lock()` and `try_lock()` to detect multi-threaded lock-order inversions
  *    and recursive self-deadlocks on non-recursive locks, logging exact creation and acquisition `CallStack`s.
@@ -52,7 +48,7 @@
 #include <utils/generic/Mutex.h>
 #endif
 
-#if defined(UTILS_DEBUG_MUTEX) || defined(FILAMENT_DEBUG_MUTEX)
+#if defined(UTILS_DEBUG_MUTEX) || defined(DANTE_DEBUG_MUTEX)
 #include <utils/debug/Mutex.h>
 namespace utils {
 using Mutex = debug::Mutex;

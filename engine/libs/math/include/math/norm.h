@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_NORM_H
 #define TNT_MATH_NORM_H
@@ -13,7 +9,7 @@
 
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 namespace math {
 
 inline uint16_t packUnorm16(float v) noexcept {
@@ -85,6 +81,6 @@ inline float4 unpackSnorm8(byte4 v) noexcept {
 }
 
 } // namespace math
-} // namespace filament
+} // namespace dante
 
 #endif // TNT_MATH_NORM_H

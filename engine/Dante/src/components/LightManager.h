@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_COMPONENTS_LIGHTMANAGER_H
-#define TNT_FILAMENT_COMPONENTS_LIGHTMANAGER_H
+#ifndef TNT_DANTE_COMPONENTS_LIGHTMANAGER_H
+#define TNT_DANTE_COMPONENTS_LIGHTMANAGER_H
 
 #include "downcast.h"
 
-#include <filament/LightManager.h>
+#include <dante/LightManager.h>
 
 #include <backend/DriverApiForward.h>
 
@@ -17,7 +13,7 @@
 
 #include <math/mat4.h>
 
-namespace filament {
+namespace dante {
 
 class FEngine;
 class FScene;
@@ -315,9 +311,9 @@ private:
     FEngine& mEngine;
 };
 
-FILAMENT_DOWNCAST(LightManager)
+DANTE_DOWNCAST(LightManager)
 
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_COMPONENTS_LIGHTMANAGER_H
+#endif // TNT_DANTE_COMPONENTS_LIGHTMANAGER_H

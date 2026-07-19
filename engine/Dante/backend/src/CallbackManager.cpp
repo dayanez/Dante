@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "CallbackManager.h"
 
@@ -9,7 +5,7 @@
 
 #include <utils/Mutex.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 CallbackManager::CallbackManager(DriverBase& driver)
     : mDriver(driver), mCallbacks(1) {
@@ -58,4 +54,4 @@ void CallbackManager::setCallback(
     }
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

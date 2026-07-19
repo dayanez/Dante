@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_COMPRESSED_PAIR_H
 #define TNT_UTILS_COMPRESSED_PAIR_H

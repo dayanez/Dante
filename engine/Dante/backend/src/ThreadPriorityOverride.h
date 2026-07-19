@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_THREADPRIORITYOVERRIDE_H
-#define TNT_FILAMENT_BACKEND_THREADPRIORITYOVERRIDE_H
+#ifndef TNT_DANTE_BACKEND_THREADPRIORITYOVERRIDE_H
+#define TNT_DANTE_BACKEND_THREADPRIORITYOVERRIDE_H
 
 #include <utils/JobSystem.h>
 
@@ -34,7 +30,7 @@
 #include <windows.h>
 #endif
 
-namespace filament::backend {
+namespace dante::backend {
 
 /**
  * ThreadPriorityOverride is a cross-platform helper class to mitigate priority inversion.
@@ -188,6 +184,6 @@ private:
 #endif
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_THREADPRIORITYOVERRIDE_H
+#endif // TNT_DANTE_BACKEND_THREADPRIORITYOVERRIDE_H

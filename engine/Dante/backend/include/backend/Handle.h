@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_HANDLE_H
-#define TNT_FILAMENT_BACKEND_HANDLE_H
+#ifndef TNT_DANTE_BACKEND_HANDLE_H
+#define TNT_DANTE_BACKEND_HANDLE_H
 
 #include <utils/debug.h>
 
@@ -17,7 +13,7 @@ namespace utils::io {
 class ostream;
 } // namespace utils::io
 
-namespace filament::backend {
+namespace dante::backend {
 
 struct HwBufferObject;
 struct HwFence;
@@ -151,6 +147,6 @@ using DescriptorSetLayoutHandle = Handle<HwDescriptorSetLayout>;
 using DescriptorSetHandle       = Handle<HwDescriptorSet>;
 using MemoryMappedBufferHandle  = Handle<HwMemoryMappedBuffer>;
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_HANDLE_H
+#endif // TNT_DANTE_BACKEND_HANDLE_H

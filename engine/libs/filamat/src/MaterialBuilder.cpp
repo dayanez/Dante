@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "GLSLPostProcessor.h"
 #include "MaterialVariants.h"
@@ -24,14 +20,14 @@
 #include "shaders/ShaderGenerator.h"
 #include "shaders/UibGenerator.h"
 
-#include <private/filament/BufferInterfaceBlock.h>
-#include <private/filament/ConstantInfo.h>
-#include <private/filament/SamplerInterfaceBlock.h>
-#include <private/filament/UibStructs.h>
-#include <private/filament/Variant.h>
+#include <private/dante/BufferInterfaceBlock.h>
+#include <private/dante/ConstantInfo.h>
+#include <private/dante/SamplerInterfaceBlock.h>
+#include <private/dante/UibStructs.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialChunkType.h>
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialChunkType.h>
+#include <dante/MaterialEnums.h>
 
 #include <filamat/Enums.h>
 #include <filamat/MaterialBuilder.h>
@@ -71,7 +67,7 @@
 namespace filamat {
 
 using namespace utils;
-using namespace filament;
+using namespace dante;
 
 // Note: the VertexAttribute enum value must match the index in the array
 const MaterialBuilder::AttributeDatabase MaterialBuilder::sAttributeDatabase = {{
@@ -282,7 +278,7 @@ MaterialBuilder& MaterialBuilder::parameter(const char* name, UniformType const 
 MaterialBuilder& MaterialBuilder::parameter(const char* name, SamplerType samplerType,
         SamplerFormat format, ParameterPrecision precision, bool filterable, bool multisample,
         const char* transformName, std::optional<ShaderStageFlags> stages) {
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             !multisample || (format != SamplerFormat::SHADOW &&
                                     (samplerType == SamplerType::SAMPLER_2D ||
                                             samplerType == SamplerType::SAMPLER_2D_ARRAY)))
@@ -299,7 +295,7 @@ MaterialBuilder& MaterialBuilder::constant(const char* name, ConstantType const 
     auto result = std::find_if(mConstants.begin(), mConstants.end(), [name](const Constant& c) {
         return !strcmp(c.name.c_str(), name);
     });
-    FILAMENT_CHECK_POSTCONDITION(result == mConstants.end())
+    DANTE_CHECK_POSTCONDITION(result == mConstants.end())
             << "There is already a constant parameter present with the name " << name << ".";
     Constant constant {
             .name = CString(name),
@@ -314,17 +310,17 @@ MaterialBuilder& MaterialBuilder::constant(const char* name, ConstantType const 
     };
 
     if constexpr (std::is_same_v<T, int32_t>) {
-        FILAMENT_CHECK_POSTCONDITION(type == ConstantType::INT)
+        DANTE_CHECK_POSTCONDITION(type == ConstantType::INT)
                 << "Constant " << name << " was declared with type " << toString(type)
                 << " but given an int default value.";
         constant.defaultValue.i = defaultValue;
     } else if constexpr (std::is_same_v<T, float>) {
-        FILAMENT_CHECK_POSTCONDITION(type == ConstantType::FLOAT)
+        DANTE_CHECK_POSTCONDITION(type == ConstantType::FLOAT)
                 << "Constant " << name << " was declared with type " << toString(type)
                 << " but given a float default value.";
         constant.defaultValue.f = defaultValue;
     } else if constexpr (std::is_same_v<T, bool>) {
-        FILAMENT_CHECK_POSTCONDITION(type == ConstantType::BOOL)
+        DANTE_CHECK_POSTCONDITION(type == ConstantType::BOOL)
                 << "Constant " << name << " was declared with type " << toString(type)
                 << " but given a bool default value.";
         constant.defaultValue.b = defaultValue;
@@ -343,17 +339,17 @@ template MaterialBuilder& MaterialBuilder::constant<bool>(
         const char* name, ConstantType type, bool defaultValue);
 
 MaterialBuilder& MaterialBuilder::buffer(BufferInterfaceBlock bib) {
-    FILAMENT_CHECK_POSTCONDITION(mBuffers.size() < MAX_BUFFERS_COUNT) << "Too many buffers";
+    DANTE_CHECK_POSTCONDITION(mBuffers.size() < MAX_BUFFERS_COUNT) << "Too many buffers";
     mBuffers.emplace_back(std::make_unique<BufferInterfaceBlock>(std::move(bib)));
     return *this;
 }
 
 MaterialBuilder& MaterialBuilder::subpass(SubpassType subpassType, SamplerFormat format,
         ParameterPrecision precision, const char* name) {
-    FILAMENT_CHECK_PRECONDITION(format == SamplerFormat::FLOAT)
+    DANTE_CHECK_PRECONDITION(format == SamplerFormat::FLOAT)
             << "Subpass parameters must have FLOAT format.";
 
-    FILAMENT_CHECK_POSTCONDITION(mSubpassCount < MAX_SUBPASS_COUNT) << "Too many subpasses";
+    DANTE_CHECK_POSTCONDITION(mSubpassCount < MAX_SUBPASS_COUNT) << "Too many subpasses";
     mSubpasses[mSubpassCount++] = { name, subpassType, format, precision };
     return *this;
 }
@@ -832,7 +828,7 @@ bool MaterialBuilder::runSemanticAnalysis(MaterialInfo* inOutInfo,
     return success;
 }
 
-static void showErrorMessage(const char* materialName, filament::Variant const variant,
+static void showErrorMessage(const char* materialName, dante::Variant const variant,
         MaterialBuilder::TargetApi const targetApi, ShaderStage const shaderType,
         MaterialBuilder::FeatureLevel const featureLevel) {
     using TargetApi = MaterialBuilder::TargetApi;
@@ -935,7 +931,7 @@ bool MaterialBuilder::generateShaders(JobSystem& jobSystem, const std::vector<Va
                 assert_invariant(params.shaderModel == ShaderModel::MOBILE);
                 assert_invariant(params.targetApi == TargetApi::OPENGL);
                 // skip all variants that can't be used with ESSL1
-                if (filament::Variant::isValidStandardVariant(v.variant)) {
+                if (dante::Variant::isValidStandardVariant(v.variant)) {
                     if (v.variant.hasDirectionalLighting()) {
                         continue;
                     }
@@ -943,19 +939,19 @@ bool MaterialBuilder::generateShaders(JobSystem& jobSystem, const std::vector<Va
                         continue;
                     }
                 }
-                if (filament::Variant::isShadowReceiverVariant(v.variant)) {
+                if (dante::Variant::isShadowReceiverVariant(v.variant)) {
                     continue;
                 }
-                if (filament::Variant::isStereoVariant(v.variant)) {
+                if (dante::Variant::isStereoVariant(v.variant)) {
                     continue;
                 }
-                if (filament::Variant::isDepthMomentsVariant(v.variant)) {
+                if (dante::Variant::isDepthMomentsVariant(v.variant)) {
                     continue;
                 }
-                if (filament::Variant::isShadowSampler2DVariant(v.variant)) {
+                if (dante::Variant::isShadowSampler2DVariant(v.variant)) {
                     continue;
                 }
-                if (filament::Variant::isSSRVariant(v.variant)) {
+                if (dante::Variant::isSSRVariant(v.variant)) {
                     continue;
                 }
             }
@@ -1218,13 +1214,13 @@ bool MaterialBuilder::generateShaders(JobSystem& jobSystem, const std::vector<Va
 
 MaterialBuilder& MaterialBuilder::output(VariableQualifier qualifier, OutputTarget target,
         Precision precision, OutputType type, const char* name, int location) {
-    FILAMENT_CHECK_PRECONDITION(target != OutputTarget::DEPTH || type == OutputType::FLOAT)
+    DANTE_CHECK_PRECONDITION(target != OutputTarget::DEPTH || type == OutputType::FLOAT)
             << "Depth outputs must be of type FLOAT.";
-    FILAMENT_CHECK_PRECONDITION(
+    DANTE_CHECK_PRECONDITION(
             target != OutputTarget::DEPTH || qualifier == VariableQualifier::OUT)
             << "Depth outputs must use OUT qualifier.";
 
-    FILAMENT_CHECK_PRECONDITION(location >= -1)
+    DANTE_CHECK_PRECONDITION(location >= -1)
             << "Output location must be >= 0 (or use -1 for default location).";
 
     // A location value of -1 signals using the default location. We'll simply take the previous
@@ -1247,9 +1243,9 @@ MaterialBuilder& MaterialBuilder::output(VariableQualifier qualifier, OutputTarg
         }
     }
 
-    FILAMENT_CHECK_PRECONDITION(colorOutputCount <= MAX_COLOR_OUTPUT)
+    DANTE_CHECK_PRECONDITION(colorOutputCount <= MAX_COLOR_OUTPUT)
             << "A maximum of " << MAX_COLOR_OUTPUT << " COLOR outputs is allowed.";
-    FILAMENT_CHECK_PRECONDITION(depthOutputCount <= MAX_DEPTH_OUTPUT)
+    DANTE_CHECK_PRECONDITION(depthOutputCount <= MAX_DEPTH_OUTPUT)
             << "A maximum of " << MAX_DEPTH_OUTPUT << " DEPTH output is allowed.";
 
     assert_invariant(mOutputs.size() <= MAX_COLOR_OUTPUT + MAX_DEPTH_OUTPUT);
@@ -1259,7 +1255,7 @@ MaterialBuilder& MaterialBuilder::output(VariableQualifier qualifier, OutputTarg
 
 MaterialBuilder& MaterialBuilder::enableFramebufferFetch() noexcept {
     // This API is temporary, it is used to enable EXT_framebuffer_fetch for GLSL shaders,
-    // this is used sparingly by filament's post-processing stage.
+    // this is used sparingly by dante's post-processing stage.
     mEnableFramebufferFetch = true;
     return *this;
 }
@@ -1483,24 +1479,24 @@ bool MaterialBuilder::checkMaterialLevelFeatures(MaterialInfo const& info) const
 
             constexpr auto maxTextureCount = FEATURE_LEVEL_CAPS[1].MAX_FRAGMENT_SAMPLER_COUNT;
 
-            // count how many samplers filament uses based on the material properties
+            // count how many samplers dante uses based on the material properties
             // note: currently SSAO is not used with unlit, but we want to keep that possibility.
-            uint32_t textureUsedByFilamentCount = 4;    // shadowMap, structure, ssao, fog texture
+            uint32_t textureUsedByDanteCount = 4;    // shadowMap, structure, ssao, fog texture
             if (info.isLit) {
-                textureUsedByFilamentCount += 3;        // froxels, dfg, specular
+                textureUsedByDanteCount += 3;        // froxels, dfg, specular
             }
             if (info.reflectionMode == ReflectionMode::SCREEN_SPACE ||
                 info.refractionMode == RefractionMode::SCREEN_SPACE) {
-                textureUsedByFilamentCount += 1;        // ssr
+                textureUsedByDanteCount += 1;        // ssr
             }
             if (mVariantFilter & uint32_t(UserVariantFilterBit::FOG)) {
-                textureUsedByFilamentCount -= 1;        // fog texture
+                textureUsedByDanteCount -= 1;        // fog texture
             }
 
-            if (userSamplerCount > maxTextureCount - textureUsedByFilamentCount) {
+            if (userSamplerCount > maxTextureCount - textureUsedByDanteCount) {
                 LOG(ERROR) << "Error: material \"" << mMaterialName.c_str()
                        << "\" has feature level " << +info.featureLevel
-                       << " and is using more than " << maxTextureCount - textureUsedByFilamentCount
+                       << " and is using more than " << maxTextureCount - textureUsedByDanteCount
                        << " samplers.";
                 logSamplerOverflow(info.sib);
                 return false;
@@ -1623,7 +1619,7 @@ void MaterialBuilder::writeCommonChunks(ChunkContainer& container, MaterialInfo&
 
     container.emplace<uint32_t>(MaterialVariantFilterMask, mVariantFilter);
 
-    using namespace filament;
+    using namespace dante;
 
     if (info.featureLevel == FeatureLevel::FEATURE_LEVEL_0) {
         // FIXME: don't hardcode this

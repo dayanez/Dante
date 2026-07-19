@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_PRIVATE_HANDLEALLOCATOR_H
-#define TNT_FILAMENT_BACKEND_PRIVATE_HANDLEALLOCATOR_H
+#ifndef TNT_DANTE_BACKEND_PRIVATE_HANDLEALLOCATOR_H
+#define TNT_DANTE_BACKEND_PRIVATE_HANDLEALLOCATOR_H
 
 #include <backend/Handle.h>
 
@@ -30,7 +26,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#if defined(FILAMENT_DEBUG_MUTEX) || defined(UTILS_DEBUG_MUTEX)
+#if defined(DANTE_DEBUG_MUTEX) || defined(UTILS_DEBUG_MUTEX)
 #define HandleAllocatorGL   HandleAllocator<32,  96, 312>
 #else
 #define HandleAllocatorGL   HandleAllocator<32,  96, 184>    // ~4520 / pool / MiB
@@ -40,7 +36,7 @@
 // TODO WebGPU examine right size of handles
 #define HandleAllocatorWGPU HandleAllocator<64, 160, 552>    // ~1820 / pool / MiB
 
-namespace filament::backend {
+namespace dante::backend {
 
 // This is used to not duplicate the code for the Tags management
 class DebugTag {
@@ -265,7 +261,7 @@ private:
             Node* const pNode = static_cast<Node*>(p);
             uint8_t& expectedAge = pNode[-1].age;
             if (UTILS_UNLIKELY(!mUseAfterFreeCheckDisabled)) {
-                FILAMENT_CHECK_POSTCONDITION(expectedAge == age) <<
+                DANTE_CHECK_POSTCONDITION(expectedAge == age) <<
                         "double-free of Handle of size " << size << " at " << p;
             }
             expectedAge = (expectedAge + 1) & 0xF; // fixme
@@ -395,6 +391,6 @@ private:
     const bool mHeapHandleTagsDisabled;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_PRIVATE_HANDLEALLOCATOR_H
+#endif // TNT_DANTE_BACKEND_PRIVATE_HANDLEALLOCATOR_H

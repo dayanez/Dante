@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef FILAMENT_MATERIALS_SSCT
-#define FILAMENT_MATERIALS_SSCT
+#ifndef DANTE_MATERIALS_SSCT
+#define DANTE_MATERIALS_SSCT
 
 /*
  * Largely based on "Dominant Light Shadowing"
@@ -140,4 +136,4 @@ float ssctDominantLightShadowing(highp vec2 uv, highp vec3 origin, vec3 normal,
 }
 
 
-#endif // FILAMENT_MATERIALS_SSCT
+#endif // DANTE_MATERIALS_SSCT

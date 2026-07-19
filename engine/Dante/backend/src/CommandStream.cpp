@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "private/backend/CommandStream.h"
 
@@ -30,7 +26,7 @@
 
 using namespace utils;
 
-namespace filament::backend {
+namespace dante::backend {
 
 // ------------------------------------------------------------------------------------------------
 // A few utility functions for debugging...
@@ -47,7 +43,7 @@ static void printParameterPack(io::ostream& out, const FIRST& first, const REMAI
 }
 
 static UTILS_NOINLINE UTILS_UNUSED std::string_view extractMethodName(std::string_view command) noexcept { // NOLINT(*-exception-escape)
-    constexpr char startPattern[] = "::Command<&filament::backend::Driver::";
+    constexpr char startPattern[] = "::Command<&dante::backend::Driver::";
     auto pos = command.rfind(startPattern);
     auto end = command.rfind('(');
     pos += sizeof(startPattern) - 1;
@@ -69,19 +65,19 @@ CommandStream::CommandStream(Driver& driver, CircularBuffer& buffer) noexcept
 {
 #ifdef __ANDROID__
     char property[PROP_VALUE_MAX];
-    __system_property_get("debug.filament.perfcounters", property);
+    __system_property_get("debug.dante.perfcounters", property);
     mUsePerformanceCounter = bool(atoi(property));
 #endif
 }
 
 void CommandStream::execute(void* buffer) {
-    // NOTE: we can't use FILAMENT_TRACING_CALL() or similar here because, execute() below, also
+    // NOTE: we can't use DANTE_TRACING_CALL() or similar here because, execute() below, also
     // uses systrace BEGIN/END and the END is not guaranteed to be happening in this scope.
 
     Profiler profiler;
 
 
-    if constexpr (FILAMENT_TRACING_ENABLED) {
+    if constexpr (DANTE_TRACING_ENABLED) {
         if (UTILS_UNLIKELY(mUsePerformanceCounter)) {
             // we want to remove all this when tracing is completely disabled
             profiler.resetEvents(Profiler::EV_CPU_CYCLES  | Profiler::EV_BPU_MISSES);
@@ -99,17 +95,17 @@ void CommandStream::execute(void* buffer) {
         }
     });
 
-    if constexpr (FILAMENT_TRACING_ENABLED) {
+    if constexpr (DANTE_TRACING_ENABLED) {
         if (UTILS_UNLIKELY(mUsePerformanceCounter)) {
             // we want to remove all this when tracing is completely disabled
             profiler.stop();
             UTILS_UNUSED Profiler::Counters const counters = profiler.readCounters();
-            FILAMENT_TRACING_CONTEXT(FILAMENT_TRACING_CATEGORY_FILAMENT);
-            FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "GLThread (I)", counters.getInstructions());
-            FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "GLThread (C)", counters.getCpuCycles());
-            FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "GLThread (CPI x10)", counters.getCPI() * 10);
-            FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "GLThread (BPU miss)", counters.getBranchMisses());
-            FILAMENT_TRACING_VALUE(FILAMENT_TRACING_CATEGORY_FILAMENT, "GLThread (I / BPU miss)",
+            DANTE_TRACING_CONTEXT(DANTE_TRACING_CATEGORY_DANTE);
+            DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "GLThread (I)", counters.getInstructions());
+            DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "GLThread (C)", counters.getCpuCycles());
+            DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "GLThread (CPI x10)", counters.getCPI() * 10);
+            DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "GLThread (BPU miss)", counters.getBranchMisses());
+            DANTE_TRACING_VALUE(DANTE_TRACING_CATEGORY_DANTE, "GLThread (I / BPU miss)",
                     counters.getInstructions() / counters.getBranchMisses());
         }
     }
@@ -161,4 +157,4 @@ void CustomCommand::execute(Driver&, CommandBase* base, intptr_t* next) {
     static_cast<CustomCommand*>(base)->~CustomCommand();
 }
 
-} // namespace filament::backend
+} // namespace dante::backend

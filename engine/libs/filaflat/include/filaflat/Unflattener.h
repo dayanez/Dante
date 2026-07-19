@@ -1,12 +1,8 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_FILAFLAT_UNFLATTENER_H
 #define TNT_FILAFLAT_UNFLATTENER_H
 
-#include <private/filament/Variant.h>
+#include <private/dante/Variant.h>
 
 #include <utils/compiler.h>
 #include <utils/CString.h>
@@ -76,7 +72,7 @@ public:
         return read(reinterpret_cast<uint32_t*>(reinterpret_cast<char*>(f)));
     }
 
-    bool read(filament::Variant* v) noexcept {
+    bool read(dante::Variant* v) noexcept {
         return read(&v->key);
     }
 

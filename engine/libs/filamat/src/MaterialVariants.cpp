@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "MaterialVariants.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/Variant.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <backend/DriverEnums.h>
 
@@ -17,29 +13,29 @@
 namespace filamat {
 
 std::vector<Variant> determineSurfaceVariants(
-        filament::UserVariantFilterMask userVariantFilter, bool isLit, bool shadowMultiplier) {
+        dante::UserVariantFilterMask userVariantFilter, bool isLit, bool shadowMultiplier) {
     std::vector<Variant> variants;
-    for (size_t k = 0; k < filament::VARIANT_COUNT; k++) {
-        filament::Variant const variant(k);
-        if (filament::Variant::isReserved(variant)) {
+    for (size_t k = 0; k < dante::VARIANT_COUNT; k++) {
+        dante::Variant const variant(k);
+        if (dante::Variant::isReserved(variant)) {
             continue;
         }
 
-        filament::Variant filteredVariant =
-                filament::Variant::filterUserVariant(variant, userVariantFilter);
+        dante::Variant filteredVariant =
+                dante::Variant::filterUserVariant(variant, userVariantFilter);
 
         // Remove variants for unlit materials
-        filteredVariant = filament::Variant::filterVariant(
+        filteredVariant = dante::Variant::filterVariant(
                 filteredVariant, isLit || shadowMultiplier);
 
-        auto const vertexVariant = filament::Variant::filterVariantVertex(filteredVariant);
+        auto const vertexVariant = dante::Variant::filterVariantVertex(filteredVariant);
         if (vertexVariant == variant) {
-            variants.emplace_back(variant, filament::backend::ShaderStage::VERTEX);
+            variants.emplace_back(variant, dante::backend::ShaderStage::VERTEX);
         }
 
-        auto const fragmentVariant = filament::Variant::filterVariantFragment(filteredVariant);
+        auto const fragmentVariant = dante::Variant::filterVariantFragment(filteredVariant);
         if (fragmentVariant == variant) {
-            variants.emplace_back(variant, filament::backend::ShaderStage::FRAGMENT);
+            variants.emplace_back(variant, dante::backend::ShaderStage::FRAGMENT);
         }
     }
     return variants;
@@ -49,10 +45,10 @@ std::vector<Variant> determinePostProcessVariants() {
     std::vector<Variant> variants;
     // TODO: add a way to filter out post-process variants (e.g., the transparent variant if only
     // opaque is needed)
-    for (filament::Variant::type_t k = 0; k < filament::POST_PROCESS_VARIANT_COUNT; k++) {
-        filament::Variant const variant(k);
-        variants.emplace_back(variant, filament::backend::ShaderStage::VERTEX);
-        variants.emplace_back(variant, filament::backend::ShaderStage::FRAGMENT);
+    for (dante::Variant::type_t k = 0; k < dante::POST_PROCESS_VARIANT_COUNT; k++) {
+        dante::Variant const variant(k);
+        variants.emplace_back(variant, dante::backend::ShaderStage::VERTEX);
+        variants.emplace_back(variant, dante::backend::ShaderStage::FRAGMENT);
     }
     return variants;
 }
@@ -60,8 +56,8 @@ std::vector<Variant> determinePostProcessVariants() {
 std::vector<Variant> determineComputeVariants() {
     // TODO: should we have variants for compute shaders?
     std::vector<Variant> variants;
-    filament::Variant const variant(0);
-    variants.emplace_back(variant, filament::backend::ShaderStage::COMPUTE);
+    dante::Variant const variant(0);
+    variants.emplace_back(variant, dante::backend::ShaderStage::COMPUTE);
     return variants;
 }
 

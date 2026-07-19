@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_STATICCODEANALYZER_H
 #define TNT_STATICCODEANALYZER_H
@@ -116,26 +112,26 @@ public:
     // The shader features a prepareMaterial() function AND
     // prepareMaterial() is called at some point in material() call chain.
     static std::optional<FragmentShaderInfo> analyzeFragmentShader(const std::string& shaderCode,
-            filament::backend::ShaderModel model, MaterialBuilder::MaterialDomain materialDomain,
+            dante::backend::ShaderModel model, MaterialBuilder::MaterialDomain materialDomain,
             MaterialBuilder::TargetApi targetApi, MaterialBuilder::TargetLanguage targetLanguage,
             bool hasCustomSurfaceShading) noexcept;
 
     static bool analyzeVertexShader(const std::string& shaderCode,
-            filament::backend::ShaderModel model,
+            dante::backend::ShaderModel model,
             MaterialBuilder::MaterialDomain materialDomain, MaterialBuilder::TargetApi targetApi,
             MaterialBuilder::TargetLanguage targetLanguage) noexcept;
 
     static bool analyzeComputeShader(const std::string& shaderCode,
-            filament::backend::ShaderModel model, MaterialBuilder::TargetApi targetApi,
+            dante::backend::ShaderModel model, MaterialBuilder::TargetApi targetApi,
             MaterialBuilder::TargetLanguage targetLanguage) noexcept;
 
         // Public for unit tests.
     using Property = MaterialBuilder::Property;
-    using ShaderModel = filament::backend::ShaderModel;
+    using ShaderModel = dante::backend::ShaderModel;
     // Use static code analysis on the fragment shader AST to guess properties used in user provided
     // glgl code. Populate properties accordingly.
     bool findProperties(
-            filament::backend::ShaderStage type,
+            dante::backend::ShaderStage type,
             const std::string& shaderCode,
             MaterialBuilder::PropertyList& properties,
             MaterialBuilder::TargetApi targetApi = MaterialBuilder::TargetApi::OPENGL,
@@ -145,13 +141,13 @@ public:
     // use 100 for ES environment, 110 for desktop; this is the GLSL version, not SPIR-V or Vulkan
     // this is intended to be used with glslang's parse() method, which will figure out the actual
     // version.
-    static int getGlslDefaultVersion(filament::backend::ShaderModel model);
+    static int getGlslDefaultVersion(dante::backend::ShaderModel model);
 
     // The shading language version. Corresponds to #version $VALUE.
     // returns the version and a boolean (true for essl, false for glsl)
     static std::pair<int, bool> getShadingLanguageVersion(
-            filament::backend::ShaderModel model,
-            filament::backend::FeatureLevel featureLevel);
+            dante::backend::ShaderModel model,
+            dante::backend::FeatureLevel featureLevel);
 
     static EShMessages glslangFlagsFromTargetApi(MaterialBuilder::TargetApi targetApi,
             MaterialBuilder::TargetLanguage targetLanguage);
@@ -181,7 +177,7 @@ private:
     bool findPropertyWritesOperations(std::string_view functionName, size_t parameterIdx,
             TIntermNode* rootNode, MaterialBuilder::PropertyList& properties) const noexcept;
 
-    // Look at a symbol access and find out if it affects filament MaterialInput fields. Will follow
+    // Look at a symbol access and find out if it affects dante MaterialInput fields. Will follow
     // function calls if necessary.
     void scanSymbolForProperty(Symbol& symbol, TIntermNode* rootNode,
             MaterialBuilder::PropertyList& properties) const noexcept;

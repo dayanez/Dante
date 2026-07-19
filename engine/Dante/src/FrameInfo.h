@@ -1,14 +1,10 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_FRAMEINFO_H
-#define TNT_FILAMENT_FRAMEINFO_H
+#ifndef TNT_DANTE_FRAMEINFO_H
+#define TNT_DANTE_FRAMEINFO_H
 
 #include "details/SwapChain.h"
 
-#include <filament/Renderer.h>
+#include <dante/Renderer.h>
 
 #include <private/backend/DriverApi.h>
 
@@ -31,7 +27,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 class FEngine;
 
 namespace details {
@@ -330,6 +326,6 @@ private:
 };
 
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_FRAMEINFO_H
+#endif // TNT_DANTE_FRAMEINFO_H

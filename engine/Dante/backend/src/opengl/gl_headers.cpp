@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "gl_headers.h"
 
-#if defined(FILAMENT_IMPORT_ENTRY_POINTS)
+#if defined(DANTE_IMPORT_ENTRY_POINTS)
 
 #include <EGL/egl.h>
 #include <mutex>
@@ -63,7 +59,7 @@ PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC glFramebufferTextureMultiviewOVR;
 PFNGLFRAMEBUFFERTEXTUREMULTISAMPLEMULTIVIEWOVRPROC glFramebufferTextureMultisampleMultiviewOVR;
 #endif
 
-#if defined(__ANDROID__) && !defined(FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2)
+#if defined(__ANDROID__) && !defined(DANTE_SILENCE_NOT_SUPPORTED_BY_ES2)
 // On Android, If we want to support a build system less than ANDROID_API 21, we need to
 // use getProcAddress for ES3.1 and above entry points.
 PFNGLDISPATCHCOMPUTEPROC glDispatchCompute;
@@ -118,7 +114,7 @@ void importGLESExtensionsEntryPoints() {
 #ifdef GL_OVR_multiview_multisampled_render_to_texture
         getProcAddress(glFramebufferTextureMultisampleMultiviewOVR, "glFramebufferTextureMultisampleMultiviewOVR");
 #endif
-#if defined(__ANDROID__) && !defined(FILAMENT_SILENCE_NOT_SUPPORTED_BY_ES2)
+#if defined(__ANDROID__) && !defined(DANTE_SILENCE_NOT_SUPPORTED_BY_ES2)
         getProcAddress(glDispatchCompute, "glDispatchCompute");
 #endif
     });
@@ -127,4 +123,4 @@ void importGLESExtensionsEntryPoints() {
 
 } // namespace glext
 
-#endif // defined(FILAMENT_IMPORT_ENTRY_POINTS)
+#endif // defined(DANTE_IMPORT_ENTRY_POINTS)

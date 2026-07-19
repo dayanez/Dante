@@ -1,15 +1,11 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_LOCALPROGRAMCACHE_H
-#define TNT_FILAMENT_LOCALPROGRAMCACHE_H
+#ifndef TNT_DANTE_LOCALPROGRAMCACHE_H
+#define TNT_DANTE_LOCALPROGRAMCACHE_H
 
 #include "DynamicSpecConstKey.h"
 #include "MaterialDefinition.h"
 
-#include <private/filament/Variant.h>
+#include <private/dante/Variant.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/DriverEnums.h>
@@ -18,7 +14,7 @@
 
 #include <utility>
 
-namespace filament {
+namespace dante {
 
 class FMaterial;
 
@@ -148,6 +144,6 @@ private:
     SpecializationConstants mSpecializationConstants;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif  // TNT_FILAMENT_LOCALPROGRAMCACHE_H
+#endif  // TNT_DANTE_LOCALPROGRAMCACHE_H

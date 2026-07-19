@@ -16,9 +16,9 @@
 
 #include "CommandlineConfig.h"
 
-#include <filament-matp/Config.h>
+#include <dante-matp/Config.h>
 
-#include <filament/MaterialEnums.h>
+#include <dante/MaterialEnums.h>
 
 #include <backend/DriverEnums.h>
 
@@ -37,7 +37,7 @@
 #include <string_view>
 
 using namespace utils;
-using namespace filament;
+using namespace dante;
 
 namespace matc {
 
@@ -105,7 +105,7 @@ static void usage(char* name) {
             "    MATC [options] <input-file>\n"
             "\n"
             "Supported input formats:\n"
-            "    Filament material definition (.mat)\n"
+            "    Dante material definition (.mat)\n"
             "\n"
             "Options:\n"
             "   --help, -h\n"

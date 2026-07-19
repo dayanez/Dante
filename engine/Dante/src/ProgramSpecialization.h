@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
-#ifndef TNT_FILAMENT_PROGRAMSPECIALIZATION_H
-#define TNT_FILAMENT_PROGRAMSPECIALIZATION_H
+#ifndef TNT_DANTE_PROGRAMSPECIALIZATION_H
+#define TNT_DANTE_PROGRAMSPECIALIZATION_H
 
 #include "DynamicSpecConstKey.h"
 
-#include <private/filament/Variant.h>
+#include <private/dante/Variant.h>
 
 #include <backend/Program.h>
 
@@ -15,7 +11,7 @@
 
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 // A program specialization is a collection of all properties which could yield a different compiled
 // program object.
@@ -38,15 +34,15 @@ struct ProgramSpecialization {
     bool operator==(ProgramSpecialization const& rhs) const noexcept;
 };
 
-} // namespace filament
+} // namespace dante
 
 namespace std {
 template<>
-struct hash<filament::ProgramSpecialization> {
-    inline size_t operator()(const filament::ProgramSpecialization& lhs) const noexcept {
+struct hash<dante::ProgramSpecialization> {
+    inline size_t operator()(const dante::ProgramSpecialization& lhs) const noexcept {
         return lhs.hash();
     }
 };
 } // namespace std
 
-#endif  // TNT_FILAMENT_PROGRAMSPECIALIZATION_H
+#endif  // TNT_DANTE_PROGRAMSPECIALIZATION_H

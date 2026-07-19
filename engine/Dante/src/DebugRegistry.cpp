@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2018 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/DebugRegistry.h"
 
@@ -9,7 +5,7 @@
 #include <math/vec3.h>
 #include <math/vec4.h>
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -79,5 +75,5 @@ DebugRegistry::DataSource DebugRegistry::getDataSource(const char* name) const n
 }
 
 
-} // namespace filament
+} // namespace dante
 

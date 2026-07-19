@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_COMPONENTS_RENDERABLEMANAGER_H
-#define TNT_FILAMENT_COMPONENTS_RENDERABLEMANAGER_H
+#ifndef TNT_DANTE_COMPONENTS_RENDERABLEMANAGER_H
+#define TNT_DANTE_COMPONENTS_RENDERABLEMANAGER_H
 
 #include "downcast.h"
 #include "HwRenderPrimitiveFactory.h"
@@ -13,9 +9,9 @@
 
 #include "ds/DescriptorSet.h"
 
-#include <filament/Box.h>
-#include <filament/MaterialEnums.h>
-#include <filament/RenderableManager.h>
+#include <dante/Box.h>
+#include <dante/MaterialEnums.h>
+#include <dante/RenderableManager.h>
 
 #include <backend/DriverApiForward.h>
 #include <backend/Handle.h>
@@ -34,7 +30,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 class FBufferObject;
 class FIndexBuffer;
@@ -271,13 +267,13 @@ private:
     enum {
         AABB,                   // user data
         LAYERS,                 // user data
-        MORPH_WEIGHTS,          // filament data, UBO storing a pointer to the morph weights information
+        MORPH_WEIGHTS,          // dante data, UBO storing a pointer to the morph weights information
         LIGHT_CHANNELS,         // user data
         INSTANCES,              // user data
         VISIBILITY,             // user data
         SKINNING,               // user data
         PRIMITIVES,             // user data
-        BONES,                  // filament data, UBO storing a pointer to the bones information
+        BONES,                  // dante data, UBO storing a pointer to the bones information
         MORPHTARGET_BUFFER,     // morphtarget buffer for the component
         DESCRIPTOR_SET          // per-renderable descriptor set
     };
@@ -335,11 +331,11 @@ private:
     HwRenderPrimitiveFactory mHwRenderPrimitiveFactory;
 };
 
-FILAMENT_DOWNCAST(RenderableManager)
+DANTE_DOWNCAST(RenderableManager)
 
 void FRenderableManager::setAxisAlignedBoundingBox(Instance const instance, const Box& aabb) {
     if (instance) {
-        FILAMENT_CHECK_PRECONDITION(
+        DANTE_CHECK_PRECONDITION(
                 static_cast<Visibility const&>(mManager[instance].visibility).geometryType == GeometryType::DYNAMIC)
                 << "This renderable has staticBounds enabled; its AABB cannot change.";
         Box& state = mManager[instance].aabb;
@@ -451,7 +447,7 @@ void FRenderableManager::setSkinning(Instance const instance, bool const enable)
     if (instance) {
         Visibility const& visibility = mManager[instance].visibility;
 
-        FILAMENT_CHECK_PRECONDITION(visibility.geometryType != GeometryType::STATIC || !enable)
+        DANTE_CHECK_PRECONDITION(visibility.geometryType != GeometryType::STATIC || !enable)
                 << "Skinning can't be used with STATIC geometry";
 
         Skinning& skinning = mManager[instance].skinning;
@@ -466,7 +462,7 @@ void FRenderableManager::setMorphing(Instance const instance, Builder::MorphType
     if (instance) {
         Visibility const& visibility = mManager[instance].visibility;
 
-        FILAMENT_CHECK_PRECONDITION(
+        DANTE_CHECK_PRECONDITION(
                 visibility.geometryType != GeometryType::STATIC || type != MorphType::NONE)
                 << "Morphing can't be used with STATIC geometry";
 
@@ -562,6 +558,6 @@ DescriptorSet& FRenderableManager::getDescriptorSet(Instance const instance) noe
     return mManager[instance].descriptorSet;
 }
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_COMPONENTS_RENDERABLEMANAGER_H
+#endif // TNT_DANTE_COMPONENTS_RENDERABLEMANAGER_H

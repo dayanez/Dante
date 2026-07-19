@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "details/VertexBuffer.h"
 
 #include "details/Engine.h"
 
-namespace filament {
+namespace dante {
 
 size_t VertexBuffer::getVertexCount() const noexcept {
     return downcast(this)->getVertexCount();
@@ -41,4 +37,4 @@ bool VertexBuffer::isCreationComplete() const noexcept {
     return downcast(this)->isCreationComplete();
 }
 
-} // namespace filament
+} // namespace dante

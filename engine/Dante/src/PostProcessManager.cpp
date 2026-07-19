@@ -1,9 +1,5 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifdef FILAMENT_TARGET_MOBILE
+#ifdef DANTE_TARGET_MOBILE
 #   define DOF_DEFAULT_RING_COUNT 3
 #   define DOF_DEFAULT_MAX_COC    24
 #else
@@ -49,14 +45,14 @@
 #include "materials/sgsr/sgsr.h"
 #include "materials/ssao/ssao.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
-#include <private/filament/Variant.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
+#include <private/dante/Variant.h>
 
-#include <filament/Material.h>
-#include <filament/MaterialEnums.h>
-#include <filament/Options.h>
-#include <filament/Viewport.h>
+#include <dante/Material.h>
+#include <dante/MaterialEnums.h>
+#include <dante/Options.h>
+#include <dante/Viewport.h>
 
 #include <private/backend/BackendUtils.h>
 
@@ -94,7 +90,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filament {
+namespace dante {
 
 using namespace utils;
 using namespace math;
@@ -826,7 +822,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::ssr(FrameGraph& fg,
 }
 
 FrameGraphId<FrameGraphTexture> PostProcessManager::screenSpaceAmbientOcclusion(FrameGraph& fg,
-        filament::Viewport const&, const CameraInfo& cameraInfo,
+        dante::Viewport const&, const CameraInfo& cameraInfo,
         FrameGraphId<FrameGraphTexture> const depth,
         AmbientOcclusionOptions const& options) noexcept {
     assert_invariant(depth);
@@ -993,7 +989,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::screenSpaceAmbientOcclusion(
 
                 std::string_view materialName;
                 auto aoType = options.aoType;
-#ifdef FILAMENT_DISABLE_GTAO
+#ifdef DANTE_DISABLE_GTAO
                 materialName = computeBentNormals ? "saoBentNormals" : "sao";
                 aoType = AmbientOcclusionOptions::AmbientOcclusionType::SAO;
 #else
@@ -2693,7 +2689,7 @@ void PostProcessManager::fog(DriverApi& driver) noexcept {
 }
 
 FrameGraphId<FrameGraphTexture> PostProcessManager::colorGrading(FrameGraph& fg,
-        FrameGraphId<FrameGraphTexture> const input, filament::Viewport const& vp,
+        FrameGraphId<FrameGraphTexture> const input, dante::Viewport const& vp,
         FrameGraphId<FrameGraphTexture> const bloom,
         FrameGraphId<FrameGraphTexture> const flare,
         FColorGrading const* colorGrading,
@@ -2835,7 +2831,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::colorGrading(FrameGraph& fg,
 }
 
 FrameGraphId<FrameGraphTexture> PostProcessManager::fxaa(FrameGraph& fg,
-        FrameGraphId<FrameGraphTexture> const input, filament::Viewport const& vp,
+        FrameGraphId<FrameGraphTexture> const input, dante::Viewport const& vp,
         TextureFormat const outFormat, bool const preserveAlphaChannel) noexcept {
 
     struct PostProcessFXAA {
@@ -2888,7 +2884,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::fxaa(FrameGraph& fg,
 }
 
 void PostProcessManager::TaaJitterCamera(
-        filament::Viewport const& svp,
+        dante::Viewport const& svp,
         TemporalAntiAliasingOptions const& taaOptions,
         FrameHistory& frameHistory,
         FrameHistoryEntry::TemporalAA FrameHistoryEntry::*pTaa,
@@ -3007,8 +3003,8 @@ FMaterialInstance* PostProcessManager::configureColorGradingMaterial(backend::Dr
 FrameGraphId<FrameGraphTexture> PostProcessManager::taa(FrameGraph& fg,
         FrameGraphId<FrameGraphTexture> input,
         FrameGraphId<FrameGraphTexture> const depth,
-        filament::Viewport const& xvp,
-        filament::Viewport const& vp,
+        dante::Viewport const& xvp,
+        dante::Viewport const& vp,
         FrameHistory& frameHistory,
         FrameHistoryEntry::TemporalAA FrameHistoryEntry::*pTaa,
         TemporalAntiAliasingOptions const& taaOptions,
@@ -3226,7 +3222,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::rcas(
 
 FrameGraphId<FrameGraphTexture> PostProcessManager::upscale(FrameGraph& fg, bool const translucent,
     bool sourceHasLuminance, DynamicResolutionOptions dsrOptions,
-    FrameGraphId<FrameGraphTexture> const input, filament::Viewport const& vp,
+    FrameGraphId<FrameGraphTexture> const input, dante::Viewport const& vp,
     FrameGraphTexture::Descriptor const& outDesc, SamplerMagFilter filter) noexcept {
     // The code below cannot handle sub-resources
     assert_invariant(fg.getSubResourceDescriptor(input).layer == 0);
@@ -3249,7 +3245,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::upscale(FrameGraph& fg, bool
 FrameGraphId<FrameGraphTexture> PostProcessManager::upscaleBilinear(FrameGraph& fg,
         bool const translucent,
         DynamicResolutionOptions dsrOptions, FrameGraphId<FrameGraphTexture> const input,
-        filament::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc,
+        dante::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc,
         SamplerMagFilter filter) noexcept {
 
     struct QuadBlitData {
@@ -3329,7 +3325,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::upscaleBilinear(FrameGraph& 
 
 FrameGraphId<FrameGraphTexture> PostProcessManager::upscaleSGSR1(FrameGraph& fg, bool sourceHasLuminance,
     DynamicResolutionOptions dsrOptions, FrameGraphId<FrameGraphTexture> const input,
-    filament::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc) noexcept {
+    dante::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc) noexcept {
 
     struct QuadBlitData {
         FrameGraphId<FrameGraphTexture> input;
@@ -3401,7 +3397,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::upscaleSGSR1(FrameGraph& fg,
 
 FrameGraphId<FrameGraphTexture> PostProcessManager::upscaleFSR1(FrameGraph& fg,
     DynamicResolutionOptions dsrOptions, FrameGraphId<FrameGraphTexture> const input,
-    filament::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc) noexcept {
+    dante::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc) noexcept {
 
     const bool twoPassesEASU = mWorkaroundSplitEasu &&
             (dsrOptions.quality == QualityLevel::MEDIUM
@@ -3542,7 +3538,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::upscaleFSR1(FrameGraph& fg,
 
 FrameGraphId<FrameGraphTexture> PostProcessManager::blit(FrameGraph& fg, bool const translucent,
         FrameGraphId<FrameGraphTexture> const input,
-        filament::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc,
+        dante::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc,
         SamplerMagFilter filterMag,
         SamplerMinFilter filterMin) noexcept {
 
@@ -3613,7 +3609,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::blit(FrameGraph& fg, bool co
 FrameGraphId<FrameGraphTexture> PostProcessManager::blitDepth(FrameGraph& fg,
         FrameGraphId<FrameGraphTexture> const input) noexcept {
     auto const& inputDesc = fg.getDescriptor(input);
-    filament::Viewport const vp = {0, 0, inputDesc.width, inputDesc.height};
+    dante::Viewport const vp = {0, 0, inputDesc.width, inputDesc.height};
     bool const hardwareBlitSupported = mDepthStencilBlitSupported;
 
     struct BlitData {
@@ -3856,7 +3852,7 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::debugShadowCascades(FrameGra
 
 FrameGraphId<FrameGraphTexture> PostProcessManager::debugCombineArrayTexture(FrameGraph& fg,
     bool const translucent, FrameGraphId<FrameGraphTexture> const input,
-    filament::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc,
+    dante::Viewport const& vp, FrameGraphTexture::Descriptor const& outDesc,
     SamplerMagFilter filterMag,
     SamplerMinFilter filterMin) noexcept {
 
@@ -3988,4 +3984,4 @@ FrameGraphId<FrameGraphTexture> PostProcessManager::debugDisplayShadowTexture(
     return input;
 }
 
-} // namespace filament
+} // namespace dante

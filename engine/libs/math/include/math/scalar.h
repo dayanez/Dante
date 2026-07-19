@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_MATH_SCALAR_H
 #define TNT_MATH_SCALAR_H
@@ -10,7 +6,7 @@
 
 #include <assert.h>
 
-namespace filament {
+namespace dante {
 namespace math {
 
 constexpr const double F_E        = 2.71828182845904523536028747135266250;
@@ -109,6 +105,6 @@ inline constexpr T sign(T x) noexcept {
 }
 
 } // namespace math
-} // namespace filament
+} // namespace dante
 
 #endif // TNT_MATH_SCALAR_H

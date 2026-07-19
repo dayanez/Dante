@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2026 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "DynamicSpecConstKey.h"
 
@@ -10,7 +6,7 @@
 #include <array>
 #include <cstdint>
 
-namespace filament {
+namespace dante {
 
 namespace {
 
@@ -30,4 +26,4 @@ utils::Slice<const DynamicSpecConstKey> DynamicSpecConstKey::getAllPossibleKeys(
     return { gDynamicSpecConstKeys.data(), gDynamicSpecConstKeys.size() };
 }
 
-} // namespace filament
+} // namespace dante

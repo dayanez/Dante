@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "components/TransformManager.h"
 
 using namespace utils;
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -123,4 +119,4 @@ bool TransformManager::isAccurateTranslationsEnabled() const noexcept {
     return downcast(this)->isAccurateTranslationsEnabled();
 }
 
-} // namespace filament
+} // namespace dante

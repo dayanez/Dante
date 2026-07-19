@@ -32,7 +32,7 @@ fragment {
     void postProcess(inout PostProcessInputs postProcess) {
         highp vec2 uv = variable_vertex.xy;
 
-#if FILAMENT_QUALITY < FILAMENT_QUALITY_HIGH
+#if DANTE_QUALITY < DANTE_QUALITY_HIGH
         highp vec4 d = vec4(materialParams.resolution.zw, -materialParams.resolution.zw) * 0.5;
         vec3 c;
         c  = textureLod(materialParams_source, uv + d.zw, 0.0).rgb;

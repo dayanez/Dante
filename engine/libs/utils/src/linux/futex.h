@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2016 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef UTILS_LINUX_FUTEX_H
 #define UTILS_LINUX_FUTEX_H

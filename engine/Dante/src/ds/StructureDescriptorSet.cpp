@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "StructureDescriptorSet.h"
 
@@ -10,8 +6,8 @@
 #include "details/Camera.h"
 #include "details/Engine.h"
 
-#include <private/filament/EngineEnums.h>
-#include <private/filament/UibStructs.h>
+#include <private/dante/EngineEnums.h>
+#include <private/dante/UibStructs.h>
 
 #include <utils/compiler.h>
 #include <utils/debug.h>
@@ -21,7 +17,7 @@
 
 #include <array>
 
-namespace filament {
+namespace dante {
 
 using namespace backend;
 using namespace math;
@@ -87,4 +83,4 @@ void StructureDescriptorSet::prepareMaterialGlobals(
     PerViewDescriptorSetUtils::prepareMaterialGlobals(mUniforms.edit(), materialGlobals);
 }
 
-} // namespace filament
+} // namespace dante

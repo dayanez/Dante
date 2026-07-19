@@ -1,13 +1,9 @@
-/*
- * Copyright (C) 2024 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ResourceLoaderExtended.h"
 
-#include "../FFilamentAsset.h"
+#include "../FDanteAsset.h"
 
-#include <filament/BufferObject.h>
+#include <dante/BufferObject.h>
 
 #include <backend/BufferDescriptor.h>
 
@@ -19,11 +15,11 @@ static const auto FREE_CALLBACK = [](void* mem, size_t, void*) {
     free(mem);
  };
 
-namespace filament::gltfio {
+namespace dante::gltfio {
 
 
 void ResourceLoaderExtended::loadResources(std::vector<BufferSlot> const& slots,
-        filament::Engine* engine, std::vector<BufferObject*>& bufferObjects) {
+        dante::Engine* engine, std::vector<BufferObject*>& bufferObjects) {
     for (auto& slot: slots) {
         size_t const byteCount = slot.sizeInBytes;
         if (slot.vertices) {
@@ -49,4 +45,4 @@ void ResourceLoaderExtended::loadResources(std::vector<BufferSlot> const& slots,
     }
 }
 
-} // namespace filament::gltfio
+} // namespace dante::gltfio

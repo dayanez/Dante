@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_OPENGL_SHADERCOMPILERSERVICE_H
-#define TNT_FILAMENT_BACKEND_OPENGL_SHADERCOMPILERSERVICE_H
+#ifndef TNT_DANTE_BACKEND_OPENGL_SHADERCOMPILERSERVICE_H
+#define TNT_DANTE_BACKEND_OPENGL_SHADERCOMPILERSERVICE_H
 
 #include "CallbackManager.h"
 #include "CompilerThreadPool.h"
@@ -28,7 +24,7 @@
 
 #include <stdint.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class OpenGLDriver;
 class OpenGLContext;
@@ -188,6 +184,6 @@ private:
             program_token_t const& token) noexcept;
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_OPENGL_SHADERCOMPILERSERVICE_H
+#endif // TNT_DANTE_BACKEND_OPENGL_SHADERCOMPILERSERVICE_H

@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_BACKEND_CALLBACKMANAGER_H
-#define TNT_FILAMENT_BACKEND_CALLBACKMANAGER_H
+#ifndef TNT_DANTE_BACKEND_CALLBACKMANAGER_H
+#define TNT_DANTE_BACKEND_CALLBACKMANAGER_H
 
 #include <backend/CallbackHandler.h>
 
@@ -15,7 +11,7 @@
 #include <list>
 #include <mutex>
 
-namespace filament::backend {
+namespace dante::backend {
 
 class DriverBase;
 class CallbackHandler;
@@ -83,6 +79,6 @@ private:
     Container mCallbacks UTILS_GUARDED_BY(mLock);
 };
 
-} // namespace filament::backend
+} // namespace dante::backend
 
-#endif // TNT_FILAMENT_BACKEND_CALLBACKMANAGER_H
+#endif // TNT_DANTE_BACKEND_CALLBACKMANAGER_H

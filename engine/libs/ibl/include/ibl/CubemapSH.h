@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2015 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef IBL_CUBEMAPSH_H
 #define IBL_CUBEMAPSH_H
@@ -19,7 +15,7 @@ namespace utils {
 class JobSystem;
 } // namespace utils
 
-namespace filament {
+namespace dante {
 namespace ibl {
 
 class Cubemap;
@@ -109,6 +105,6 @@ private:
 };
 
 } // namespace ibl
-} // namespace filament
+} // namespace dante
 
 #endif /* IBL_CUBEMAPSH_H */

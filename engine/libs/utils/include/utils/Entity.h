@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #ifndef TNT_UTILS_ENTITY_H
 #define TNT_UTILS_ENTITY_H
@@ -15,8 +11,8 @@
 
 namespace utils {
 
-static constexpr size_t FILAMENT_GENERATION_SHIFT   = 17;
-static constexpr size_t FILAMENT_GENERATION_BITS    =  8;
+static constexpr size_t DANTE_GENERATION_SHIFT   = 17;
+static constexpr size_t DANTE_GENERATION_BITS    =  8;
 
 /**
  * An Entity is a handle to an object in the Entity Component System (ECS).
@@ -83,8 +79,8 @@ private:
     explicit Entity(Type const identity) noexcept : mIdentity(identity) { }
 
     Type mIdentity = 0;
-    static constexpr size_t GENERATION_SHIFT   = FILAMENT_GENERATION_SHIFT;
-    static constexpr size_t GENERATION_BITS    = FILAMENT_GENERATION_BITS;
+    static constexpr size_t GENERATION_SHIFT   = DANTE_GENERATION_SHIFT;
+    static constexpr size_t GENERATION_BITS    = DANTE_GENERATION_BITS;
     static constexpr size_t RAW_INDEX_COUNT = (1u << GENERATION_SHIFT);
     static constexpr Type INDEX_MASK        = (1u << GENERATION_SHIFT) - 1u;
     static constexpr Type MAX_IDENTITY      = (1u << (GENERATION_SHIFT + GENERATION_BITS)) - 1u;

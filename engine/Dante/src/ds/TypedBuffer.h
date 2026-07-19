@@ -1,10 +1,6 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
-#ifndef TNT_FILAMENT_TYPEDBUFFER_H
-#define TNT_FILAMENT_TYPEDBUFFER_H
+#ifndef TNT_DANTE_TYPEDBUFFER_H
+#define TNT_DANTE_TYPEDBUFFER_H
 
 #include <private/backend/DriverApi.h>
 
@@ -13,7 +9,7 @@
 #include <stddef.h>
 #include <string.h>
 
-namespace filament {
+namespace dante {
 
 template<typename T, size_t N = 1>
 class TypedBuffer { // NOLINT(cppcoreguidelines-pro-type-member-init)
@@ -53,6 +49,6 @@ private:
     mutable bool mSomethingDirty = false;
 };
 
-} // namespace filament
+} // namespace dante
 
-#endif // TNT_FILAMENT_TYPEDBUFFER_H
+#endif // TNT_DANTE_TYPEDBUFFER_H

@@ -32,7 +32,7 @@
 #include <math/scalar.h>
 #include <math/vec3.h>
 
-using namespace filament::math;
+using namespace dante::math;
 using namespace std::complex_literals;
 
 static float g_incidenceAngle = 81.7f;

@@ -39,7 +39,7 @@ fragment {
     precision mediump float;
     precision highp int;
 
-#if defined(FILAMENT_HAS_FEATURE_TEXTURE_GATHER)
+#if defined(DANTE_HAS_FEATURE_TEXTURE_GATHER)
     #define gather textureGather
 #else
     vec4 gather(const mediump sampler2D color, highp vec2 p, const int comp) {

@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2025 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "JobQueue.h"
 
@@ -10,7 +6,7 @@
 #include <utils/Mutex.h>
 #include <utils/Panic.h>
 
-namespace filament::backend {
+namespace dante::backend {
 
 using namespace utils;
 
@@ -35,7 +31,7 @@ JobQueue::JobId JobQueue::push(Job job, JobId const preIssuedJobId/* = InvalidJo
                 // or the job must have been canceled (likely)
                 return InvalidJobId;
             }
-            FILAMENT_CHECK_PRECONDITION(!static_cast<bool>(it->second))
+            DANTE_CHECK_PRECONDITION(!static_cast<bool>(it->second))
                     << "pre-issued job has already been populated";
             it->second = std::move(job);
         }

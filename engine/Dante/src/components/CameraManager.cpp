@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2017 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "components/CameraManager.h"
 
@@ -13,9 +9,9 @@
 #include <utils/Logger.h>
 
 using namespace utils;
-using namespace filament::math;
+using namespace dante::math;
 
-namespace filament {
+namespace dante {
 
 FCameraManager::FCameraManager(FEngine&) noexcept {
 }
@@ -87,4 +83,4 @@ void FCameraManager::destroy(FEngine& engine, Entity const e) noexcept {
     }
 }
 
-} // namespace filament
+} // namespace dante

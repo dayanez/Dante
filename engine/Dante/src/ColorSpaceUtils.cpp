@@ -1,11 +1,7 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project
- * SPDX-License-Identifier: Apache-2.0
- */
 
 #include "ColorSpaceUtils.h"
 
-namespace filament {
+namespace dante {
 
 using namespace math;
 
@@ -263,4 +259,4 @@ float3 gamutMapping_sRGB(float3 const rgb) noexcept {
  * End source: https://bottosson.github.io/posts/gamutclipping/
  */
 
-} //namespace filament
+} //namespace dante
