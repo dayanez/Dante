@@ -26,6 +26,7 @@
 #include <vector>
 #include <iostream> 
 
+//TODO ADD FUNCTIONING PFX SLIDER 
 
 //TODO DONT FORGET TO FIX Y AXIS FOR NIBBA 
 //ALSO CHANGE LIGHTING || MAKE NEG LIGHTING -100
@@ -285,19 +286,45 @@ int main() {
             utils::EntityManager::get().destroy(g_sun);
             engine->destroy(g_colorGrading);
         },
+        //Need to make another gui window 
         [](Engine*, View*) {
-            ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
+            //gui pos
+            ImGui::SetNextWindowPos(ImVec2(100,100), ImGuiCond_Always);
+            //bg color
             ImGui::SetNextWindowBgAlpha(0.35f);
+            //starts actual rendering             
+            ImGui::Begin("Testing", nullptr,
+                    ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+                    ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
+                    ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Text("Testing");
+            ImGui::End();
+
+            //--------------------------
+            
             ImGui::Begin("##fps", nullptr,
                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
                     ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
             ImGui::End();
-        });
+        }); 
+             //FPS Overlay 
+        //[](Engine*, View*) {
+          //  ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
+            //ImGui::SetNextWindowBgAlpha(0.35f);
+            //ImGui::Begin("##fps", nullptr,
+              //      ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+                //    ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
+                  //  ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
+          //  ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
+           // ImGui::End();
+       // });
 
     return 0;
 }
+
+
 //Start in main.cpp — no engine internals required, fastest feedback loop. Your Options structs (BloomOptions,
   //AmbientOcclusionOptions, etc.) are already there but hardcoded. First real task: add an ImGui panel (you already have
   //one for FPS, imgui.h is already included) with sliders/checkboxes wired to those structs, so you can drag bloom
