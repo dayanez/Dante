@@ -24,6 +24,7 @@
 #include <cstring>
 #include <fstream>
 #include <vector>
+#include <iostream> 
 
 
 //TODO DONT FORGET TO FIX Y AXIS FOR NIBBA 
@@ -31,7 +32,7 @@
 
 using namespace dante;
 using namespace dante::math;
-
+using namespace std;
 namespace {
 
 std::vector<uint8_t> readFile(utils::Path const& path) {
@@ -142,7 +143,6 @@ struct GltfModel {
     }
 };
 
-
 //Loading models 
 GltfModel g_character;
 GltfModel g_bathroom;
@@ -188,6 +188,11 @@ int main() {
             bloomOptions.strength = 0.02f;
             view->setBloomOptions(bloomOptions);
 
+            //AmbientOcclusionOptions, etc.) are already there but hardcoded. First real task: add an ImGui panel (you already have
+            //one for FPS, imgui.h is already included) with sliders/checkboxes wired to those structs, so you can drag bloom
+            //strength or toggle SSAO at runtime instead of recompiling. Small scope, touches real C++ (structs, pointers to View),
+            //and gives you an actual dev tool you'll use for everything after.
+
             // Screen-space ambient occlusion: self-shadows the character's own geometry
             // (limb/cloth crevices) that the single IBL alone doesn't provide.
             AmbientOcclusionOptions aoOptions;
@@ -195,8 +200,8 @@ int main() {
             view->setAmbientOcclusionOptions(aoOptions);
 
             //sunlight
-            view->getCamera().setExposure(16.0f, 1.0f / 125.0f, 100.0f);                                             //starts here 
-
+            view->getCamera().setExposure(16.0f, 1.0f / 100.0f, 200.0f);                                             //starts here 
+            //view->getCamera().setExposure(16.0f, 1.0f / 125.0f, 100.0f);    
                                                
             g_sun = utils::EntityManager::get().create();
             LightManager::Builder(LightManager::Type::SUN)
@@ -243,7 +248,7 @@ int main() {
             // overwritten on the next frame - the manipulator's own state is what actually
             // needs to change, which Config doesn't expose.
             g_character.create(*engine, *scene, assetsDir + "models/character/ch15_firing.glb",
-                    float3{0, -2.0f, -4});                                                              //im assuming that xy might be in "g_character" ill try adjusting float3
+                    float3{0, -1.0f, -2.0});                                                              //im assuming that xy might be in "g_character" ill try adjusting float3
             // Bathroom's local bbox (from its own load log) is roughly x:[-4.25,7.27]
             // y:[-0.08,4.18] z:[-3.78,18.67], floor near y=-0.08 - same y/z translation as
             // the character lines its floor up with the character's feet.
@@ -293,3 +298,27 @@ int main() {
 
     return 0;
 }
+//Start in main.cpp — no engine internals required, fastest feedback loop. Your Options structs (BloomOptions,
+  //AmbientOcclusionOptions, etc.) are already there but hardcoded. First real task: add an ImGui panel (you already have
+  //one for FPS, imgui.h is already included) with sliders/checkboxes wired to those structs, so you can drag bloom
+  //strength or toggle SSAO at runtime instead of recompiling. Small scope, touches real C++ (structs, pointers to View),
+  //and gives you an actual dev tool you'll use for everything after.
+
+  //Then add something to the scene using patterns you've already read. You've got GltfModel::create() as a template — use
+  //it to load a 4th model yourself. Or add a second light: build a flickering point light near the monster with
+  //LightManager::Builder, following the exact lifecycle g_sun already uses (create entity → build → add to scene →
+  //destroy on teardown). This is where you start writing rather than just calling — same APIs, your own logic (e.g.
+  //animate its intensity per-frame for a flicker, which means touching the animate() callback and doing real per-frame
+  //math).
+
+  //Then write an actual shader — a new .mat file. This is the part you actually asked about. Filament's material files
+  //are a good on-ramp because the shading language is a constrained subset with a clear structure (you don't need to know
+ // a full GLSL pipeline to start). Concrete first shader: a simple emissive rim-light/fresnel glow on the smiley monster
+ // — visually fun, fits the horror-game aesthetic, and is genuinely "I wrote a shader" rather than "I configured one."
+ // Look at one of the simpler existing .mat files (clearDepth.mat or blitLow.mat) for the file structure before
+ // attempting your own — start from the simplest real example in the repo, not a blank file.
+
+ // Capstone, once the above feels comfortable: add a new pass to the frame graph. Something like a custom vignette or
+ // chromatic-aberration post effect as a new FrameGraphPass in fg/, with its own .mat. This is real engine-level graphics
+ // programming — declaring a pass, its inputs/outputs, and the shader that runs in it — but it's only approachable after
+ // you've seen how FrameGraph.cpp/PassNode.cpp and a couple of existing post-process materials fit together.
