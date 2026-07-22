@@ -24,11 +24,11 @@
 #include <cstring>
 #include <fstream>
 #include <vector>
-#include <iostream> 
+#include <iostream>
 
-//TODO ADD FUNCTIONING PFX SLIDER 
+//TODO ADD FUNCTIONING PFX SLIDER
 
-//TODO DONT FORGET TO FIX Y AXIS FOR NIBBA 
+
 //ALSO CHANGE LIGHTING || MAKE NEG LIGHTING -100
 
 using namespace dante;
@@ -52,7 +52,6 @@ std::vector<uint8_t> readFile(utils::Path const& path) {
 } // namespace
 
 namespace {
-
 utils::Entity g_sun;
 ColorGrading* g_colorGrading = nullptr;
 
@@ -144,7 +143,7 @@ struct GltfModel {
     }
 };
 
-//Loading models 
+//Loading models
 GltfModel g_character;
 GltfModel g_bathroom;
 GltfModel g_smileyMonster;
@@ -162,7 +161,7 @@ int main() {
     utils::Path const assetsDir = resolveAssetsDir();
 
     Config config;
-    config.title = "Dante";
+    config.title = "DanteEngine";
 #if defined(__APPLE__)
     config.backend = Engine::Backend::METAL;
 #else
@@ -174,36 +173,26 @@ int main() {
     DanteApp::get().run(
         config,
         [assetsDir](Engine* engine, View* view, Scene* scene) {
-            // FXAA (View's default) softens the whole frame, not just jagged edges - noticeable
-            // on the HDRI skybox. Temporal AA smooths the character's geometry edges without
-            // that softening cost.
+
             view->setAntiAliasing(AntiAliasing::NONE);
             TemporalAntiAliasingOptions taaOptions;
-            taaOptions.enabled = true;
+            taaOptions.enabled = false;
             view->setTemporalAntiAliasingOptions(taaOptions);
 
-            // Subtle bloom on overbright highlights (the sky/IBL reflections) - strength is
-            // deliberately low so it reads as a glow, not a haze over the whole frame.
             BloomOptions bloomOptions;
             bloomOptions.enabled = true;
-            bloomOptions.strength = 0.02f;
+            bloomOptions.strength = 0.04f;
             view->setBloomOptions(bloomOptions);
 
-            //AmbientOcclusionOptions, etc.) are already there but hardcoded. First real task: add an ImGui panel (you already have
-            //one for FPS, imgui.h is already included) with sliders/checkboxes wired to those structs, so you can drag bloom
-            //strength or toggle SSAO at runtime instead of recompiling. Small scope, touches real C++ (structs, pointers to View),
-            //and gives you an actual dev tool you'll use for everything after.
 
-            // Screen-space ambient occlusion: self-shadows the character's own geometry
-            // (limb/cloth crevices) that the single IBL alone doesn't provide.
             AmbientOcclusionOptions aoOptions;
-            aoOptions.enabled = true;
+            aoOptions.enabled = false;
             view->setAmbientOcclusionOptions(aoOptions);
 
             //sunlight
-            view->getCamera().setExposure(16.0f, 1.0f / 100.0f, 200.0f);                                             //starts here 
-            //view->getCamera().setExposure(16.0f, 1.0f / 125.0f, 100.0f);    
-                                               
+            //view->getCamera().setExposure(16.0f, 1.0f / 50.0f, 70.0f);                                             //starts here
+            view->getCamera().setExposure(16.0f, 1.0f / 125.0f, 100.0f);
+
             g_sun = utils::EntityManager::get().create();
             LightManager::Builder(LightManager::Type::SUN)
                     .color({1.0f, 0.985f, 0.95f})
@@ -211,7 +200,7 @@ int main() {
                     .direction(normalize(float3{-0.5f, -0.8f, -0.65f}))
                     .castShadows(true)
                     .sunAngularRadius(0.53f) // real sun's angular size in degrees                                  //ends here |need to adjust this so it isn't bright af|
-                     .build(*engine, g_sun); 
+                     .build(*engine, g_sun);
             scene->addEntity(g_sun);
 
             ACESToneMapper toneMapper;
@@ -220,7 +209,7 @@ int main() {
                     .build(*engine);
             view->setColorGrading(g_colorGrading);
 
-            
+
             view->getCamera().setFocusDistance(3.0f);
             DepthOfFieldOptions dofOptions;
             dofOptions.enabled = false;
@@ -229,7 +218,7 @@ int main() {
 
             //Fog
             FogOptions fogOptions;
-            fogOptions.enabled = false;
+            fogOptions.enabled = true;
             fogOptions.distance = 5.0f;
             fogOptions.density = 0.02f;
             fogOptions.fogColorFromIbl = true;
@@ -237,7 +226,7 @@ int main() {
 
             //Vigshit
             VignetteOptions vignetteOptions;
-            vignetteOptions.enabled = false; //Disabling because right now, it looks ugly no point in having it. 
+            vignetteOptions.enabled = false; //Disabling because right now, it looks ugly no point in having it.
             view->setVignetteOptions(vignetteOptions);
 
             // Skybox and indirect light both come from config.iblDirectory - DanteApp
@@ -286,13 +275,10 @@ int main() {
             utils::EntityManager::get().destroy(g_sun);
             engine->destroy(g_colorGrading);
         },
-        //Need to make another gui window 
+        //Need to make another gui window
         [](Engine*, View*) {
-            //gui pos
-            ImGui::SetNextWindowPos(ImVec2(100,100), ImGuiCond_Always);
-            //bg color
+            ImGui::SetNextWindowPos(ImVec2(15,15), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
-            //starts actual rendering             
             ImGui::Begin("Testing", nullptr,
                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
@@ -301,25 +287,15 @@ int main() {
             ImGui::End();
 
             //--------------------------
-            
+            ImGui::SetNextWindowPos(ImVec2(10,10), ImGuiCond_Always);
+            ImGui::SetNextWindowBgAlpha(0.35f);
             ImGui::Begin("##fps", nullptr,
                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
                     ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
             ImGui::End();
-        }); 
-             //FPS Overlay 
-        //[](Engine*, View*) {
-          //  ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
-            //ImGui::SetNextWindowBgAlpha(0.35f);
-            //ImGui::Begin("##fps", nullptr,
-              //      ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-                //    ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
-                  //  ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
-          //  ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
-           // ImGui::End();
-       // });
+        });
 
     return 0;
 }

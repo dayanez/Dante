@@ -12,11 +12,6 @@ cmake_minimum_required(VERSION 3.22.1)
 # ==================================================================================================
 
 # Dante does not support MSYS2-based environment on Windows. See issue #9968.
-if(DEFINED ENV{MSYSTEM})
-    message(FATAL_ERROR
-        "MSYS2 Subsystem detected($ENV{MSYSTEM}). "
-        "Dante does not support MSYS2-based environment on Windows.")
-endif()
 
 # ==================================================================================================
 # Toolchain configuration
@@ -85,7 +80,7 @@ option(DANTE_SUPPORTS_OSMESA "Enable OSMesa (headless GL context) for Dante" OFF
 
 option(DANTE_USE_ABSEIL_LOGGING "Use Abseil to log, may increase binary size" OFF)
 
-option(DANTE_ENABLE_EXPERIMENTAL_GCC_SUPPORT "Enable GCC support (unsupported)" OFF)
+option(DANTE_ENABLE_EXPERIMENTAL_GCC_SUPPORT "Enable GCC support (unsupported)" ON)
 
 option(DANTE_SUPPORTS_WEBP_TEXTURES "Enable webp texture support for Dante (builds libwebp when ON)" OFF)
 
