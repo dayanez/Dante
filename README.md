@@ -110,12 +110,4 @@ installing (the MSVC runtime is statically linked); the recipient just needs a G
 with OpenGL support, which is practically any GPU from the last several years with an
 up-to-date driver.
 
-## Credit
-
-Built using some of [Filament](https://github.com/google/filament), Google's real-time
-PBR rendering engine, licensed under the Apache License 2.0.
-
-## License
-
-Dante's own code and assets are proprietary, all rights reserved. See
-[LICENSE](LICENSE).
+ALL RIGHTS RESERVED XFEE 
