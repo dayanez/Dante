@@ -1,5 +1,9 @@
 # Dante
 
+Yeah so this started off as just a little side project still is but has made me fall in love with Graphics Programming. Actively working on this almost everyday. Using some of Google Filaments math since they optimized the shit out of it but most of it is mine as well. 
+
+
+
 ## First-time install & build
 
 Windows: open an **x64 Native Tools Command Prompt for VS 2022** (plain PowerShell/cmd
