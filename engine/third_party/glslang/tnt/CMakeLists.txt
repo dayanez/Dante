@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.19)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-include(${EXTERNAL}/clang/usage_ios_13.cmake)
-
 # Adhere to GNU filesystem layout conventions
 include(GNUInstallDirs)
 

@@ -1,113 +1,44 @@
 # Dante
 
-Graphics engine. Targets OpenGL on Windows/Linux only. 
-## Prerequisites
+## First-time install & build
 
-| | Windows | Linux |
-|---|---|---|
-| Compiler | MSVC (Visual Studio 2022, Desktop C++ workload) | Clang 17+ |
-| CMake | 3.22+ | 3.22+ |
-| Build tool | Ninja | Ninja |
+Windows: open an **x64 Native Tools Command Prompt for VS 2022** (plain PowerShell/cmd
+won't have `cl.exe` on `PATH`). Requires Visual Studio 2022 (Desktop C++ workload),
+CMake 3.22+, and Ninja.
 
-No graphics SDK to install on either platform. OpenGL builds against your existing GPU
-driver.
-
-- **Windows**: build from an x64 Native Tools Command Prompt for VS 2022 (or run
-  `vcvarsall.bat x64` first). The Ninja generator needs `cl.exe`/`link.exe` on `PATH`;
-  a plain terminal that never loaded the VS developer environment will configure fine
-  but fail at the final link step. Opening the folder directly in Visual Studio or
-  CLion via their built-in CMake integration also works and handles this for you
-  automatically.
-- **Linux**: install Clang 17 (e.g. via [apt.llvm.org](https://apt.llvm.org/)), Ninja,
-  and X11 dev headers: `libglu1-mesa-dev libxi-dev libxcomposite-dev libxxf86vm-dev`.
-
-## Build
+Linux: requires Clang 17+, CMake 3.22+, Ninja, and X11 dev headers
+(`libglu1-mesa-dev libxi-dev libxcomposite-dev libxxf86vm-dev`).
 
 ```
+cd C:\Users\dommc\Dante
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel
 ```
 
-Swap `Release` for `Debug` for an unoptimized build with debug symbols. Cap
-parallelism with `--parallel 4` on a multi-core machine if a full-core build makes it
-unusable to work on while it runs.
-
-The first build compiles the whole engine and is slow: several minutes. Every build
-after that is fast, Ninja only recompiles what changed.
-
-## Run
+## Every time after (rebuild & run)
 
 ```
+cmake --build build --parallel
 build\Dante.exe        # Windows
 build/Dante             # Linux
 ```
 
-No install step, no arguments. A window opens immediately.
+Only re-run the `cmake -B build ...` configure step if you touch `CMakeLists.txt` or
+add/remove a source file.
 
-## Day-to-day workflow: rebuilding after changes
-
-1. Edit `src/main.cpp`, add or edit a `.mat` material, or drop in a new asset.
-2. `cmake --build build --parallel`. You only need to re-run the `cmake -B build ...`
-   configure step if you touch `CMakeLists.txt` or add/remove a source file; routine
-   edits never need it.
-3. Run the binary again. Changes to `assets/` (models, HDRIs) are picked up on the next
-   launch with no rebuild. `DANTE_ASSETS_DIR` points straight at the source tree in dev
-   builds, nothing gets copied.
-4. Watch stderr. `[Dante] ...` lines (glTF entity/animation counts, bounding boxes on
-   load) are Dante's own logging; check there first if a model loads invisibly or
-   looks wrong.
-
-| Change | Rebuild needed? | Command |
-|---|---|---|
-| Edit `src/main.cpp` | Yes | `cmake --build build --parallel` |
-| Add or edit a `.mat` shader | Yes (`matc` runs automatically) | `cmake --build build --parallel` |
-| Add or swap a model/asset | No, just relaunch | `build\Dante.exe` |
-| Touch `CMakeLists.txt` or add/remove a source file | Yes, reconfigure first | `cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release` then `cmake --build build --parallel` |
-
-When building it again use Dev cmd prompt 
-x64 Native Tools Command Prompt for VS 2022
-cd C:\Users\dommc\Dante
-cmake --build build
-
-## Adding your own models
-
-Any static or animated glTF/GLB loads through `GltfModel` in `main.cpp`:
-`gltfio::AssetLoader` + `ResourceLoader`, plus `Animator` if the source has animations
-(a no-op if it doesn't). Declare a `GltfModel` instance, call `create(engine, scene,
-path, position)` pointed at `assets/models/<name>/`, and `destroy(engine, scene)` in
-the cleanup callback.
-
-Only PNG/JPEG textures are wired up (via `stb`) right now; KTX2/Basis compressed
-textures aren't hooked up yet.
-
-`gltfio::Animator` plays back whatever clips are embedded in the glTF/GLB. `main.cpp`
-currently just loops clip 0.
-
-Models are expected to already be glTF/GLB (e.g. straight off Sketchfab) - no Blender
-conversion step in this pipeline.
-
-## Building an exe to share
+## Building a shareable exe
 
 ```
 cmake --build build --config Release --parallel
 ```
 
-Then put `Dante.exe` and a copy of the whole `assets/` folder next to each other in one
-directory and zip it:
+Put `Dante.exe` and the whole `assets/` folder next to each other and zip:
 
 ```
 Dante/
   Dante.exe
   assets/
-    environments/...
-    models/...
 ```
 
-Dante looks for `assets/` next to the executable first, falling back to the
-compile-time dev path (which won't exist on someone else's machine) only if that's
-missing. This layout is what makes a build portable. On Windows nothing else needs
-installing (the MSVC runtime is statically linked); the recipient just needs a GPU
-with OpenGL support, which is practically any GPU from the last several years with an
-up-to-date driver.
-
-ALL RIGHTS RESERVED XFEE 
+Dante looks for `assets/` next to the executable. No install step for the recipient;
+they just need a GPU with an up-to-date OpenGL driver.

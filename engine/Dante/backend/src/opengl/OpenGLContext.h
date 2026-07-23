@@ -293,20 +293,20 @@ public:
     } bugs = {};
 
     struct Procs {
-        void (* bindVertexArray)(GLuint array);
-        void (* deleteVertexArrays)(GLsizei n, const GLuint* arrays);
-        void (* genVertexArrays)(GLsizei n, GLuint* arrays);
+        void (APIENTRY* bindVertexArray)(GLuint array);
+        void (APIENTRY* deleteVertexArrays)(GLsizei n, const GLuint* arrays);
+        void (APIENTRY* genVertexArrays)(GLsizei n, GLuint* arrays);
 
-        void (* genQueries)(GLsizei n, GLuint* ids);
-        void (* deleteQueries)(GLsizei n, const GLuint* ids);
-        void (* beginQuery)(GLenum target, GLuint id);
-        void (* endQuery)(GLenum target);
-        void (* getQueryObjectuiv)(GLuint id, GLenum pname, GLuint* params);
-        void (* getQueryObjectui64v)(GLuint id, GLenum pname, GLuint64* params);
+        void (APIENTRY* genQueries)(GLsizei n, GLuint* ids);
+        void (APIENTRY* deleteQueries)(GLsizei n, const GLuint* ids);
+        void (APIENTRY* beginQuery)(GLenum target, GLuint id);
+        void (APIENTRY* endQuery)(GLenum target);
+        void (APIENTRY* getQueryObjectuiv)(GLuint id, GLenum pname, GLuint* params);
+        void (APIENTRY* getQueryObjectui64v)(GLuint id, GLenum pname, GLuint64* params);
 
-        void (* invalidateFramebuffer)(GLenum target, GLsizei numAttachments, const GLenum *attachments);
+        void (APIENTRY* invalidateFramebuffer)(GLenum target, GLsizei numAttachments, const GLenum *attachments);
 
-        void (* maxShaderCompilerThreadsKHR)(GLuint count);
+        void (APIENTRY* maxShaderCompilerThreadsKHR)(GLuint count);
     } procs{};
 
     // GL version info — immutable after construction

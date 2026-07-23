@@ -290,7 +290,7 @@ void OpenGLContext::initProcs(Procs* procs,
 #endif // BACKEND_OPENGL_LEVEL_GLES30
 
     // no-op if not supported
-    procs->maxShaderCompilerThreadsKHR = +[](GLuint) {};
+    procs->maxShaderCompilerThreadsKHR = static_cast<void (APIENTRY*)(GLuint)>([](GLuint) {});
 
 #ifdef BACKEND_OPENGL_VERSION_GLES
 #   ifndef DANTE_IOS // DANTE_IOS is guaranteed to have ES3.x
@@ -305,9 +305,9 @@ void OpenGLContext::initProcs(Procs* procs,
             // if we don't have OES_vertex_array_object, just don't do anything with real VAOs,
             // we'll just rebind everything each time. Most Mali-400 support this extension, but
             // a few don't.
-            procs->genVertexArrays = +[](GLsizei, GLuint*) {};
-            procs->bindVertexArray = +[](GLuint) {};
-            procs->deleteVertexArrays = +[](GLsizei, GLuint const*) {};
+            procs->genVertexArrays = static_cast<void (APIENTRY*)(GLsizei, GLuint*)>([](GLsizei, GLuint*) {});
+            procs->bindVertexArray = static_cast<void (APIENTRY*)(GLuint)>([](GLuint) {});
+            procs->deleteVertexArrays = static_cast<void (APIENTRY*)(GLsizei, GLuint const*)>([](GLsizei, GLuint const*) {});
         }
 
         // EXT_disjoint_timer_query is optional -- pointers will be null if not available

@@ -3,3 +3,10 @@ out/
 .vs/
 *.user
 .claude/
+
+# CMake in-tree configure artifacts (should only ever exist under /build/,
+# but got committed at some point from a stray in-tree `cmake .` run)
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json

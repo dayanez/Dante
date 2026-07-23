@@ -277,7 +277,7 @@ int main() {
         },
         //Need to make another gui window
         [](Engine*, View*) {
-            ImGui::SetNextWindowPos(ImVec2(15,15), ImGuiCond_Always);
+            ImGui::SetNextWindowPos(ImVec2(10,35), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
             ImGui::Begin("Testing", nullptr,
                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
