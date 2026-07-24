@@ -1,4 +1,4 @@
-#include <danteapp/DanteApp.h>
+ #include <danteapp/DanteApp.h>
 #include <dante/Camera.h>
 #include <dante/ColorGrading.h>
 #include <dante/Engine.h>
@@ -238,7 +238,7 @@ int main() {
             // overwritten on the next frame - the manipulator's own state is what actually
             // needs to change, which Config doesn't expose.
             g_character.create(*engine, *scene, assetsDir + "models/character/ch15_firing.glb",
-                    float3{0, -1.0f, -2.0});                                                              //im assuming that xy might be in "g_character" ill try adjusting float3
+                    float3{0.2, -1.0f, 1.7});                                                              //im assuming that xy might be in "g_character" ill try adjusting float3
             // Bathroom's local bbox (from its own load log) is roughly x:[-4.25,7.27]
             // y:[-0.08,4.18] z:[-3.78,18.67], floor near y=-0.08 - same y/z translation as
             // the character lines its floor up with the character's feet.
@@ -250,6 +250,64 @@ int main() {
             // "big monster" to match the room. Untested exact spot; adjust once you've seen it.
             g_smileyMonster.create(*engine, *scene, assetsDir + "models/smiley_monster/smily_horror_monster.glb",
                     float3{3.0f, -1.0f, 4.0f}, 0.03f);
+                    
+            //Im thinking that now what i do is print Waiting Press: then type key gives option to change hardcoded value, and enable true or false. then repeat 
+            
+            
+            
+            // Making Control for postfx
+            
+            /*
+            So step 1: 
+                Make commands a struct we will typedef it too so its easier to call
+                
+            So step 2: 
+                make Lambda which is essentially a func inside a func and we ill use that for the logic below 
+                
+                since we are using |using namespace std;| no std::string message 
+                
+                LoL review this tomorrow too didnt know you can make strings like string str = "Hello"; my dumbass thought it was like fucking C where its char str[256] = "Hello";
+                
+                Example of Lambda Syntax: 
+                
+                auto print_message = [](std::string message)
+                {
+                
+                    std::cout <<message<< "\n";
+                };
+                for (int i = 0; i<10; i++){
+                print_message("Hello!");
+                }
+            
+            */
+            
+            
+            //Thinking we turn this into a lamb
+            //COMMANDS
+            string v; 
+            string s; 
+            //================================
+            //Inital Waiting 
+            cout <<"Waiting KeyPress: "<<endl;
+            getline(cin, v, s);
+            
+            if (v == "v" || "V"){
+                //Logic for pfx would go here
+                cout<<"v test worked"<< endl;
+            
+            };
+            
+            if (s == "s"||"S"){
+                cout << "s test worked"<< endl;
+                
+             
+            };
+             
+                
+           
+            
+           
+            
 
             // Advance every model's animation each frame (a model with no animations is a
             // no-op via the animationCount() == 0 check).
@@ -266,6 +324,16 @@ int main() {
                 }
             });
         },
+        
+        /*
+        Deciding for now at least before button is added. We will use terminal to input keybinds and then will prompt user to insert custom value
+        Then this will change whatever pfx is called. This makes dev a whole lot easier doesnt need to be QOL right now because its just me and ik the
+        keybinds. 
+        */
+      
+        //Engine and View need to be parameters we are pulling logic from them
+        
+     
         [](Engine* engine, View*, Scene* scene) {
             g_character.destroy(*engine, *scene);
             g_bathroom.destroy(*engine, *scene);
@@ -277,15 +345,15 @@ int main() {
         },
         //Need to make another gui window
         [](Engine*, View*) {
-            ImGui::SetNextWindowPos(ImVec2(10,35), ImGuiCond_Always);
+            ImGui::SetNextWindowPos(ImVec2(10,40), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
-            ImGui::Begin("Testing", nullptr,
+            ImGui::Begin("PFX Control Check Term", nullptr,
                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
                     ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
-            ImGui::Text("Testing");
+            ImGui::Text("PFX Control Check Term");
             ImGui::End();
-
+            
             //--------------------------
             ImGui::SetNextWindowPos(ImVec2(10,10), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
