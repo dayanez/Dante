@@ -25,6 +25,8 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <conio.h>
+#include <windows.h> 
 
 //TODO ADD FUNCTIONING PFX SLIDER
 
@@ -191,7 +193,8 @@ int main() {
 
             //sunlight
             //view->getCamera().setExposure(16.0f, 1.0f / 50.0f, 70.0f);                                             //starts here
-            view->getCamera().setExposure(16.0f, 1.0f / 125.0f, 100.0f);
+           // view->getCamera().setExposure(16.0f, 1.0f / 125.0f, 100.0f);
+            view->getCamera().setExposure(16.0f, 1.0f / 50.0f, 70.0f);
 
             g_sun = utils::EntityManager::get().create();
             LightManager::Builder(LightManager::Type::SUN)
@@ -226,7 +229,7 @@ int main() {
 
             //Vigshit
             VignetteOptions vignetteOptions;
-            vignetteOptions.enabled = false; //Disabling because right now, it looks ugly no point in having it.
+            vignetteOptions.enabled = false;
             view->setVignetteOptions(vignetteOptions);
 
             // Skybox and indirect light both come from config.iblDirectory - DanteApp
@@ -250,65 +253,8 @@ int main() {
             // "big monster" to match the room. Untested exact spot; adjust once you've seen it.
             g_smileyMonster.create(*engine, *scene, assetsDir + "models/smiley_monster/smily_horror_monster.glb",
                     float3{3.0f, -1.0f, 4.0f}, 0.03f);
-                    
-            //Im thinking that now what i do is print Waiting Press: then type key gives option to change hardcoded value, and enable true or false. then repeat 
-            
-            
-            
-            // Making Control for postfx
-            
-            /*
-            So step 1: 
-                Make commands a struct we will typedef it too so its easier to call
-                
-            So step 2: 
-                make Lambda which is essentially a func inside a func and we ill use that for the logic below 
-                
-                since we are using |using namespace std;| no std::string message 
-                
-                LoL review this tomorrow too didnt know you can make strings like string str = "Hello"; my dumbass thought it was like fucking C where its char str[256] = "Hello";
-                
-                Example of Lambda Syntax: 
-                
-                auto print_message = [](std::string message)
-                {
-                
-                    std::cout <<message<< "\n";
-                };
-                for (int i = 0; i<10; i++){
-                print_message("Hello!");
-                }
-            
-            */
-            
-            
-            //Thinking we turn this into a lamb
-            //COMMANDS
-            string v; 
-            string s; 
-            //================================
-            //Inital Waiting 
-            cout <<"Waiting KeyPress: "<<endl;
-            getline(cin, v, s);
-            
-            if (v == "v" || "V"){
-                //Logic for pfx would go here
-                cout<<"v test worked"<< endl;
-            
-            };
-            
-            if (s == "s"||"S"){
-                cout << "s test worked"<< endl;
-                
-             
-            };
-             
-                
-           
-            
-           
-            
-
+          
+                              
             // Advance every model's animation each frame (a model with no animations is a
             // no-op via the animationCount() == 0 check).
             DanteApp::get().animate([](Engine*, View*, double now) {
@@ -325,15 +271,7 @@ int main() {
             });
         },
         
-        /*
-        Deciding for now at least before button is added. We will use terminal to input keybinds and then will prompt user to insert custom value
-        Then this will change whatever pfx is called. This makes dev a whole lot easier doesnt need to be QOL right now because its just me and ik the
-        keybinds. 
-        */
-      
-        //Engine and View need to be parameters we are pulling logic from them
-        
-     
+                
         [](Engine* engine, View*, Scene* scene) {
             g_character.destroy(*engine, *scene);
             g_bathroom.destroy(*engine, *scene);
@@ -369,27 +307,3 @@ int main() {
 }
 
 
-//Start in main.cpp — no engine internals required, fastest feedback loop. Your Options structs (BloomOptions,
-  //AmbientOcclusionOptions, etc.) are already there but hardcoded. First real task: add an ImGui panel (you already have
-  //one for FPS, imgui.h is already included) with sliders/checkboxes wired to those structs, so you can drag bloom
-  //strength or toggle SSAO at runtime instead of recompiling. Small scope, touches real C++ (structs, pointers to View),
-  //and gives you an actual dev tool you'll use for everything after.
-
-  //Then add something to the scene using patterns you've already read. You've got GltfModel::create() as a template — use
-  //it to load a 4th model yourself. Or add a second light: build a flickering point light near the monster with
-  //LightManager::Builder, following the exact lifecycle g_sun already uses (create entity → build → add to scene →
-  //destroy on teardown). This is where you start writing rather than just calling — same APIs, your own logic (e.g.
-  //animate its intensity per-frame for a flicker, which means touching the animate() callback and doing real per-frame
-  //math).
-
-  //Then write an actual shader — a new .mat file. This is the part you actually asked about. Filament's material files
-  //are a good on-ramp because the shading language is a constrained subset with a clear structure (you don't need to know
- // a full GLSL pipeline to start). Concrete first shader: a simple emissive rim-light/fresnel glow on the smiley monster
- // — visually fun, fits the horror-game aesthetic, and is genuinely "I wrote a shader" rather than "I configured one."
- // Look at one of the simpler existing .mat files (clearDepth.mat or blitLow.mat) for the file structure before
- // attempting your own — start from the simplest real example in the repo, not a blank file.
-
- // Capstone, once the above feels comfortable: add a new pass to the frame graph. Something like a custom vignette or
- // chromatic-aberration post effect as a new FrameGraphPass in fg/, with its own .mat. This is real engine-level graphics
- // programming — declaring a pass, its inputs/outputs, and the shader that runs in it — but it's only approachable after
- // you've seen how FrameGraph.cpp/PassNode.cpp and a couple of existing post-process materials fit together.
