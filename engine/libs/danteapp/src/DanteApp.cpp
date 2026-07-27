@@ -722,10 +722,12 @@ DanteApp::Window::Window(DanteApp* danteApp, const Config& config, std::string t
     mMainCameraMan = CameraManipulator::Builder()
             .targetPosition(0, 0, -4)
             .flightMoveDamping(15.0)
+            .flightMaxMoveSpeed(config.cameraMoveSpeed)
             .build(config.cameraMode);
     mDebugCameraMan = CameraManipulator::Builder()
             .targetPosition(0, 0, -4)
             .flightMoveDamping(15.0)
+            .flightMaxMoveSpeed(config.cameraMoveSpeed)
             .build(config.cameraMode);
 
     mMainView->setCamera(mMainCamera);

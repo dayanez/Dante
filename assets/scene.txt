@@ -1,0 +1,7 @@
+skybox C:\Users\dommc\Dante\assets\environments\qwantani_night_puresky_4k.exr
+iblintensity 4000
+model C:\Users\dommc\Dante\assets\models\character\ch15_firing.glb 0.2 -1 1.7 0 0 0 1
+model C:\Users\dommc\Dante\assets\models\bathroom\the_bathroom_free.glb 0 -1 -2 0 0 0 1
+model C:\Users\dommc\Dante\assets\models\smiley_monster\smily_horror_monster.glb 3 -1 4 0 0 0 0.03
+light Bathroom_Bulb 0.5 2 -1.5 1 0.85 0.6 4000 3
+light Hall_Lamp 2 1.6 2.5 1 0.7 0.45 3000 2.5

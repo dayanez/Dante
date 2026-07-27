@@ -48,6 +48,10 @@ std::vector<Path> Path::listContents() const {
 
     TCHAR dirName[MAX_PATH];
     StringCchCopy(dirName, MAX_PATH, c_str());
+    // FindFirstFile requires a wildcard to enumerate a directory's contents - without one it
+    // just matches the directory entry itself as a single result and stops, so this never
+    // actually listed anything.
+    StringCchCat(dirName, MAX_PATH, TEXT("\\*"));
 
     WIN32_FIND_DATA findData;
     HANDLE find = FindFirstFile(dirName, &findData);

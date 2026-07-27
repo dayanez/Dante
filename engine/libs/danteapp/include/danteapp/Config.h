@@ -17,6 +17,9 @@ struct Config {
     mutable dante::Engine::Backend backend = dante::Engine::Backend::DEFAULT;
     mutable dante::backend::FeatureLevel featureLevel = dante::backend::FeatureLevel::FEATURE_LEVEL_3;
     dante::camutils::Mode cameraMode = dante::camutils::Mode::ORBIT;
+    // FREE_FLIGHT camera max speed in world units/second - camutils::Manipulator's own
+    // default (10) if left unset.
+    float cameraMoveSpeed = 10.0f;
     bool resizeable = true;
     bool headless = false;
     int stereoscopicEyeCount = 2;
