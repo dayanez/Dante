@@ -38,7 +38,6 @@ set(SRCS
         src/FNodeManager.h
         src/FTrsTransformManager.h
         src/GltfEnums.h
-        src/Ktx2Provider.cpp
         src/MaterialProvider.cpp
         src/NodeManager.cpp
         src/TrsTransformManager.cpp
@@ -188,7 +187,7 @@ if(DANTE_SUPPORTS_WEBP_TEXTURES)
 endif()
 
 include_directories(${PUBLIC_HDR_DIR} ${RESOURCE_DIR})
-link_libraries(math utils dante cgltf stb ktxreader geometry tsl uberzlib)
+link_libraries(math utils dante cgltf stb geometry tsl uberzlib)
 
 add_library(gltfio_core STATIC ${PUBLIC_HDRS} ${SRCS})
 

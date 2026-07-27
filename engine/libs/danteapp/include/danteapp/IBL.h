@@ -31,7 +31,6 @@ public:
 
     bool loadFromEquirect(const utils::Path& path);
     bool loadFromDirectory(const utils::Path& path);
-    bool loadFromKtx(const std::string& prefix);
 
     dante::IndirectLight* getIndirectLight() const noexcept {
         return mIndirectLight;

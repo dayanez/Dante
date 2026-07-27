@@ -1,6 +1,4 @@
 
-#include <ktxreader/Ktx1Reader.h>
-
 #include <imageio/ImageDecoder.h>
 
 #include <danteapp/IBL.h>
@@ -28,7 +26,6 @@
 
 using namespace dante;
 using namespace dante::math;
-using namespace ktxreader;
 using namespace utils;
 
 static constexpr float IBL_INTENSITY = 30000.0f;
@@ -149,58 +146,7 @@ bool IBL::loadFromEquirect(Path const& path) {
     return true;
 }
 
-bool IBL::loadFromKtx(const std::string& prefix) {
-    Path iblPath(prefix + "_ibl.ktx");
-    if (!iblPath.exists()) {
-        return false;
-    }
-    Path skyPath(prefix + "_skybox.ktx");
-    if (!skyPath.exists()) {
-        return false;
-    }
-
-    auto createKtx = [] (Path path) {
-        using namespace std;
-        ifstream file(path.getPath(), ios::binary);
-        vector<uint8_t> contents((istreambuf_iterator<char>(file)), {});
-        return new image::Ktx1Bundle(contents.data(), contents.size());
-    };
-
-    Ktx1Bundle* iblKtx = createKtx(iblPath);
-    Ktx1Bundle* skyKtx = createKtx(skyPath);
-
-    mSkyboxTexture = Ktx1Reader::createTexture(&mEngine, skyKtx, false);
-    mTexture = Ktx1Reader::createTexture(&mEngine, iblKtx, false);
-
-    // TODO: create the fog texture, it's a bit complicated because IBLPrefilter requires
-    //       the source image to have miplevels, and it's not guaranteed here and also
-    //       not guaranteed we can generate them (e.g. texture could be compressed)
-    //IBLPrefilterContext context(mEngine);
-    //IBLPrefilterContext::IrradianceFilter irradianceFilter(context);
-    //mFogTexture = irradianceFilter({ .generateMipmap=false }, mSkyboxTexture);
-    //mFogTexture->generateMipmaps(mEngine);
-
-
-    if (!iblKtx->getSphericalHarmonics(mBands)) {
-        return false;
-    }
-    mHasSphericalHarmonics = true;
-
-    mIndirectLight = IndirectLight::Builder()
-            .reflections(mTexture)
-            .intensity(IBL_INTENSITY)
-            .build(mEngine);
-
-    mSkybox = Skybox::Builder().environment(mSkyboxTexture).showSun(true).build(mEngine);
-
-    return true;
-}
-
 bool IBL::loadFromDirectory(const utils::Path& path) {
-    // First check if KTX files are available.
-    if (loadFromKtx(Path::concat(path, path.getName()))) {
-        return true;
-    }
     // Read spherical harmonics
     Path sh(Path::concat(path, "sh.txt"));
     if (sh.exists()) {

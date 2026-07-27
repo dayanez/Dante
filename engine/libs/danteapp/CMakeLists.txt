@@ -57,7 +57,6 @@ set(LIBS
         image
         imageio
         imgui
-        ktxreader
         math
         sdl2
         stb

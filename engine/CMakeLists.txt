@@ -886,12 +886,16 @@ add_subdirectory(${LIBRARIES}/camutils)
 add_subdirectory(${LIBRARIES}/filabridge)
 add_subdirectory(${LIBRARIES}/filaflat)
 add_subdirectory(${LIBRARIES}/filagui)
-add_subdirectory(${LIBRARIES}/generatePrefilterMipmap)
+# Dante deviation from upstream Dante: generatePrefilterMipmap is an orphan library with zero
+# consumers in this app's link graph (nothing target_link_libraries against it) - dropped.
 add_subdirectory(${LIBRARIES}/gltfio)
 add_subdirectory(${LIBRARIES}/ibl)
 add_subdirectory(${LIBRARIES}/iblprefilter)
 add_subdirectory(${LIBRARIES}/image)
-add_subdirectory(${LIBRARIES}/ktxreader)
+# Dante deviation from upstream Dante: ktxreader is dropped - its only two consumers
+# (gltfio's Ktx2Provider and danteapp's IBL::loadFromKtx) were both dead code (nothing in
+# src/main.cpp or DanteApp's dispatch ever exercises them: the app only ever loads .exr
+# equirect environments) and have been removed along with it.
 add_subdirectory(${LIBRARIES}/math)
 add_subdirectory(${LIBRARIES}/uberz)
 add_subdirectory(${LIBRARIES}/utils)
@@ -910,6 +914,9 @@ add_subdirectory(${EXTERNAL}/mikktspace)
 add_subdirectory(${EXTERNAL}/cgltf/tnt)
 add_subdirectory(${EXTERNAL}/jsmn/tnt)
 add_subdirectory(${EXTERNAL}/stb/tnt)
+# basisu stays: imageio/src/BasisEncoder.cpp #includes basisu_comp.h directly, and imageio
+# is itself a required build-time dependency of cmgen (needed for dfg.bin, see above) - so
+# this is a real build-time link, not just ktxreader's now-removed KTX2 transcoding path.
 add_subdirectory(${EXTERNAL}/basisu/tnt)
 
 # Note that this has to be placed after mikktspace in order for combine_static_libs to work.
@@ -957,10 +964,16 @@ if (IS_HOST_PLATFORM)
     add_subdirectory(${EXTERNAL}/libz/tnt)
     add_subdirectory(${EXTERNAL}/tinyexr/tnt)
 
+    # cmgen is also a build-time dependency of engine/Dante itself (generates dfg.bin, the
+    # split-sum BRDF LUT baked into every build and used at runtime by standard PBR
+    # shading) - not just the standalone offline HDR/cubemap-baking CLI it looks like, so
+    # it stays despite this app never invoking it directly as a content tool.
     add_subdirectory(${TOOLS}/cmgen)
     add_subdirectory(${TOOLS}/glslminifier)
     add_subdirectory(${TOOLS}/matc)
     add_subdirectory(${TOOLS}/resgen)
-    add_subdirectory(${TOOLS}/specular-color)
+    # Dante deviation from upstream Dante: specular-color (offline DFG-LUT *generator*
+    # variant CLI, distinct from the dfg.bin cmgen already produces) is dropped - a
+    # standalone tool with zero build-graph consumers.
     add_subdirectory(${TOOLS}/uberz)
 endif()
