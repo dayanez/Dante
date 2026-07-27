@@ -1,7 +1,9 @@
 skybox C:\Users\dommc\Dante\assets\environments\qwantani_night_puresky_4k.exr
-iblintensity 4000
-model C:\Users\dommc\Dante\assets\models\character\ch15_firing.glb 0.2 -1 1.7 0 0 0 1
-model C:\Users\dommc\Dante\assets\models\bathroom\the_bathroom_free.glb 0 -1 -2 0 0 0 1
-model C:\Users\dommc\Dante\assets\models\smiley_monster\smily_horror_monster.glb 3 -1 4 0 0 0 0.03
-light Bathroom_Bulb 0.5 2 -1.5 1 0.85 0.6 4000 3
-light Hall_Lamp 2 1.6 2.5 1 0.7 0.45 3000 2.5
+iblintensity 64.14
+model C:\Users\dommc\Dante\assets\models\scary_interior\scene.gltf 0.795322 -0.892254 -1.2461 0 0 0 1
+model C:\Users\dommc\Dante\assets\models\horror_ghost_character_-_blood_stained_spirit\scene.gltf 7.176 -0.184 -0.081 -183.5 -3 0.5 1.53
+model C:\Users\dommc\Dante\assets\models\smiley_monster\smily_horror_monster.glb 6.284 -1.034 0.153 -66.5 -1.5 -4.5 0.008
+model C:\Users\dommc\Dante\assets\models\character\ch15_firing.glb -0.896 -0.894 -0.187 92.5 5.5 0 1
+light New_Light 7.03 0.422 -0.126 0.955882 0.046857 0.046857 9775 9.9
+light New_Light -0.523 1 -0.398 1 0.85 0.6 5150 3
+light New_Light 5.557 -0.47 -0.484 0.970588 0.0570934 0.0570934 2175 1.05
