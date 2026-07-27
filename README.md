@@ -4,7 +4,7 @@ Yeah so this started off as just a little side project still is but has made me 
 
 # Progress Pics
 On My Google Drive just some pics of what it looks like 
-[[https://drive.google.com/drive/folders/1xEvbrjaccKw1PnfxGb-r7AvfkoVATH2x?usp=sharing]]
+https://drive.google.com/drive/folders/1xEvbrjaccKw1PnfxGb-r7AvfkoVATH2x?usp=sharing
 
 ## First-time install & build
 
