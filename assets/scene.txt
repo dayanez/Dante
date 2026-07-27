@@ -7,3 +7,4 @@ model C:\Users\dommc\Dante\assets\models\character\ch15_firing.glb -0.896 -0.894
 light New_Light 7.03 0.422 -0.126 0.955882 0.046857 0.046857 9775 9.9
 light New_Light -0.523 1 -0.398 1 0.85 0.6 5150 3
 light New_Light 5.557 -0.47 -0.484 0.970588 0.0570934 0.0570934 2175 1.05
+light New_Light 0.267 0.733 0.252 1 0.85 0.6 15650 13.4
