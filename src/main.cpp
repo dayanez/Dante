@@ -968,7 +968,7 @@ int main() {
         // Add model/Loaded models/Lights/Post Processing are all visible at once (the
         // "can't find it" reports were very likely this, not a scan bug - the panel content
         // was probably just overflowing off the bottom of the window).
-        1600, 900);
+        1920, 1080);
 
     return 0;
 }
