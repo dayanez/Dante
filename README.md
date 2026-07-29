@@ -1,6 +1,7 @@
 # Dante
 
-Yeah so this started off as just a little side project still is but has made me fall in love with Graphics Programming. Actively working on this almost everyday. Using some of Google Filaments math since they optimized the shit out of it but most of it is mine as well. 
+This was a weekend project. Now this is my hobby. 
+Its a graphics rendering engine built on top of some of filaments math. Mainly some shading methods and how they did pbr. It was sick.
 
 # Progress Pics
 On My Google Drive just some pics of what it looks like 
