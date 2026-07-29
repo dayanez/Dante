@@ -632,6 +632,18 @@ int main() {
                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
                     ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
+            //testing
+            ImGui::SetNextWindowPos(ImVec2(1000,1000), ImGuiCond_Always);
+            ImGui::SetNextWindowBgAlpha(0.35f);
+            ImGui::SetNextWindowBgAlpha(0.35f);
+            ImGui::Begin("Build Version V0.3.1", nullptr,
+                    ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+                    ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
+                    ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Text("Build Version V0.3.1");
+            ImGui::SetNextWindowPos(ImVec2(1000,1000), ImGuiCond_Always);
+            ImGui::SetNextWindowBgAlpha(0.35f);
+            
             ImGui::End();
 
             // -------- Scene panel: load models/skyboxes, edit lights/models/post-fx --------
@@ -964,10 +976,6 @@ int main() {
             ImGui::End();
         },
         DanteApp::PreRenderCallback(), DanteApp::PostRenderCallback(),
-        // Default window was 1024x640 - too short to fit the Scene panel once Environments/
-        // Add model/Loaded models/Lights/Post Processing are all visible at once (the
-        // "can't find it" reports were very likely this, not a scan bug - the panel content
-        // was probably just overflowing off the bottom of the window).
         1920, 1080);
 
     return 0;
