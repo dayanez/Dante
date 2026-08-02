@@ -634,7 +634,7 @@ int main() {
             ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
             ImGui::End();
             //testing
-            ImGui::SetNextWindowPos(ImVec2(1000,1000), ImGuiCond_Always);
+            ImGui::SetNextWindowPos(ImVec2(1300,1300), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
             ImGui::SetNextWindowBgAlpha(0.35f);
             ImGui::Begin("Build Version V0.3.1", nullptr,
@@ -642,7 +642,7 @@ int main() {
                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
                     ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::Text("Build Version V0.3.1");
-            ImGui::SetNextWindowPos(ImVec2(1700,1700), ImGuiCond_Always);
+            ImGui::SetNextWindowPos(ImVec2(1300,1300), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
             
             ImGui::End();
@@ -701,6 +701,7 @@ int main() {
                     ImGui::PopID();
                 }
             }
+            
 
             if (ImGui::CollapsingHeader("Add model", ImGuiTreeNodeFlags_DefaultOpen) && g_scene) {
                 for (utils::Path const& path : glbFiles) {
@@ -789,7 +790,8 @@ int main() {
                     removeLight(*engine, *g_scene, toRemoveLight);
                 }
             }
-
+            //make another If for collapsing debug section
+            
             if (ImGui::CollapsingHeader("Post Processing")) {
                 bool ppChanged = false;
 
@@ -975,10 +977,9 @@ int main() {
                         g_selectedModel->position.y, g_selectedModel->position.z);
             }
             ImGui::End();
-            
         },
         DanteApp::PreRenderCallback(), DanteApp::PostRenderCallback(),
-        800, 800);
+        1720, 1000);
 
     return 0;
 }
