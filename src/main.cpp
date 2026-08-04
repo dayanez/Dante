@@ -790,15 +790,31 @@ int main() {
                     removeLight(*engine, *g_scene, toRemoveLight);
                 }
             }
-            //make another If for collapsing debug section
             
+            /*
             if(ImGui::CollapsingHeader("Debug")){
-                bool ppChanged = false; 
-                
-                
-                ImGui::End();
-            }
+
             
+            	
+                    
+                   
+                           ImGui::Text("Edit Mode: %s", g_editMode ? "ON" : "off");
+                           ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
+                           ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
+                           ImGui::Text("WantCaptureMouse: %s", io.WantCaptureMouse ? "true" : "false");
+                           ImGui::Text("Mouse pos: %.0f, %.0f  delta: %.1f, %.1f",
+                                   io.MousePos.x, io.MousePos.y, io.MouseDelta.x, io.MouseDelta.y);
+                           ImGui::Text("Mouse down (L): %s   clicked (L): %s",
+                                   ImGui::IsMouseDown(ImGuiMouseButton_Left) ? "yes" : "no",
+                                   ImGui::IsMouseClicked(ImGuiMouseButton_Left) ? "yes" : "no");
+                           if (g_selectedModel) {
+                               ImGui::Text("Model position: %.3f, %.3f, %.3f", g_selectedModel->position.x,
+                                       g_selectedModel->position.y, g_selectedModel->position.z);
+                           }
+                        
+         
+            }
+            */
             
             if (ImGui::CollapsingHeader("Post Processing")) {
                 bool ppChanged = false;
@@ -859,6 +875,27 @@ int main() {
                     view->setTemporalAntiAliasingOptions(g_taaOptions);
                 }
             }
+            //TODO
+             if(ImGui::CollapsingHeader("Debug")){
+				ImGui::Text("Edit Mode: %s", g_editMode ? "ON" : "off");
+				ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
+				
+
+
+             	 ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
+            ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
+            ImGui::Text("WantCaptureMouse: %s", io.WantCaptureMouse ? "true" : "false");
+            ImGui::Text("Mouse pos: %.0f, %.0f  delta: %.1f, %.1f",
+                    io.MousePos.x, io.MousePos.y, io.MouseDelta.x, io.MouseDelta.y);
+            ImGui::Text("Mouse down (L): %s   clicked (L): %s",
+                    ImGui::IsMouseDown(ImGuiMouseButton_Left) ? "yes" : "no",
+                    ImGui::IsMouseClicked(ImGuiMouseButton_Left) ? "yes" : "no");
+            if (g_selectedModel) {
+                ImGui::Text("Model position: %.3f, %.3f, %.3f", g_selectedModel->position.x,
+                        g_selectedModel->position.y, g_selectedModel->position.z);
+            }
+             }
+
             ImGui::End();
 
             // -------- selection highlight: wireframe box around the selected model --------
@@ -968,10 +1005,10 @@ int main() {
             // Temporary debug readout for diagnosing edit-mode/drag issues - shows the
             // actual per-frame state so a report like "dragging does nothing" can be
             // matched against what the code thinks is happening, instead of guessing blind.
-            ImGui::SetNextWindowPos(ImVec2(10, 700), ImGuiCond_FirstUseEver);
-            ImGui::SetNextWindowBgAlpha(0.6f);
-            ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize);
-            ImGui::Text("Edit Mode: %s", g_editMode ? "ON" : "off");
+          //  ImGui::SetNextWindowPos(ImVec2(10, 700), ImGuiCond_FirstUseEver);
+           // ImGui::SetNextWindowBgAlpha(0.6f);
+          //  ImGui::Begin("Debug", nullptr, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize);
+         //   ImGui::Text("Edit Mode: %s", g_editMode ? "ON" : "off");
             ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
             ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
             ImGui::Text("WantCaptureMouse: %s", io.WantCaptureMouse ? "true" : "false");
@@ -987,7 +1024,7 @@ int main() {
             ImGui::End();
         },
         DanteApp::PreRenderCallback(), DanteApp::PostRenderCallback(),
-        1720, 1000);
+        1920, 1080);
 
     return 0;
 }
