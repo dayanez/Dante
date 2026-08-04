@@ -792,6 +792,14 @@ int main() {
             }
             //make another If for collapsing debug section
             
+            if(ImGui::CollapsingHeader("Debug")){
+                bool ppChanged = false; 
+                
+                
+                ImGui::End();
+            }
+            
+            
             if (ImGui::CollapsingHeader("Post Processing")) {
                 bool ppChanged = false;
 
