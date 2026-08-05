@@ -49,3 +49,7 @@ Dante/
 
 Dante looks for `assets/` next to the executable. No install step for the recipient;
 they just need a GPU with an up-to-date OpenGL driver.
+
+
+
+Check [[License]]
