@@ -1,4 +1,4 @@
- #include <danteapp/DanteApp.h>
+#include <danteapp/DanteApp.h>
 #include <dante/Box.h>
 #include <dante/Camera.h>
 #include <dante/ColorGrading.h>
@@ -10,6 +10,7 @@
 #include <dante/ToneMapper.h>
 #include <dante/TransformManager.h>
 #include <dante/View.h>
+#include <dante/Performance.h> 
 #include <dante/Viewport.h>
 #include <backend/BufferDescriptor.h>
 #include <danteapp/Cube.h>
@@ -666,9 +667,9 @@ int main() {
             if (ImGui::IsKeyPressed(ImGuiKey_E, false)) {
                 g_editMode = !g_editMode;
             }
-
-            ImGui::SetNextWindowPos(ImVec2(10, 40), ImGuiCond_FirstUseEver);
-            ImGui::SetNextWindowSize(ImVec2(360, 0), ImGuiCond_FirstUseEver);
+			
+            ImGui::SetNextWindowPos(ImVec2(10, 40));
+            ImGui::SetNextWindowSize(ImVec2(400, 400));
             ImGui::Begin("Scene");
             ImGui::Checkbox("Edit Mode (E)", &g_editMode);
             if (g_editMode) {
@@ -703,7 +704,7 @@ int main() {
             }
             
 
-            if (ImGui::CollapsingHeader("Add model", ImGuiTreeNodeFlags_DefaultOpen) && g_scene) {
+            if (ImGui::CollapsingHeader("Add model") && g_scene) {
                 for (utils::Path const& path : glbFiles) {
                     ImGui::PushID(path.c_str());
                     if (ImGui::Button(path.getNameWithoutExtension().c_str())) {
@@ -715,7 +716,7 @@ int main() {
                 }
             }
 
-            if (ImGui::CollapsingHeader("Loaded models", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if (ImGui::CollapsingHeader("Loaded models")) {
                 GltfModel* toRemove = nullptr;
                 GltfModel* toReload = nullptr;
                 GltfModel* toDuplicate = nullptr;
@@ -758,7 +759,7 @@ int main() {
                 }
             }
 
-            if (ImGui::CollapsingHeader("Lights", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if (ImGui::CollapsingHeader("Lights")) {
                 if (ImGui::Button("Add Light Here") && g_scene) {
                     float3 const camPos = float3(view->getCamera().getPosition());
                     float3 const fwd = view->getCamera().getForwardVector();
@@ -790,31 +791,6 @@ int main() {
                     removeLight(*engine, *g_scene, toRemoveLight);
                 }
             }
-            
-            /*
-            if(ImGui::CollapsingHeader("Debug")){
-
-            
-            	
-                    
-                   
-                           ImGui::Text("Edit Mode: %s", g_editMode ? "ON" : "off");
-                           ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
-                           ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
-                           ImGui::Text("WantCaptureMouse: %s", io.WantCaptureMouse ? "true" : "false");
-                           ImGui::Text("Mouse pos: %.0f, %.0f  delta: %.1f, %.1f",
-                                   io.MousePos.x, io.MousePos.y, io.MouseDelta.x, io.MouseDelta.y);
-                           ImGui::Text("Mouse down (L): %s   clicked (L): %s",
-                                   ImGui::IsMouseDown(ImGuiMouseButton_Left) ? "yes" : "no",
-                                   ImGui::IsMouseClicked(ImGuiMouseButton_Left) ? "yes" : "no");
-                           if (g_selectedModel) {
-                               ImGui::Text("Model position: %.3f, %.3f, %.3f", g_selectedModel->position.x,
-                                       g_selectedModel->position.y, g_selectedModel->position.z);
-                           }
-                        
-         
-            }
-            */
             
             if (ImGui::CollapsingHeader("Post Processing")) {
                 bool ppChanged = false;
@@ -875,26 +851,18 @@ int main() {
                     view->setTemporalAntiAliasingOptions(g_taaOptions);
                 }
             }
-            //TODO
+           
              if(ImGui::CollapsingHeader("Debug")){
 				ImGui::Text("Edit Mode: %s", g_editMode ? "ON" : "off");
 				ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
-				ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
                 ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
-  				ImGui::Text("WantCaptureMouse: %s", io.WantCaptureMouse ? "true" : "false");
-  				          
-           // ImGui::Text("WantCaptureMouse: %s", io.WantCaptureMouse ? "true" : "false");
-            /*
-            ImGui::Text("Mouse pos: %.0f, %.0f  delta: %.1f, %.1f",
-                    io.MousePos.x, io.MousePos.y, io.MouseDelta.x, io.MouseDelta.y);
-            ImGui::Text("Mouse down (L): %s   clicked (L): %s",
-                    ImGui::IsMouseDown(ImGuiMouseButton_Left) ? "yes" : "no",
-                    ImGui::IsMouseClicked(ImGuiMouseButton_Left) ? "yes" : "no");
-            if (g_selectedModel) {
-                ImGui::Text("Model position: %.3f, %.3f, %.3f", g_selectedModel->position.x,
-                        g_selectedModel->position.y, g_selectedModel->position.z);
-                        */
               }
+
+			//TODO add temp and usage and memory for cpu performance 
+             if(ImGui::CollapsingHeader("Performance")){
+				Performance::processTime; 
+             	
+             } 
              
 
             ImGui::End();
