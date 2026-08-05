@@ -52,4 +52,4 @@ they just need a GPU with an up-to-date OpenGL driver.
 
 
 
-Check [[License]]
+Check [License]
