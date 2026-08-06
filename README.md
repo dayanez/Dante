@@ -1,7 +1,7 @@
 # Dante
 
 This was a weekend project. Now this is my hobby. 
-Its a graphics rendering engine built on top of some of filaments math. Mainly some shading methods and how they did pbr. It was sick.
+Its a graphics rendering engine built on top of some of filaments math, and their MATC compiler.
 
 # Progress Pics
 On My Google Drive just some pics of what it looks like 
