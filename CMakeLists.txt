@@ -37,7 +37,7 @@ set(DANTE_BUILD_TESTING OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(engine)
 
-add_executable(Dante src/main.cpp)
+add_executable(Dante src/dante.cpp)
 target_link_libraries(Dante PRIVATE danteapp gltfio)
 target_compile_definitions(Dante PRIVATE DANTE_ASSETS_DIR="${CMAKE_SOURCE_DIR}/assets")
 

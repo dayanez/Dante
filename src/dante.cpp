@@ -10,7 +10,6 @@
 #include <dante/ToneMapper.h>
 #include <dante/TransformManager.h>
 #include <dante/View.h>
-#include <dante/Performance.h> 
 #include <dante/Viewport.h>
 #include <backend/BufferDescriptor.h>
 #include <danteapp/Cube.h>
@@ -38,6 +37,7 @@
 #include <conio.h>
 #define NOMINMAX
 #include <windows.h>
+#include "Performance.h"
 
 using namespace dante;
 using namespace dante::math;
@@ -860,7 +860,8 @@ int main() {
 
 			//TODO add temp and usage and memory for cpu performance 
              if(ImGui::CollapsingHeader("Performance")){
-				Performance::processTime; 
+				double cpuUsage = GetCpuUsage();
+				ImGui::Text("CPU Usage: %.2f%%", cpuUsage);  
              	
              } 
              
