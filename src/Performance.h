@@ -1,46 +1,34 @@
 #pragma once
 
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-
 #include <windows.h>
-#include <chrono>
+#include <stdlib.h>
+#include <Winnetwk.h>
 
-inline double GetCpuUsage() {
-    static ULONGLONG prevProcessTime = 0;
-    static auto prevWallTime = std::chrono::steady_clock::now();
+// Forward declarations or helper definitions
+static unsigned long long FileTimeToInt64(const FILETIME& ft)
+{
+    return (((unsigned long long)(ft.dwHighDateTime)) << 32) | ((unsigned long long)ft.dwLowDateTime);
+}
 
-    FILETIME ftCreation, ftExit, ftKernel, ftUser;
-    GetProcessTimes(GetCurrentProcess(), &ftCreation, &ftExit, &ftKernel, &ftUser);
+static float CalculateCPULoad(unsigned long long idleTicks, unsigned long long totalTicks)
+{
+    static unsigned long long _previousTotalTicks = 0;
+    static unsigned long long _previousIdleTicks = 0;
 
-    ULARGE_INTEGER ulKernel, ulUser;
-    ulKernel.LowPart = ftKernel.dwLowDateTime;
-    ulKernel.HighPart = ftKernel.dwHighDateTime;
-    ulUser.LowPart = ftUser.dwLowDateTime; 
-    ulUser.HighPart = ftUser.dwHighDateTime;
+    unsigned long long totalTicksSinceLastTime = totalTicks - _previousTotalTicks;
+    unsigned long long idleTicksSinceLastTime = idleTicks - _previousIdleTicks;
 
-    ULONGLONG currentProcessTime = ulKernel.QuadPart + ulUser.QuadPart; // 100-nanosecond intervals
+    float ret = 1.0f - ((totalTicksSinceLastTime > 0) ? ((float)idleTicksSinceLastTime) / totalTicksSinceLastTime : 0);
 
-    auto now = std::chrono::steady_clock::now();
-    auto wallClockDeltaMs = std::chrono::duration<double, std::milli>(now - prevWallTime).count();
+    _previousTotalTicks = totalTicks;
+    _previousIdleTicks = idleTicks;
+    return ret;
+}
 
-    // Initialize on the first call
-    if (prevProcessTime == 0) {
-        prevProcessTime = currentProcessTime;
-        prevWallTime = now;
-        return 0.0;
-    }
-
-    ULONGLONG processTimeDelta = currentProcessTime - prevProcessTime;
-    prevProcessTime = currentProcessTime;
-    prevWallTime = now;
-
-    if (wallClockDeltaMs <= 0.0) return 0.0;
-
-    // 1 millisecond = 10,000 100-nanosecond units.
-    // Formula: (Process Ticks Delta / Available Ticks in Wall Time) * 100
-    double usage = (static_cast<double>(processTimeDelta) / (wallClockDeltaMs * 100.0));
-    
-    return usage; // e.g., 15.4 means 15.4% of a single core
+// Marked inline so it can safely live in a header file
+inline float GetCPULoad()
+{
+    FILETIME idleTime, kernelTime, userTime;
+    return GetSystemTimes(&idleTime, &kernelTime, &userTime) ? 
+        CalculateCPULoad(FileTimeToInt64(idleTime), FileTimeToInt64(kernelTime) + FileTimeToInt64(userTime)) : -1.0f;
 }

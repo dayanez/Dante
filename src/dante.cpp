@@ -852,17 +852,18 @@ int main() {
                 }
             }
            
-             if(ImGui::CollapsingHeader("Debug")){
+             if(ImGui::CollapsingHeader("Edit Mode")){
 				ImGui::Text("Edit Mode: %s", g_editMode ? "ON" : "off");
 				ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
                 ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
-              }
+              } 
 
-			//TODO add temp and usage and memory for cpu performance 
+			//TODO add temp and usage and memory for cpu performance
+			 
              if(ImGui::CollapsingHeader("Performance")){
-				double cpuUsage = GetCpuUsage();
-				ImGui::Text("CPU Usage: %.2f%%", cpuUsage);  
-             	
+				float cpuUsagePercent = GetCPULoad();
+				ImGui::Text("CPU Usage: %.2f ",cpuUsagePercent);  
+
              } 
              
 
