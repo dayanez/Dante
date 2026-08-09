@@ -1,8 +1,11 @@
 #pragma once
-
+#include <chrono>
+#include <thread> 
 #include <windows.h>
 #include <stdlib.h>
 #include <Winnetwk.h>
+
+using namespace std;
 
 // Forward declarations or helper definitions
 static unsigned long long FileTimeToInt64(const FILETIME& ft)
@@ -31,4 +34,5 @@ inline float GetCPULoad()
     FILETIME idleTime, kernelTime, userTime;
     return GetSystemTimes(&idleTime, &kernelTime, &userTime) ? 
         CalculateCPULoad(FileTimeToInt64(idleTime), FileTimeToInt64(kernelTime) + FileTimeToInt64(userTime)) : -1.0f;
+        this_thread::sleep_for(chrono::seconds(1));
 }

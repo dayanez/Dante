@@ -38,6 +38,8 @@
 #define NOMINMAX
 #include <windows.h>
 #include "Performance.h"
+#include <chrono> 
+#include <thread> 
 
 using namespace dante;
 using namespace dante::math;
@@ -858,11 +860,19 @@ int main() {
                 ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
               } 
 
-			//TODO add temp and usage and memory for cpu performance
+			//TODO fix later 
+
+				//so whats happening here is that the sleep is making everything in this if block sleep,
+				//we can see why thats bad lol. 
 			 
              if(ImGui::CollapsingHeader("Performance")){
 				float cpuUsagePercent = GetCPULoad();
+
+				
+
 				ImGui::Text("CPU Usage: %.2f ",cpuUsagePercent);  
+				
+				this_thread::sleep_for(chrono::seconds(1));
 
              } 
              
