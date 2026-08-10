@@ -867,12 +867,13 @@ int main() {
 			 
              if(ImGui::CollapsingHeader("Performance")){
 				float cpuUsagePercent = GetCPULoad();
-
 				
-
+				
+				
+				
 				ImGui::Text("CPU Usage: %.2f ",cpuUsagePercent);  
 				
-				this_thread::sleep_for(chrono::seconds(1));
+			//	this_thread::sleep_for(chrono::seconds(1));
 
              } 
              
