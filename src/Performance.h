@@ -1,41 +1,48 @@
 #pragma once
+
 #include <chrono>
-#include <thread> 
+#include <thread>
 #include <windows.h>
-#include <stdlib.h>
-#include <Winnetwk.h>
 
-using namespace std;
+using namespace std; 
 
 
-
-
-// Forward declarations or helper definitions
+// Converts a FILETIME Windows structure into a 64-bit integer
 static unsigned long long FileTimeToInt64(const FILETIME& ft)
 {
     return (((unsigned long long)(ft.dwHighDateTime)) << 32) | ((unsigned long long)ft.dwLowDateTime);
 }
 
+// Calculates CPU usage percentage between two sampling points
 static float CalculateCPULoad(unsigned long long idleTicks, unsigned long long totalTicks)
 {
-    static unsigned long long _previousTotalTicks = 0;
-    static unsigned long long _previousIdleTicks = 0;
+    static unsigned long long previousTotalTicks = 0;
+    static unsigned long long previousIdleTicks = 0;
 
-    unsigned long long totalTicksSinceLastTime = totalTicks - _previousTotalTicks;
-    unsigned long long idleTicksSinceLastTime = idleTicks - _previousIdleTicks;
+    unsigned long long totalTicksSinceLastTime = totalTicks - previousTotalTicks;
+    unsigned long long idleTicksSinceLastTime = idleTicks - previousIdleTicks;
 
-    float ret = 1.0f - ((totalTicksSinceLastTime > 0) ? ((float)idleTicksSinceLastTime) / totalTicksSinceLastTime : 0);
+    previousTotalTicks = totalTicks;
+    previousIdleTicks = idleTicks;
 
-    _previousTotalTicks = totalTicks;
-    _previousIdleTicks = idleTicks;
-    return ret;
+    if (totalTicksSinceLastTime == 0) return 0.0f;
+
+    return 1.0f - ((float)idleTicksSinceLastTime / totalTicksSinceLastTime);
 }
 
-// Marked inline so it can safely live in a header file
+// Fetches system times and computes the current CPU load
 inline float GetCPULoad()
 {
     FILETIME idleTime, kernelTime, userTime;
-    return GetSystemTimes(&idleTime, &kernelTime, &userTime) ? 
-        CalculateCPULoad(FileTimeToInt64(idleTime), FileTimeToInt64(kernelTime) + FileTimeToInt64(userTime)) : -1.0f;
-        this_thread::sleep_for(chrono::seconds(1));
+    
+    if (!GetSystemTimes(&idleTime, &kernelTime, &userTime)) {
+        return -1.0f;
+    }
+
+    unsigned long long idle = FileTimeToInt64(idleTime);
+    unsigned long long total = FileTimeToInt64(kernelTime) + FileTimeToInt64(userTime);
+   
+	this_thread::sleep_for(chrono::seconds(1));
+
+    return CalculateCPULoad(idle, total);
 }

@@ -856,25 +856,14 @@ int main() {
            
              if(ImGui::CollapsingHeader("Edit Mode")){
 				ImGui::Text("Edit Mode: %s", g_editMode ? "ON" : "off");
-				ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel->name.c_str() : "(none)");
+				ImGui::Text("Selected model: %s", g_selectedModel ? g_selectedModel-> name.c_str() : "(none)");
                 ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
               } 
 
-			//TODO fix later 
-
-				//so whats happening here is that the sleep is making everything in this if block sleep,
-				//we can see why thats bad lol. 
 			 
              if(ImGui::CollapsingHeader("Performance")){
 				float cpuUsagePercent = GetCPULoad();
-				
-				
-				
-				
 				ImGui::Text("CPU Usage: %.2f ",cpuUsagePercent);  
-				
-			//	this_thread::sleep_for(chrono::seconds(1));
-
              } 
              
 
