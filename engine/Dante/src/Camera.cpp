@@ -1,4 +1,3 @@
-
 #include "details/Camera.h"
 
 #include <dante/Camera.h>

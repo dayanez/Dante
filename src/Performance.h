@@ -47,15 +47,13 @@ inline float GetCPULoad()
     return CalculateCPULoad(idle, total);
 }
 
-
+//this shit keeps going so fucking slow 
 inline float CPUSLEEP() {
     //calling cpu load function to compute the current cpu load
     GetCPULoad();
 
-    //This will sleep the thread for 1 second 
-    this_thread::sleep_for(chrono::seconds(1));
-
-
+    //This will sleep the thread for 1 second ** i wonder if maybe making it two seconds will help probably nah 
+    //this_thread::sleep_for(chrono::seconds(2));
 
     return 0; 
 }
