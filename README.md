@@ -1,7 +1,9 @@
 # Dante
 
-This was a weekend project. Now this is my hobby. 
-Its a graphics rendering engine built on top of some of filaments math, and their MATC.
+Dante is a Scene Editor as of right now with Game Engine like features. It's built on top of Google Filaments Graphics Rendering Engine. It features the ability to load sky boxes, models and scenes. It allows user to save and load scenes. Offers ability to plug in play add models and options to actually move the model. There are also options to adjust lighting and post processing effects via a slider. This is a work in progress. Currently doing this as more of a passion project to practice my graphics programming and systems programming. The stack is currently just using Google Filaments backend for OpenGL and dropped Vulkan DirectX and Metal. It compiles and runs as of right now only on Windows and Linux. I do plan on maybe making this into a game engine in the future. Not too sure. It's license is currently closed off on proprietary code but Google Filaments code is Apache so it's free use.  
+
+#Current Perfromance
+On a Nvidia 5060Ti it currently runs at 61 fps. Working on optimizations so it isnt capped and can run at more frames on lower systems. 
 
 # Progress Pics
 On My Google Drive just some pics of what it looks like 
@@ -9,15 +11,14 @@ https://drive.google.com/drive/folders/1xEvbrjaccKw1PnfxGb-r7AvfkoVATH2x?usp=sha
 
 ## First-time install & build
 
-Windows: open an **x64 Native Tools Command Prompt for VS 2022** (plain PowerShell/cmd
-won't have `cl.exe` on `PATH`). Requires Visual Studio 2022 (Desktop C++ workload),
-CMake 3.22+, and Ninja.
+Windows: Ideally have Microsoft Visual Studio. I recommend downloading the full integrated development enviroment, but if you are inclinded not to just simply download the Visual Studio dev build tools. It can be found here https://visualstudio.microsoft.com/. 
 
-Linux: requires Clang 17+, CMake 3.22+, Ninja, and X11 dev headers
+Linux: Now on linux it requires Clang 17+, CMake 3.22+, Ninja, and X11 dev headers
 (`libglu1-mesa-dev libxi-dev libxcomposite-dev libxxf86vm-dev`).
 
 ```
-cd C:\Users\dommc\Dante
+I recommend using this to build and run I would also run the --build flag on --parallel 4 that way it doesn't kill your cpu, thats optional though
+ 
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel
 ```
@@ -30,11 +31,8 @@ build\Dante.exe        # Windows
 build/Dante             # Linux
 ```
 
-Only re-run the `cmake -B build ...` configure step if you touch `CMakeLists.txt` or
-add/remove a source file.
-
 ## Building a shareable exe
-
+To send this to someone or to share it use this ideally. Build it then add a Release and then follow the below. 
 ```
 cmake --build build --config Release --parallel
 ```
@@ -48,8 +46,8 @@ Dante/
 ```
 
 Dante looks for `assets/` next to the executable. No install step for the recipient;
-they just need a GPU with an up-to-date OpenGL driver.
+they just need a GPU or a Laptop with some sort of Graphics capabilities and with an up-to-date OpenGL driver for better performance.
 
 
 
-Check License
+Check License for more info. But in short Filament code free use not mine. Now Editor and General Dante code is mine you are not allowed to use it unless I give explicit permission. This isn't a open source project and probably wont be. If you are looking for that you wont find it here thank you. 
