@@ -1,5 +1,4 @@
 #pragma once
-
 #include <chrono>
 #include <thread>
 #include <windows.h>
@@ -42,7 +41,22 @@ inline float GetCPULoad()
     unsigned long long idle = FileTimeToInt64(idleTime);
     unsigned long long total = FileTimeToInt64(kernelTime) + FileTimeToInt64(userTime);
    
-	this_thread::sleep_for(chrono::seconds(1));
+	//this_thread::sleep_for(chrono::seconds(1));
+
 
     return CalculateCPULoad(idle, total);
 }
+
+
+inline float CPUSLEEP() {
+    //calling cpu load function to compute the current cpu load
+    GetCPULoad();
+
+    //This will sleep the thread for 1 second 
+    this_thread::sleep_for(chrono::seconds(1));
+
+
+
+    return 0; 
+}
+

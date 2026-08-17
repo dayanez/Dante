@@ -636,11 +636,10 @@ int main() {
                     ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
             ImGui::End();
-            //testing
+            
             ImGui::SetNextWindowPos(ImVec2(1300,1300), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
-            ImGui::SetNextWindowBgAlpha(0.35f);
-            ImGui::Begin("Build Version V0.3.1", nullptr,
+            ImGui::Begin("Build Version V0.3.2", nullptr,
                     ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
                     ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
                     ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
@@ -670,9 +669,13 @@ int main() {
                 g_editMode = !g_editMode;
             }
 			
-            ImGui::SetNextWindowPos(ImVec2(10, 40));
-            ImGui::SetNextWindowSize(ImVec2(400, 400));
-            ImGui::Begin("Scene");
+            ImGui::SetNextWindowPos(ImVec2(10, 40), ImGuiCond_Always);
+            ImGui::SetNextWindowBgAlpha(0.35f);
+            ImGui::SetNextWindowSize(ImVec2(400, 900));
+            ImGui::Begin("Scene", nullptr,
+                ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+                ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
+                ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::Checkbox("Edit Mode (E)", &g_editMode);
             if (g_editMode) {
                 ImGui::TextWrapped("Click a model to select it, drag to move it, scroll to "
@@ -862,7 +865,7 @@ int main() {
 
 			 
              if(ImGui::CollapsingHeader("Performance")){
-				float cpuUsagePercent = GetCPULoad();
+				float cpuUsagePercent = CPUSLEEP();
 				ImGui::Text("CPU Usage: %.2f ",cpuUsagePercent);  
              } 
              
