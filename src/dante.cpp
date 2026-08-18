@@ -628,6 +628,8 @@ int main() {
             // scene view (see the g_mainView comment above) - every line below that touches
             // the 3D scene needs the real one.
             View* view = g_mainView ? g_mainView : uiView;
+            
+            //FPS window
             ImGui::SetNextWindowPos(ImVec2(10,10), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
             ImGui::Begin("##fps", nullptr,
@@ -637,6 +639,7 @@ int main() {
             ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
             ImGui::End();
             
+            //Build Version Window
             ImGui::SetNextWindowPos(ImVec2(1300,1300), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
             ImGui::Begin("Build Version V0.3.2", nullptr,
@@ -647,6 +650,14 @@ int main() {
             ImGui::SetNextWindowPos(ImVec2(1300,1300), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
             
+            ImGui::End();
+
+            ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+            ImGui::SetNextWindowBgAlpha(0.35f);
+            ImGui::Begin("Help", nullptr,
+                ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
+                ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Text("Help");
             ImGui::End();
 
             // -------- Scene panel: load models/skyboxes, edit lights/models/post-fx --------
