@@ -639,27 +639,6 @@ int main() {
             ImGui::Text("%.0f FPS", ImGui::GetIO().Framerate);
             ImGui::End();
             
-            //Build Version Window
-            ImGui::SetNextWindowPos(ImVec2(1300,1300), ImGuiCond_Always);
-            ImGui::SetNextWindowBgAlpha(0.35f);
-            ImGui::Begin("Build Version V0.3.2", nullptr,
-                    ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-                    ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
-                    ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
-            ImGui::Text("Build Version V0.3.1");
-            ImGui::SetNextWindowPos(ImVec2(1300,1300), ImGuiCond_Always);
-            ImGui::SetNextWindowBgAlpha(0.35f);
-            
-            ImGui::End();
-
-            ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-            ImGui::SetNextWindowBgAlpha(0.35f);
-            ImGui::Begin("Help", nullptr,
-                ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
-                ImGuiWindowFlags_AlwaysAutoResize);
-            ImGui::Text("Help");
-            ImGui::End();
-
             // -------- Scene panel: load models/skyboxes, edit lights/models/post-fx --------
             static std::vector<utils::Path> glbFiles;
             static std::vector<utils::Path> exrFiles;
@@ -679,25 +658,30 @@ int main() {
             if (ImGui::IsKeyPressed(ImGuiKey_E, false)) {
                 g_editMode = !g_editMode;
             }
-			
+
+            /*
+            //placeholder TODO
+            ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+            ImGuiSetNextWindowBgAlpha(0.35f);
+            ImGui::SetNextWindowSize(ImVec2(0, 0));
+            ImGui::Begin("")
+            */
+            
+
             ImGui::SetNextWindowPos(ImVec2(10, 40), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
-            ImGui::SetNextWindowSize(ImVec2(400, 900));
+            ImGui::SetNextWindowSize(ImVec2(400, 1080));
             ImGui::Begin("Scene", nullptr,
                 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
                 ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
                 ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::Checkbox("Edit Mode (E)", &g_editMode);
-            if (g_editMode) {
-                ImGui::TextWrapped("Click a model to select it, drag to move it, scroll to "
-                        "push/pull. Camera mouse-look is disabled while editing.");
-            }
+           
 
             if (ImGui::Button("Rescan assets/")) {
                 scanned = false;
             }
-            ImGui::Text("Found %zu model file(s), %zu environment(s) under assets/",
-                    glbFiles.size(), exrFiles.size());
+            ImGui::Text("Found %zu model(s)",glbFiles.size(), exrFiles.size());
             ImGui::SameLine();
             if (ImGui::Button("Save Scene")) {
                 saveScene(sceneFilePath(assetsDir));
@@ -706,7 +690,7 @@ int main() {
             if (ImGui::Button("Load Scene") && g_scene) {
                 loadScene(*engine, *g_scene, sceneFilePath(assetsDir));
             }
-
+  
             if (ImGui::CollapsingHeader("Environments")) {
                 for (utils::Path const& path : exrFiles) {
                     ImGui::PushID(path.c_str());
@@ -731,7 +715,7 @@ int main() {
                     ImGui::PopID();
                 }
             }
-
+            
             if (ImGui::CollapsingHeader("Loaded models")) {
                 GltfModel* toRemove = nullptr;
                 GltfModel* toReload = nullptr;
