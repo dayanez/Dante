@@ -26,11 +26,11 @@ static float CalculateCPULoad(unsigned long long idleTicks, unsigned long long t
 
     if (totalTicksSinceLastTime == 0) return 0.0f;
 
-    return 1.0f - ((float)idleTicksSinceLastTime / totalTicksSinceLastTime);
+    return 1.0f - ((int)idleTicksSinceLastTime / totalTicksSinceLastTime);
 }
 
 // Fetches system times and computes the current CPU load
-inline float GetCPULoad()
+inline int GetCPULoad()
 {
     FILETIME idleTime, kernelTime, userTime;
     
@@ -48,7 +48,8 @@ inline float GetCPULoad()
 }
 
 //this shit keeps going so fucking slow 
-inline float CPUSLEEP() {
+inline int CPUSLEEP() {
+    
     //calling cpu load function to compute the current cpu load
     GetCPULoad();
 

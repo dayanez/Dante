@@ -864,8 +864,8 @@ int main() {
               } 
 
 			 
-             if(ImGui::CollapsingHeader("Performance")){
-				float cpuUsagePercent = CPUSLEEP();
+             if(ImGui::CollapsingHeader("Performance (Under Construction)")){
+				int cpuUsagePercent = CPUSLEEP();
 				ImGui::Text("CPU Usage: %.2f ",cpuUsagePercent);  
              } 
              
