@@ -478,6 +478,88 @@ bool loadScene(Engine& engine, Scene& scene, utils::Path const& file) {
     return true;
 }
 
+// Blender-esque dark theme: neutral dark-gray panels, generous spacing, soft uniform rounding,
+// and Blender's characteristic warm-orange accent on anything interactive/active - replacing
+// ImGui's default (cramped spacing, square corners, purple accent) debug-overlay look.
+void applyEditorStyle() {
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    style.WindowPadding     = ImVec2(10, 10);
+    style.FramePadding      = ImVec2(8, 4);
+    style.ItemSpacing       = ImVec2(8, 6);
+    style.ItemInnerSpacing  = ImVec2(6, 4);
+    style.IndentSpacing     = 18.0f;
+    style.ScrollbarSize     = 14.0f;
+    style.GrabMinSize       = 10.0f;
+
+    style.WindowRounding    = 6.0f;
+    style.ChildRounding     = 4.0f;
+    style.FrameRounding     = 4.0f;
+    style.PopupRounding     = 4.0f;
+    style.ScrollbarRounding = 6.0f;
+    style.GrabRounding      = 4.0f;
+    style.TabRounding       = 4.0f;
+
+    style.WindowBorderSize  = 1.0f;
+    style.FrameBorderSize   = 0.0f;
+    style.PopupBorderSize   = 1.0f;
+
+    float3 const bgDark     = {0.11f, 0.11f, 0.11f};
+    float3 const bgPanel    = {0.16f, 0.16f, 0.16f};
+    float3 const bgWidget   = {0.22f, 0.22f, 0.22f};
+    float3 const bgWidgetHi = {0.27f, 0.27f, 0.27f};
+    float3 const accent     = {0.94f, 0.54f, 0.09f};
+    float3 const border     = {0.06f, 0.06f, 0.06f};
+
+    auto rgba = [](float3 c, float a) { return ImVec4(c.x, c.y, c.z, a); };
+
+    ImVec4* colors = style.Colors;
+    colors[ImGuiCol_Text]                  = rgba({0.92f, 0.92f, 0.92f}, 1.00f);
+    colors[ImGuiCol_TextDisabled]          = rgba({0.60f, 0.60f, 0.60f}, 1.00f);
+    colors[ImGuiCol_WindowBg]              = rgba(bgPanel, 1.00f);
+    colors[ImGuiCol_ChildBg]               = rgba(bgPanel, 0.00f);
+    colors[ImGuiCol_PopupBg]               = rgba(bgPanel, 1.00f);
+    colors[ImGuiCol_Border]                = rgba(border, 1.00f);
+    colors[ImGuiCol_BorderShadow]          = rgba(border, 0.00f);
+    colors[ImGuiCol_FrameBg]               = rgba(bgWidget, 1.00f);
+    colors[ImGuiCol_FrameBgHovered]        = rgba(bgWidgetHi, 1.00f);
+    colors[ImGuiCol_FrameBgActive]         = rgba(accent, 0.60f);
+    colors[ImGuiCol_TitleBg]               = rgba(bgDark, 1.00f);
+    colors[ImGuiCol_TitleBgActive]         = rgba(bgDark, 1.00f);
+    colors[ImGuiCol_TitleBgCollapsed]      = rgba(bgDark, 1.00f);
+    colors[ImGuiCol_MenuBarBg]             = rgba(bgDark, 1.00f);
+    colors[ImGuiCol_ScrollbarBg]           = rgba(bgDark, 1.00f);
+    colors[ImGuiCol_ScrollbarGrab]         = rgba(bgWidgetHi, 1.00f);
+    colors[ImGuiCol_ScrollbarGrabHovered]  = rgba(accent, 0.60f);
+    colors[ImGuiCol_ScrollbarGrabActive]   = rgba(accent, 1.00f);
+    colors[ImGuiCol_CheckMark]             = rgba(accent, 1.00f);
+    colors[ImGuiCol_SliderGrab]            = rgba(accent, 0.85f);
+    colors[ImGuiCol_SliderGrabActive]      = rgba(accent, 1.00f);
+    colors[ImGuiCol_Button]                = rgba(bgWidget, 1.00f);
+    colors[ImGuiCol_ButtonHovered]         = rgba(bgWidgetHi, 1.00f);
+    colors[ImGuiCol_ButtonActive]          = rgba(accent, 0.60f);
+    colors[ImGuiCol_Header]                = rgba(bgWidget, 1.00f);
+    colors[ImGuiCol_HeaderHovered]         = rgba(bgWidgetHi, 1.00f);
+    colors[ImGuiCol_HeaderActive]          = rgba(accent, 0.60f);
+    colors[ImGuiCol_Separator]             = rgba(border, 1.00f);
+    colors[ImGuiCol_SeparatorHovered]      = rgba(accent, 0.60f);
+    colors[ImGuiCol_SeparatorActive]       = rgba(accent, 1.00f);
+    colors[ImGuiCol_ResizeGrip]            = rgba(accent, 0.00f);
+    colors[ImGuiCol_ResizeGripHovered]     = rgba(accent, 0.60f);
+    colors[ImGuiCol_ResizeGripActive]      = rgba(accent, 1.00f);
+    colors[ImGuiCol_Tab]                   = rgba(bgDark, 1.00f);
+    colors[ImGuiCol_TabHovered]            = rgba(bgWidgetHi, 1.00f);
+    colors[ImGuiCol_TabSelected]           = rgba(bgWidget, 1.00f);
+    colors[ImGuiCol_TabSelectedOverline]   = rgba(accent, 1.00f);
+    colors[ImGuiCol_TabDimmed]             = rgba(bgDark, 1.00f);
+    colors[ImGuiCol_TabDimmedSelected]     = rgba(bgWidget, 1.00f);
+    colors[ImGuiCol_DockingPreview]        = rgba(accent, 0.35f);
+    colors[ImGuiCol_DockingEmptyBg]        = rgba(bgDark, 1.00f);
+    colors[ImGuiCol_NavCursor]             = rgba(accent, 1.00f);
+    colors[ImGuiCol_PlotLines]             = rgba(accent, 1.00f);
+    colors[ImGuiCol_PlotHistogram]         = rgba(accent, 1.00f);
+}
+
 } // namespace
 
 // M4: a data-driven scene (see GltfModel / g_models, PointLight / g_lights) under a
@@ -636,7 +718,19 @@ int main() {
             // scene view (see the g_mainView comment above) - every line below that touches
             // the 3D scene needs the real one.
             View* view = g_mainView ? g_mainView : uiView;
-            
+
+            static bool styleApplied = false;
+            if (!styleApplied) {
+                applyEditorStyle();
+                styleApplied = true;
+            }
+
+            // Enable docking so panels below (currently just "Scene") can be dragged into a
+            // real layout instead of sitting pinned in place - re-ORing an already-set flag
+            // every frame is a no-op, so no need to gate this to run once.
+            ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+            ImGui::DockSpaceOverViewport(0, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+
             //FPS window
             ImGui::SetNextWindowPos(ImVec2(10,10), ImGuiCond_Always);
             ImGui::SetNextWindowBgAlpha(0.35f);
@@ -676,13 +770,11 @@ int main() {
             */
             
 
-            ImGui::SetNextWindowPos(ImVec2(10, 40), ImGuiCond_Always);
-            ImGui::SetNextWindowBgAlpha(0.35f);
-            ImGui::SetNextWindowSize(ImVec2(400, 1080));
-            ImGui::Begin("Scene", nullptr,
-                ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-                ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing |
-                ImGuiWindowFlags_NoNav | ImGuiWindowFlags_AlwaysAutoResize);
+            // Docked/movable/resizable now (was pinned at a fixed position/size) - first launch
+            // it'll land wherever ImGui's default docking layout puts it, drag it by the title
+            // bar into place and ImGui remembers that layout (imgui.ini) for next time.
+            ImGui::SetNextWindowSize(ImVec2(400, 600), ImGuiCond_FirstUseEver);
+            ImGui::Begin("Scene");
             ImGui::Checkbox("Edit Mode (E)", &g_editMode);
            
 
@@ -868,8 +960,8 @@ int main() {
 
 			 
              if(ImGui::CollapsingHeader("Performance (Under Construction)")){
-				int cpuUsagePercent = CPUSLEEP();
-				ImGui::Text("CPU Usage: %.2f ",cpuUsagePercent);  
+				float cpuUsagePercent = GetCPUUsagePercent();
+				ImGui::Text("CPU Usage: %.2f%%", cpuUsagePercent);
              } 
              
 

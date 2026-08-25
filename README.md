@@ -20,24 +20,30 @@ Install these (all small, no installer/IDE needed):
 - CMake 3.22+: https://cmake.org/download/
 - Ninja: https://github.com/ninja-build/ninja/releases (or `winget install Kitware.CMake Ninja-build.Ninja`)
 - Python 3: https://www.python.org/downloads/ (needed at configure time by spirv-tools' codegen)
-- Git for Windows (for the `bash` shell used below): https://git-scm.com/download/win
+- Git for Windows: https://git-scm.com/download/win - this is a real build dependency here, not
+  just "a shell you could use instead of cmd". CMake shells out to a bash script internally for
+  one step (combining dantemat's static-lib dependencies, see
+  `engine/build/linux/combine-static-libs.sh`), regardless of which shell you type commands
+  into, so it has to be installed and on PATH either way.
+
+Once Git for Windows is installed, everything below can be typed into cmd.exe, PowerShell, or
+git-bash - doesn't matter, they're all just calling `cmake`/`ninja`/the built exe directly, not
+using anything shell-specific, except the one-time wrapper-stub step below, which is a bash
+script (run it from git-bash, or invoke `zig cc` four times yourself if you'd rather not).
 
 CMake can't call `zig cc`/`zig c++`/`zig ar` directly (they're subcommands, not standalone
-exes), so build the small wrapper stubs once first:
+exes), so build the small wrapper stubs once first (from git-bash):
 
 ```
 bash engine/build/windows-gnu/build-wrappers.sh
 ```
 
-Then configure and build (Release is required - see the note the script prints):
+Then configure and build (Release is required - see the note the script prints). One line each
+on purpose, so it pastes the same in cmd.exe, PowerShell, or git-bash without needing a
+shell-specific line-continuation character:
 
 ```
-cmake -S . -B build -G Ninja ^
-    -DCMAKE_C_COMPILER="engine/build/windows-gnu/bin/zigcc.exe" ^
-    -DCMAKE_CXX_COMPILER="engine/build/windows-gnu/bin/zigcxx.exe" ^
-    -DCMAKE_AR="engine/build/windows-gnu/bin/zigar.exe" ^
-    -DCMAKE_RANLIB="engine/build/windows-gnu/bin/zigranlib.exe" ^
-    -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER="engine/build/windows-gnu/bin/zigcc.exe" -DCMAKE_CXX_COMPILER="engine/build/windows-gnu/bin/zigcxx.exe" -DCMAKE_AR="engine/build/windows-gnu/bin/zigar.exe" -DCMAKE_RANLIB="engine/build/windows-gnu/bin/zigranlib.exe" -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel
 ```
 
