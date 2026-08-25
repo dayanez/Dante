@@ -24,12 +24,12 @@
  *
  *  This is a simple file to encapsulate the EGL API headers.
  */
-#if !defined(_MSC_VER) && !defined(__ANDROID__)
+#if !defined(_WIN32) && !defined(__ANDROID__)
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#else /* _MSC_VER */
+#else /* _WIN32 - Windows never ships real EGL headers, MSVC or not */
 
 /* EGL headers for Visual Studio */
 

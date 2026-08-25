@@ -10,7 +10,11 @@ else()
     set(IS_64_BIT FALSE)
 endif()
 
-if (WIN32 AND IS_64_BIT)
+# BlueGLCoreWindowsImpl.S is MASM syntax (needs ml64.exe, MSVC-only). A non-MSVC Windows
+# toolchain (e.g. zig cc targeting *-windows-gnu) instead uses BlueGLCoreWindowsGnuImpl.S,
+# a GNU-assembler/COFF equivalent - see the SRCS selection below - which the project's
+# already-detected plain ASM language (matching the C compiler) handles with no extra setup.
+if (MSVC AND WIN32 AND IS_64_BIT)
     enable_language(ASM_MASM)
     set_property(SOURCE src/BlueGLCoreWindowsImpl.S PROPERTY LANGUAGE ASM_MASM)
 endif()
@@ -27,8 +31,10 @@ if (WIN32)
     set(SRCS ${SRCS} src/BlueGLWindows.cpp)
     if(NOT IS_64_BIT)
         set(SRCS ${SRCS} src/BlueGLCoreWindows32Impl.cpp)
-    else()
+    elseif(MSVC)
         set(SRCS ${SRCS} src/BlueGLCoreWindowsImpl.S)
+    else()
+        set(SRCS ${SRCS} src/BlueGLCoreWindowsGnuImpl.S)
     endif()
 elseif(LINUX)
     if (DANTE_SUPPORTS_EGL_ON_LINUX)

@@ -236,7 +236,7 @@ Platform::SwapChain* PlatformWGL::createSwapChain(uint32_t width, uint32_t heigh
     // WS_POPUP was chosen for the window style here after some experimentation.
     // For some reason, using other window styles resulted in corrupted pixel buffers when using
     // readPixels.
-    RECT rect = {0, 0, width, height};
+    RECT rect = {0, 0, static_cast<LONG>(width), static_cast<LONG>(height)};
     AdjustWindowRect(&rect, WS_POPUP, FALSE);
     width = rect.right - rect.left;
     height = rect.bottom - rect.top;

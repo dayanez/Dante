@@ -59,7 +59,12 @@
 
 /* everyone else. This is where we turn on the API if nothing forced it off. */
 #ifndef SDL_DYNAMIC_API
-#define SDL_DYNAMIC_API 1
+/* Dante builds SDL statically, where dynapi's whole purpose (letting a shared SDL2.dll be
+ * swapped out in the field without recompiling) doesn't apply - and it actively breaks a
+ * build that intentionally excludes some renderer backends (see engine/third_party/libsdl2/
+ * tnt/CMakeLists.txt): dynapi's proc table unconditionally references every public SDL
+ * function by name, including ones whose only definition lives in an excluded backend file. */
+#define SDL_DYNAMIC_API 0
 #endif
 
 #endif

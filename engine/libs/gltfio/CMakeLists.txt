@@ -85,6 +85,12 @@ elseif (DANTE_SAMPLES_STEREO_TYPE STREQUAL "multiview")
     set (MATC_FLAGS ${MATC_FLAGS} -PstereoscopicType=multiview)
 endif ()
 
+# The ubershader archive (uberarchive/default.uberz, 18 baked material variants) is only
+# ever consumed by test_gltfio below (createUbershaderProvider is never called by the shipped
+# app - see JitShaderProvider usage in src/dante.cpp instead), so it's gated the same way that
+# test target already is instead of running 18 matc invocations on every default build.
+if (DANTE_BUILD_TESTING)
+
 function(build_ubershader NAME SRC SHADINGMODEL BLENDING)
     set(DEST "${RESOURCE_DIR}/${NAME}")
     configure_file(materials/${SRC}.mat.in "${DEST}.mat" COPYONLY)
@@ -178,6 +184,8 @@ add_library(uberarchive ${DUMMY_SRC} ${RESGEN_SOURCE})
 target_include_directories(uberarchive PUBLIC ${RESOURCE_DIR})
 set_target_properties(uberarchive PROPERTIES FOLDER Libs)
 
+endif() # DANTE_BUILD_TESTING (ubershader archive)
+
 # ==================================================================================================
 # Build the "core" library (no filamat)
 # ==================================================================================================
@@ -255,6 +263,9 @@ endif()
 # Installation
 # ==================================================================================================
 
-install(TARGETS gltfio_core uberarchive ARCHIVE DESTINATION lib/${DIST_DIR})
+install(TARGETS gltfio_core ARCHIVE DESTINATION lib/${DIST_DIR})
 install(DIRECTORY ${PUBLIC_HDR_DIR}/gltfio DESTINATION include)
-install(FILES ${RESOURCE_DIR}/materials/uberarchive.h DESTINATION include/gltfio/materials)
+if (DANTE_BUILD_TESTING)
+    install(TARGETS uberarchive ARCHIVE DESTINATION lib/${DIST_DIR})
+    install(FILES ${RESOURCE_DIR}/materials/uberarchive.h DESTINATION include/gltfio/materials)
+endif()

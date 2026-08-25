@@ -258,7 +258,10 @@ if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
     # The CMAKE_CXX_FLAGS vars can be overriden by some Visual Studio generators, so we use an alternative
-    # global method here:
+    # global method here. /MT, /MD etc. are MSVC(-cl)-only spellings of the CRT choice - a
+    # non-MSVC Windows toolchain (e.g. zig cc targeting *-windows-gnu) picks its runtime
+    # linkage a different way and chokes on these flags entirely.
+    if (MSVC)
     if (${USE_STATIC_CRT})
         add_compile_options(
             $<$<CONFIG:>:/MT>
@@ -272,7 +275,11 @@ if (WIN32)
             $<$<CONFIG:Release>:/MD>
         )
     endif()
+    endif()
 
+    # /Z7, /Zi are MSVC(-cl)-only debug-info flags - same story as /MT above, gate on MSVC
+    # rather than WIN32 so a non-MSVC Windows toolchain doesn't choke on them.
+    if (MSVC)
     # TODO: Figure out why pdb generation messes with incremental compilaton.
     # IN RELEASE_WITH_DEBUG_INFO, generate debug info in .obj, no in pdb.
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /Z7")
@@ -286,6 +293,7 @@ if (WIN32)
     # Instead generate debug info directly inside obj files.
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Z7")
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
+    endif()
 
     # Special settings when building on CI.
     if (${DANTE_WINDOWS_CI_BUILD})
@@ -386,7 +394,7 @@ if (APPLE AND NOT IOS)
 endif()
 
 set(CXX_STANDARD "-std=c++20")
-if (WIN32)
+if (MSVC)
     set(CXX_STANDARD "/std:c++20")
 endif()
 
@@ -403,6 +411,19 @@ else()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-nullability-extension")
         set(CMAKE_OBJCXX_FLAGS "${CMAKE_CXX_FLAGS}")
     endif()
+endif()
+
+if (WIN32 AND NOT MSVC)
+    # zig cc (a non-MSVC Windows toolchain) instruments C/C++ code with Zig's own runtime
+    # safety checks by default, even at -O3/NDEBUG - unlike MSVC or a plain Clang build, where
+    # this class of undefined behavior is silently tolerated rather than trapped. This has
+    # surfaced real-but-harmless UB already latent in this codebase (e.g. computing, without
+    # dereferencing, a null-pointer-plus-offset value inside CubemapIBL.cpp's parallel_for
+    # split when a job's slice happens to be empty) as a hard "panic: applying non-zero offset
+    # ... to null pointer" crash instead of a normal build. Matching the other toolchains'
+    # behavior here rather than auditing/fixing every such pre-existing UB site.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-sanitize=undefined")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-sanitize=undefined")
 endif()
 
 if (DANTE_USE_EXTERNAL_GLES3)
@@ -758,7 +779,7 @@ function(combine_static_libs TARGET OUTPUT DEPS)
         endif()
     endforeach()
 
-    if (WIN32)
+    if (MSVC)
         add_custom_command(
             TARGET ${TARGET} POST_BUILD
             COMMAND lib.exe /nologo /out:temp.lib ${DEPS_FILES}
@@ -767,9 +788,21 @@ function(combine_static_libs TARGET OUTPUT DEPS)
             VERBATIM
         )
     else()
+        # COMBINE_SCRIPT has a #!/usr/bin/env bash shebang, which Windows' CreateProcess
+        # doesn't honor - invoke it via bash explicitly so this also works for a non-MSVC
+        # Windows toolchain (e.g. zig cc targeting *-windows-gnu), not just Linux/macOS.
+        if (WIN32)
+            find_program(BASH_PROGRAM bash HINTS "C:/Program Files/Git/usr/bin" "C:/Program Files/Git/bin")
+            if (NOT BASH_PROGRAM)
+                message(FATAL_ERROR "combine_static_libs needs bash (e.g. Git for Windows) on a non-MSVC Windows toolchain")
+            endif()
+            set(COMBINE_SCRIPT_COMMAND "${BASH_PROGRAM}" "${COMBINE_SCRIPT}")
+        else()
+            set(COMBINE_SCRIPT_COMMAND "${COMBINE_SCRIPT}")
+        endif()
         add_custom_command(
             TARGET ${TARGET} POST_BUILD
-            COMMAND "${COMBINE_SCRIPT}" "${CMAKE_AR}" "${OUTPUT}" ${DEPS_FILES}
+            COMMAND ${COMBINE_SCRIPT_COMMAND} "${CMAKE_AR}" "${OUTPUT}" ${DEPS_FILES}
             COMMENT "Combining ${target} dependencies into single shared library"
             VERBATIM
         )

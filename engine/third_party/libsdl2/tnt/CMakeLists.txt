@@ -33,7 +33,13 @@ file(GLOB SRCS
     ${SRC_DIR}/libm/*.c
     ${SRC_DIR}/power/*.c
     ${SRC_DIR}/render/*.c
-    ${SRC_DIR}/render/*/*.c
+    # Dante only ever creates a desktop OpenGL context through SDL (WGL on Windows - see
+    # PlatformWGL.cpp), never through SDL's own D3D/GLES2/PSP renderer backends, and those
+    # need Direct3D/EGL/GLES2 headers that aren't available outside a full Windows SDK/ANGLE
+    # install - render/*/*.c pulled all of them in unconditionally, which breaks a non-MSVC
+    # Windows toolchain that doesn't carry that SDK. List only the backends actually used.
+    ${SRC_DIR}/render/software/*.c
+    ${SRC_DIR}/render/opengl/*.c
     ${SRC_DIR}/stdlib/*.c
     ${SRC_DIR}/thread/*.c
     ${SRC_DIR}/timer/*.c
@@ -194,6 +200,27 @@ add_definitions(-D_THREAD_SAFE)
 
 # we're building a library
 add_library(${TARGET} STATIC ${SRCS})
+
+if (WIN32)
+    # include/SDL_config_windows.h is a static, pre-baked config header (not CMake-template-
+    # generated) that hardcodes SDL_VIDEO_RENDER_D3D/SDL_VIDEO_RENDER_OGL_ES2/
+    # SDL_VIDEO_OPENGL_EGL to 1 by default. Dante only ever creates a desktop OpenGL context
+    # through SDL (WGL, see PlatformWGL.cpp), never through these backends, and their .c files
+    # (render/direct3d*, render/opengles*) are excluded above since they need a Windows SDK/
+    # ANGLE this toolchain doesn't have - so SDL's own dispatch tables (render_drivers[], the
+    # dynapi _REAL symbols like SDL_RenderGetD3D9Device) must stop referencing them too, or the
+    # link fails on undefined symbols. Each is #ifndef-guarded in the header, so defining them
+    # here (processed before that header is ever included) overrides the hardcoded default.
+    target_compile_definitions(${TARGET} PUBLIC
+        SDL_VIDEO_RENDER_D3D=0
+        SDL_VIDEO_RENDER_D3D11=0
+        SDL_VIDEO_RENDER_OGL_ES2=0
+        SDL_VIDEO_OPENGL_EGL=0
+    )
+endif()
+
+# SDL's dynapi indirection is disabled directly in src/dynapi/SDL_dynapi.h (SDL deliberately
+# #errors if SDL_DYNAMIC_API is set via a compile definition instead - see that file).
 
 # libraries we're linking against
 target_link_libraries(${TARGET} ${EXTRA_LIBS})

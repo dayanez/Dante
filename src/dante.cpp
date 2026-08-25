@@ -394,9 +394,17 @@ std::vector<utils::Path> findFilesByExtension(utils::Path const& dir, char const
     return result;
 }
 
+// DANTE_ASSETS_DIR is passed unquoted from CMake (target_compile_definitions(Dante PRIVATE
+// DANTE_ASSETS_DIR=${CMAKE_SOURCE_DIR}/assets)) and stringized here rather than passed as a
+// pre-quoted string literal - CMake/Ninja on Windows with a non-MSVC compiler (e.g. zig cc)
+// doesn't reliably preserve the escaped inner quotes of a `-DFOO="bar"`-style definition
+// through to the compiler, silently dropping them.
+#define DANTE_STRINGIZE_HELPER(x) #x
+#define DANTE_STRINGIZE(x) DANTE_STRINGIZE_HELPER(x)
+
 utils::Path resolveAssetsDir() {
     utils::Path portable = utils::Path::getCurrentExecutable().getParent() + "assets";
-    return portable.exists() ? portable : utils::Path(DANTE_ASSETS_DIR);
+    return portable.exists() ? portable : utils::Path(DANTE_STRINGIZE(DANTE_ASSETS_DIR));
 }
 
 utils::Path sceneFilePath(utils::Path const& assetsDir) {

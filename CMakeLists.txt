@@ -39,9 +39,13 @@ add_subdirectory(engine)
 
 add_executable(Dante src/dante.cpp)
 target_link_libraries(Dante PRIVATE danteapp gltfio)
-target_compile_definitions(Dante PRIVATE DANTE_ASSETS_DIR="${CMAKE_SOURCE_DIR}/assets")
+# Left unquoted and stringized at the use site (see DANTE_ASSETS_DIR in src/dante.cpp) rather
+# than passed as a pre-quoted string literal - CMake/Ninja on Windows with a non-MSVC compiler
+# (e.g. zig cc) doesn't reliably preserve the escaped inner quotes of a `-DFOO="bar"`-style
+# definition through to the compiler.
+target_compile_definitions(Dante PRIVATE DANTE_ASSETS_DIR=${CMAKE_SOURCE_DIR}/assets)
 
-if (WIN32)
+if (MSVC)
     # CMake's own Ninja+MSVC link rule always runs its own mt.exe merge pass after
     # linking, which conflicts with a manually-specified /MANIFESTINPUT (mt.exe ends up
     # invoked with no manifest to merge and fails with c10100a7). /MANIFEST:NO turns off
@@ -49,6 +53,10 @@ if (WIN32)
     # Without this, Dante.exe isn't marked DPI-aware, so Windows renders it at a
     # virtualized resolution and stretches the whole window to fit the display's scaling -
     # blurring both the 3D content and the UI uniformly.
+    #
+    # /MANIFEST:NO and mt.exe are MSVC-toolchain-only (mt.exe doesn't exist for a non-MSVC
+    # Windows toolchain like zig cc, and its GNU-style linker driver doesn't understand
+    # /MANIFEST:NO's syntax either) - Dante.exe just isn't marked DPI-aware there for now.
     target_link_options(Dante PRIVATE "/MANIFEST:NO")
     add_custom_command(TARGET Dante POST_BUILD
         COMMAND "${CMAKE_MT}" -nologo -manifest "${CMAKE_SOURCE_DIR}/src/app.manifest"

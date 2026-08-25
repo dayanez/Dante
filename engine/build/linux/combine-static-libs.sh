@@ -52,23 +52,38 @@ function combine_static_libs {
         "${AR_TOOL}" -x "$a"
 
         # Prepend the library name to the object file to ensure each object file has a unique name.
-        for o in *.o; do
+        # Object files are named *.o on Linux/macOS, but *.obj on Windows (even when the
+        # compiler is a non-MSVC, GNU-target toolchain like zig cc) - nullglob so a pattern
+        # with no matches (e.g. no .obj files on Linux) expands to nothing instead of itself.
+        shopt -s nullglob
+        for o in *.o *.obj; do
             mv "$o" "${dir_name}_${o}"
         done
+        shopt -u nullglob
 
         popd >/dev/null
     done
 
     popd >/dev/null
 
-    # Combine the library files into a single static library archive.
+    # Combine the library files into a single static library archive. Batched (rather than one
+    # "ar qc output <every object>" call) because a target that pulls in enough dependencies
+    # (e.g. filamat's glslang+spirv-tools+spirv-cross chain) can produce an object list long
+    # enough to exceed Windows' ~32K CreateProcess command-line limit in a single invocation.
     rm -f "${output_path}"
-    "${AR_TOOL}" -qc "${output_path}" $(find "${temp_dir}" -iname '*.o')
+    all_objects=()
+    while IFS=  read -r -d $'\0'; do
+        all_objects+=("$REPLY")
+    done < <(find "${temp_dir}" \( -iname '*.o' -o -iname '*.obj' \) -print0)
+    batch_size=150
+    for ((i = 0; i < ${#all_objects[@]}; i += batch_size)); do
+        "${AR_TOOL}" -qc "${output_path}" "${all_objects[@]:i:batch_size}"
+    done
 
     # Clean up. Delete objects in the temporary working directory. In theory we could leave the
     # directory as a "cache" of extracted object files, but it complicates the logic to handle cases
     # where object files are removed from a library.
-    find "${temp_dir}" -iname "*.o" -delete
+    find "${temp_dir}" \( -iname "*.o" -o -iname "*.obj" \) -delete
 }
 
 function universal_error {

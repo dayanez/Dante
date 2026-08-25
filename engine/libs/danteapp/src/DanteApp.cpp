@@ -561,13 +561,21 @@ void DanteApp::shutdown() {
 }
 
 // RELATIVE_ASSET_PATH is set inside samples/CMakeLists.txt and used to support multi-configuration
-// generators, like Visual Studio or Xcode.
+// generators, like Visual Studio or Xcode. Left unquoted here (and passed unquoted from CMake's
+// -D too) and stringized below rather than passed as a pre-quoted string literal - CMake/Ninja on
+// Windows with a non-MSVC compiler (e.g. zig cc) doesn't reliably preserve the escaped inner
+// quotes of a `-DFOO="bar"`-style definition through to the compiler, silently dropping them and
+// leaving FOO expanding to the bare, unquoted token bar instead of the string literal "bar".
 #ifndef RELATIVE_ASSET_PATH
-#define RELATIVE_ASSET_PATH "."
+#define RELATIVE_ASSET_PATH .
 #endif
 
+#define DANTEAPP_STRINGIZE_HELPER(x) #x
+#define DANTEAPP_STRINGIZE(x) DANTEAPP_STRINGIZE_HELPER(x)
+
 const utils::Path& DanteApp::getRootAssetsPath() {
-    static const utils::Path root = utils::Path::getCurrentExecutable().getParent() + RELATIVE_ASSET_PATH;
+    static const utils::Path root = utils::Path::getCurrentExecutable().getParent()
+            + DANTEAPP_STRINGIZE(RELATIVE_ASSET_PATH);
     return root;
 }
 
