@@ -10,7 +10,7 @@
 #include <utils/Path.h>
 #include <utils/Status.h>
 
-namespace filamat {
+namespace dantemat {
 class MaterialBuilder;
 }
 class TestMaterialParser;
@@ -32,10 +32,10 @@ public:
             bool insertLineDirectives, bool insertLineDirectiveCheck);
     // Parses a string material so that it can be used in MaterialBuilder.
     // Call MaterialBuilder::init before passing in the builder; call MaterialBuilder::build to
-    // create filamat::Package after.
+    // create dantemat::Package after.
     // When the input shader has #includes, it has to be resolved before calling into parse.
     utils::Status parse(
-            filamat::MaterialBuilder& builder,
+            dantemat::MaterialBuilder& builder,
             const Config& config, ssize_t& size, std::unique_ptr<const char[]>& buffer);
     // Replaces macro keywords with user specified ones. Must be called before parse.
     utils::Status processTemplateSubstitutions(
@@ -44,39 +44,39 @@ private:
     friend class ::TestMaterialParser;
 
     utils::Status parseMaterial(const char* buffer, size_t size,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status processMaterial(const MaterialLexeme&,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status processVertexShader(const MaterialLexeme&,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status processFragmentShader(const MaterialLexeme&,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status processComputeShader(const MaterialLexeme&,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status ignoreLexeme(
-            const MaterialLexeme&, filamat::MaterialBuilder& builder) const noexcept;
+            const MaterialLexeme&, dantemat::MaterialBuilder& builder) const noexcept;
 
     utils::Status parseMaterialAsJSON(const char* buffer, size_t size,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status processMaterialJSON(const JsonishValue*,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status processVertexShaderJSON(const JsonishValue*,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status processFragmentShaderJSON(const JsonishValue*,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status processComputeShaderJSON(const JsonishValue*,
-            filamat::MaterialBuilder& builder) const noexcept;
+            dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status ignoreLexemeJSON(
-            const JsonishValue*, filamat::MaterialBuilder& builder) const noexcept;
+            const JsonishValue*, dantemat::MaterialBuilder& builder) const noexcept;
     utils::Status isValidJsonStart(const char* buffer, size_t size) const noexcept;
 
     utils::Status processMaterialParameters(
-            filamat::MaterialBuilder& builder, const Config& config) const;
+            dantemat::MaterialBuilder& builder, const Config& config) const;
 
     // Member function pointer type, this is used to implement a Command design
     // pattern.
     using MaterialConfigProcessor = utils::Status (MaterialParser::*)
-            (const MaterialLexeme&, filamat::MaterialBuilder& builder) const;
+            (const MaterialLexeme&, dantemat::MaterialBuilder& builder) const;
     // Map used to store Command pattern function pointers.
     // Using string_view is generally not recommended in a map, but the string keys are program constants,
     // which guarantees that the strings will outlive lifetime of the map. See MaterialParser.cpp
@@ -84,7 +84,7 @@ private:
 
     // The same, but for pure JSON syntax
     using MaterialConfigProcessorJSON = utils::Status (MaterialParser::*)
-            (const JsonishValue*, filamat::MaterialBuilder& builder) const;
+            (const JsonishValue*, dantemat::MaterialBuilder& builder) const;
     std::unordered_map<std::string_view, MaterialConfigProcessorJSON> mConfigProcessorJSON;
 };
 

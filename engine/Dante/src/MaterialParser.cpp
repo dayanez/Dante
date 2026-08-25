@@ -12,10 +12,10 @@
 
 #include <dante/MaterialChunkType.h>
 
-#include <filaflat/ChunkContainer.h>
-#include <filaflat/DictionaryReader.h>
-#include <filaflat/MaterialChunk.h>
-#include <filaflat/Unflattener.h>
+#include <danteflat/ChunkContainer.h>
+#include <danteflat/DictionaryReader.h>
+#include <danteflat/MaterialChunk.h>
+#include <danteflat/Unflattener.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Program.h>
@@ -39,8 +39,8 @@
 
 using namespace utils;
 using namespace dante::backend;
-using namespace filaflat;
-using namespace filamat;
+using namespace danteflat;
+using namespace dantemat;
 
 namespace dante {
 
@@ -253,7 +253,7 @@ bool MaterialParser::getSourceShader(CString* cstring) const noexcept {
         return false;
     }
     // Reject implausibly large declared sizes to prevent unbounded allocation
-    // from attacker-controlled .filamat files (decompression bomb).
+    // from attacker-controlled .dantemat files (decompression bomb).
     static constexpr size_t MAX_ZSTD_DECOMPRESSED_SIZE = 256u * 1024u * 1024u; // 256 MiB
     if (UTILS_UNLIKELY(decompressBound > MAX_ZSTD_DECOMPRESSED_SIZE)) {
         return false;

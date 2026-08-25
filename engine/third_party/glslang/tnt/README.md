@@ -15,7 +15,7 @@ For example, to update to version 15.4.0:
 ```
 
 - If necessary, add or remove source files from `glslang/glslang/tnt/CMakeLists.txt` et al.
-- If necessary, update the `DefaultTBuiltInResource` definition inside `libs/filamat/src/sca/builtinResource.h` to glslang's located at
+- If necessary, update the `DefaultTBuiltInResource` definition inside `libs/dantemat/src/sca/builtinResource.h` to glslang's located at
 `third_party/glslang/StandAlone/ResourceLimits.cpp`
 - Compile and test `matc`
 

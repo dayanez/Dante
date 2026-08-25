@@ -24,7 +24,7 @@
 #include <dante-matp/MaterialParser.h>
 #include "Compiler.h"
 
-namespace filamat {
+namespace dantemat {
 class MaterialBuilder;
 }
 

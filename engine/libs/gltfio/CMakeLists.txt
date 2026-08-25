@@ -106,29 +106,29 @@ function(build_ubershader NAME SRC SHADINGMODEL BLENDING)
         -TBLENDING=${BLENDING})
 
     add_custom_command(
-        OUTPUT "${NAME}.filamat"
-        COMMAND matc ${MATC_FLAGS} ${TEMPLATE_ARGS} -o "${NAME}.filamat" "${NAME}.mat"
+        OUTPUT "${NAME}.dantemat"
+        COMMAND matc ${MATC_FLAGS} ${TEMPLATE_ARGS} -o "${NAME}.dantemat" "${NAME}.mat"
         DEPENDS matc "${DEST}.mat"
         WORKING_DIRECTORY ${RESOURCE_DIR}
         COMMENT "Compiling material ${NAME}")
 
     set(UBERZ_ARGS -o ${UBERZ_OUTPUT_PATH} ${TEMPLATE_ARGS})
 
-    # Invoke uberz to consume foo.spec + foo.filamat and produce default.uberz
+    # Invoke uberz to consume foo.spec + foo.dantemat and produce default.uberz
     # The first time this is invoked, it omits the --append argument.
     if (NOT APPEND_UBERSHADERS)
         set(APPEND_UBERSHADERS ON PARENT_SCOPE)
         add_custom_command(
             OUTPUT ${UBERZ_OUTPUT_PATH}
             COMMAND uberz ${UBERZ_ARGS} ${NAME}
-            DEPENDS uberz ${DEST}.filamat ${DEST}.spec
+            DEPENDS uberz ${DEST}.dantemat ${DEST}.spec
             WORKING_DIRECTORY ${RESOURCE_DIR}
             COMMENT "Creating ubershader archive")
     else()
         add_custom_command(
             OUTPUT ${UBERZ_OUTPUT_PATH}
             COMMAND uberz --append ${UBERZ_ARGS} ${NAME}
-            DEPENDS uberz ${DEST}.filamat ${DEST}.spec
+            DEPENDS uberz ${DEST}.dantemat ${DEST}.spec
             WORKING_DIRECTORY ${RESOURCE_DIR}
             APPEND
             COMMENT "Appending to ubershader archive")
@@ -187,7 +187,7 @@ set_target_properties(uberarchive PROPERTIES FOLDER Libs)
 endif() # DANTE_BUILD_TESTING (ubershader archive)
 
 # ==================================================================================================
-# Build the "core" library (no filamat)
+# Build the "core" library (no dantemat)
 # ==================================================================================================
 
 if(DANTE_SUPPORTS_WEBP_TEXTURES)
@@ -210,7 +210,7 @@ target_compile_options(gltfio_core PRIVATE ${DANTE_WARNINGS})
 # Link the core library with additional dependencies to create the "full" library
 # ==================================================================================================
 add_library(${TARGET} STATIC ${PUBLIC_HDRS} src/JitShaderProvider.cpp)
-target_link_libraries(${TARGET} PUBLIC filamat gltfio_core)
+target_link_libraries(${TARGET} PUBLIC dantemat gltfio_core)
 target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
 set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
 if (NOT MSVC)

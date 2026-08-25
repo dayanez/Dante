@@ -1,0 +1,114 @@
+
+#include <danteflat/DictionaryReader.h>
+
+#include <danteflat/ChunkContainer.h>
+#include <danteflat/Unflattener.h>
+
+#if defined (DANTE_DRIVER_SUPPORTS_VULKAN)
+#include <utils/Log.h>
+#include <smolv.h>
+#endif
+
+#include <assert.h>
+
+using namespace dantemat;
+
+namespace danteflat {
+
+bool DictionaryReader::unflatten(ChunkContainer const& container,
+        ChunkContainer::Type dictionaryTag,
+        BlobDictionary& dictionary) {
+
+    auto [start, end] = container.getChunkRange(dictionaryTag);
+    Unflattener unflattener(start, end);
+
+    if (dictionaryTag == ChunkType::DictionarySpirv) {
+        uint32_t compressionScheme;
+        if (!unflattener.read(&compressionScheme)) {
+            return false;
+        }
+        // For now, 1 is the only acceptable compression scheme.
+        assert(compressionScheme == 1);
+
+        uint32_t blobCount;
+        if (!unflattener.read(&blobCount)) {
+            return false;
+        }
+
+        dictionary.reserve(blobCount);
+        for (uint32_t i = 0; i < blobCount; i++) {
+            unflattener.skipAlignmentPadding();
+
+            const char* compressed;
+            size_t compressedSize;
+            if (!unflattener.read(&compressed, &compressedSize)) {
+                return false;
+            }
+
+            assert_invariant((intptr_t(compressed) % 8) == 0);
+
+#if defined (DANTE_DRIVER_SUPPORTS_VULKAN)
+            size_t spirvSize = smolv::GetDecodedBufferSize(compressed, compressedSize);
+            if (spirvSize == 0) {
+                return false;
+            }
+            ShaderContent spirv(spirvSize);
+            if (!smolv::Decode(compressed, compressedSize, spirv.data(), spirvSize)) {
+                return false;
+            }
+            dictionary.emplace_back(std::move(spirv));
+#else
+            return false;
+#endif
+
+        }
+        return true;
+    } else if (dictionaryTag == ChunkType::DictionaryMetalLibrary) {
+        uint32_t blobCount;
+        if (!unflattener.read(&blobCount)) {
+            return false;
+        }
+
+        dictionary.reserve(blobCount);
+        for (uint32_t i = 0; i < blobCount; i++) {
+            unflattener.skipAlignmentPadding();
+
+            const char* data;
+            size_t dataSize;
+            if (!unflattener.read(&data, &dataSize)) {
+                return false;
+            }
+            dictionary.emplace_back(dataSize);
+            memcpy(dictionary.back().data(), data, dictionary.back().size());
+        }
+        return true;
+    } else if (dictionaryTag == ChunkType::DictionaryText) {
+        uint32_t stringCount = 0;
+        if (!unflattener.read(&stringCount)) {
+            return false;
+        }
+        // Reject unreasonably large string counts to prevent OOM from
+        // attacker-controlled material data.
+        static constexpr uint32_t MAX_DICTIONARY_STRING_COUNT = 65536;
+        if (stringCount > MAX_DICTIONARY_STRING_COUNT) {
+            return false;
+        }
+
+        dictionary.reserve(stringCount);
+        for (uint32_t i = 0; i < stringCount; i++) {
+            const char* str;
+            if (!unflattener.read(&str)) {
+                return false;
+            }
+            // BlobDictionary hold binary chunks and does not care if the data holds text, it is
+            // therefore crucial to include the trailing null.
+            dictionary.emplace_back(strlen(str) + 1);
+            memcpy(dictionary.back().data(), str, dictionary.back().size());
+        }
+        return true;
+    }
+
+    return false;
+}
+
+} // namespace danteflat

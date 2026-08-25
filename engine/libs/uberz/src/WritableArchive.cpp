@@ -231,7 +231,7 @@ FixedCapacityVector<uint8_t> WritableArchive::serialize() const {
             byteCount += pair.first.size() + 1;
         }
     }
-    size_t filamatOffset = byteCount;
+    size_t dantematOffset = byteCount;
     for (const auto& mat : mMaterials) {
         byteCount += mat.package.size();
     }
@@ -251,9 +251,9 @@ FixedCapacityVector<uint8_t> WritableArchive::serialize() const {
         spec.flagsCount = mat.flags.size();
         spec.flagsOffset = flaglistOffset + flagCount * sizeof(ArchiveFlag);
         spec.packageByteCount = mat.package.size();
-        spec.packageOffset = filamatOffset;
+        spec.packageOffset = dantematOffset;
         specs.push_back(spec);
-        filamatOffset += mat.package.size();
+        dantematOffset += mat.package.size();
         flagCount += mat.flags.size();
     }
 

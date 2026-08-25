@@ -2,7 +2,7 @@
 #ifndef TNT_CONFIG_H
 #define TNT_CONFIG_H
 
-#include <filamat/MaterialBuilder.h>
+#include <dantemat/MaterialBuilder.h>
 
 #include <dante/MaterialEnums.h>
 
@@ -27,10 +27,10 @@ public:
         MAT,
     };
 
-    using Platform = filamat::MaterialBuilder::Platform;
-    using TargetApi = filamat::MaterialBuilder::TargetApi;
-    using Optimization = filamat::MaterialBuilder::Optimization;
-    using Workarounds = filamat::MaterialBuilder::Workarounds;
+    using Platform = dantemat::MaterialBuilder::Platform;
+    using TargetApi = dantemat::MaterialBuilder::TargetApi;
+    using Optimization = dantemat::MaterialBuilder::Optimization;
+    using Workarounds = dantemat::MaterialBuilder::Workarounds;
 
     // For defines, template, and material parameters, we use an ordered map with a transparent comparator.
     // Even though the key is stored using std::string, this allows you to make lookups using

@@ -7,7 +7,7 @@
 #include "MaterialLexer.h"
 #include "MockIncluder.h"
 
-#include <filamat/MaterialBuilder.h>
+#include <dantemat/MaterialBuilder.h>
 #include <dante-matp/MaterialParser.h>
 
 class MaterialLexer: public ::testing::Test {
@@ -77,7 +77,7 @@ TEST_F(MaterialLexer, NormalMaterialLexing) {
 TEST_F(MaterialLexer, MaterialParser) {
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result =
             testParser.parseMaterial(materialSource.c_str(), materialSource.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::OK);
@@ -96,7 +96,7 @@ TEST_F(MaterialLexer, NoSpaceBetweenBlockAndIdentifier) {
 TEST_F(MaterialLexer, MaterialParserWithToolSection) {
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result = testParser.parseMaterial(
             materialSourceWithTool.c_str(), materialSourceWithTool.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::OK);
@@ -105,7 +105,7 @@ TEST_F(MaterialLexer, MaterialParserWithToolSection) {
 TEST_F(MaterialLexer, MaterialParserWithCommentedBraces) {
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result = testParser.parseMaterial(
             materialSourceWithCommentedBraces.c_str(), materialSourceWithCommentedBraces.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::OK);
@@ -117,7 +117,7 @@ TEST_F(MaterialLexer, MaterialParserErrorOnlyIdentifier) {
     )");
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result = testParser.parseMaterial(
             sourceMissingIdentifier.c_str(), sourceMissingIdentifier.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::INVALID_ARGUMENT);
@@ -130,7 +130,7 @@ TEST_F(MaterialLexer, MaterialParserErrorMissingBlock) {
     )");
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result = testParser.parseMaterial(
             sourceMissingBlock.c_str(), sourceMissingBlock.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::INVALID_ARGUMENT);
@@ -142,7 +142,7 @@ TEST_F(MaterialLexer, MaterialParserErrorTwoBlock) {
     )");
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result =
             testParser.parseMaterial(sourceTwoBlock.c_str(), sourceTwoBlock.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::INVALID_ARGUMENT);
@@ -154,7 +154,7 @@ TEST_F(MaterialLexer, MaterialParserSyntaxError) {
     )");
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result = testParser.parseMaterial(sourceSyntaxError.c_str(), sourceSyntaxError.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::INVALID_ARGUMENT);
 }
@@ -167,7 +167,7 @@ TEST_F(MaterialLexer, MaterialParserCanParseApiLevel) {
     )");
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result =
             testParser.parseMaterial(sourceWithApiLevel.c_str(), sourceWithApiLevel.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::OK);
@@ -307,7 +307,7 @@ TEST_F(MaterialLexer, JsonMaterialLexingAndParsingNoQuotes) {
 TEST_F(MaterialLexer, JsonMaterialParser) {
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result = testParser.parseMaterialAsJSON(
             jsonMaterialSource.c_str(), jsonMaterialSource.size(), unused);
     EXPECT_EQ(result.getCode(), utils::StatusCode::OK);
@@ -339,7 +339,7 @@ TEST_F(MaterialLexer, JsonMaterialParserSingleDoubleQuoteDoesntCrash) {
     )";
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
-    filamat::MaterialBuilder unused;
+    dantemat::MaterialBuilder unused;
     utils::Status result = testParser.parseMaterialAsJSON(
             singleDoubleQuote.c_str(), singleDoubleQuote.size(), unused);
 

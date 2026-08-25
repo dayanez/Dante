@@ -381,7 +381,7 @@ add_definitions(
 )
 
 # ==================================================================================================
-# Generate all .filamat: default material, skyboxes, and post-process
+# Generate all .dantemat: default material, skyboxes, and post-process
 # ==================================================================================================
 
 if (CMAKE_CROSSCOMPILING OR DANTE_IMPORT_PREBUILT_EXECUTABLES)
@@ -419,8 +419,8 @@ macro(compile_material output_path fullname flags_var comment_str)
             DEPENDS matc
             COMMENT "${comment_str}"
     )
-    list(APPEND FILAMAT_FILES_FOR_GROUP ${output_path})
-    list(APPEND FILAMAT_TARGETS_FOR_GROUP ${output_path})
+    list(APPEND DANTEMAT_FILES_FOR_GROUP ${output_path})
+    list(APPEND DANTEMAT_TARGETS_FOR_GROUP ${output_path})
 endmacro()
 
 # For each directory, generate a single resource package
@@ -435,8 +435,8 @@ foreach(mat_dir ${MATERIAL_DIRS})
         endif()
     endforeach()
 
-    set(FILAMAT_FILES_FOR_GROUP)
-    set(FILAMAT_TARGETS_FOR_GROUP)
+    set(DANTEMAT_FILES_FOR_GROUP)
+    set(DANTEMAT_TARGETS_FOR_GROUP)
 
     # Compile each material in the group
     foreach(mat_src ${MATERIALS_IN_DIR})
@@ -444,7 +444,7 @@ foreach(mat_dir ${MATERIAL_DIRS})
         get_filename_component(fullname "${mat_src}" ABSOLUTE)
 
         # --- Base material ---
-        set(output_path "${MATERIAL_DIR}/${localname}.filamat")
+        set(output_path "${MATERIAL_DIR}/${localname}.dantemat")
         set(MATC_CUSTOM_FLAGS "${MATC_BASE_FLAGS}")
         set(COMMENT_STR "Compiling material ${fullname}")
 
@@ -468,7 +468,7 @@ foreach(mat_dir ${MATERIAL_DIRS})
         # --- Multiview variant ---
         check_in_list(MATERIAL_MULTIVIEW_SRCS ${mat_src} is_multiview)
         if (is_multiview AND DANTE_ENABLE_MULTIVIEW)
-            string(REGEX REPLACE "[.]filamat$" "_multiview.filamat" output_path_multiview ${output_path})
+            string(REGEX REPLACE "[.]dantemat$" "_multiview.dantemat" output_path_multiview ${output_path})
             set(MATC_MULTIVIEW_FLAGS "${MATC_BASE_FLAGS}" "-PstereoscopicType=multiview")
             set(COMMENT_STR "Compiling material ${fullname} (Multiview)")
             compile_material(${output_path_multiview} ${fullname} MATC_MULTIVIEW_FLAGS "${COMMENT_STR}")
@@ -479,8 +479,8 @@ foreach(mat_dir ${MATERIAL_DIRS})
     get_resgen_vars(${RESOURCE_DIR} ${package_name})
     add_custom_command(
             OUTPUT ${RESGEN_OUTPUTS}
-            COMMAND resgen ${RESGEN_FLAGS} ${FILAMAT_FILES_FOR_GROUP}
-            DEPENDS resgen ${FILAMAT_TARGETS_FOR_GROUP}
+            COMMAND resgen ${RESGEN_FLAGS} ${DANTEMAT_FILES_FOR_GROUP}
+            DEPENDS resgen ${DANTEMAT_TARGETS_FOR_GROUP}
             COMMENT "Generating resource package for ${package_name}"
     )
     list(APPEND GENERATED_RESOURCE_HDRS ${RESGEN_HEADER})
@@ -490,7 +490,7 @@ endforeach()
 # Additional dependencies on included files for materials
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/colorGrading.filamat"
+        OUTPUT "${MATERIAL_DIR}/colorGrading.dantemat"
         DEPENDS ../shaders/src/inline_dithering.fs
         DEPENDS ../shaders/src/inline_vignette.fs
         DEPENDS src/materials/colorGrading/colorGrading.fs
@@ -498,7 +498,7 @@ add_custom_command(
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/colorGradingAsSubpass.filamat"
+        OUTPUT "${MATERIAL_DIR}/colorGradingAsSubpass.dantemat"
         DEPENDS ../shaders/src/inline_dithering.fs
         DEPENDS ../shaders/src/inline_vignette.fs
         DEPENDS src/materials/colorGrading/colorGrading.fs
@@ -506,49 +506,49 @@ add_custom_command(
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/fxaa.filamat"
+        OUTPUT "${MATERIAL_DIR}/fxaa.dantemat"
         DEPENDS src/materials/antiAliasing/fxaa/fxaa.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/dofDownsample.filamat"
+        OUTPUT "${MATERIAL_DIR}/dofDownsample.dantemat"
         DEPENDS src/materials/dof/dofUtils.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/dofMipmap.filamat"
+        OUTPUT "${MATERIAL_DIR}/dofMipmap.dantemat"
         DEPENDS src/materials/dof/dofUtils.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/dofDilate.filamat"
+        OUTPUT "${MATERIAL_DIR}/dofDilate.dantemat"
         DEPENDS src/materials/dof/dofUtils.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/dof.filamat"
+        OUTPUT "${MATERIAL_DIR}/dof.dantemat"
         DEPENDS src/materials/dof/dofUtils.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/dofMedian.filamat"
+        OUTPUT "${MATERIAL_DIR}/dofMedian.dantemat"
         DEPENDS src/materials/dof/dofUtils.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/dofCombine.filamat"
+        OUTPUT "${MATERIAL_DIR}/dofCombine.dantemat"
         DEPENDS src/materials/dof/dofUtils.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/fog.filamat"
+        OUTPUT "${MATERIAL_DIR}/fog.dantemat"
         DEPENDS ../shaders/src/surface_fog.fs
         DEPENDS src/materials/utils/depthUtils.fs
         DEPENDS src/materials/utils/geometry.fs
@@ -556,7 +556,7 @@ add_custom_command(
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/sao.filamat"
+        OUTPUT "${MATERIAL_DIR}/sao.dantemat"
         DEPENDS src/materials/ssao/ssaoUtils.fs
         DEPENDS src/materials/ssao/ssct.fs
         DEPENDS src/materials/utils/depthUtils.fs
@@ -567,7 +567,7 @@ add_custom_command(
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/saoBentNormals.filamat"
+        OUTPUT "${MATERIAL_DIR}/saoBentNormals.dantemat"
         DEPENDS src/materials/ssao/ssaoUtils.fs
         DEPENDS src/materials/ssao/ssct.fs
         DEPENDS src/materials/utils/depthUtils.fs
@@ -579,7 +579,7 @@ add_custom_command(
 
 if (NOT DANTE_DISABLE_GTAO)
     add_custom_command(
-            OUTPUT "${MATERIAL_DIR}/gtao.filamat"
+            OUTPUT "${MATERIAL_DIR}/gtao.dantemat"
             DEPENDS src/materials/ssao/ssaoUtils.fs
             DEPENDS src/materials/ssao/ssct.fs
             DEPENDS src/materials/utils/depthUtils.fs
@@ -590,7 +590,7 @@ if (NOT DANTE_DISABLE_GTAO)
     )
 
     add_custom_command(
-            OUTPUT "${MATERIAL_DIR}/gtaoBentNormals.filamat"
+            OUTPUT "${MATERIAL_DIR}/gtaoBentNormals.dantemat"
             DEPENDS src/materials/ssao/ssaoUtils.fs
             DEPENDS src/materials/ssao/ssct.fs
             DEPENDS src/materials/utils/depthUtils.fs
@@ -602,26 +602,26 @@ if (NOT DANTE_DISABLE_GTAO)
 endif()
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/bilateralBlur.filamat"
+        OUTPUT "${MATERIAL_DIR}/bilateralBlur.dantemat"
         DEPENDS src/materials/ssao/ssaoUtils.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/bilateralBlurBentNormals.filamat"
+        OUTPUT "${MATERIAL_DIR}/bilateralBlurBentNormals.dantemat"
         DEPENDS src/materials/ssao/ssaoUtils.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/fsr_easu.filamat"
+        OUTPUT "${MATERIAL_DIR}/fsr_easu.dantemat"
         DEPENDS src/materials/fsr/ffx_a.h
         DEPENDS src/materials/fsr/ffx_fsr1.h
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/fsr_easu_mobile.filamat"
+        OUTPUT "${MATERIAL_DIR}/fsr_easu_mobile.dantemat"
         DEPENDS src/materials/fsr/ffx_a.h
         DEPENDS src/materials/fsr/ffx_fsr1.h
         DEPENDS src/materials/fsr/ffx_fsr1_mobile.fs
@@ -629,7 +629,7 @@ add_custom_command(
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/fsr_easu_mobileF.filamat"
+        OUTPUT "${MATERIAL_DIR}/fsr_easu_mobileF.dantemat"
         DEPENDS src/materials/fsr/ffx_a.h
         DEPENDS src/materials/fsr/ffx_fsr1.h
         DEPENDS src/materials/fsr/ffx_fsr1_mobile.fs
@@ -637,27 +637,27 @@ add_custom_command(
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/fsr_rcas.filamat"
+        OUTPUT "${MATERIAL_DIR}/fsr_rcas.dantemat"
         DEPENDS src/materials/fsr/ffx_a.h
         DEPENDS src/materials/fsr/ffx_fsr1.h
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/sgsr1.filamat"
+        OUTPUT "${MATERIAL_DIR}/sgsr1.dantemat"
         DEPENDS src/materials/sgsr/sgsr1_shader_mobile.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/separableGaussianBlur.filamat"
+        OUTPUT "${MATERIAL_DIR}/separableGaussianBlur.dantemat"
         DEPENDS src/materials/separableGaussianBlur.vs
         DEPENDS src/materials/separableGaussianBlur.fs
         APPEND
 )
 
 add_custom_command(
-        OUTPUT "${MATERIAL_DIR}/gaussian.filamat"
+        OUTPUT "${MATERIAL_DIR}/gaussian.dantemat"
         DEPENDS src/materials/evsm/gaussian.fs
         APPEND
 )
@@ -717,8 +717,8 @@ set_target_properties(${TARGET} PROPERTIES FOLDER Dante)
 target_link_libraries(${TARGET} PUBLIC backend)
 target_link_libraries(${TARGET} PUBLIC math)
 target_link_libraries(${TARGET} PUBLIC utils)
-target_link_libraries(${TARGET} PUBLIC filaflat)
-target_link_libraries(${TARGET} PUBLIC filabridge)
+target_link_libraries(${TARGET} PUBLIC danteflat)
+target_link_libraries(${TARGET} PUBLIC dantebridge)
 target_link_libraries(${TARGET} PRIVATE zstd)
 
 if (DANTE_USE_ABSEIL_LOGGING)

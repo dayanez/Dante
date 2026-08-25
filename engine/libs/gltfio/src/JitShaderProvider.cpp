@@ -3,7 +3,7 @@
 
 #include <dante/MaterialEnums.h>
 
-#include <filamat/MaterialBuilder.h>
+#include <dantemat/MaterialBuilder.h>
 
 #include <utils/Hash.h>
 
@@ -12,7 +12,7 @@
 #include <string>
 #include <unordered_map>
 
-using namespace filamat;
+using namespace dantemat;
 using namespace dante;
 using namespace dante::gltfio;
 using namespace utils;
@@ -376,7 +376,7 @@ Material* createMaterial(Engine* engine, const MaterialKey& config, const UvMap&
                                       ? MaterialBuilder::TransparencyMode::TWO_PASSES_TWO_SIDES
                                       : MaterialBuilder::TransparencyMode::DEFAULT)
             .reflectionMode(MaterialBuilder::ReflectionMode::SCREEN_SPACE)
-            .targetApi(filamat::targetApiFromBackend(engine->getBackend()))
+            .targetApi(dantemat::targetApiFromBackend(engine->getBackend()))
             .stereoscopicType(engine->getConfig().stereoscopicType)
             .stereoscopicEyeCount(engine->getConfig().stereoscopicEyeCount)
             .variantFilter(variantFilter);

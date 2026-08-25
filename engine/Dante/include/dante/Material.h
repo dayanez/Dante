@@ -117,7 +117,7 @@ public:
 
         /**
          * Specifies the material data. The material data is a binary blob produced by
-         * libfilamat or by matc.
+         * libdantemat or by matc.
          *
          * @param payload Pointer to the material data, must stay valid until build() is called.
          * @param size Size of the material data pointed to by "payload" in bytes.

@@ -9,8 +9,8 @@
 #include "MaterialLexer.h"
 #include "ParametersProcessor.h"
 
-#include <filamat/Enums.h>
-#include <filamat/MaterialBuilder.h>
+#include <dantemat/Enums.h>
+#include <dantemat/MaterialBuilder.h>
 #include <dante-matp/Config.h>
 
 #include <utils/sstream.h>
@@ -21,7 +21,7 @@
 #include <utility>
 
 using namespace utils;
-using namespace filamat;
+using namespace dantemat;
 using namespace std::placeholders;
 
 namespace matp {
@@ -141,7 +141,7 @@ static utils::Status reflectParameters(const MaterialBuilder& builder) {
 }
 
 utils::Status MaterialParser::processMaterialJSON(const JsonishValue* value,
-        filamat::MaterialBuilder& builder) const noexcept {
+        dantemat::MaterialBuilder& builder) const noexcept {
 
     if (!value) {
         return utils::Status::invalidArgument(
@@ -162,7 +162,7 @@ utils::Status MaterialParser::processMaterialJSON(const JsonishValue* value,
 }
 
 utils::Status MaterialParser::processVertexShaderJSON(const JsonishValue* value,
-        filamat::MaterialBuilder& builder) const noexcept {
+        dantemat::MaterialBuilder& builder) const noexcept {
 
     if (!value) {
         return utils::Status::invalidArgument(
@@ -182,7 +182,7 @@ utils::Status MaterialParser::processVertexShaderJSON(const JsonishValue* value,
 }
 
 utils::Status MaterialParser::processFragmentShaderJSON(const JsonishValue* value,
-        filamat::MaterialBuilder& builder) const noexcept {
+        dantemat::MaterialBuilder& builder) const noexcept {
 
     if (!value) {
         return utils::Status::invalidArgument(
@@ -202,7 +202,7 @@ utils::Status MaterialParser::processFragmentShaderJSON(const JsonishValue* valu
 }
 
 utils::Status MaterialParser::processComputeShaderJSON(const JsonishValue* value,
-        filamat::MaterialBuilder& builder) const noexcept {
+        dantemat::MaterialBuilder& builder) const noexcept {
 
     if (!value) {
         return utils::Status::invalidArgument(
@@ -222,7 +222,7 @@ utils::Status MaterialParser::processComputeShaderJSON(const JsonishValue* value
 }
 
 utils::Status MaterialParser::ignoreLexemeJSON(const JsonishValue*,
-        filamat::MaterialBuilder&) const noexcept {
+        dantemat::MaterialBuilder&) const noexcept {
     return utils::Status::ok();
 }
 
@@ -265,7 +265,7 @@ utils::Status MaterialParser::isValidJsonStart(const char* buffer, size_t size) 
 }
 
 utils::Status MaterialParser::parseMaterialAsJSON(const char* buffer, size_t size,
-        filamat::MaterialBuilder& builder) const noexcept {
+        dantemat::MaterialBuilder& builder) const noexcept {
 
     JsonishLexer jlexer;
     jlexer.lex(buffer, size, 1);
@@ -296,7 +296,7 @@ utils::Status MaterialParser::parseMaterialAsJSON(const char* buffer, size_t siz
 }
 
 utils::Status MaterialParser::parseMaterial(const char* buffer, size_t size,
-        filamat::MaterialBuilder& builder) const noexcept {
+        dantemat::MaterialBuilder& builder) const noexcept {
 
     MaterialLexer materialLexer;
     materialLexer.lex(buffer, size);
@@ -367,7 +367,7 @@ utils::Status MaterialParser::parseMaterial(const char* buffer, size_t size,
     return utils::Status::ok();
 }
 
-utils::Status MaterialParser::processMaterialParameters(filamat::MaterialBuilder& builder,
+utils::Status MaterialParser::processMaterialParameters(dantemat::MaterialBuilder& builder,
         const Config& config) const {
     ParametersProcessor parametersProcessor;
     utils::Status status;
@@ -471,7 +471,7 @@ utils::Status MaterialParser::processTemplateSubstitutions(
     return utils::Status::ok();
 }
 
-utils::Status MaterialParser::parse(filamat::MaterialBuilder& builder,
+utils::Status MaterialParser::parse(dantemat::MaterialBuilder& builder,
         const Config& config, ssize_t& size, std::unique_ptr<const char[]>& buffer) {
 
     // Before attempting an expensive lex, let's find out if we were sent pure JSON.

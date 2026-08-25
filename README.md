@@ -11,17 +11,56 @@ https://drive.google.com/drive/folders/1xEvbrjaccKw1PnfxGb-r7AvfkoVATH2x?usp=sha
 
 ## First-time install & build
 
-Windows: Ideally have Microsoft Visual Studio. I recommend downloading the full integrated development enviroment, but if you are inclinded not to just simply download the Visual Studio dev build tools. It can be found here https://visualstudio.microsoft.com/. 
+Windows: two ways to build now, pick one.
+
+**Option A - Zig (recommended, lightweight, no Visual Studio needed):**
+
+Install these (all small, no installer/IDE needed):
+- Zig: https://ziglang.org/download/ (put it on PATH)
+- CMake 3.22+: https://cmake.org/download/
+- Ninja: https://github.com/ninja-build/ninja/releases (or `winget install Kitware.CMake Ninja-build.Ninja`)
+- Python 3: https://www.python.org/downloads/ (needed at configure time by spirv-tools' codegen)
+- Git for Windows (for the `bash` shell used below): https://git-scm.com/download/win
+
+CMake can't call `zig cc`/`zig c++`/`zig ar` directly (they're subcommands, not standalone
+exes), so build the small wrapper stubs once first:
+
+```
+bash engine/build/windows-gnu/build-wrappers.sh
+```
+
+Then configure and build (Release is required - see the note the script prints):
+
+```
+cmake -S . -B build -G Ninja ^
+    -DCMAKE_C_COMPILER="engine/build/windows-gnu/bin/zigcc.exe" ^
+    -DCMAKE_CXX_COMPILER="engine/build/windows-gnu/bin/zigcxx.exe" ^
+    -DCMAKE_AR="engine/build/windows-gnu/bin/zigar.exe" ^
+    -DCMAKE_RANLIB="engine/build/windows-gnu/bin/zigranlib.exe" ^
+    -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+```
+
+**Option B - MSVC (the original way):** Ideally have Microsoft Visual Studio. I recommend
+downloading the full integrated development enviroment, but if you are inclinded not to just
+simply download the Visual Studio dev build tools. It can be found here
+https://visualstudio.microsoft.com/.
+
+```
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+```
 
 Linux: Now on linux it requires Clang 17+, CMake 3.22+, Ninja, and X11 dev headers
 (`libglu1-mesa-dev libxi-dev libxcomposite-dev libxxf86vm-dev`).
 
 ```
-I recommend using this to build and run I would also run the --build flag on --parallel 4 that way it doesn't kill your cpu, thats optional though
- 
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel
 ```
+
+I would also run the `--build` flag with `--parallel 4` (or whatever number) instead of bare
+`--parallel` so it doesn't max out every core on your machine, that's optional though.
 
 ## Every time after (rebuild & run)
 

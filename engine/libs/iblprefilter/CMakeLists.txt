@@ -33,7 +33,7 @@ list(APPEND PRIVATE_HDRS ${RESGEN_HEADER})
 list(APPEND SRCS ${RESGEN_SOURCE})
 
 # ==================================================================================================
-# Generate all .filamat: default material, skyboxes, and post-process
+# Generate all .dantemat: default material, skyboxes, and post-process
 # ==================================================================================================
 
 if (CMAKE_CROSSCOMPILING OR DANTE_IMPORT_PREBUILT_EXECUTABLES)
@@ -46,7 +46,7 @@ file(MAKE_DIRECTORY ${MATERIAL_DIR})
 foreach (mat_src ${MATERIAL_SRCS})
     get_filename_component(localname "${mat_src}" NAME_WE)
     get_filename_component(fullname "${mat_src}" ABSOLUTE)
-    set(output_path "${MATERIAL_DIR}/${localname}.filamat")
+    set(output_path "${MATERIAL_DIR}/${localname}.dantemat")
 
     add_custom_command(
             OUTPUT ${output_path}

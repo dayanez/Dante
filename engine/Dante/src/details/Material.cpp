@@ -23,7 +23,7 @@
 #include <matdbg/DebugServer.h>
 #endif
 
-#include <filaflat/ChunkContainer.h>
+#include <danteflat/ChunkContainer.h>
 
 #include <backend/CallbackHandler.h>
 #include <backend/DriverApiForward.h>
@@ -59,7 +59,7 @@ namespace dante {
 namespace {
 
 using namespace backend;
-using namespace filaflat;
+using namespace danteflat;
 using namespace utils;
 using UboBatchingMode = Material::UboBatchingMode;
 

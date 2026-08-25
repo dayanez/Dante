@@ -98,7 +98,7 @@ using namespace utils;
 namespace dante {
 
 using namespace backend;
-using namespace filaflat;
+using namespace danteflat;
 
 namespace {
 

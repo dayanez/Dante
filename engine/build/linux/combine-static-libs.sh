@@ -68,7 +68,7 @@ function combine_static_libs {
 
     # Combine the library files into a single static library archive. Batched (rather than one
     # "ar qc output <every object>" call) because a target that pulls in enough dependencies
-    # (e.g. filamat's glslang+spirv-tools+spirv-cross chain) can produce an object list long
+    # (e.g. dantemat's glslang+spirv-tools+spirv-cross chain) can produce an object list long
     # enough to exceed Windows' ~32K CreateProcess command-line limit in a single invocation.
     rm -f "${output_path}"
     all_objects=()

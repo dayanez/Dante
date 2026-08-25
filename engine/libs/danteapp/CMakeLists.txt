@@ -49,8 +49,8 @@ set(SRCS
 
 set(LIBS
         camutils
-        filagui
-        filamat
+        dantegui
+        dantemat
         dante
         dante-iblprefilter
         geometry
@@ -104,7 +104,7 @@ endif ()
 foreach (mat_src ${MATERIAL_SRCS})
     get_filename_component(localname "${mat_src}" NAME_WE)
     get_filename_component(fullname "${mat_src}" ABSOLUTE)
-    set(output_path "${MATERIAL_DIR}/${localname}.filamat")
+    set(output_path "${MATERIAL_DIR}/${localname}.dantemat")
     add_custom_command(
             OUTPUT ${output_path}
             COMMAND matc ${MATC_FLAGS} -o ${output_path} ${fullname}

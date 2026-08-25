@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.19)
 project(sdl2 C)
 
-if (FILAMENT_SKIP_SDL2)
+if (DANTE_SKIP_SDL2)
     return()
 endif()
 
 # This is necessary on Windows, so the sdl2.dll lives next to the sample apps that use it
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${FILAMENT_SAMPLES_BINARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${DANTE_SAMPLES_BINARY_DIR})
 
 set(OUR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
@@ -106,15 +106,15 @@ if (LINUX)
     )
     set(SRCS ${SRCS} ${SRCS_LINUX})
 
-    if (FILAMENT_SUPPORTS_WAYLAND)
+    if (DANTE_SUPPORTS_WAYLAND)
         file(GLOB SRCS_LINUX_WAYLAND ${SRC_DIR}/video/wayland/*.c)
         list(APPEND SRCS ${SRCS_LINUX_WAYLAND})
-    elseif(FILAMENT_SUPPORTS_X11 OR FILAMENT_SUPPORTS_OSMESA)
+    elseif(DANTE_SUPPORTS_X11 OR DANTE_SUPPORTS_OSMESA)
         file(GLOB SRCS_LINUX_X11 ${SRC_DIR}/video/x11/*.c)
         list(APPEND SRCS ${SRCS_LINUX_X11})
     endif()
 
-    if (FILAMENT_SUPPORTS_WAYLAND)
+    if (DANTE_SUPPORTS_WAYLAND)
         find_program(WAYLAND_SCANNER_EXECUTABLE NAMES wayland-scanner)
 
         find_package(PkgConfig REQUIRED)

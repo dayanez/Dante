@@ -39,7 +39,7 @@
 #include <backend/platforms/VulkanPlatform.h>
 #endif
 
-#include <filagui/ImGuiHelper.h>
+#include <dantegui/ImGuiHelper.h>
 
 #include <stb_image.h>
 
@@ -58,7 +58,7 @@
 #include "generated/resources/danteapp.h"
 
 using namespace dante;
-using namespace filagui;
+using namespace dantegui;
 using namespace dante::math;
 using namespace utils;
 using namespace dante::app;

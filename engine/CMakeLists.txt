@@ -635,11 +635,11 @@ if (DANTE_SUPPORTS_METAL)
     add_definitions(-DDANTE_SUPPORTS_METAL)
 endif()
 
-# Building filamat increases build times and isn't required for web, so turn it off by default.
+# Building dantemat increases build times and isn't required for web, so turn it off by default.
 if (NOT WASM)
-    option(DANTE_BUILD_FILAMAT "Build filamat and JNI buildings" ON)
+    option(DANTE_BUILD_DANTEMAT "Build dantemat and JNI buildings" ON)
 else()
-    option(DANTE_BUILD_FILAMAT "Build filamat and JNI buildings" OFF)
+    option(DANTE_BUILD_DANTEMAT "Build dantemat and JNI buildings" OFF)
 endif()
 
 # Only optimize materials in Release mode (so error message lines match the source code)
@@ -916,9 +916,9 @@ if (DANTE_BUILD_TESTING)
     add_subdirectory(${EXTERNAL}/libgtest/tnt)
 endif()
 add_subdirectory(${LIBRARIES}/camutils)
-add_subdirectory(${LIBRARIES}/filabridge)
-add_subdirectory(${LIBRARIES}/filaflat)
-add_subdirectory(${LIBRARIES}/filagui)
+add_subdirectory(${LIBRARIES}/dantebridge)
+add_subdirectory(${LIBRARIES}/danteflat)
+add_subdirectory(${LIBRARIES}/dantegui)
 # Dante deviation from upstream Dante: generatePrefilterMipmap is an orphan library with zero
 # consumers in this app's link graph (nothing target_link_libraries against it) - dropped.
 add_subdirectory(${LIBRARIES}/gltfio)
@@ -955,14 +955,14 @@ add_subdirectory(${EXTERNAL}/basisu/tnt)
 # Note that this has to be placed after mikktspace in order for combine_static_libs to work.
 add_subdirectory(${LIBRARIES}/geometry)
 
-if (DANTE_BUILD_FILAMAT OR IS_HOST_PLATFORM)
-    # spirv-tools must come before filamat, as filamat relies on the presence of the
+if (DANTE_BUILD_DANTEMAT OR IS_HOST_PLATFORM)
+    # spirv-tools must come before dantemat, as dantemat relies on the presence of the
     # spirv-tools_SOURCE_DIR variable.
     set(SPIRV-Headers_SOURCE_DIR ${EXTERNAL}/spirv-headers)
     add_subdirectory(${EXTERNAL}/spirv-tools)
     add_subdirectory(${EXTERNAL}/glslang/tnt)
     add_subdirectory(${EXTERNAL}/spirv-cross/tnt)
-    add_subdirectory(${LIBRARIES}/filamat)
+    add_subdirectory(${LIBRARIES}/dantemat)
 endif()
 
 if (DANTE_SUPPORTS_WEBP_TEXTURES)

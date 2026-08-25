@@ -9,7 +9,7 @@
 #include "JsonishLexeme.h"
 #include "JsonishParser.h"
 
-#include <filamat/MaterialBuilder.h>
+#include <dantemat/MaterialBuilder.h>
 #include <utils/Status.h>
 
 namespace matp {
@@ -19,12 +19,12 @@ class ParametersProcessor {
 public:
     ParametersProcessor();
     ~ParametersProcessor() = default;
-    utils::Status process(filamat::MaterialBuilder& builder, const JsonishObject& jsonObject);
-    utils::Status process(filamat::MaterialBuilder& builder, const std::string& key, const std::string& value);
+    utils::Status process(dantemat::MaterialBuilder& builder, const JsonishObject& jsonObject);
+    utils::Status process(dantemat::MaterialBuilder& builder, const std::string& key, const std::string& value);
 
 private:
 
-    using Callback = utils::Status (*)(filamat::MaterialBuilder& builder, const JsonishValue& value);
+    using Callback = utils::Status (*)(dantemat::MaterialBuilder& builder, const JsonishValue& value);
 
     struct ParameterInfo {
         Callback callback;

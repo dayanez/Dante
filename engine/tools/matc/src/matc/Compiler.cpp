@@ -20,7 +20,7 @@
 #include <fstream>
 #include <iomanip>
 
-using namespace filamat;
+using namespace dantemat;
 
 namespace matc {
 

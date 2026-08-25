@@ -8,7 +8,7 @@ several ready-to-go implementations described below.
 
 - `MaterialProvider` creates Filament materials in response to certain glTF requirements.
     - [UbershaderProvider](#ubershaderloader) loads pre-built materials.
-    - `JitShaderProvider` builds materials at run time using the `filamat` library.
+    - `JitShaderProvider` builds materials at run time using the `dantemat` library.
 - `TextureProvider` creates and populates Filament `Texture` objects.
     - `StbProvider` uses the STB library to read PNG and JPEG files.
     - `Ktx2Provider` uses the BasisU library to read KTX2 files.
@@ -22,5 +22,5 @@ occurs at run time, but the shaders might be relatively large and complex.
 At load time, the ubershader loader consumes an *ubershader archive* which is a precompiled set of
 materials bundled with formal descriptions of the glTF features that they support.
 
-The `uberz` command line tool consumes a list of `.spec` and `.filamat` files and produces a single
+The `uberz` command line tool consumes a list of `.spec` and `.dantemat` files and produces a single
 `.uberz` file. For details on these two file formats, see the README in `libs/uberz`.

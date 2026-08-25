@@ -113,10 +113,10 @@ inline uint8_t getNumUvSets(const UvMap& uvmap) {
  * \brief Interface to a provider of glTF materials (has two implementations).
  *
  * - The \c JitShaderProvider implementation generates materials at run time (which can be slow) and
- *   requires the filamat library, but produces streamlined shaders. See createJitShaderProvider().
+ *   requires the dantemat library, but produces streamlined shaders. See createJitShaderProvider().
  *
  * - The \c UbershaderProvider implementation uses a small number of pre-built materials with complex
- *   fragment shaders, but does not require any run time work or usage of filamat. See
+ *   fragment shaders, but does not require any run time work or usage of dantemat. See
  *   createUbershaderProvider().
  *
  * Both implementations of MaterialProvider maintain a small cache of materials which must be
@@ -186,7 +186,7 @@ void processShaderString(std::string* shader, const UvMap& uvmap,
  * @param variantFilters  Filter out variants that are not required.
  * @return New material provider that can build materials at run time.
  *
- * Requires \c libfilamat to be linked in. Not available in \c libgltfio_core.
+ * Requires \c libdantemat to be linked in. Not available in \c libgltfio_core.
  *
  * @see createUbershaderProvider
  */

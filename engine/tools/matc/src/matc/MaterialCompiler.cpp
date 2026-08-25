@@ -20,7 +20,7 @@
 #include <iostream>
 #include <utility>
 
-#include <filamat/MaterialBuilder.h>
+#include <dantemat/MaterialBuilder.h>
 
 #include <dante-matp/Config.h>
 
@@ -36,7 +36,7 @@
 #include <smolv.h>
 
 using namespace utils;
-using namespace filamat;
+using namespace dantemat;
 using namespace std::placeholders;
 
 namespace matc {

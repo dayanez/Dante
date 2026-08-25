@@ -41,10 +41,10 @@ include_directories(${PUBLIC_HDR_DIR})
 add_library(${TARGET} STATIC ${PUBLIC_HDRS} ${SRCS})
 
 target_include_directories(${TARGET} PUBLIC ${PUBLIC_HDR_DIR})
-target_include_directories(${TARGET} PRIVATE ${filamat_SOURCE_DIR}/src)
+target_include_directories(${TARGET} PRIVATE ${dantemat_SOURCE_DIR}/src)
 
 set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
-target_link_libraries(${TARGET}  filamat filabridge utils)
+target_link_libraries(${TARGET}  dantemat dantebridge utils)
 
 # ==================================================================================================
 # Installation

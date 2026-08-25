@@ -20,7 +20,7 @@
 #include "CommandlineConfig.h"
 #include <dante-matp/Config.h>
 
-#include <filamat/Package.h>
+#include <dantemat/Package.h>
 
 namespace matc {
 
@@ -36,7 +36,7 @@ public:
     }
 
 protected:
-    bool writePackage(const filamat::Package& package, const matp::Config& config) {
+    bool writePackage(const dantemat::Package& package, const matp::Config& config) {
         if (config.getOutputFormat() == CommandlineConfig::OutputFormat::BLOB) {
             return writeBlob(package, config);
         } else {
@@ -47,11 +47,11 @@ protected:
     virtual bool checkParameters(const matp::Config& config) = 0;
 
     // Write Package as binary to target filename
-    bool writeBlob(const filamat::Package& pkg, const matp::Config& config) const noexcept;
+    bool writeBlob(const dantemat::Package& pkg, const matp::Config& config) const noexcept;
 
     // Write package as a C++ array content. Use this to include material
     // in your executable/library.
-    bool writeBlobAsHeader(const filamat::Package& pkg, const matp::Config& config) const noexcept;
+    bool writeBlobAsHeader(const dantemat::Package& pkg, const matp::Config& config) const noexcept;
 
     // Write a .mat file.
     bool writeMat(

@@ -4,7 +4,7 @@
 #include "Includes.h"
 #include "MockIncluder.h"
 
-#include <filamat/MaterialBuilder.h>
+#include <dantemat/MaterialBuilder.h>
 
 #include <utils/CString.h>
 #include <utils/JobSystem.h>
@@ -459,18 +459,18 @@ TEST(IncludeResolver, MultipleIncludesSameLineLineDirective) {
 class MaterialBuilder : public ::testing::Test {
 protected:
     std::unique_ptr<JobSystem> jobSystem;
-    filamat::MaterialBuilder mBuilder;
+    dantemat::MaterialBuilder mBuilder;
 
     MaterialBuilder() {
         jobSystem = std::make_unique<JobSystem>();
         jobSystem->adopt();
-        filamat::MaterialBuilder::init();
-        mBuilder.optimization(filamat::MaterialBuilder::Optimization::NONE);
+        dantemat::MaterialBuilder::init();
+        mBuilder.optimization(dantemat::MaterialBuilder::Optimization::NONE);
     }
 
     virtual ~MaterialBuilder() {
         jobSystem->emancipate();
-        filamat::MaterialBuilder::shutdown();
+        dantemat::MaterialBuilder::shutdown();
     }
 };
 
@@ -480,7 +480,7 @@ TEST_F(MaterialBuilder, NoIncluder) {
     )");
     mBuilder.material(shaderCode.c_str());
 
-    filamat::Package result = mBuilder.build(*jobSystem);
+    dantemat::Package result = mBuilder.build(*jobSystem);
 
     // Shader code with an include should fail to compile if no includer is specified.
     EXPECT_FALSE(result.isValid());
@@ -509,7 +509,7 @@ TEST_F(MaterialBuilder, Include) {
     // Set the material with the resolved material.
     mBuilder.material(source.text.c_str());
 
-    filamat::Package result = mBuilder.build(*jobSystem);
+    dantemat::Package result = mBuilder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
 }
 
@@ -537,7 +537,7 @@ TEST_F(MaterialBuilder, IncludeVertex) {
     // Set the materialVertex with the resolved material.
     mBuilder.materialVertex(source.text.c_str());
 
-    filamat::Package result = mBuilder.build(*jobSystem);
+    dantemat::Package result = mBuilder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
 }
 
@@ -564,7 +564,7 @@ TEST_F(MaterialBuilder, IncludeWithinFunction) {
     // Set the material with the resolved material.
     mBuilder.material(source.text.c_str());
 
-    filamat::Package result = mBuilder.build(*jobSystem);
+    dantemat::Package result = mBuilder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
 }
 
@@ -584,11 +584,11 @@ TEST_F(MaterialBuilder, IncludeFailure) {
 
     mBuilder.material(source.text.c_str());
 
-    filamat::Package result = mBuilder.build(*jobSystem);
+    dantemat::Package result = mBuilder.build(*jobSystem);
     EXPECT_FALSE(result.isValid());
 }
 
 TEST_F(MaterialBuilder, NoShaderCode) {
-    filamat::Package result = mBuilder.build(*jobSystem);
+    dantemat::Package result = mBuilder.build(*jobSystem);
     EXPECT_TRUE(result.isValid());
 }

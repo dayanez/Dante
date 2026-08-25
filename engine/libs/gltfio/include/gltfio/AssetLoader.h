@@ -49,7 +49,7 @@ struct AssetConfiguration {
     //! dante::VertexBuffer::Builder).
     class dante::Engine* engine;
 
-    //! Controls whether the loader uses filamat to generate materials on the fly, or loads a small
+    //! Controls whether the loader uses dantemat to generate materials on the fly, or loads a small
     //! set of precompiled ubershader materials. Deleting the MaterialProvider is the client's
     //! responsibility. See createJitShaderProvider() and createUbershaderProvider().
     MaterialProvider* materials;
@@ -143,7 +143,7 @@ public:
      *
      * The engine is held weakly, used only for the creation and destruction of Dante objects.
      * The optional name component manager can be used to assign names to renderables.
-     * The material source specifies whether to use filamat to generate materials on the fly, or to
+     * The material source specifies whether to use dantemat to generate materials on the fly, or to
      * load a small set of precompiled ubershader materials.
      */
     static AssetLoader* create(const AssetConfiguration& config);

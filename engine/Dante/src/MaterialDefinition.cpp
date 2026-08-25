@@ -782,7 +782,7 @@ Program MaterialDefinition::getProgramWithVariants(FEngine const& engine,
      * Vertex shader
      */
 
-    filaflat::ShaderContent& vsBuilder = engine.getVertexShaderContent();
+    danteflat::ShaderContent& vsBuilder = engine.getVertexShaderContent();
 
     UTILS_UNUSED_IN_RELEASE bool const vsOK = parser.getShader(vsBuilder, sm,
             vertexVariant, ShaderStage::VERTEX);
@@ -797,7 +797,7 @@ Program MaterialDefinition::getProgramWithVariants(FEngine const& engine,
      * Fragment shader
      */
 
-    filaflat::ShaderContent& fsBuilder = engine.getFragmentShaderContent();
+    danteflat::ShaderContent& fsBuilder = engine.getFragmentShaderContent();
 
     UTILS_UNUSED_IN_RELEASE bool const fsOK = parser.getShader(fsBuilder, sm,
             fragmentVariant, ShaderStage::FRAGMENT);

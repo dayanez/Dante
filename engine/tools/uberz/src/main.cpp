@@ -46,16 +46,16 @@ static bool g_verboseMode = false;
 static StringMap g_templateMap;
 
 static const char* USAGE = R"TXT(
-UBERZ aggregates and compresses a set of filamat files into a single archive file. It includes
+UBERZ aggregates and compresses a set of dantemat files into a single archive file. It includes
 metadata that specifies the feature set that each material supports. By default, it generates
 a file called "materials.uberz" but this can be customized with -o.
 
 Usage:
     UBERZ [options] <src_name_0> <src_name_1> ...
 
-For each src_name, UBERZ looks for "src_name.filamat" and "src_name.spec" in the current
+For each src_name, UBERZ looks for "src_name.dantemat" and "src_name.spec" in the current
 working directory. If either of these files do not exist, an error is reported. Each
-pair of filamat/spec files corresponds to a material in the generated archive.
+pair of dantemat/spec files corresponds to a material in the generated archive.
 
 For more information on the format of the spec file, see the gltfio README.
 
@@ -231,9 +231,9 @@ int main(int argc, char* argv[]) {
 
     for (int argIndex = optionIndex; argIndex < argc; ++argIndex) {
         std::string name(argv[argIndex]);
-        const Path filamatPath(name + ".filamat");
-        if (!filamatPath.exists()) {
-            cerr << "Unable to open " << filamatPath << endl;
+        const Path dantematPath(name + ".dantemat");
+        if (!dantematPath.exists()) {
+            cerr << "Unable to open " << dantematPath << endl;
             exit(1);
         }
         const Path specPath(name + ".spec");
@@ -242,11 +242,11 @@ int main(int argc, char* argv[]) {
             exit(1);
         }
 
-        const size_t filamatSize = getFileSize(filamatPath.c_str());
-        FixedCapacityVector<uint8_t> filamatBuffer(filamatSize);
-        std::ifstream in(filamatPath.c_str(), std::ifstream::in | std::ifstream::binary);
-        if (!in.read((char*) filamatBuffer.data(), filamatSize)) {
-            cerr << "Unable to consume " << filamatPath << endl;
+        const size_t dantematSize = getFileSize(dantematPath.c_str());
+        FixedCapacityVector<uint8_t> dantematBuffer(dantematSize);
+        std::ifstream in(dantematPath.c_str(), std::ifstream::in | std::ifstream::binary);
+        if (!in.read((char*) dantematBuffer.data(), dantematSize)) {
+            cerr << "Unable to consume " << dantematPath << endl;
             exit(1);
         }
 
@@ -254,10 +254,10 @@ int main(int argc, char* argv[]) {
         // This allows us to see the spec index associated with each file for diagnostic purposes.
         if (g_verboseMode) {
             size_t specIndex = existingMaterialsCount + argIndex - optionIndex;
-            fprintf(stderr, "uberz %2zu %s\n", specIndex, filamatPath.getName().c_str());
+            fprintf(stderr, "uberz %2zu %s\n", specIndex, dantematPath.getName().c_str());
         }
 
-        outputArchive.addMaterial(name.c_str(), filamatBuffer.data(), filamatSize);
+        outputArchive.addMaterial(name.c_str(), dantematBuffer.data(), dantematSize);
 
         std::string specLine;
         ifstream specStream(specPath.c_str());

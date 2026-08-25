@@ -28,9 +28,9 @@ class SwapChain;
 class View;
 } // namespace dante
 
-namespace filagui {
+namespace dantegui {
 class ImGuiHelper;
-} // namespace filagui
+} // namespace dantegui
 
 class IBL;
 class MeshAssimp;
@@ -287,7 +287,7 @@ private:
     dante::Material const* mTransparentMaterial = nullptr;
     dante::Material const* mDepthMaterial = nullptr;
     dante::MaterialInstance* mDepthMI = nullptr;
-    std::unique_ptr<filagui::ImGuiHelper> mImGuiHelper;
+    std::unique_ptr<dantegui::ImGuiHelper> mImGuiHelper;
     AnimCallback mAnimation;
     ResizeCallback mResize;
     DropCallback mDropHandler;

@@ -23,8 +23,8 @@ TEST(TestParseAndComputeMaterial, JsonMaterialCompilerSimple) {
     matp::MaterialParser parser;
     TestMaterialParser testParser(parser);
 
-    filamat::MaterialBuilder::init();
-    filamat::MaterialBuilder builder;
+    dantemat::MaterialBuilder::init();
+    dantemat::MaterialBuilder builder;
 
     utils::Status result = testParser.parseMaterial(
             jsonMaterialSourceSimple.data(), jsonMaterialSourceSimple.size(), builder);
@@ -39,6 +39,6 @@ TEST(TestParseAndComputeMaterial, JsonMaterialCompilerSimple) {
     EXPECT_TRUE(package.isValid());
 
     js.emancipate();
-    filamat::MaterialBuilder::shutdown();
+    dantemat::MaterialBuilder::shutdown();
 }
 

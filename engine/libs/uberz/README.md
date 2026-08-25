@@ -1,6 +1,6 @@
 # uberz
 
-An ubershader archive provides a way to bundle up a set of `filamat` files along with some metadata
+An ubershader archive provides a way to bundle up a set of `dantemat` files along with some metadata
 that conveys which glTF features each material can handle. It is a file that has been compressed
 with `zstd` and has an `.uberz` file extension. In uncompressed form, it has the following layout
 (little endian is assumed).
@@ -15,9 +15,9 @@ foreach spec {
     [u8] shading model
     [u8] blending model
     [u16] number of flags
-    [u32] size in bytes of the filamat blob
+    [u32] size in bytes of the dantemat blob
     [u64] byte offset to FLAGLIST for this spec
-    [u64] byte offset to FILAMAT for this spec
+    [u64] byte offset to DANTEMAT for this spec
 }
 foreach spec {
     FLAGLIST:
@@ -33,8 +33,8 @@ foreach spec {
     }
 }
 foreach spec {
-    FILAMAT:
-    [u8...] filamat blob
+    DANTEMAT:
+    [u8...] dantemat blob
 }
 ```
 

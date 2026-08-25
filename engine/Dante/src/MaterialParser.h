@@ -7,8 +7,8 @@
 #include <dante/MaterialChunkType.h>
 #include <dante/MaterialEnums.h>
 
-#include <filaflat/ChunkContainer.h>
-#include <filaflat/MaterialChunk.h>
+#include <danteflat/ChunkContainer.h>
+#include <danteflat/MaterialChunk.h>
 
 #include <backend/DriverEnums.h>
 #include <backend/Program.h>
@@ -24,7 +24,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace filaflat {
+namespace danteflat {
 class ChunkContainer;
 class Unflattener;
 }
@@ -124,7 +124,7 @@ public:
     bool getStereoscopicType(backend::StereoscopicType*) const noexcept;
     bool getMaterialCrc32(uint32_t* value) const noexcept;
 
-    bool getShader(filaflat::ShaderContent& shader, backend::ShaderModel shaderModel,
+    bool getShader(danteflat::ShaderContent& shader, backend::ShaderModel shaderModel,
             Variant variant, backend::ShaderStage stage) const noexcept;
 
     bool hasShader(backend::ShaderModel const model,
@@ -134,7 +134,7 @@ public:
 
     bool getSourceShader(utils::CString* cstring) const noexcept;
 
-    filaflat::MaterialChunk const& getMaterialChunk() const noexcept {
+    danteflat::MaterialChunk const& getMaterialChunk() const noexcept {
         return mImpl.mMaterialChunk;
     }
 
@@ -149,7 +149,7 @@ private:
                 const void* data, size_t size);
 
         template<typename T>
-        bool getFromSimpleChunk(filamat::ChunkType type, T* value) const noexcept;
+        bool getFromSimpleChunk(dantemat::ChunkType type, T* value) const noexcept;
 
     private:
         friend class MaterialParser;
@@ -169,17 +169,17 @@ private:
         };
 
         ManagedBuffer mManagedBuffer;
-        filaflat::ChunkContainer mChunkContainer;
+        danteflat::ChunkContainer mChunkContainer;
         utils::FixedCapacityVector<backend::ShaderLanguage> mPreferredLanguages;
         backend::ShaderLanguage mChosenLanguage;
 
         // Keep MaterialChunk alive between calls to getShader to avoid reload the shader index.
-        filaflat::MaterialChunk mMaterialChunk;
-        filaflat::BlobDictionary mBlobDictionary;
+        danteflat::MaterialChunk mMaterialChunk;
+        danteflat::BlobDictionary mBlobDictionary;
     };
 
-    filaflat::ChunkContainer& getChunkContainer() noexcept;
-    filaflat::ChunkContainer const& getChunkContainer() const noexcept;
+    danteflat::ChunkContainer& getChunkContainer() noexcept;
+    danteflat::ChunkContainer const& getChunkContainer() const noexcept;
     MaterialParserDetails mImpl;
     // 0 == not cached. This technically means that a file with a CRC32 of 0 will never be cached,
     // but this is unlikely, and keeping it a 32-bit value guarantees that it will be lockless.
@@ -187,60 +187,60 @@ private:
 };
 
 struct ChunkUniformInterfaceBlock {
-    static bool unflatten(filaflat::Unflattener& unflattener, BufferInterfaceBlock* uib);
+    static bool unflatten(danteflat::Unflattener& unflattener, BufferInterfaceBlock* uib);
     using Container = BufferInterfaceBlock;
-    static filamat::ChunkType const tag = filamat::MaterialUib;
+    static dantemat::ChunkType const tag = dantemat::MaterialUib;
 };
 
 struct ChunkSamplerInterfaceBlock {
-    static bool unflatten(filaflat::Unflattener& unflattener, SamplerInterfaceBlock* sib);
+    static bool unflatten(danteflat::Unflattener& unflattener, SamplerInterfaceBlock* sib);
     using Container = SamplerInterfaceBlock;
-    static filamat::ChunkType const tag = filamat::MaterialSib;
+    static dantemat::ChunkType const tag = dantemat::MaterialSib;
 };
 
 struct ChunkSubpassInterfaceBlock {
-    static bool unflatten(filaflat::Unflattener& unflattener, SubpassInfo* sib);
+    static bool unflatten(danteflat::Unflattener& unflattener, SubpassInfo* sib);
     using Container = SubpassInfo;
-    static filamat::ChunkType const tag = filamat::MaterialSubpass;
+    static dantemat::ChunkType const tag = dantemat::MaterialSubpass;
 };
 
 struct ChunkBindingUniformInfo {
-    static bool unflatten(filaflat::Unflattener& unflattener,
+    static bool unflatten(danteflat::Unflattener& unflattener,
             MaterialParser::BindingUniformInfoContainer* bindingUniformInfo);
     using Container = MaterialParser::BindingUniformInfoContainer;
-    static filamat::ChunkType const tag = filamat::MaterialBindingUniformInfo;
+    static dantemat::ChunkType const tag = dantemat::MaterialBindingUniformInfo;
 };
 
 struct ChunkAttributeInfo {
-    static bool unflatten(filaflat::Unflattener& unflattener,
+    static bool unflatten(danteflat::Unflattener& unflattener,
             MaterialParser::AttributeInfoContainer* attributeInfoContainer);
     using Container = MaterialParser::AttributeInfoContainer;
-    static filamat::ChunkType const tag = filamat::MaterialAttributeInfo;
+    static dantemat::ChunkType const tag = dantemat::MaterialAttributeInfo;
 };
 
 struct ChunkDescriptorBindingsInfo {
-    static bool unflatten(filaflat::Unflattener& unflattener,
+    static bool unflatten(danteflat::Unflattener& unflattener,
             MaterialParser::DescriptorBindingsContainer* container);
     using Container = MaterialParser::DescriptorBindingsContainer;
-    static filamat::ChunkType const tag = filamat::MaterialDescriptorBindingsInfo;
+    static dantemat::ChunkType const tag = dantemat::MaterialDescriptorBindingsInfo;
 };
 
 struct ChunkDescriptorSetLayoutInfo {
-    static bool unflatten(filaflat::Unflattener& unflattener,
+    static bool unflatten(danteflat::Unflattener& unflattener,
             MaterialParser::DescriptorSetLayoutContainer* container);
     using Container = MaterialParser::DescriptorSetLayoutContainer;
-    static filamat::ChunkType const tag = filamat::MaterialDescriptorSetLayoutInfo;
+    static dantemat::ChunkType const tag = dantemat::MaterialDescriptorSetLayoutInfo;
 };
 
 struct ChunkMaterialConstants {
-    static bool unflatten(filaflat::Unflattener& unflattener,
+    static bool unflatten(danteflat::Unflattener& unflattener,
             utils::FixedCapacityVector<MaterialConstant>* materialConstants);
     using Container = utils::FixedCapacityVector<MaterialConstant>;
-    static filamat::ChunkType const tag = filamat::MaterialConstants;
+    static dantemat::ChunkType const tag = dantemat::MaterialConstants;
 };
 
 struct ChunkMaterialPushConstants {
-    static bool unflatten(filaflat::Unflattener& unflattener, utils::CString* structVarName,
+    static bool unflatten(danteflat::Unflattener& unflattener, utils::CString* structVarName,
             utils::FixedCapacityVector<MaterialPushConstant>* materialPushConstants);
 };
 
