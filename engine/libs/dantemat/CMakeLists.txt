@@ -97,22 +97,14 @@ target_include_directories(${TARGET} PRIVATE ${spirv-tools_SOURCE_DIR}/include)
 # glslang libraries have circular dependencies. To make sure the proper object are part of the link
 # we need to force archive re-scan on new symbol dependencies via start/end-group.
 # Read more about this here https://eli.thegreenplace.net/2013/07/09/library-order-in-static-linking
-if (MSVC)
-    target_link_libraries(${TARGET} glslang SPIRV SPIRV-Tools-opt spirv-cross-glsl)
-else()
-    target_link_libraries(${TARGET}
-            -Wl,--start-group glslang SPIRV SPIRV-Tools-opt spirv-cross-glsl -Wl,--end-group)
-endif()
+target_link_libraries(${TARGET}
+        -Wl,--start-group glslang SPIRV SPIRV-Tools-opt spirv-cross-glsl -Wl,--end-group)
 
 # ==================================================================================================
 # Compiler flags
 # ==================================================================================================
 # this must match options enabled in glslang's CMakeLists.txt
 target_compile_options(${TARGET} PRIVATE -DAMD_EXTENSIONS -DNV_EXTENSIONS )
-
-if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W0 /Zc:__cplusplus")
-endif()
 
 if (DANTE_ENABLE_MATDBG)
     add_definitions(-DDANTE_ENABLE_MATDBG)

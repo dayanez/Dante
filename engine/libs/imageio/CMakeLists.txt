@@ -41,6 +41,4 @@ endif()
 # ==================================================================================================
 # Compiler flags
 # ==================================================================================================
-if (NOT MSVC)
-    target_compile_options(${TARGET} PRIVATE -Wno-deprecated-register)
-endif()
+target_compile_options(${TARGET} PRIVATE -Wno-deprecated-register)

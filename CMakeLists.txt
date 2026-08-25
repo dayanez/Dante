@@ -5,17 +5,6 @@ project(Dante CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if (WIN32)
-    # Dante links its own libraries against the static CRT (see its add_compile_options
-    # use of /MT, /MTd) and, for Debug builds, disables STL iterator debug checks for
-    # compile-time reasons (/D_ITERATOR_DEBUG_LEVEL=0, see DANTE_SHORTEN_MSVC_COMPILATION
-    # in engine/CMakeLists.txt). Both settings are scoped to Dante's own
-    # subdirectory tree and don't reach targets created in this parent scope, so they must
-    # be matched here or the two ABI-relevant settings disagree at link time (LNK2038/1319).
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    add_compile_definitions($<$<CONFIG:Debug>:_ITERATOR_DEBUG_LEVEL=0>)
-endif()
-
 # --- Dante backend selection -------------------------------------------------------
 # Dante targets Windows/Linux via OpenGL only. Metal, Vulkan, and WebGPU are dropped
 # entirely - their source trees are gone from engine/Dante/backend, not just disabled
@@ -45,21 +34,10 @@ target_link_libraries(Dante PRIVATE danteapp gltfio)
 # definition through to the compiler.
 target_compile_definitions(Dante PRIVATE DANTE_ASSETS_DIR=${CMAKE_SOURCE_DIR}/assets)
 
-if (MSVC)
-    # CMake's own Ninja+MSVC link rule always runs its own mt.exe merge pass after
-    # linking, which conflicts with a manually-specified /MANIFESTINPUT (mt.exe ends up
-    # invoked with no manifest to merge and fails with c10100a7). /MANIFEST:NO turns off
-    # CMake's automatic pass so we can embed the DPI-awareness manifest ourselves below.
-    # Without this, Dante.exe isn't marked DPI-aware, so Windows renders it at a
-    # virtualized resolution and stretches the whole window to fit the display's scaling -
-    # blurring both the 3D content and the UI uniformly.
-    #
-    # /MANIFEST:NO and mt.exe are MSVC-toolchain-only (mt.exe doesn't exist for a non-MSVC
-    # Windows toolchain like zig cc, and its GNU-style linker driver doesn't understand
-    # /MANIFEST:NO's syntax either) - Dante.exe just isn't marked DPI-aware there for now.
-    target_link_options(Dante PRIVATE "/MANIFEST:NO")
-    add_custom_command(TARGET Dante POST_BUILD
-        COMMAND "${CMAKE_MT}" -nologo -manifest "${CMAKE_SOURCE_DIR}/src/app.manifest"
-                "-outputresource:$<TARGET_FILE:Dante>;#1"
-        COMMENT "Embedding DPI-awareness manifest into Dante.exe")
-endif()
+# NOTE: Dante.exe is not marked DPI-aware. Embedding the DPI-awareness manifest
+# (src/app.manifest) used to be done here via MSVC's mt.exe post-build step, now removed
+# along with MSVC support - zig cc's GNU-style linker has no equivalent built in. Until
+# that's replaced with a toolchain-agnostic way to embed the manifest (e.g. compiling
+# app.manifest into a .res with a GNU resource compiler and linking it in), Windows will
+# render the window at a virtualized resolution and stretch it to fit display scaling,
+# blurring both the 3D content and the UI.

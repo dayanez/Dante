@@ -11,9 +11,7 @@ https://drive.google.com/drive/folders/1xEvbrjaccKw1PnfxGb-r7AvfkoVATH2x?usp=sha
 
 ## First-time install & build
 
-Windows: two ways to build now, pick one.
-
-**Option A - Zig (recommended, lightweight, no Visual Studio needed):**
+Windows: built with Zig - lightweight, no Visual Studio needed. MSVC is not supported.
 
 Install these (all small, no installer/IDE needed):
 - Zig: https://ziglang.org/download/ (put it on PATH)
@@ -44,18 +42,6 @@ shell-specific line-continuation character:
 
 ```
 cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER="engine/build/windows-gnu/bin/zigcc.exe" -DCMAKE_CXX_COMPILER="engine/build/windows-gnu/bin/zigcxx.exe" -DCMAKE_AR="engine/build/windows-gnu/bin/zigar.exe" -DCMAKE_RANLIB="engine/build/windows-gnu/bin/zigranlib.exe" -DCMAKE_BUILD_TYPE=Release
-cmake --build build --parallel
-```
-
-**Option B - MSVC (unmaintained fallback, use Zig instead if you can):** the original way this
-built, before Option A existed. Not actively used or tested anymore, so it may or may not still
-work as-is. If you want to try it anyway: ideally have Microsoft Visual Studio. I recommend
-downloading the full integrated development enviroment, but if you are inclinded not to just
-simply download the Visual Studio dev build tools. It can be found here
-https://visualstudio.microsoft.com/.
-
-```
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build --parallel
 ```
 

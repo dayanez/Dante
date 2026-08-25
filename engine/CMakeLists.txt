@@ -247,85 +247,9 @@ if (APPLE)
 endif()
 
 if (WIN32)
-    # Link statically against c/c++ lib to avoid missing redistriburable such as
-    # "VCRUNTIME140.dll not found. Try reinstalling the app.", but give users
-    # a choice to opt for the shared runtime if they want.
-    option(USE_STATIC_CRT "Link against the static runtime libraries." ON)
-
     # On Windows we need to instruct cmake to generate the .def in order to get the .lib required
-    # when linking against dlls. CL.EXE will not generate .lib without .def file (or without pragma
-    # __declspec(dllexport) in front of each functions).
+    # when linking against dlls.
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
-    # The CMAKE_CXX_FLAGS vars can be overriden by some Visual Studio generators, so we use an alternative
-    # global method here. /MT, /MD etc. are MSVC(-cl)-only spellings of the CRT choice - a
-    # non-MSVC Windows toolchain (e.g. zig cc targeting *-windows-gnu) picks its runtime
-    # linkage a different way and chokes on these flags entirely.
-    if (MSVC)
-    if (${USE_STATIC_CRT})
-        add_compile_options(
-            $<$<CONFIG:>:/MT>
-            $<$<CONFIG:Debug>:/MTd>
-            $<$<CONFIG:Release>:/MT>
-        )
-    else()
-        add_compile_options(
-            $<$<CONFIG:>:/MD>
-            $<$<CONFIG:Debug>:/MDd>
-            $<$<CONFIG:Release>:/MD>
-        )
-    endif()
-    endif()
-
-    # /Z7, /Zi are MSVC(-cl)-only debug-info flags - same story as /MT above, gate on MSVC
-    # rather than WIN32 so a non-MSVC Windows toolchain doesn't choke on them.
-    if (MSVC)
-    # TODO: Figure out why pdb generation messes with incremental compilaton.
-    # IN RELEASE_WITH_DEBUG_INFO, generate debug info in .obj, no in pdb.
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /Z7")
-    set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO} /Z7")
-
-    # In RELEASE, also generate PDBs.
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Zi")
-
-    # In DEBUG, avoid generating a PDB file which seems to mess with incremental compilation.
-    # Instead generate debug info directly inside obj files.
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Z7")
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /Z7")
-    endif()
-
-    # Special settings when building on CI.
-    if (${DANTE_WINDOWS_CI_BUILD})
-        set(LinkerFlags
-            CMAKE_SHARED_LINKER_FLAGS_DEBUG
-            CMAKE_EXE_LINKER_FLAGS_DEBUG
-            CMAKE_MODULE_LINKER_FLAGS_DEBUG
-            )
-        foreach(LinkerFlag ${LinkerFlags})
-            # The /debug flag outputs .pdb files, which we don't need on CI.
-            string(REPLACE "/debug" "" ${LinkerFlag} ${${LinkerFlag}})
-
-            # The /INCREMENTAL flag outputs .ilk files for incremental linking. These are huge, and
-            # we don't need them on CI.
-            string(REPLACE "/INCREMENTAL" "/INCREMENTAL:NO" ${LinkerFlag} ${${LinkerFlag}})
-        endforeach()
-
-        # We turn off compile-time optimizations for CI, as options that speed up the compile-time
-        # (e.g. /MP) might increase memory usage, leading to instabilities on limited CI machines.
-        option(DANTE_SHORTEN_MSVC_COMPILATION "Shorten compile-time in Visual Studio" OFF)
-    else()
-        option(DANTE_SHORTEN_MSVC_COMPILATION "Shorten compile-time in Visual Studio" ON)
-    endif()
-
-    if (MSVC)
-        if (DANTE_SHORTEN_MSVC_COMPILATION)
-            # enable multi-processor compilation
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-            # disable run-time STL checks to improve tools (e.g. matc) performance
-            set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /D_ITERATOR_DEBUG_LEVEL=0")
-        endif()
-    endif()
 endif()
 
 # ==================================================================================================
@@ -355,14 +279,15 @@ elseif (CMAKE_C_COMPILER_ID MATCHES "Clang")
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS MIN_CLANG_VERSION)
         message(FATAL_ERROR "Detected CXX compiler Clang ${CMAKE_CXX_COMPILER_VERSION} < ${MIN_CLANG_VERSION}")
     endif()
-elseif (NOT MSVC)
+else()
     message(FATAL_ERROR "Detected CXX compiler ${CMAKE_CXX_COMPILER_ID} is unsupported")
 endif()
 
-# Detect use of the clang-cl.exe frontend, which does not support all of clangs normal options
+# Detect use of the clang-cl.exe frontend (clang simulating MSVC's cl.exe), which does not
+# support all of clang's normal options and isn't the toolchain this project builds with.
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     if ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC")
-        message(FATAL_ERROR "Building with Clang on Windows is no longer supported. Use MSVC 2019 instead.")
+        message(FATAL_ERROR "Building with clang-cl is not supported. Use the Zig toolchain (zig cc) instead, see README.md.")
     endif()
 endif()
 
@@ -394,29 +319,21 @@ if (APPLE AND NOT IOS)
 endif()
 
 set(CXX_STANDARD "-std=c++20")
-if (MSVC)
-    set(CXX_STANDARD "/std:c++20")
-endif()
 
-if (MSVC)
-    set(CXX_STANDARD "/std:c++latest")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} /W0 /Zc:__cplusplus")
+if(DANTE_USING_GCC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} -Wno-changes-meaning -Wno-return-type -Wno-attributes -Wno-unknown-pragmas -Wno-class-memaccess -Wno-multichar -Wno-deprecated-declarations -Wno-subobject-linkage -Wno-invalid-constexpr")
 else()
-    if(DANTE_USING_GCC)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} -Wno-changes-meaning -Wno-return-type -Wno-attributes -Wno-unknown-pragmas -Wno-class-memaccess -Wno-multichar -Wno-deprecated-declarations -Wno-subobject-linkage -Wno-invalid-constexpr")
-    else()
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} -fstrict-aliasing -Wno-unknown-pragmas -Wno-unused-function -Wno-deprecated-declarations -D_LIBCPP_ENABLE_THREAD_SAFETY_ANNOTATIONS")
-    endif()
-    if (APPLE)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-nullability-extension")
-        set(CMAKE_OBJCXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    endif()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_STANDARD} -fstrict-aliasing -Wno-unknown-pragmas -Wno-unused-function -Wno-deprecated-declarations -D_LIBCPP_ENABLE_THREAD_SAFETY_ANNOTATIONS")
+endif()
+if (APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-nullability-extension")
+    set(CMAKE_OBJCXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif()
 
-if (WIN32 AND NOT MSVC)
-    # zig cc (a non-MSVC Windows toolchain) instruments C/C++ code with Zig's own runtime
-    # safety checks by default, even at -O3/NDEBUG - unlike MSVC or a plain Clang build, where
-    # this class of undefined behavior is silently tolerated rather than trapped. This has
+if (WIN32)
+    # zig cc instruments C/C++ code with Zig's own runtime safety checks by default, even at
+    # -O3/NDEBUG - unlike a plain Clang build, where this class of undefined behavior is
+    # silently tolerated rather than trapped. This has
     # surfaced real-but-harmless UB already latent in this codebase (e.g. computing, without
     # dereferencing, a null-pointer-plus-offset value inside CubemapIBL.cpp's parallel_for
     # split when a job's slice happens to be empty) as a hard "panic: applying non-zero offset
@@ -473,13 +390,6 @@ if (CYGWIN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
 endif()
 
-if (MSVC)
-    # Since the "secure" replacements that MSVC suggests are not portable, disable
-    # the deprecation warnings. Also disable warnings about use of POSIX functions (i.e. "unlink").
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE")
-endif()
-
 # Add colors to ninja builds (when not using gcc)
 if (UNIX AND CMAKE_GENERATOR STREQUAL "Ninja" AND NOT DANTE_USING_GCC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
@@ -495,14 +405,12 @@ endif()
 # ==================================================================================================
 # Release compiler flags
 # ==================================================================================================
-if (NOT MSVC AND NOT IOS)
+if (NOT IOS)
     # Omitting stack frame pointers prevents the generation of readable stack traces in crash reports on iOS
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fomit-frame-pointer")
 endif()
 
-if (NOT MSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffunction-sections -fdata-sections")
-endif()
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffunction-sections -fdata-sections")
 
 if (ANDROID OR WASM)
     # On Android and WASM RELEASE builds, we omit unwind info to save space.
@@ -534,7 +442,7 @@ if (ANDROID)
     # keep STL debug infos (mimics what the NDK does)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-limit-debug-info")
 endif()
-if (NOT MSVC AND NOT WASM)
+if (NOT WASM)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fstack-protector")
 endif()
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${EXTRA_SANITIZE_OPTIONS}")
@@ -779,34 +687,24 @@ function(combine_static_libs TARGET OUTPUT DEPS)
         endif()
     endforeach()
 
-    if (MSVC)
-        add_custom_command(
-            TARGET ${TARGET} POST_BUILD
-            COMMAND lib.exe /nologo /out:temp.lib ${DEPS_FILES}
-            COMMAND "${CMAKE_COMMAND}" -E rename temp.lib ${OUTPUT}
-            COMMENT "Combining ${target} dependencies into single shared library"
-            VERBATIM
-        )
-    else()
-        # COMBINE_SCRIPT has a #!/usr/bin/env bash shebang, which Windows' CreateProcess
-        # doesn't honor - invoke it via bash explicitly so this also works for a non-MSVC
-        # Windows toolchain (e.g. zig cc targeting *-windows-gnu), not just Linux/macOS.
-        if (WIN32)
-            find_program(BASH_PROGRAM bash HINTS "C:/Program Files/Git/usr/bin" "C:/Program Files/Git/bin")
-            if (NOT BASH_PROGRAM)
-                message(FATAL_ERROR "combine_static_libs needs bash (e.g. Git for Windows) on a non-MSVC Windows toolchain")
-            endif()
-            set(COMBINE_SCRIPT_COMMAND "${BASH_PROGRAM}" "${COMBINE_SCRIPT}")
-        else()
-            set(COMBINE_SCRIPT_COMMAND "${COMBINE_SCRIPT}")
+    # COMBINE_SCRIPT has a #!/usr/bin/env bash shebang, which Windows' CreateProcess doesn't
+    # honor - invoke it via bash explicitly so this also works on Windows (zig cc targeting
+    # *-windows-gnu), not just Linux/macOS.
+    if (WIN32)
+        find_program(BASH_PROGRAM bash HINTS "C:/Program Files/Git/usr/bin" "C:/Program Files/Git/bin")
+        if (NOT BASH_PROGRAM)
+            message(FATAL_ERROR "combine_static_libs needs bash (e.g. Git for Windows) on Windows")
         endif()
-        add_custom_command(
-            TARGET ${TARGET} POST_BUILD
-            COMMAND ${COMBINE_SCRIPT_COMMAND} "${CMAKE_AR}" "${OUTPUT}" ${DEPS_FILES}
-            COMMENT "Combining ${target} dependencies into single shared library"
-            VERBATIM
-        )
+        set(COMBINE_SCRIPT_COMMAND "${BASH_PROGRAM}" "${COMBINE_SCRIPT}")
+    else()
+        set(COMBINE_SCRIPT_COMMAND "${COMBINE_SCRIPT}")
     endif()
+    add_custom_command(
+        TARGET ${TARGET} POST_BUILD
+        COMMAND ${COMBINE_SCRIPT_COMMAND} "${CMAKE_AR}" "${OUTPUT}" ${DEPS_FILES}
+        COMMENT "Combining ${target} dependencies into single shared library"
+        VERBATIM
+    )
 endfunction()
 
 # ==================================================================================================

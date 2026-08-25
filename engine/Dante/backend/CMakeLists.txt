@@ -162,11 +162,7 @@ endif()
 # ==================================================================================================
 # Compiler flags
 # ==================================================================================================
-if (MSVC)
-    set(OPTIMIZATION_FLAGS
-        /fp:fast
-    )
-elseif(DANTE_USING_GCC)
+if(DANTE_USING_GCC)
     set(OPTIMIZATION_FLAGS
         -ffast-math
         -fno-finite-math-only
@@ -187,9 +183,7 @@ set(LINUX_LINKER_OPTIMIZATION_FLAGS
         -Wl,--exclude-libs,bluegl
 )
 
-if (MSVC)
-    set(DANTE_WARNINGS /W3)
-elseif (DANTE_USING_GCC)
+if (DANTE_USING_GCC)
     # GCC is not officially supported, so use a weaker set of warnings (incl. not using -Werror)
     set(DANTE_WARNINGS
             -Wall -Wno-unused-parameter -Wno-missing-field-initializers

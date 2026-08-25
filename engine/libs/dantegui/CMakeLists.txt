@@ -100,8 +100,6 @@ set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
 # ==================================================================================================
 # Compiler flags
 # ==================================================================================================
-if (NOT MSVC)
-    target_compile_options(${TARGET} PRIVATE
-            -Wno-deprecated-register
-    )
-endif()
+target_compile_options(${TARGET} PRIVATE
+        -Wno-deprecated-register
+)

@@ -33,12 +33,8 @@ set_target_properties(${TARGET} PROPERTIES FOLDER Libs)
 # ==================================================================================================
 # Compiler flags
 # ==================================================================================================
-if (MSVC)
-    target_compile_options(${TARGET} PRIVATE $<$<CONFIG:Release>:/fp:fast>)
-else()
-    target_compile_options(${TARGET} PRIVATE $<$<CONFIG:Release>:-ffast-math>)
-    target_compile_options(${TARGET} PRIVATE -Wno-deprecated-register)
-endif()
+target_compile_options(${TARGET} PRIVATE $<$<CONFIG:Release>:-ffast-math>)
+target_compile_options(${TARGET} PRIVATE -Wno-deprecated-register)
 
 # ==================================================================================================
 # Installation

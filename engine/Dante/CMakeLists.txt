@@ -746,11 +746,7 @@ endif()
 # ==================================================================================================
 # Compiler flags
 # ==================================================================================================
-if (MSVC)
-    set(OPTIMIZATION_FLAGS
-        /fp:fast
-    )
-elseif (WASM)
+if (WASM)
     # Avoid strict-vtable-pointers here, it is broken in WebAssembly.
     set(OPTIMIZATION_FLAGS -fvisibility-inlines-hidden)
 elseif (DANTE_USING_GCC)
@@ -779,9 +775,7 @@ set(LINUX_LINKER_OPTIMIZATION_FLAGS
 set(LINUX_COMPILER_FLAGS
 )
 
-if (MSVC)
-    set(DANTE_WARNINGS /W3)
-elseif (DANTE_USING_GCC)
+if (DANTE_USING_GCC)
     # GCC is not officially supported, so use a weaker set of warnings (incl. not using -Werror).
     set(DANTE_WARNINGS
             -Wall -Wextra-semi -Wundef

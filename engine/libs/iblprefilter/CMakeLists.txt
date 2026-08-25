@@ -95,11 +95,7 @@ target_link_libraries(${TARGET} PUBLIC dante)
 # ==================================================================================================
 # Compiler flags
 # ==================================================================================================
-if (MSVC)
-    set(OPTIMIZATION_FLAGS
-        /fp:fast
-    )
-elseif (WASM)
+if (WASM)
     # Avoid strict-vtable-pointers here, it is broken in WebAssembly.
     set(OPTIMIZATION_FLAGS -fvisibility-inlines-hidden)
 else()

@@ -153,10 +153,7 @@ target_include_directories(${TARGET} PRIVATE ${GENERATION_ROOT})
 # Compiler flags
 # ==================================================================================================
 
-if (MSVC)
-else()
-    target_compile_options(${TARGET} PRIVATE -Wno-deprecated-register)
-endif()
+target_compile_options(${TARGET} PRIVATE -Wno-deprecated-register)
 
 # Multi-configuration generators, like Visual Studio or Xcode, place executable binaries in a
 # sub-directory named after the configuration, like "Debug" or "Release".

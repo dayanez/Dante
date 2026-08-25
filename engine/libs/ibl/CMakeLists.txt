@@ -47,13 +47,8 @@ target_link_libraries(${TARGET}-lite math utils)
 # ==================================================================================================
 # Compile options and optimizations
 # ==================================================================================================
-if (MSVC)
-    target_compile_options(${TARGET} PRIVATE /fp:fast)
-    target_compile_options(${TARGET}-lite PRIVATE /fp:fast)
-else()
-    target_compile_options(${TARGET} PRIVATE -ffast-math -fno-finite-math-only)
-    target_compile_options(${TARGET}-lite PRIVATE -ffast-math -fno-finite-math-only)
-endif()
+target_compile_options(${TARGET} PRIVATE -ffast-math -fno-finite-math-only)
+target_compile_options(${TARGET}-lite PRIVATE -ffast-math -fno-finite-math-only)
 
 
 # ==================================================================================================
