@@ -253,6 +253,10 @@ float g_aperture = 11.0f;
 float g_shutterSpeed = 1.0f / 60.0f;
 float g_sensitivity = 100.0f;
 
+// FREE_FLIGHT camera max move speed, world units/sec (camutils' own default is 10).
+// Exposed live via the Camera Speed slider, applied through DanteApp::setCameraMoveSpeed.
+float g_cameraMoveSpeed = 24.0f;
+
 std::unique_ptr<Cube> g_selectionCube;
 
 GltfModel* loadModelIntoScene(Engine& engine, Scene& scene, utils::Path const& path,
@@ -577,7 +581,7 @@ int main() {
 #endif
     config.iblDirectory = (assetsDir + "environments/qwantani_night_puresky_4k.exr").getAbsolutePath();
     config.cameraMode = camutils::Mode::FREE_FLIGHT;
-    config.cameraMoveSpeed = 24.0f; // camutils' own default is 10
+    config.cameraMoveSpeed = g_cameraMoveSpeed;
     g_currentSkyboxPath = config.iblDirectory;
 
     DanteApp::get().run(
@@ -767,7 +771,10 @@ int main() {
             ImGui::SetNextWindowSize(ImVec2(400, 600), ImGuiCond_FirstUseEver);
             ImGui::Begin("Scene");
             ImGui::Checkbox("Edit Mode (E)", &g_editMode);
-           
+
+            if (ImGui::SliderFloat("Camera Speed", &g_cameraMoveSpeed, 1.0f, 100.0f, "%.1f")) {
+                DanteApp::get().setCameraMoveSpeed(g_cameraMoveSpeed);
+            }
 
             if (ImGui::Button("Rescan assets/")) {
                 scanned = false;

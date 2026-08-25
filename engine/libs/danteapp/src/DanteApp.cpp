@@ -483,6 +483,11 @@ try {
         mReconfigureCameras = false;
     }
 
+    if (mReconfigureCameraSpeed) {
+        window->setCameraMoveSpeed(mCameraMoveSpeed);
+        mReconfigureCameraSpeed = false;
+    }
+
     if (mIsSplitView) {
         if (!window->mOrthoView->getView()->hasCamera()) {
             auto const csm = window->mMainView->getView()->getDirectionalShadowCameras();
@@ -726,17 +731,22 @@ DanteApp::Window::Window(DanteApp* danteApp, const Config& config, std::string t
     }
     mViews.emplace_back(mUiView = new CView(*mRenderer, "UI View"));
 
-    // set-up the camera manipulators
-    mMainCameraMan = CameraManipulator::Builder()
-            .targetPosition(0, 0, -4)
+    // set-up the camera manipulators. The Config each Builder resolves to (its public
+    // `details` member) is kept around so setCameraMoveSpeed() can later hand the manipulator
+    // a full, still-valid Config with just flightMaxSpeed changed.
+    CameraManipulator::Builder mainCameraBuilder;
+    mainCameraBuilder.targetPosition(0, 0, -4)
             .flightMoveDamping(15.0)
-            .flightMaxMoveSpeed(config.cameraMoveSpeed)
-            .build(config.cameraMode);
-    mDebugCameraMan = CameraManipulator::Builder()
-            .targetPosition(0, 0, -4)
+            .flightMaxMoveSpeed(config.cameraMoveSpeed);
+    mMainCameraManConfig = mainCameraBuilder.details;
+    mMainCameraMan = mainCameraBuilder.build(config.cameraMode);
+
+    CameraManipulator::Builder debugCameraBuilder;
+    debugCameraBuilder.targetPosition(0, 0, -4)
             .flightMoveDamping(15.0)
-            .flightMaxMoveSpeed(config.cameraMoveSpeed)
-            .build(config.cameraMode);
+            .flightMaxMoveSpeed(config.cameraMoveSpeed);
+    mDebugCameraManConfig = debugCameraBuilder.details;
+    mDebugCameraMan = debugCameraBuilder.build(config.cameraMode);
 
     mMainView->setCamera(mMainCamera);
     mMainView->setCameraManipulator(mMainCameraMan);
@@ -865,6 +875,20 @@ void DanteApp::Window::fixupMouseCoordinatesForHdpi(ssize_t& x, ssize_t& y) cons
 void DanteApp::Window::resize(WindowCameraParams const& cameraParams) {
     mDisplayManager->onWindowResized(mWindow);
     configureCamerasForWindow(cameraParams);
+}
+
+void DanteApp::Window::setCameraMoveSpeed(float speed) {
+    mMainCameraManConfig.flightMaxSpeed = speed;
+    mMainCameraMan->setProperties(mMainCameraManConfig);
+    // setProperties() only updates the manipulator's stored config - the FreeFlightManipulator
+    // caches an actual mMoveSpeed derived from it that's normally only recomputed on a scroll
+    // wheel event. A zero-delta scroll re-derives it immediately at the current scroll
+    // position, so the new speed takes effect without waiting for the user to touch the wheel.
+    mMainCameraMan->scroll(0, 0, 0);
+
+    mDebugCameraManConfig.flightMaxSpeed = speed;
+    mDebugCameraMan->setProperties(mDebugCameraManConfig);
+    mDebugCameraMan->scroll(0, 0, 0);
 }
 
 void DanteApp::Window::configureCamerasForWindow(WindowCameraParams const& cameraParams) {

@@ -113,6 +113,13 @@ public:
         mReconfigureCameras = true;
     }
 
+    // Live-updates the FREE_FLIGHT manipulators' max move speed (world units/sec). Applied
+    // on the next frame via mReconfigureCameraSpeed, same as the other live camera params above.
+    void setCameraMoveSpeed(float speed) {
+        mCameraMoveSpeed = speed;
+        mReconfigureCameraSpeed = true;
+    }
+
     void addOffscreenView(dante::View* view) { mOffscreenViews.push_back(view); }
 
     size_t getSkippedFrameCount() const { return mSkippedFrames; }
@@ -227,6 +234,7 @@ public:
         dante::SwapChain* getSwapChain() { return mSwapChain; }
 
         void configureCamerasForWindow(WindowCameraParams const& camera);
+        void setCameraMoveSpeed(float speed);
         void fixupMouseCoordinatesForHdpi(ssize_t& x, ssize_t& y) const;
 
         dante::app::DisplayManager* const mDisplayManager = nullptr;
@@ -240,6 +248,11 @@ public:
 
         CameraManipulator* mMainCameraMan;
         CameraManipulator* mDebugCameraMan;
+        // Retained copies of the Config each manipulator was built with - Manipulator has no
+        // public getter for its current properties, and setProperties() replaces the whole
+        // struct, so a live speed change has to start from a full copy, not just the one field.
+        CameraManipulator::Config mMainCameraManConfig{};
+        CameraManipulator::Config mDebugCameraManConfig{};
         dante::SwapChain* mSwapChain = nullptr;
 
         utils::Entity mCameraEntities[3];
@@ -296,6 +309,8 @@ private:
     std::vector<dante::View*> mOffscreenViews;
     WindowCameraParams mCameraParams{};
     bool mReconfigureCameras = false;
+    float mCameraMoveSpeed = 10.0f;
+    bool mReconfigureCameraSpeed = false;
     uint8_t mFroxelInfoAge = 0x42;
     uint8_t mFroxelGridEnabled = 0;
     uint8_t mDirectionalShadowFrustumEnabled = 0x2;

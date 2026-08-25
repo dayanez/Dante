@@ -267,10 +267,21 @@ public:
      */
     virtual void jumpToBookmark(const Bookmark& bookmark) = 0;
 
+    /**
+     * Replaces the manipulator's properties wholesale (e.g. to change flightMaxSpeed live).
+     * Each mode's setProperties() override re-derives any zero/default fields the same way
+     * the Builder does, so this is safe to call with a full Config captured from a Builder's
+     * `details` member with only the field(s) you want to change modified in place - not
+     * just a fresh, mostly-default-valued Config.
+     *
+     * Dante deviation from upstream Dante: was protected upstream (only reachable via the
+     * Builder at construction time); made public so live per-frame reconfiguration (e.g. a
+     * camera-speed slider) doesn't require tearing down and rebuilding the manipulator.
+     */
+    virtual void setProperties(const Config& props);
+
 protected:
     Manipulator(Mode mode, const Config& props);
-
-    virtual void setProperties(const Config& props);
 
     vec3 raycastFarPlane(int x, int y) const;
 
