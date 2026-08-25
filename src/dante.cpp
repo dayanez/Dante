@@ -761,15 +761,6 @@ int main() {
                 g_editMode = !g_editMode;
             }
 
-            /*
-            //placeholder TODO
-            ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-            ImGuiSetNextWindowBgAlpha(0.35f);
-            ImGui::SetNextWindowSize(ImVec2(0, 0));
-            ImGui::Begin("")
-            */
-            
-
             // Docked/movable/resizable now (was pinned at a fixed position/size) - first launch
             // it'll land wherever ImGui's default docking layout puts it, drag it by the title
             // bar into place and ImGui remembers that layout (imgui.ini) for next time.

@@ -47,7 +47,9 @@ cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER="engine/build/windows-gnu/bin/zi
 cmake --build build --parallel
 ```
 
-**Option B - MSVC (the original way):** Ideally have Microsoft Visual Studio. I recommend
+**Option B - MSVC (unmaintained fallback, use Zig instead if you can):** the original way this
+built, before Option A existed. Not actively used or tested anymore, so it may or may not still
+work as-is. If you want to try it anyway: ideally have Microsoft Visual Studio. I recommend
 downloading the full integrated development enviroment, but if you are inclinded not to just
 simply download the Visual Studio dev build tools. It can be found here
 https://visualstudio.microsoft.com/.
