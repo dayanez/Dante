@@ -1202,7 +1202,6 @@ void drawStatsPanel() {
     ImGui::Text("Selected light: %s", g_selectedLight ? g_selectedLight->name.c_str() : "(none)");
     ImGui::Text("Dragging: %s", g_dragging ? "yes" : "no");
     ImGui::Separator();
-    ImGui::TextUnformatted("CPU (Under Construction)");
     float const cpuUsagePercent = GetCPUUsagePercent();
     ImGui::Text("CPU Usage: %.2f%%", cpuUsagePercent);
     ImGui::End();
