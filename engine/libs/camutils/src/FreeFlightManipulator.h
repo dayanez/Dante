@@ -50,6 +50,11 @@ public:
         }
 
         Base::setProperties(resolved);
+        // mMoveSpeed (the value WASD actually uses, see update()) only gets (re-)derived from
+        // flightMaxSpeed here and in scroll() below - without this call, a manipulator that's
+        // never had scroll() invoked keeps mMoveSpeed at its member-initializer default of
+        // 1.0 forever, ignoring flightMaxSpeed/the Scene panel's Camera Speed slider entirely.
+        recomputeMoveSpeed();
     }
 
     void updateTarget(FLOAT pitch, FLOAT yaw) {
@@ -100,10 +105,9 @@ public:
     void scroll(int x, int y, FLOAT scrolldelta) override {
         const FLOAT halfSpeedSteps = Base::mProps.flightSpeedSteps / 2;
         mScrollWheel = clamp(mScrollWheel + scrolldelta, -halfSpeedSteps, halfSpeedSteps);
-        // Normalize the scroll position from -1 to 1 and calculate the move speed, in world
-        // units per second.
+        // Normalize the scroll position from -1 to 1.
         mScrollPositionNormalized = (mScrollWheel + halfSpeedSteps) / halfSpeedSteps - 1.0;
-        mMoveSpeed = pow(Base::mProps.flightMaxSpeed, mScrollPositionNormalized);
+        recomputeMoveSpeed();
     }
 
     void update(FLOAT deltaTime) override {
@@ -217,6 +221,18 @@ public:
     }
 
 private:
+    // flightMaxSpeed (the Scene panel's "Camera Speed" slider) is the WASD speed at the
+    // scroll wheel's centered/default position. Scrolling while flying still dials a further
+    // +/-10x from that baseline for a quick temporary slow-down/speed-up, matching the
+    // scroll-to-adjust-fly-speed convention from editors like Unreal - but unlike the old
+    // pow(flightMaxSpeed, normalized) formula, the slider itself now has an effect before the
+    // user ever touches the scroll wheel (at normalized == 0, that formula always evaluated
+    // to exactly 1.0 world unit/sec regardless of flightMaxSpeed).
+    void recomputeMoveSpeed() {
+        constexpr FLOAT kScrollSpeedRange = 10.0;
+        mMoveSpeed = Base::mProps.flightMaxSpeed * pow(kScrollSpeedRange, mScrollPositionNormalized);
+    }
+
     vec2 mGrabWin;
     vec2 mTargetEuler;  // (pitch, yaw)
     vec2 mGrabEuler;    // (pitch, yaw)
