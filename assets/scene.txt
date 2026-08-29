@@ -1,7 +1,7 @@
 skybox "C:\Users\dommc\Dante\assets\environments\qwantani_night_puresky_4k.exr"
-iblintensity 64.14
+iblintensity 2697.09
 model "C:\Users\dommc\Dante\assets\models\realistic_scene_3d.glb" 1.86378 -1.09123 1.86528 0 0 0 1
+model "C:\Users\dommc\Dante\assets\models\character\ch15_firing.glb" -5.48157 2.097 24.6546 -1 0 0 1.24
 light "New_Light" 7.03 0.422 -0.126 0.955882 0.046857 0.046857 9775 9.9
-light "New_Light" -0.523 1 -0.398 1 0.85 0.6 5150 3
 light "New_Light" 5.557 -0.47 -0.484 0.970588 0.0570934 0.0570934 2175 1.05
 light "New_Light" 0.267 0.733 0.252 1 0.85 0.6 15650 13.4

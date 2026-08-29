@@ -741,9 +741,9 @@ bool loadScene(Engine& engine, Scene& scene, utils::Path const& file) {
     return true;
 }
 
-// Blender-esque dark theme: neutral dark-gray panels, generous spacing, soft uniform rounding,
-// and Blender's characteristic warm-orange accent on anything interactive/active - replacing
-// ImGui's default (cramped spacing, square corners, purple accent) debug-overlay look.
+// Minimal black-and-white theme: near-black panels, generous spacing, soft uniform rounding,
+// and a plain white accent on anything interactive/active - replacing ImGui's default
+// (cramped spacing, square corners, purple accent) debug-overlay look.
 void applyEditorStyle() {
     ImGuiStyle& style = ImGui::GetStyle();
 
@@ -767,17 +767,17 @@ void applyEditorStyle() {
     style.FrameBorderSize   = 0.0f;
     style.PopupBorderSize   = 1.0f;
 
-    float3 const bgDark     = {0.11f, 0.11f, 0.11f};
-    float3 const bgPanel    = {0.16f, 0.16f, 0.16f};
-    float3 const bgWidget   = {0.22f, 0.22f, 0.22f};
-    float3 const bgWidgetHi = {0.27f, 0.27f, 0.27f};
-    float3 const accent     = {0.94f, 0.54f, 0.09f};
-    float3 const border     = {0.06f, 0.06f, 0.06f};
+    float3 const bgDark     = {0.02f, 0.02f, 0.02f};
+    float3 const bgPanel    = {0.05f, 0.05f, 0.05f};
+    float3 const bgWidget   = {0.10f, 0.10f, 0.10f};
+    float3 const bgWidgetHi = {0.16f, 0.16f, 0.16f};
+    float3 const accent     = {0.95f, 0.95f, 0.95f};
+    float3 const border     = {0.00f, 0.00f, 0.00f};
 
     auto rgba = [](float3 c, float a) { return ImVec4(c.x, c.y, c.z, a); };
 
     ImVec4* colors = style.Colors;
-    colors[ImGuiCol_Text]                  = rgba({0.92f, 0.92f, 0.92f}, 1.00f);
+    colors[ImGuiCol_Text]                  = rgba({0.98f, 0.98f, 0.98f}, 1.00f);
     colors[ImGuiCol_TextDisabled]          = rgba({0.60f, 0.60f, 0.60f}, 1.00f);
     colors[ImGuiCol_WindowBg]              = rgba(bgPanel, 1.00f);
     colors[ImGuiCol_ChildBg]               = rgba(bgPanel, 0.00f);
