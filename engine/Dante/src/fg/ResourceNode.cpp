@@ -128,7 +128,6 @@ void ResourceNode::resolveResourceUsage(DependencyGraph& graph) noexcept {
 }
 
 utils::CString ResourceNode::graphvizify() const noexcept {
-#ifndef NDEBUG
     utils::CString s;
 
     uint32_t const id = getId();
@@ -158,9 +157,6 @@ utils::CString ResourceNode::graphvizify() const noexcept {
     s.append("]");
 
     return s;
-#else
-    return {};
-#endif
 }
 
 utils::CString ResourceNode::graphvizifyEdgeColor() const noexcept {

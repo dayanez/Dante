@@ -75,6 +75,7 @@
 #include <memory>
 #include <new>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <random>
 #include <thread>
@@ -790,7 +791,31 @@ public:
         } stereo;
         matdbg::DebugServer* server = nullptr;
         FgviewerManager* fgviewer = nullptr;
+        struct {
+            // Set by getFrameGraphDebugText()'s caller; gates the (non-free) export_graphviz()
+            // call in Renderer::renderJob() so idle frames (panel closed) don't pay for it.
+            bool capture = false;
+            // If set, only this view's frame graph is captured - apps that render more than
+            // one view per frame (e.g. an offscreen UI-compositing view alongside the real
+            // scene view) would otherwise get whichever view happens to render last.
+            FView const* captureView = nullptr;
+            // One frame stale: the UI callback (which reads this) runs before
+            // Renderer::render() in DanteApp::doFrame(), so this is last frame's graph.
+            std::string dot;
+        } fg;
     } debug;
+
+    // Enables/disables capturing a view's frame graph as graphviz DOT text (see debug.fg
+    // above). Cheap to leave off; only turn on while a viewer panel is open. If view is
+    // non-null, only that view's graph is captured.
+    void setFrameGraphDebugCaptureEnabled(bool enabled, FView const* view = nullptr) noexcept {
+        debug.fg.capture = enabled;
+        debug.fg.captureView = view;
+    }
+
+    std::string getFrameGraphDebugText() const noexcept {
+        return debug.fg.dot;
+    }
 };
 
 DANTE_DOWNCAST(Engine)

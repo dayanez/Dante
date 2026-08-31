@@ -135,7 +135,8 @@ void DependencyGraph::clear() noexcept {
 }
 
 void DependencyGraph::export_graphviz(utils::io::ostream& out, char const* name) const noexcept {
-#ifndef NDEBUG
+    // Not NDEBUG-gated like isAcyclic() below: callers (e.g. Engine::getFrameGraphDebugText())
+    // opt into the cost explicitly, so this needs to work in Release builds too.
     const char* graphName = name ? name : "graph";
     out << "digraph \"" << graphName << "\" {\n";
     out << "rankdir = LR\n";
@@ -228,7 +229,6 @@ void DependencyGraph::export_graphviz(utils::io::ostream& out, char const* name)
     }
 
     out << "}" << utils::io::endl;
-#endif
 }
 
 bool DependencyGraph::isAcyclic() const noexcept {
@@ -293,7 +293,6 @@ char const* DependencyGraph::Node::getName() const noexcept {
 }
 
 utils::CString DependencyGraph::Node::graphvizify() const noexcept {
-#ifndef NDEBUG
     utils::CString s;
 
     uint32_t const id = getId();
@@ -311,17 +310,10 @@ utils::CString DependencyGraph::Node::graphvizify() const noexcept {
     s.append("]");
 
     return s;
-#else
-    return {};
-#endif
 }
 
 utils::CString DependencyGraph::Node::graphvizifyEdgeColor() const noexcept {
-#ifndef NDEBUG
     return utils::CString{ "darkolivegreen" };
-#else
-    return {};
-#endif
 }
 
 } // namespace dante

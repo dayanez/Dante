@@ -48,6 +48,7 @@
 #include <utils/JobSystem.h>
 #include <utils/Logger.h>
 #include <utils/Panic.h>
+#include <utils/sstream.h>
 
 #include <math/mat4.h>
 #include <math/vec2.h>
@@ -1614,9 +1615,12 @@ void FRenderer::renderJob(DriverApi& driver, RootArenaScope& rootArenaScope, FVi
 
     fg.compile();
 
-    //utils::io::sstream graphviz;
-    //fg.export_graphviz(graphviz, view.getName());
-    //DLOG(INFO) << graphviz.c_str();
+    if (UTILS_UNLIKELY(engine.debug.fg.capture &&
+            (!engine.debug.fg.captureView || engine.debug.fg.captureView == &view))) {
+        utils::io::sstream graphviz;
+        fg.export_graphviz(graphviz, view.getName());
+        engine.debug.fg.dot = graphviz.c_str();
+    }
 
     fg.execute(driver);
 

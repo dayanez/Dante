@@ -26,8 +26,10 @@
 #include <imgui_internal.h> // DockBuilder* - used to lay out the default panel arrangement
 #include <ImGuizmo.h>
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <memory>
@@ -1207,6 +1209,383 @@ void drawStatsPanel() {
     ImGui::End();
 }
 
+namespace {
+
+// ---- Frame graph viewer -------------------------------------------------------------------
+// Parses the graphviz DOT text from Engine::getFrameGraphDebugText() and lays it out as an
+// actual node graph instead of leaving it as raw text to paste into an external viewer.
+
+struct FgVizNode {
+    int id = -1;
+    std::string label;
+    ImU32 fillColor = IM_COL32(120, 120, 120, 255);
+    ImVec2 pos{ 0, 0 };  // top-left, unscaled layout units
+    ImVec2 size{ 0, 0 };
+};
+
+struct FgVizEdge {
+    int from = -1;
+    int to = -1;
+    ImU32 color = IM_COL32(200, 200, 200, 255);
+};
+
+// Named colors actually emitted by DependencyGraph::export_graphviz() and friends - not a
+// general graphviz color parser, just the small fixed palette this codebase's exporter uses.
+ImU32 fgVizColorByName(std::string const& name) {
+    static std::unordered_map<std::string, ImU32> const kColors = {
+        { "darkorange4",     IM_COL32(139, 69, 0, 255) },
+        { "darkorange",      IM_COL32(255, 140, 0, 255) },
+        { "skyblue4",        IM_COL32(76, 111, 130, 255) },
+        { "skyblue",         IM_COL32(135, 206, 235, 255) },
+        { "red3",            IM_COL32(205, 0, 0, 255) },
+        { "red4",            IM_COL32(139, 0, 0, 255) },
+        { "red2",            IM_COL32(238, 0, 0, 255) },
+        { "darkolivegreen2", IM_COL32(188, 238, 104, 255) },
+        { "darkolivegreen4", IM_COL32(110, 139, 61, 255) },
+    };
+    auto const it = kColors.find(name);
+    return it != kColors.end() ? it->second : IM_COL32(160, 160, 160, 255);
+}
+
+std::string fgVizTrim(std::string const& s) {
+    size_t const first = s.find_first_not_of(" \t\r\n");
+    if (first == std::string::npos) return "";
+    size_t const last = s.find_last_not_of(" \t\r\n");
+    return s.substr(first, last - first + 1);
+}
+
+// Parses the fixed DOT dialect DependencyGraph::export_graphviz() emits: quoted node
+// declarations ("N3" [label="...", ..., fillcolor=X]) and bare edge statements
+// (N3 -> { N4 N5 } [color=X ...]). Not a general DOT parser, just enough to round-trip what
+// this codebase's frame graph exporter writes.
+void fgVizParseDot(std::string const& dot, std::vector<FgVizNode>& outNodes, std::vector<FgVizEdge>& outEdges) {
+    outNodes.clear();
+    outEdges.clear();
+
+    std::istringstream stream(dot);
+    std::string rawLine;
+    while (std::getline(stream, rawLine)) {
+        std::string const line = fgVizTrim(rawLine);
+
+        if (line.size() > 2 && line[0] == '"' && line[1] == 'N' && isdigit((unsigned char)line[2])) {
+            // Node: "N<id>" [label="...", ..., fillcolor=<name>]
+            size_t const labelKey = line.find("label=\"");
+            if (labelKey == std::string::npos) continue;
+            size_t const labelStart = labelKey + 7;
+            size_t const labelEnd = line.find('"', labelStart);
+            if (labelEnd == std::string::npos) continue;
+
+            FgVizNode node;
+            node.id = std::atoi(line.c_str() + 2);
+
+            std::string label = line.substr(labelStart, labelEnd - labelStart);
+            // The exporter writes a literal two-character "\n" as its line separator inside
+            // the quoted label, not an actual newline byte.
+            for (size_t pos = label.find("\\n"); pos != std::string::npos; pos = label.find("\\n", pos + 1)) {
+                label.replace(pos, 2, "\n");
+            }
+            node.label = std::move(label);
+
+            size_t const colorKey = line.find("fillcolor=", labelEnd);
+            if (colorKey != std::string::npos) {
+                size_t const colorStart = colorKey + 10;
+                size_t colorEnd = line.find_first_of(",]", colorStart);
+                if (colorEnd == std::string::npos) colorEnd = line.size();
+                node.fillColor = fgVizColorByName(line.substr(colorStart, colorEnd - colorStart));
+            }
+            outNodes.push_back(std::move(node));
+            continue;
+        }
+
+        if (line.size() > 1 && line[0] == 'N' && isdigit((unsigned char)line[1])) {
+            // Edge: N<id> -> { N<id> N<id> ... } [color=<name> ...]
+            size_t const arrow = line.find("->");
+            size_t const braceStart = line.find('{', arrow == std::string::npos ? 0 : arrow);
+            size_t const braceEnd = line.find('}', arrow == std::string::npos ? 0 : arrow);
+            if (arrow == std::string::npos || braceStart == std::string::npos || braceEnd == std::string::npos) continue;
+            int const from = std::atoi(line.c_str() + 1);
+
+            ImU32 color = IM_COL32(200, 200, 200, 255);
+            size_t const attrStart = line.find('[', braceEnd);
+            if (attrStart != std::string::npos) {
+                size_t const attrEnd = line.find(']', attrStart);
+                std::string const attrs = line.substr(attrStart,
+                        attrEnd == std::string::npos ? std::string::npos : attrEnd - attrStart);
+                size_t const colorKey = attrs.find("color=");
+                if (colorKey != std::string::npos) {
+                    size_t const colorStart = colorKey + 6;
+                    size_t colorEnd = attrs.find_first_of(" ,]", colorStart);
+                    if (colorEnd == std::string::npos) colorEnd = attrs.size();
+                    color = fgVizColorByName(attrs.substr(colorStart, colorEnd - colorStart));
+                }
+            }
+
+            std::istringstream targets(line.substr(braceStart + 1, braceEnd - braceStart - 1));
+            std::string token;
+            while (targets >> token) {
+                if (token.empty() || token[0] != 'N') continue;
+                outEdges.push_back({ from, std::atoi(token.c_str() + 1), color });
+            }
+        }
+    }
+}
+
+// Lays nodes out left-to-right by longest-path rank (matching the exporter's rankdir=LR),
+// then orders each rank top-to-bottom with a few barycenter passes against the neighboring
+// rank already placed, to cut down on edge crossings - a lightweight approximation of what
+// graphviz's own layout engine would do, good enough for a debug view.
+void fgVizLayout(std::vector<FgVizNode>& nodes, std::vector<FgVizEdge> const& edges) {
+    if (nodes.empty()) return;
+
+    std::unordered_map<int, int> indexOf;
+    indexOf.reserve(nodes.size() * 2);
+    for (size_t i = 0; i < nodes.size(); ++i) {
+        indexOf[nodes[i].id] = (int)i;
+    }
+
+    std::vector<std::vector<int>> successors(nodes.size());
+    std::vector<std::vector<int>> predecessors(nodes.size());
+    std::vector<int> indegree(nodes.size(), 0);
+    for (auto const& e : edges) {
+        auto const fromIt = indexOf.find(e.from);
+        auto const toIt = indexOf.find(e.to);
+        if (fromIt == indexOf.end() || toIt == indexOf.end()) continue;
+        successors[fromIt->second].push_back(toIt->second);
+        predecessors[toIt->second].push_back(fromIt->second);
+        indegree[toIt->second]++;
+    }
+
+    // Longest-path rank assignment via Kahn's algorithm - a node is finalized only once every
+    // predecessor already has a rank, so rank[v] ends up one past the deepest chain into it.
+    std::vector<int> rank(nodes.size(), 0);
+    std::vector<int> remainingIndegree = indegree;
+    std::vector<int> queue;
+    queue.reserve(nodes.size());
+    for (size_t i = 0; i < nodes.size(); ++i) {
+        if (remainingIndegree[i] == 0) queue.push_back((int)i);
+    }
+    for (size_t qi = 0; qi < queue.size(); ++qi) {
+        int const u = queue[qi];
+        for (int const v : successors[u]) {
+            rank[v] = std::max(rank[v], rank[u] + 1);
+            if (--remainingIndegree[v] == 0) queue.push_back(v);
+        }
+    }
+    // Anything left unqueued sits on a cycle (shouldn't happen for a real frame graph) - it
+    // just stays at rank 0 rather than looping forever.
+
+    int maxRank = 0;
+    for (int r : rank) maxRank = std::max(maxRank, r);
+
+    std::vector<std::vector<int>> byRank(maxRank + 1);
+    for (size_t i = 0; i < nodes.size(); ++i) byRank[rank[i]].push_back((int)i);
+    for (auto& r : byRank) {
+        std::sort(r.begin(), r.end(), [&](int a, int b) { return nodes[a].id < nodes[b].id; });
+    }
+
+    std::vector<int> orderInRank(nodes.size(), 0);
+    auto const refreshOrderIndex = [&](std::vector<int> const& r) {
+        for (size_t i = 0; i < r.size(); ++i) orderInRank[r[i]] = (int)i;
+    };
+    for (auto const& r : byRank) refreshOrderIndex(r);
+
+    auto const barycenterSort = [&](std::vector<int>& r, std::vector<std::vector<int>> const& neighbors) {
+        std::vector<std::pair<float, int>> keyed;
+        keyed.reserve(r.size());
+        for (int nodeIndex : r) {
+            auto const& adj = neighbors[nodeIndex];
+            float key;
+            if (adj.empty()) {
+                key = (float)orderInRank[nodeIndex]; // no placed neighbors - keep put
+            } else {
+                float sum = 0.0f;
+                for (int a : adj) sum += (float)orderInRank[a];
+                key = sum / (float)adj.size();
+            }
+            keyed.push_back({ key, nodeIndex });
+        }
+        std::stable_sort(keyed.begin(), keyed.end(),
+                [](auto const& a, auto const& b) { return a.first < b.first; });
+        for (size_t i = 0; i < r.size(); ++i) r[i] = keyed[i].second;
+        refreshOrderIndex(r);
+    };
+
+    int const kPasses = 4;
+    for (int pass = 0; pass < kPasses; ++pass) {
+        if (pass % 2 == 0) {
+            for (int r = 1; r <= maxRank; ++r) barycenterSort(byRank[r], predecessors);
+        } else {
+            for (int r = maxRank - 1; r >= 0; --r) barycenterSort(byRank[r], successors);
+        }
+    }
+
+    // Size each box from its (already \n-wrapped) label text, then place ranks in columns -
+    // each as wide as its widest node - and stack nodes within a rank using their real
+    // heights, so labels never get clipped or overlap.
+    float const kPadX = 10.0f;
+    float const kPadY = 6.0f;
+    float const kRankGap = 60.0f;
+    float const kNodeGap = 10.0f;
+
+    for (auto& node : nodes) {
+        ImVec2 const textSize = ImGui::CalcTextSize(node.label.c_str());
+        node.size = { textSize.x + kPadX * 2.0f, textSize.y + kPadY * 2.0f };
+    }
+
+    float x = 0.0f;
+    for (auto const& r : byRank) {
+        float columnWidth = 0.0f;
+        for (int nodeIndex : r) columnWidth = std::max(columnWidth, nodes[nodeIndex].size.x);
+
+        float y = 0.0f;
+        for (int nodeIndex : r) {
+            nodes[nodeIndex].pos = { x, y };
+            y += nodes[nodeIndex].size.y + kNodeGap;
+        }
+        x += columnWidth + kRankGap;
+    }
+}
+
+} // namespace
+
+// Live view of the main scene view's render-pass dependency graph. Engine::getFrameGraphDebugText()
+// returns the graph as graphviz DOT text (see DependencyGraph::export_graphviz) - that text is
+// parsed and laid out above into an actual node graph rather than left as raw text; a "Raw DOT"
+// checkbox still exposes the original text (e.g. to paste into
+// https://dreampuf.github.io/GraphvizOnline for a proper graphviz layout). One frame stale:
+// getFrameGraphDebugText() reflects the graph from the frame before this one, since this UI
+// callback runs before the scene actually renders (see Engine::setFrameGraphDebugCaptureEnabled's
+// doc comment). Capture is only enabled while this panel is actually visible, since building the
+// DOT text isn't free. Targeted specifically at g_mainView - DanteApp also renders a second,
+// offscreen UI-compositing view every frame, and without pinning the target that one (a trivial
+// blit graph) would win the shared capture slot since it renders after the scene view.
+void drawFrameGraphPanel(Engine* engine) {
+    bool const visible = ImGui::Begin("Frame Graph");
+    engine->setFrameGraphDebugCaptureEnabled(visible, g_mainView);
+    if (visible) {
+        std::string const dot = engine->getFrameGraphDebugText();
+        if (dot.empty()) {
+            ImGui::TextDisabled("(no frame graph captured yet)");
+        } else {
+            static std::string s_lastDot;
+            static std::vector<FgVizNode> s_nodes;
+            static std::vector<FgVizEdge> s_edges;
+            static float s_zoom = 1.0f;
+            static bool s_showRaw = false;
+
+            if (dot != s_lastDot) {
+                fgVizParseDot(dot, s_nodes, s_edges);
+                fgVizLayout(s_nodes, s_edges);
+                s_lastDot = dot;
+            }
+
+            ImGui::TextDisabled("%zu bytes, %zu nodes, %zu edges", dot.size(), s_nodes.size(), s_edges.size());
+            ImGui::SameLine();
+            ImGui::Checkbox("Raw DOT", &s_showRaw);
+            if (!s_showRaw) {
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(120.0f);
+                ImGui::SliderFloat("Zoom", &s_zoom, 0.25f, 3.0f, "%.2fx");
+            }
+
+            ImVec2 const avail = ImGui::GetContentRegionAvail();
+            if (s_showRaw) {
+                ImGui::InputTextMultiline("##fg_dot",
+                        const_cast<char*>(dot.c_str()), dot.size() + 1, avail,
+                        ImGuiInputTextFlags_ReadOnly);
+            } else if (s_nodes.empty()) {
+                ImGui::TextDisabled("(nothing to draw)");
+            } else {
+                // BeginChild() must always be paired with EndChild(), even when it returns
+                // false (e.g. fully clipped) - so the drawing itself is gated on the return
+                // value, but the EndChild() call below isn't.
+                if (ImGui::BeginChild("##fg_canvas", avail, ImGuiChildFlags_Borders,
+                        ImGuiWindowFlags_HorizontalScrollbar)) {
+                    if (ImGui::IsWindowHovered() && ImGui::GetIO().KeyCtrl) {
+                        s_zoom = std::clamp(s_zoom + ImGui::GetIO().MouseWheel * 0.1f, 0.25f, 3.0f);
+                    }
+
+                    ImDrawList* const drawList = ImGui::GetWindowDrawList();
+                    ImVec2 const origin = ImGui::GetCursorScreenPos();
+                    ImVec2 const mouse = ImGui::GetIO().MousePos;
+
+                    float contentW = 0.0f, contentH = 0.0f;
+                    for (auto const& n : s_nodes) {
+                        contentW = std::max(contentW, n.pos.x + n.size.x);
+                        contentH = std::max(contentH, n.pos.y + n.size.y);
+                    }
+
+                    auto const toScreen = [&](ImVec2 p) {
+                        return ImVec2(origin.x + p.x * s_zoom, origin.y + p.y * s_zoom);
+                    };
+
+                    int hoveredId = -1;
+                    for (auto const& n : s_nodes) {
+                        ImVec2 const mn = toScreen(n.pos);
+                        ImVec2 const mx = toScreen({ n.pos.x + n.size.x, n.pos.y + n.size.y });
+                        if (mouse.x >= mn.x && mouse.x <= mx.x && mouse.y >= mn.y && mouse.y <= mx.y) {
+                            hoveredId = n.id;
+                        }
+                    }
+
+                    // Edges first so node boxes sit on top of their own endpoints; edges
+                    // touching the hovered node are redrawn thicker on top to stand out.
+                    auto const drawEdges = [&](float normalThickness, float highlightThickness) {
+                        for (auto const& e : s_edges) {
+                            bool const touchesHovered =
+                                    hoveredId != -1 && (e.from == hoveredId || e.to == hoveredId);
+                            if (highlightThickness > 0.0f && !touchesHovered) continue;
+                            if (highlightThickness <= 0.0f && touchesHovered) continue;
+
+                            auto const fromIt = std::find_if(s_nodes.begin(), s_nodes.end(),
+                                    [&](FgVizNode const& n) { return n.id == e.from; });
+                            auto const toIt = std::find_if(s_nodes.begin(), s_nodes.end(),
+                                    [&](FgVizNode const& n) { return n.id == e.to; });
+                            if (fromIt == s_nodes.end() || toIt == s_nodes.end()) continue;
+
+                            ImVec2 const p1 = toScreen(
+                                    { fromIt->pos.x + fromIt->size.x, fromIt->pos.y + fromIt->size.y * 0.5f });
+                            ImVec2 const p2 = toScreen({ toIt->pos.x, toIt->pos.y + toIt->size.y * 0.5f });
+                            float const bend = std::max(20.0f, (p2.x - p1.x) * 0.5f);
+                            ImVec2 const c1 = { p1.x + bend, p1.y };
+                            ImVec2 const c2 = { p2.x - bend, p2.y };
+                            drawList->AddBezierCubic(p1, c1, c2, p2, e.color,
+                                    touchesHovered ? highlightThickness : normalThickness);
+                        }
+                    };
+                    drawEdges(1.2f, 0.0f);
+
+                    for (auto const& n : s_nodes) {
+                        ImVec2 const mn = toScreen(n.pos);
+                        ImVec2 const mx = toScreen({ n.pos.x + n.size.x, n.pos.y + n.size.y });
+                        bool const isHovered = (n.id == hoveredId);
+                        drawList->AddRectFilled(mn, mx, n.fillColor, 3.0f);
+                        drawList->AddRect(mn, mx,
+                                isHovered ? IM_COL32(255, 255, 255, 255) : IM_COL32(20, 20, 20, 180),
+                                3.0f, 0, isHovered ? 2.0f : 1.0f);
+                        if (s_zoom > 0.45f) {
+                            drawList->AddText(ImGui::GetFont(), ImGui::GetFontSize() * s_zoom,
+                                    { mn.x + 6.0f * s_zoom, mn.y + 4.0f * s_zoom },
+                                    IM_COL32(255, 255, 255, 255), n.label.c_str());
+                        }
+                        if (isHovered) {
+                            ImGui::SetTooltip("%s", n.label.c_str());
+                        }
+                    }
+
+                    if (hoveredId != -1) {
+                        drawEdges(0.0f, 3.0f);
+                    }
+
+                    ImGui::Dummy({ contentW * s_zoom, contentH * s_zoom });
+                }
+                ImGui::EndChild();
+            }
+        }
+    }
+    ImGui::End();
+}
+
 // First-launch panel arrangement, Blender-ish: a thin header strip on top, an Outliner on
 // the left, Properties + Post Processing stacked on the right, Assets + Stats tabbed along
 // the bottom, and the 3D viewport filling whatever's left in the middle (PassthruCentralNode
@@ -1237,6 +1616,7 @@ void buildDefaultDockLayout(ImGuiID dockspaceId) {
     ImGui::DockBuilderDockWindow("Post Processing", rightBottom);
     ImGui::DockBuilderDockWindow("Assets", bottom);
     ImGui::DockBuilderDockWindow("Stats", bottom);
+    ImGui::DockBuilderDockWindow("Frame Graph", bottom);
 
     ImGui::DockBuilderFinish(dockspaceId);
 }
@@ -1342,33 +1722,9 @@ int main() {
             utils::Path const savedScene = sceneFilePath(assetsDir);
             if (savedScene.exists()) {
                 loadScene(*engine, *scene, savedScene);
-            } else {
-                // Note: DanteApp::doFrame() re-derives Camera::lookAt() from the camera
-                // manipulator every frame, so a one-time Camera::lookAt() call here would be
-                // overwritten on the next frame - the manipulator's own state is what
-                // actually needs to change, which Config doesn't expose.
-                loadModelIntoScene(*engine, *scene, assetsDir + "models/character/ch15_firing.glb",
-                        float3{0.2f, -1.0f, 1.7f});
-                // Bathroom's local bbox (from its own load log) is roughly x:[-4.25,7.27]
-                // y:[-0.08,4.18] z:[-3.78,18.67], floor near y=-0.08 - same y/z translation
-                // as the character lines its floor up with the character's feet.
-                loadModelIntoScene(*engine, *scene, assetsDir + "models/bathroom/the_bathroom_free.glb",
-                        float3{0, -1.0f, -2});
-                // Placed elsewhere in the room, away from the character. Source bbox was
-                // ~99x117x127 units (see load log) - some other unit scale entirely, not
-                // meters like the rest of the scene - so it's scaled down to roughly a
-                // 3.5-unit-tall "big monster" to match the room.
-                loadModelIntoScene(*engine, *scene, assetsDir + "models/smiley_monster/smily_horror_monster.glb",
-                        float3{3.0f, -1.0f, 4.0f}, 0.03f);
-
-                // Practical lights: small falloff so each is an isolated pool of light
-                // rather than filling the room - the actual RE7-style look mostly comes
-                // from this, not code. Starting points; tune live via the Lights panel.
-                addLight(*engine, *scene, "Bathroom Bulb", float3{0.5f, 2.0f, -1.5f},
-                        float3{1.0f, 0.85f, 0.6f}, 4000.0f, 3.0f);
-                addLight(*engine, *scene, "Hall Lamp", float3{2.0f, 1.6f, 2.5f},
-                        float3{1.0f, 0.7f, 0.45f}, 3000.0f, 2.5f);
             }
+            // No saved scene: boots empty. Use the Assets panel to load models/skyboxes
+            // and the Lights panel to add lights, then Save Scene to persist it.
 
             // Advance every model's animation each frame (a model with no animations is a
             // no-op via the animationCount() == 0 check).
@@ -1411,17 +1767,31 @@ int main() {
             // this callback fires - see ImGuiHelper::render), before any Manipulate() call.
             ImGuizmo::BeginFrame();
 
+            // Tab hides every panel (menu bar, toolbar, outliner, etc.) so the viewport fills
+            // the whole window - starts visible on launch, same as before. KeepAliveOnly keeps
+            // the dockspace and its saved layout alive without displaying it, so panels come
+            // back in the same arrangement rather than resetting when Tab is pressed again.
+            static bool g_uiVisible = true;
+            if (ImGui::IsKeyPressed(ImGuiKey_Tab, false) && !ImGui::GetIO().WantTextInput) {
+                g_uiVisible = !g_uiVisible;
+            }
+
             // Main menu bar has to be drawn before DockSpaceOverViewport() below - it shrinks
             // the viewport's remaining work area for the rest of the frame, which is what
             // keeps the dockspace (and everything docked into it) from sitting underneath it.
-            drawMainMenuBar(engine, assetsDir);
+            if (g_uiVisible) {
+                drawMainMenuBar(engine, assetsDir);
+            }
 
             // Enable docking so the panels below can be dragged into any arrangement instead
             // of sitting pinned in place - re-ORing an already-set flag every frame is a
             // no-op, so no need to gate this to run once.
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-            ImGuiID const dockspaceId =
-                    ImGui::DockSpaceOverViewport(0, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+            ImGuiDockNodeFlags dockFlags = ImGuiDockNodeFlags_PassthruCentralNode;
+            if (!g_uiVisible) {
+                dockFlags |= ImGuiDockNodeFlags_KeepAliveOnly;
+            }
+            ImGuiID const dockspaceId = ImGui::DockSpaceOverViewport(0, nullptr, dockFlags);
             buildDefaultDockLayout(dockspaceId);
 
             if (ImGui::IsKeyPressed(ImGuiKey_E, false)) {
@@ -1440,12 +1810,15 @@ int main() {
                 performRedo();
             }
 
-            drawToolbarPanel();
-            drawOutlinerPanel(engine, view);
-            drawPropertiesPanel(engine);
-            drawAssetsPanel(engine, view, assetsDir);
-            drawPostProcessingPanel(view);
-            drawStatsPanel();
+            if (g_uiVisible) {
+                drawToolbarPanel();
+                drawOutlinerPanel(engine, view);
+                drawPropertiesPanel(engine);
+                drawAssetsPanel(engine, view, assetsDir);
+                drawPostProcessingPanel(view);
+                drawStatsPanel();
+                drawFrameGraphPanel(engine);
+            }
 
             // -------- selection highlight: wireframe box around the selected model --------
             if (g_selectedModel && g_selectedModel->asset && g_scene) {

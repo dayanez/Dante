@@ -17,6 +17,7 @@
 #include <functional>
 #include <initializer_list>
 #include <optional>
+#include <string>
 
 #include <stddef.h>
 #include <stdint.h>
@@ -1283,6 +1284,27 @@ public:
 
 
     DebugRegistry& getDebugRegistry() noexcept;
+
+    /**
+     * Enables or disables capturing a view's frame graph as graphviz DOT text (see
+     * getFrameGraphDebugText()). Off by default since export_graphviz() isn't free - only
+     * enable while a frame-graph viewer UI is actually visible.
+     *
+     * @param enabled whether to capture at all.
+     * @param view if non-null, only this view's frame graph is captured - otherwise whichever
+     *             view happens to render last each frame wins, which for apps that render more
+     *             than one view (e.g. an offscreen UI-compositing view alongside the real scene
+     *             view) means the captured text may not be the one you actually want.
+     */
+    void setFrameGraphDebugCaptureEnabled(bool enabled, View const* UTILS_NULLABLE view = nullptr) noexcept;
+
+    /**
+     * Returns the graphviz DOT text captured for the last rendered view, if capture is enabled
+     * via setFrameGraphDebugCaptureEnabled(). Since the UI callback runs before the scene is
+     * rendered each frame, this reflects the previous frame's graph. Empty if capture is off or
+     * no frame has rendered yet.
+     */
+    std::string getFrameGraphDebugText() const noexcept;
 
     /**
      * Check if a feature flag exists

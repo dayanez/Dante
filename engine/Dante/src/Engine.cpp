@@ -420,6 +420,14 @@ DebugRegistry& Engine::getDebugRegistry() noexcept {
     return downcast(this)->getDebugRegistry();
 }
 
+void Engine::setFrameGraphDebugCaptureEnabled(bool const enabled, View const* const view) noexcept {
+    downcast(this)->setFrameGraphDebugCaptureEnabled(enabled, downcast(view));
+}
+
+std::string Engine::getFrameGraphDebugText() const noexcept {
+    return downcast(this)->getFrameGraphDebugText();
+}
+
 void Engine::pumpMessageQueues() {
     downcast(this)->pumpMessageQueues();
 }

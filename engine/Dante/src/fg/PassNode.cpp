@@ -281,7 +281,6 @@ RenderPassNode::RenderPassData const* RenderPassNode::getRenderPassData(uint32_t
 }
 
 utils::CString RenderPassNode::graphvizify() const noexcept {
-#ifndef NDEBUG
     utils::CString s;
 
     uint32_t const id = getId();
@@ -311,9 +310,6 @@ utils::CString RenderPassNode::graphvizify() const noexcept {
     s.append("]");
 
     return s;
-#else
-    return {};
-#endif
 }
 
 #if DANTE_ENABLE_FGVIEWER
@@ -375,16 +371,12 @@ char const* PresentPassNode::getName() const noexcept {
 }
 
 utils::CString PresentPassNode::graphvizify() const noexcept {
-#ifndef NDEBUG
     utils::CString s;
     uint32_t const id = getId();
     s.append("[label=\"Present , id: ");
     s.append(utils::to_string(id));
     s.append("\", style=filled, fillcolor=red3]");
     return s;
-#else
-    return {};
-#endif
 }
 
 void PresentPassNode::execute(FrameGraphResources const&, DriverApi&) noexcept {
