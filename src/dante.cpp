@@ -863,6 +863,9 @@ void drawToolbarPanel() {
     ImGui::SameLine();
     ImGui::TextUnformatted("Gizmo:");
     ImGui::SameLine();
+
+    //TODO im thinking that what i can do and what i should do is. Make 4, 5 ,6 change the bottom panels.  Why not KEYBINDS :
+
     if (ImGui::RadioButton("Translate (1)", g_gizmoOperation == ImGuizmo::TRANSLATE)) {
         g_gizmoOperation = ImGuizmo::TRANSLATE;
     }
